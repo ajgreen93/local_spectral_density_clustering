@@ -1,0 +1,204 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\vr}{\mathrm{vr}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes on `An Elementary Introduction to Modern Convex Geometry'}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Setup}
+
+Let $K$ be a convex body in $\Rd$. Denote the ratio of the $d$-dimensional unit ball by $\nu_d$. Let $Q = [-1,1]^d$ be the unit cube in $\Rd$. 
+
+Assuming symmetry of $K$ will often greatly ease proofs.
+
+\begin{definition}
+	We say $K$ is \textit{(centrally) symmetric} if $-x \in K$ whenever $x \in K$. This will also imply that $K$ is the unit ball of some norm $\norm{\cdot}_K$ on $\Rd$:
+	\begin{equation*}
+	K = \set{x: \norm{x}_{K} \leq 1}
+	\end{equation*}
+\end{definition}
+
+\paragraph{Volume ratio.}
+
+The volume ratio is used to prove reverse isoperimetric inequalities of the form we want. To define it, we first recall the concept of an \textit{ellipsoid}: given $(e_j)_{j=1}^{d}$ an orthonormal basis of $\Rd$ and $(a_j)$ positive numbers, the ellipsoid
+\begin{equation*}
+\set{x: \sum_{i = 1}^{d} \frac{\dotp{x}{e_j}^2}{\alpha_j^2} \leq 1}
+\end{equation*}
+has volume $\nu_d \prod \alpha_j$.
+\begin{definition}
+	Let $K$ be a convex body in $\Rd$. The \textit{volume ratio} of $K$ is
+	\begin{equation*}
+	\vr(K) := \left(\frac{\vol(K)}{\vol(\E)}\right)^{1/d}
+	\end{equation*}
+	where $\E$ is the ellipsoid of maximal volume in $K$. 
+\end{definition}
+
+Let $B_2^d$ be the $d$-dimensional unit Euclidean ball.
+\begin{definition}
+	The \textit{surface area} of a convex body $K \in \Rd$, $\partial K$, is defined by
+	\begin{equation*}
+	\vol(\partial K) = \lim_{\epsilon \to 0} \frac{\vol(K + \epsilon B_2^d) - \vol(K)}{\epsilon}
+	\end{equation*}
+\end{definition}
+
+\section{Convolutions and Volume Ratios: The Reverse Isoperimetric Problem}
+
+\begin{theorem}
+	Let $K$ be a convex body and $T$ a regular solid simplex in $\Rd$. Then there is an affine image of $K$ whose volume is the same as that of $T$ and whose surface area is no larger than that of $T$. 
+\end{theorem}
+
+We will prove a related, by far simpler, result.
+
+\begin{theorem}
+	\label{thm: reverse_isoperimetry_symmetric_bodies}
+	Let $K$ be a symmetric convex body, and $T$ the $d$-dimensional unit cube. Then there is an affine image of $K$ whose volume is the same as that of $T$ and whose surface area is no larger than that of $T$.
+\end{theorem}
+
+The result follows from a result showing that the unit cube $Q = [-1,1]^d$ has the largest volume ratio among convex bodies.
+\begin{theorem}
+	\label{thm: volume_ratio_symmetric_bodies}
+	Among symmetric convex bodies the cube has largest volume ratio.
+\end{theorem}
+
+\begin{proof}[Proof of Theorem \ref{thm: reverse_isoperimetry_symmetric_bodies}]
+	We begin by recall that for $Q$
+	\begin{equation*}
+	\vol(\partial Q) = 2d \vol(Q)^{(d-1)/d},
+	\end{equation*}
+	so we wish to show that any other convex body $K$ has an affine image $\wt{K}$ such that
+	\begin{equation*}
+	\vol(\partial \wt{K}) \leq 2d ~ \vol(\wt{K})^{(d-1)/d}.
+	\end{equation*}
+	
+	Choose $\wt{K}$ so that its maximal volume ellipsoid is $B_2^n$, the Euclidean ball of radius $1$. Then, by Theorem \ref{thm: volume_ratio_symmetric_bodies}, we have that
+	\begin{align*}
+	\vr(\wt{K}) \leq \vr(Q)
+	\end{align*}
+	and since the maximal volume ellipsoid is the same for both $\wt{K}$ and $Q$, this implies $\vol(\wt{K}) \leq \vol(Q) = 2^d$.
+	
+	Now, since $\wt{K} \supset B_2^d$, the surface area can be upper bounded
+	\begin{align*}
+	\lim_{\epsilon \to 0} \frac{\vol(\wt{K} + \epsilon \wt{K}) - \vol(\wt{K})}{\epsilon} & = \vol(\wt{K}) \lim_{\epsilon \to 0} \frac{(1 + \epsilon)^d - 1}{\epsilon} \\
+	& = d ~ \vol(\wt{K}) = d ~ \vol(\wt{K})^{1/d} \vol(\wt{K})^{(d-1)/d}  \\
+	& \leq 2d \vol(\wt{K})^{(d-1)/d}.
+	\end{align*}
+\end{proof}
+
+\end{document}

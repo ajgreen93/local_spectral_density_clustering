@@ -1,0 +1,283 @@
+%%%%%%%% ICML 2019 submission %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+\usepackage{icml2019}
+% \usepackage[accepted]{icml2019}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+\newcommand{\diam}{\mathrm{diam}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\Asig}{A_{\sigma}}
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+
+\icmltitlerunning{Local clustering of density upper level sets}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Local Spectral Clustering of Density Upper Level Sets}
+
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Alden Green}{cmu}
+\icmlauthor{Sivaraman Balakrishnan}{cmu}
+\icmlauthor{Ryan Tibshirani}{cmu}
+\end{icmlauthorlist}
+
+\icmlaffiliation{cmu}{Department of Statistics and Data Science, Carnegie Mellon University, Pittsburgh PA, USA}
+
+\icmlcorrespondingauthor{Alden Green}{ajgreen@andrew.cmu.edu}
+
+\icmlkeywords{local clustering}
+
+\vskip 0.3in
+]
+
+\printAffiliationsAndNotice{} % otherwise use the standard text.
+
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+\label{introduction}
+
+Clustering is a fundamental task in machine learning, which often involves splitting data into groups which satisfy some notion of within-group similarity and between-group difference. In particular, spectral clustering methods are a family of powerful non-parametric clustering algorithms. 
+
+Roughly speaking, spectral clustering techniques
+embed data points using the spectrum of (some
+form of) the graph Laplacian matrix and subsequently 
+use this \emph{spectral embedding} to find a clustering of the data.
+When applied to large graphs (or large point clouds) classical global spectral 
+methods can be computationally cumbersome and 
+can be insensitive to the local geometry of the distribution of the samples
+\citep{mahoney2012,leskovec2010}.
+This in turn has led to the investigation of local spectral algorithms \citep{spielman2013,anderson2006,leskovec2010}
+which leverage locally-biased spectra computed using random walks around 
+a user-specified seed node. 
+
+A natural model to consider when analyzing point cloud data is based on the hypothesis that we receive samples $\set{x_1, \ldots, x_n}$ independently drawn from a distribution $f$. In this case, we are interested in understanding what the output of a clustering algorithm on this finite sample reveals about the unknown distribution $f$. In particular, it is intuitive \cite{hartigan1981,chaudhuri2010} to define clusters in this context as \emph{connected regions of high-density}, and study the ability of spectral methods to identify these clusters.
+
+Given a matrix $A$ with entries representing the similarity between pairs of data points, and $G  = (V,E)$ a graph representation of $A$ with vertices $V$ and edges $E$, there are many \cite{yang2015,fortunato2010} graph-theoretic measures which assess the cluster quality of a subset $S \subseteq V$ (or more generally the quality of a partition $S_1 \cup \ldots \cup S_m = V$, for $m \geq 2$.)
+
+Arguably a natural way to assess cluster quality is via the bicriteria of \textit{external} and \textit{internal connectivity} of $S$, represented by the parameters $\Phi$ and $\Psi$, respectively. As the names suggest, external connectivity should relate to the number of edges between $S$ and $G / S$ (hereafter denoted $S^c$), while internal connectivity in turn measures the number of edges between subsets within $S$ \footnote{We formally define our notions of external and internal connectivity in Section \ref{sec: measures_of_cluster_quality}} . The clustering task then becomes to find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. We will refer to such a subset as a $(\Phi,\Psi)$-cluster (or partition). Both local \cite{zhu2013} and global \cite{kannan04} spectral algorithms can be understood as outputting clusters (or partitions) which provably satisfy approximations to the optimal $(\Phi, \Psi)$-cluster (or partition). \footnote{For slightly different definitions of the internal connectivity $\Psi$}
+
+In the case where $G$ encodes similarities between sampled point-cloud data, some understanding of how graph theoretic quantities such as $\Phi$ and $\Psi$ relate to properties of the underlying distribution $f$ has developed. Continuous analogues to many such graph measures of cluster quality have been defined, and, under appropriate graph construction, convergence of clusters output by spectral algorithm to approximate minimizers of these continuous analogues has been shown \cite{vonluxburg2008, garciatrillos18}.
+
+Relating these partitions to the arguably more simply defined high density clusters can be challenging in general. Intuitively, however, under the right conditions such a connection should exist. Given sufficient samples, and an appropriately specified notion of similarity, we can imagine that all points within a high density cluster will have many edges to other points within the cluster, and comparatively few edges to data points outside the cluster. Motivated by this intuition, one primary line of work in this article is to formally establish that, under a natural set of geometric conditions, a connection between certain graph-based criteria and density clusters does exist.
+
+We also study the consequences of these facts as they relate to local spectral clustering algorithms. We restrict our attention in particular to one such popular algorithm: \textit{personalized PageRank} (PPR). We show that a variant of PPR, properly initialized inside a high-density cluster, performs well: not only does the output set of PPR approximate the cluster quality measures of the high-density cluster, the PPR algorithm also consistently recovers the population density cluster. 
+
+\subsection{Related Work}
+
+
+
+\subsection{Summary of Results}
+
+\begin{enumerate}
+	\item 
+	Theorem: Well-conditioned density clusters have low conductance.
+	
+	\item
+	Theorem: Well-conditioned density clusters have high internal connectivity.
+	
+	\item 
+	Corollary: PPR local clustering algorithm, run on a well-conditioned density cluster and appropriately initialized, will output a low conductance set, which also has low symmetric set difference with the density cluster.
+	
+	\item
+	Theorem: PPR local clustering algorithm,run on a well-conditioned density cluster and appropriately initialized, exhibits successful density cluster recovery.
+\end{enumerate}
+
+\paragraph{Graph notation.}
+
+Let $G = (V,E)$ be an undirected, unweighted graph, with $S,S' \subseteq V$.
+The volume of $S$ is given by $\vol(S; G) = \sum_{v \in S} \deg(v; G) $
+where $\deg(v; G) = \sum_{u \in V} 1\bigl((u,v) \in E\bigr)$ is the degree of $v$ in $G$. For the random walk over $G$, denote the stationary distribution by $\pi$, where $\pi(S; G) = \frac{\vol(S ; G)}{\vol(V; G)}$. 
+
+\vspace{.05 in}
+
+For the sample $\mathbf{X} := \set{x_1, \ldots, x_n} \subset \Rd$ and a set $A \subset \Rd$, define $A[\mathbf{X}] = A \cap \mathbf{X}$. We denote the uniform measure over $\Rd$ by $\nu(\cdot)$.
+
+\section{Measures of cluster quality}
+\label{sec: measures_of_cluster_quality}
+
+Let $P$ be a distribution supported on a compact set $\mathcal{X} \subset \Rd$, with continuous density function $f$ (with respect to the uniform measure). The Euclidean distance is denoted by $\norm{ \cdot }$. 
+
+\paragraph{Density upper-level set.}
+For a number $\tau \geq 0$, let $C_f(\tau)$ be the collection of collected components of the density upper-level set $\set{x \in \mathcal{X}: f(x) \geq \tau}$. Define a \textit{$\tau$-density cluster} to be one such connected component $A \in C_f(\tau)$.  We will sometimes refer to $A[\bf{X}]$ as an \textit{empirical density cluster}.
+
+\paragraph{Graph bicriteria.}
+For $G = (V,E)$ an undirected, unweighted graph and $S, S' \subset V$ as before, let $\abs{E(S, S'; G)}$ denote the cut of $S$ and $S'$, given by
+\begin{equation*}
+\abs{E(S, S'; G)} = \sum_{v \in S} \sum_{u \in S'} 1((v,u) \in E).
+\end{equation*}
+Define the balance $B(S; G)$ to be
+\begin{equation*}
+B(S; G) = \min\{\vol(S;G), \vol(V \setminus S;G)\}.
+\end{equation*}
+
+We can now formally introduce our first criterion for assessing the quality of graph cuts: the \textbf{conductance}, $\Phi$, given by
+\begin{equation}
+\label{eqn: conductance}
+\Phi(S; G) \defeq \frac{\abs{E(S, V \setminus S; G)}}{B(S; G)}.
+\end{equation}
+We typically seek a set $S^{\star} \subset V$ such that $\Phi(S^{\star}; G)$ is small. 
+
+\textcolor{red}{Introduce and define the \textbf{internal connectivity}.}
+
+\paragraph{Neighborhood graph.}
+
+Given $r \geq 0$, define the neighborhood graph to be $G_{n,r} = (\mathbf{X}, E_n)$, where for $x_i, x_j \in \mathbf{X}$, $(x_i, x_j) \in E_n$ if $\norm{x_i - x_j} \leq r$. (By convention, we do not allow loops, meaning $(x_i, x_i) \not\in E_n$). For ease of notation, for $S \subset \mathbf{X}$, let $\Phi_{n,r}(S) := \Phi(S; G_{n,r})$.
+
+\subsection{Well-conditioned density clusters.}
+
+In order to satisfy the \textcolor{red}{bicriteria}, we must introduce some assumptions on the density $f$. Let $B(x,r)$ be a closed ball with respect to Euclidean distance) of radius $r$ around the point $x$.  Given a set $A \subset \Rd$, and a number $\sigma > 0$, define the set $\Asig = A + B(0,\sigma) = \set{y \in \Rd: \inf_{x \in A} \norm{y - x} \leq \sigma}$. 
+\begin{enumerate}[label=(A\arabic*)]
+	\item 
+	\label{asmp: cluster_regularity}
+	\textit{Minimum density:} For numbers $\sigma, \tau_{\sigma} > 0$, a set $A \subset \mathcal{X}$ is said to be \textit{$(\sigma, \tau_{\sigma})$-regular} if
+	\begin{equation}
+	\inf_{x \in \Asig} f(x) = \tau_{\sigma}
+	\end{equation} 
+	%and 
+	%\begin{equation*}
+	%\frac{\diam \Asig}{\sigma} \leq \mu
+	%\end{equation*}
+	%where $\diam \Asig = \sup \set{d(x,y) : x,y \in \Asig}$
+	
+	\item 
+	\label{asmp: low_noise_density}
+	\textit{Low noise density:} For numbers $\gamma, \sigma > 0$, and a set $A \subset \mathcal{X}$, the density function $f$ is said to be \textit{$(\gamma, \sigma)$- low noise around $A$} if there exists a constant $C_1$ such that for all $x \in \mathcal{X}$ with $0 < \rho(x, \Asig) \leq \sigma$,
+	\begin{equation*}
+	\inf_{x' \in \Asig} f(x') - f(x) \geq C_1 \rho(x, \Asig)^{\gamma}.
+	\end{equation*}
+	where $\rho(x,\Asig) = \min_{x_0 \in \Asig} \norm{x - x_0}$.
+	
+	\item
+	\label{asmp: cluster_separation}
+	\textit{Cluster separation:}
+	For $\tau,\sigma > 0$, $C_f(\tau)$ the set of connected components of the density upper-level set is said to be \textit{$\sigma$-well separated} if for all $\tau$-density clusters $A, A' \in C_f(\tau)$,
+	\begin{equation*}
+	\rho(A,A') > \sigma.
+	\end{equation*}
+	where $\rho(A,A') = \min_{x \in A, x' \in A'} \norm{x - x'}$.
+\end{enumerate}
+
+\textcolor{red}{Assumptions are standard, provide references.} We note that these assumptions are all local in nature, further motivating the study of a local algorithm. Assumptions \ref{asmp: cluster_regularity}-\ref{asmp: cluster_separation} are used to upper bound \textcolor{red}{bicriteria 1}, whereas \ref{asmp: cluster_regularity} and \textcolor{red}{(A4)} are necessary to lower bound \textcolor{red}{bicriteria 2}. 
+
+\begin{definition}
+	For $\tau > 0$ and $A \in C_f(\tau)$ a $\tau$-density cluster, we say that $A$ is a \textit{$(\lambda, \sigma, \gamma)$-well-conditioned cluster} if $A$ is $(\lambda,\sigma)$-regular, the density $f$ is $(\gamma, \sigma)$-low noise around $A^{\sigma}$, and $C_f(\tau)$ is $\sigma$-well separated.
+\end{definition}
+We note that $\sigma$ plays dual roles here, both in effect precluding arbitrarily narrow and long clusters in \ref{asmp: cluster_regularity} and arbitrarily flat densities in \ref{asmp: low_noise_density}. \textcolor{red}{We give some examples of densities which satisfy these assumptions in Section \ref{section: everything_else}.}
+
+\section{Local Clustering on Density Level Sets}
+
+In this section we show that a well-conditioned cluster $A$ satisfies the bicriteria \textcolor{red}{criteria 1} and \textcolor{red}{criteria 2}, and therefore the \textcolor{red}{PPR algorithm} outputs a low conductance set  which has small symmetric set difference with the empirical cluster. 
+
+\begin{theorem}
+	\label{thm: conductance_upper_bound}
+	For some $\tau > 0$, let a $\tau$-density cluster $A \in C_f(\tau)$ satisfy Assumptions \ref{asmp: cluster_regularity}-\ref{asmp: cluster_separation} for some $\sigma, \tau_{\sigma}, \gamma > 0$. Then, for any $r < \sigma$ and $\delta > 0$, the following statements hold with probability at least $1 - \delta$: 
+	\begin{itemize}
+		\item 
+		\textbf{Additive error bound.} Fix $\epsilon > 0$. Then, for
+		\begin{equation}
+		\label{eqn: conductance_sample_complexity}
+		n \geq \log(2/\delta)\left(\frac{1 + \epsilon/2}{2 \tau_{\sigma}^2 \nu(\Asig) \nu_d (r/2)^d}\right)^2 
+		\end{equation}
+		we have
+		\begin{equation}
+		\label{eqn: conductance_additive_error_bound}
+		\frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \leq C_{\sigma} \frac{\tau}{\tau_{\sigma}} \frac{(\tau_{\sigma} - \frac{r^{\gamma+1}}{\gamma+1})}{\tau_{\sigma}} + \epsilon
+		\end{equation}
+		\item
+		\textcolor{red}{\textbf{Multiplicative error bound.}}
+	\end{itemize}
+	where $C_0 = 2^{2d+1}d$ and $C_{\sigma} = C_0 / \sigma$. 
+\end{theorem}
+
+A few remarks are in order. 
+\begin{remark}
+	\label{rem: exp_in_d}
+	Note that the bound of (\ref{eqn: conductance_additive_error_bound}) depends exponentially on $d$; precisely, on $C_0 = d2^{2d +1}$. It is possible to improve this dependency to the order of $(1 + \frac{r}{\sigma})^{2d}$. However, in this setting, we think of $r$ as being a constant radius (rather than $r = r_n \to 0$ as $n \to \infty$, and therefore even this improvement results in exponential dependency on the dimension $d$. \textcolor{red}{Make references suggesting this type of exponential dependency is not uncommon in non-parametric clustering problems.}
+\end{remark}
+\begin{remark}
+	Other than the looseness implied by Remark \ref{rem: exp_in_d}, the error bound of (\ref{eqn: conductance_additive_error_bound}) is almost tight. Specifically, choosing
+	\begin{align*}
+	\Asig & = B(0,\sigma), \\
+	 f(x) & = 
+	 \begin{cases}
+	 \tau \text{ for $x \in \Asig$}, \\
+	  f(x) = \tau - \rho(x,\Asig)^{\gamma} \text{ for $0 < \rho(x,\Asig) < r$}
+	 \end{cases}
+	\end{align*}
+	we have
+	\begin{equation}
+	\frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \geq C_1 \frac{(\tau - \frac{r^{\epsilon+1}}{\epsilon+1})}{\tau}
+	\end{equation}
+	for some constant $C_1$, with probability at least $1 - \delta$. (Note that a factor of $1 / \sigma$ is not (\ref{eqn: conductance_additive_error_bound}) replicated in this lower bound.) \textcolor{red}{Provide justification in supplement, and cite it.}
+\end{remark}
+
+\section{Implications, extensions, and discussion}
+\label{section: everything_else}
+\subsection{Examples}
+\subsection{Experiments}
+
+\clearpage
+
+\bibliography{icml_bib}
+\bibliographystyle{icml2019}
+
+
+\end{document}
+
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018, and modified by Alexandre Bouchard in
+% 2019. Previous contributors include Dan Roy, Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.
