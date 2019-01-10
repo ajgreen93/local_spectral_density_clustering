@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6600 64-bit) (preloaded format=pdflatex 2018.3.7)  9 JAN 2019 14:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6600 64-bit) (preloaded format=pdflatex 2018.3.7)  9 JAN 2019 19:58
 entering extended mode
 **./icml_local_density_clustering.tex
 (icml_local_density_clustering.tex
@@ -464,21 +464,21 @@ Package: enumitem 2011/09/28 v3.5.2 Customized lists
  (icml_local_density_clustering.aux)
 \openout1 = `icml_local_density_clustering.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 54.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 57.
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -514,7 +514,7 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 \AtBeginShipoutBox=\box36
-LaTeX Info: Redefining \microtypecontext on input line 54.
+LaTeX Info: Redefining \microtypecontext on input line 57.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -529,7 +529,7 @@ Package microtype Info: No adjustment of character kerning.
 fg"
 File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 )
-Package hyperref Info: Link coloring OFF on input line 54.
+Package hyperref Info: Link coloring OFF on input line 57.
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\nameref.s
 ty"
@@ -541,20 +541,20 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count144
 )
-LaTeX Info: Redefining \ref on input line 54.
-LaTeX Info: Redefining \pageref on input line 54.
-LaTeX Info: Redefining \nameref on input line 54.
+LaTeX Info: Redefining \ref on input line 57.
+LaTeX Info: Redefining \pageref on input line 57.
+LaTeX Info: Redefining \nameref on input line 57.
  (icml_local_density_clustering.out)
 (icml_local_density_clustering.out)
 \@outlinefile=\write3
 \openout3 = `icml_local_density_clustering.out'.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 74.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 77.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 74.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 77.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 74.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 77.
 \c@@affil@anon=\count145
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\microtype\mt-cmr.c
@@ -562,7 +562,7 @@ fg"
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 74.
+LaTeX Font Info:    Try loading font information for U+msa on input line 77.
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -571,7 +571,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 fg"
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 74.
+LaTeX Font Info:    Try loading font information for U+msb on input line 77.
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -581,39 +581,54 @@ fg"
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 
-Package hyperref Warning: Ignoring empty anchor on input line 76.
+Package hyperref Warning: Ignoring empty anchor on input line 79.
 
-LaTeX Font Info:    Try loading font information for OML+ptm on input line 76.
+LaTeX Font Info:    Try loading font information for OML+ptm on input line 79.
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omlptm.fd"
 File: omlptm.fd 
 )
 LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <9> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 76.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 79.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 81.
 [1{C:/Users/alden/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 
 ]
-Underfull \hbox (badness 1178) in paragraph at lines 173--174
+Underfull \hbox (badness 7504) in paragraph at lines 144--145
+ \OT1/ptm/b/n/10 Per-son-al-ized PageR-ank.[] \OT1/ptm/m/n/10 (+20) As men-tion
+ed pre-vi-ously,
+ []
+
+[2]
+
+LaTeX Warning: Reference `alg: ppr_cluster' on page 3 undefined on input line 1
+98.
+
+
+LaTeX Warning: Reference `alg: ppr_cluster' on page 3 undefined on input line 1
+98.
+
+
+Underfull \hbox (badness 1178) in paragraph at lines 247--248
 []\OT1/ptm/m/n/10 (+20) In or-der to sat-isfy the []bi-cri-te-ria[], we must in
 -tro-duce
  []
 
-[2]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 221.
+[3]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 295.
 
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 221.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 295.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 221.
-[3] (icml_local_density_clustering.bbl
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 21.
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 295.
+[4] (icml_local_density_clustering.bbl
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 28.
 
 ("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\ot1pcr.fd"
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
@@ -623,59 +638,68 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3942) in paragraph at lines 31--38
+Underfull \hbox (badness 3942) in paragraph at lines 22--29
 \OT1/ptm/m/it/10 (+20) Re-ports\OT1/ptm/m/n/10 (+20) , 486(3):75 -- 174, 2010. 
  ISSN 0370-
  []
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 270.
- [4
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 344.
+ [5
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 270.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 344.
  (icml_local_density_clustering.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 270.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 270.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 344.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 344.
 Package rerunfilecheck Info: File `icml_local_density_clustering.out' has not c
 hanged.
-(rerunfilecheck)             Checksum: 16AE83C343D81961C19677CDBB20B69A;594.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 270.
+(rerunfilecheck)             Checksum: 3818F693BB323BCFB7D348E04E528F49;594.
+
+
+LaTeX Warning: There were undefined references.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 344.
  ) 
 Here is how much of TeX's memory you used:
- 9511 strings out of 493303
- 144484 string characters out of 3129785
- 274650 words of memory out of 3000000
- 12669 multiletter control sequences out of 15000+200000
- 35581 words of font info for 174 fonts, out of 3000000 for 9000
+ 9569 strings out of 493303
+ 145201 string characters out of 3129785
+ 275109 words of memory out of 3000000
+ 12686 multiletter control sequences out of 15000+200000
+ 37436 words of font info for 194 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 32i,19n,45p,1194b,418s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,19n,45p,812b,485s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc
 }<C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/
 cm/cmbx10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pub
 lic/amsfonts/cm/cmex10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/alden/AppData/Local/Programs/
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/alden/AppData/Loc
-al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/alden
-/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:
+al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/alden
+/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:
 /Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
-mr10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmr5.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmr7.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/alden/AppData/Local/Program
-s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/alden/AppData/
-Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Users/al
-den/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-<C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/s
-ymbols/msbm10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1
-/urw/courier/ucrr8a.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts
-/type1/urw/times/utmb8a.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/f
-onts/type1/urw/times/utmbi8a.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 
-2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Users/alden/AppData/Local/Programs/MiK
-TeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icml_local_density_clustering.pdf (4 pages, 239817 bytes).
+mmi9.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmr10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/ty
+pe1/public/amsfonts/cm/cmr5.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/alden/AppData/Local/Progra
+ms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/alden/AppData/L
+ocal/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/alde
+n/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><
+C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmsy5.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmsy6.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/alden/AppData/Local/Programs/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/alden/AppData/Local/Pr
+ograms/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/alde
+n/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/User
+s/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/
+Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb
+><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmr8a
+.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/ut
+mri8a.pfb>
+Output written on icml_local_density_clustering.pdf (5 pages, 300154 bytes).
 PDF statistics:
- 230 PDF objects out of 1000 (max. 8388607)
- 46 named destinations out of 1000 (max. 500000)
- 23625 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 286 PDF objects out of 1000 (max. 8388607)
+ 58 named destinations out of 1000 (max. 500000)
+ 24649 words of extra memory for PDF output out of 24883 (max. 10000000)
 

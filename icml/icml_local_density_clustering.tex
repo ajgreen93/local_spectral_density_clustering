@@ -21,12 +21,15 @@
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\defeq}{\overset{\mathrm{def}}{=}}
 \newcommand{\vol}{\text{vol}}
+\newcommand{\cut}{\mathrm{cut}}
 \newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Reals}{\mathbb{R}}
 \newcommand{\Rd}{\Reals^d}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\Asig}{A_{\sigma}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\1}{\mathbf{1}}
 
 \newtheoremstyle{aldenthm}
 {6pt} % Space above
@@ -81,11 +84,16 @@
 \section{Introduction}
 \label{introduction}
 
-Clustering is a fundamental task in machine learning, which often involves splitting data into groups which satisfy some notion of within-group similarity and between-group difference. In particular, spectral clustering methods are a family of powerful non-parametric clustering algorithms. 
+Given data $\mathbf{x} := \set{x_1, \ldots, x_n} \subset \Rd$, our statistical learning task is clustering: splitting data into groups which satisfy some notion of within-group similarity and between-group difference. 
 
-Roughly speaking, spectral clustering techniques
-embed data points using the spectrum of (some
-form of) the graph Laplacian matrix and subsequently 
+In particular, spectral clustering methods are a family of powerful non-parametric clustering algorithms. Given a symmetric matrix $A \in \Reals^{n \times n}$ with $(i,j)$th entry representing the similarity between data points $x_i$ and $x_j$, we form the graph Laplacian matrix \footnote{Often, either of the Laplacian matrices  $L_{sym} := D^{\frac{1}{2}}WD^{-\frac{1}{2}}$ or $L_{unn} := D - A$ are used instead.},
+\begin{equation}
+\label{eqn: random_walk_laplacian}
+W := D^{-1}A; ~~~ L = I - W
+\end{equation}
+where the degree matrix $D$ is a diagonal matrix with $D_{ii} := \sum_j A_{ij}$.
+
+Roughly speaking, spectral clustering techniques first embed the data $\x$ using the spectrum of the graph Laplacian matrix and subsequently 
 use this \emph{spectral embedding} to find a clustering of the data.
 When applied to large graphs (or large point clouds) classical global spectral 
 methods can be computationally cumbersome and 
@@ -95,37 +103,105 @@ This in turn has led to the investigation of local spectral algorithms \citep{sp
 which leverage locally-biased spectra computed using random walks around 
 a user-specified seed node. 
 
-A natural model to consider when analyzing point cloud data is based on the hypothesis that we receive samples $\set{x_1, \ldots, x_n}$ independently drawn from a distribution $f$. In this case, we are interested in understanding what the output of a clustering algorithm on this finite sample reveals about the unknown distribution $f$. In particular, it is intuitive \cite{hartigan1981,chaudhuri2010} to define clusters in this context as \emph{connected regions of high-density}, and study the ability of spectral methods to identify these clusters.
+A natural model to consider when analyzing point cloud data is the following:
+\begin{equation}
+x_i \sim P, \text{   independently, for $i = 1,\ldots,n$},
+\end{equation} 
+with $f$ the density function of $P$ with respect to the uniform measure over $\Rd$. In this case, we are interested in understanding what the output of a clustering algorithm on this finite sample reveals about the unknown density $f$. For $\lambda > 0$ and $\set{x: f(x) \geq \lambda}$, it is intuitive \cite{hartigan1981,chaudhuri2010} to define clusters to be the connected components $\mathbb{C}_f(\lambda)$ of the upper level set; we call these connected regions of high density \textit{density clusters}, and study the ability of spectral methods to identify such clusters. 
 
-Given a matrix $A$ with entries representing the similarity between pairs of data points, and $G  = (V,E)$ a graph representation of $A$ with vertices $V$ and edges $E$, there are many \cite{yang2015,fortunato2010} graph-theoretic measures which assess the cluster quality of a subset $S \subseteq V$ (or more generally the quality of a partition $S_1 \cup \ldots \cup S_m = V$, for $m \geq 2$.)
+\paragraph{Graph connectivity criteria.}
 
-Arguably a natural way to assess cluster quality is via the bicriteria of \textit{external} and \textit{internal connectivity} of $S$, represented by the parameters $\Phi$ and $\Psi$, respectively. As the names suggest, external connectivity should relate to the number of edges between $S$ and $G / S$ (hereafter denoted $S^c$), while internal connectivity in turn measures the number of edges between subsets within $S$ \footnote{We formally define our notions of external and internal connectivity in Section \ref{sec: measures_of_cluster_quality}} . The clustering task then becomes to find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. We will refer to such a subset as a $(\Phi,\Psi)$-cluster (or partition). Both local \cite{zhu2013} and global \cite{kannan04} spectral algorithms can be understood as outputting clusters (or partitions) which provably satisfy approximations to the optimal $(\Phi, \Psi)$-cluster (or partition). \footnote{For slightly different definitions of the internal connectivity $\Psi$}
+A somewhat more standard mode of analyzing spectral clustering methods is through approximation to a pair of graph connectivity criteria.
 
-In the case where $G$ encodes similarities between sampled point-cloud data, some understanding of how graph theoretic quantities such as $\Phi$ and $\Psi$ relate to properties of the underlying distribution $f$ has developed. Continuous analogues to many such graph measures of cluster quality have been defined, and, under appropriate graph construction, convergence of clusters output by spectral algorithm to approximate minimizers of these continuous analogues has been shown \cite{vonluxburg2008, garciatrillos18}.
+For $A$ as before, let the graph $G  = (V,E)$, with vertices $V = (v_1, \ldots, v_n)$ corresponding to the $n$ rows of $A$, and edges $E = \set{(v_i,v_j): 1 \leq i < j \leq n: (v_i,v_j) = A_{ij}}$ (Since $A$ is symmetric, $G$ is an undirected graph; also, by convention, we preclude self-loops). There are many \cite{yang2015,fortunato2010} graph-theoretic measures which assess the cluster quality of a subset $S \subseteq V$ (or more generally the quality of a partition $S_1 \cup \ldots \cup S_m = V$, for $m \geq 2$.)
 
-Relating these partitions to the arguably more simply defined high density clusters can be challenging in general. Intuitively, however, under the right conditions such a connection should exist. Given sufficient samples, and an appropriately specified notion of similarity, we can imagine that all points within a high density cluster will have many edges to other points within the cluster, and comparatively few edges to data points outside the cluster. Motivated by this intuition, one primary line of work in this article is to formally establish that, under a natural set of geometric conditions, a connection between certain graph-based criteria and density clusters does exist.
+Arguably a natural way to assess cluster quality is via a pair of criteria capturing the \textit{external} and \textit{internal connectivity} of $S$, respectively.  As the names suggest, external connectivity should relate to the number of edges between $S$ and $G / S$ (hereafter denoted $S^c$), while internal connectivity in turn measures the number of edges between subsets within $S$. The clustering task then becomes to find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. 
 
-We also study the consequences of these facts as they relate to local spectral clustering algorithms. We restrict our attention in particular to one such popular algorithm: \textit{personalized PageRank} (PPR). We show that a variant of PPR, properly initialized inside a high-density cluster, performs well: not only does the output set of PPR approximate the cluster quality measures of the high-density cluster, the PPR algorithm also consistently recovers the population density cluster. 
+We will assess the external connectivity of a subset $S \subseteq V$ through its normalized cut. The cut of $S$ is
+\begin{equation*}
+\cut(S; G) := \sum_{u \in S} \sum_{v \in S^c} \1\left((u,v) \in E \right)
+\end{equation*}
+-- where $S^c = V / S$ is the complement of $S$ in $V$ -- and the volume of $S$ is
+\begin{equation*}
+\vol(S; G) := \sum_{u \in S} \sum_{v \in V} \1\left((u,v) \in E \right).
+\end{equation*}
+Then, the \textit{normalized cut} of $S$ is given by
+\begin{equation}
+\label{eqn: norm_cut}
+\Phi(S; G) := \frac{\cut(S; G)}{ \min\left\{\vol(S; G), \vol(S^c; G) \right\} }
+\end{equation} 
+Intuitively, a set with low \textit{normalized cut} has many more edges which do not cross the cut than edges which do cross the cut. 
 
-\subsection{Related Work}
+Given $S \subseteq V$, the subgraph induced by $S$ is given by $G[S] = (S, E_S)$, where $(u,v) \in E_S$ if both $u$ and $v$ are in $S$ and $(u,v) \in E_S$. \textcolor{red}{Introduce and define the \textbf{inverse mixing time}.} 
+\begin{equation}
+\label{eqn: inv_mixing_time}
+\Psi(S; G) = 
+\end{equation}
+
+If $S$ has normalized cut no greater than $\Phi$, and inverse mixing time no less than $\Psi$, we will refer to it as a $(\Phi,\Psi)$-cluster. Both local \cite{zhu2013} and global \cite{kannan04} spectral algorithms have been shown to output clusters (or partitions) which provably satisfy approximations to the optimal $(\Phi, \Psi)$-cluster (or partition), where the optimization is carried out over the graph $G$. \footnote{In the case of \cite{kannan04}, the internal connectivity parameter $\phi$ is actually the conductance, i.e. the minimum normalized cut within the subgraph $G[S]$. See Theorem 3.1 for details; however, note that $\phi^2 / \log(\vol(S)) \leq O(\Psi)$, and so the lower bound on $\phi$ translates to a lower bound on $\Psi$.}
+
+\paragraph{Personalized PageRank.}
+As mentioned previously, global algorithms which find spectral cuts may be computationally infeasible for large graphs; in this setting, local algorithms may be preferred or even required. We will restrict our attention in particular to one such popular algorithm: \textit{personalized PageRank} (PPR). The personalized PageRank algorithm was first introduced by \cite{haveliwala2003} and variants of this algorithm have been studied further in several recent works \citep{spielman2011,spielman2014,zhu2013,anderson2006,mahoney2012}. 
+
+The random walk matrix is given by $W$ defined as in (\ref{eqn: random_walk_laplacian}), and vertices $V$ and edges $E$ are as above. The PPR vector is defined with respect to the following inputs: a user-specified seed node $v_i \in V$ , and  $\alpha \in [0,1]$ a teleportation parameter. Letting $v = v_i$ for notational simplicity, and $e_{v}$ be the indicator vector for the $v$th node (meaning $e_v$ has a $1$ in the $i$th location and $0$ everywhere else), the \textit{PPR vector} is given by the recursive formulation
+\begin{equation}
+\label{eqn: ppr_vector}
+p(v,\alpha;G) := \alpha e_v + (1 - \alpha) p(v,\alpha;G) W
+\end{equation}
+We note in passing that, for $\alpha > 0$ the vector $p(v,\alpha;G)$ can be well-approximated by a simple local computation (of a random walk with restarts at the node $v$.) We also point out that, from a density clustering standpoint, since density clusters are inherently local, using the PPR algorithm eases the analysis, and as we will observe in the sequel our analysis requires fewer global regularity conditions relative to more classical global spectral algorithms. 
+
+To compute a cluster $\widehat{C}_n \subset V$ using the PPR vector, we will take sweep cuts of $p(r, \alpha; G)$. For a vector $p$, $p[j]$ be the $j$th entry of $p$, and $p_{(k)}$ be the $k$th \textit{largest} entry of $p$. Then the sweep cut $S_k$ is
+\begin{equation}
+\label{eqn: sweep_cuts}
+S_k = \set{u_j: p(r, \alpha; G)[j] > p(r, \alpha; G)_{(k)}}
+\end{equation}
+
+We delay formal introduction of the local clustering algorithm we analyze until we have given defined a method for forming a graph over the data $\x$.
+
+\paragraph{Large sample behavior.}
+
+Given a kernel function $\mathbf{k}: \Rd \times \Rd \to [0,\infty)$ of the form $\mathbf{k}(x,x') = k(\norm{x - x'}/ r_n)$ with $k$ non-increasing and some $r_n > 0$, and data $\x = \set{x_1, \ldots, x_n}$ sampled from $P$ as before, form the (weighted, complete) similarity graph $G_n = (\x, E_n)$ with $E_n = \set{k(x_i,x_j): 1 \leq i < j \leq n}$. (Here, $\norm{\cdot}$ is used to denote Euclidean norm). 
+
+It is worth pointing out that in this context, some theory has been developed regarding how graph theoretic quantities such as the normalized cut $\Phi$ (and others) relate to properties of the underlying distribution $f$ as well as the kernel function $\mathbf{k}$. Such analyses typically proceed by defining a continuous analogue to the measure of cluster quality under consideration. Then, under appropriate specification of $\mathbf{k}$ and a proper schedule of $\set{r_n}_{n \in N}$, convergence of clusters output by spectral (and other) algorithms to the corresponding minima of these continuous analogues has been shown \cite{vonluxburg2008, garciatrillos18}.
+
+These continuous analogues, and their corresponding minimizers, are not always easily identifiable for the particular density function under consideration. Relating these partitions to the arguably more simply defined high density clusters can be also challenging in general. \textcolor{red}{Intuitively, however, under the right conditions such high-density clusters should have more edges within themselves than to the remainder of the graph.} We formalize this intuition next.
+
+\subsection{Summary of results}
+
+Hereafter, we consider the \textit{uniform kernel function} for a fixed $r > 0$,
+\begin{equation}
+\mathbf{k}(x,x') = \1(\norm{x - x'} \leq r)
+\end{equation}
+and the associated \textit{neighborhood graph} 
+\begin{equation}
+G_{n,r} = (\x, E_{n,r}), \text{  $(x_i,x_j) \in E_{n,r}$ if $\mathbf{k}(x_i,x_j) = 1$}
+\end{equation}
+For a given high density cluster $C \subseteq \mathbb{C}_f(\lambda)$, we call $C[\x] = C \cap \x$ the \textit{empirical density cluster}. We now introduce a notion of consistency for the task of density cluster estimation:
+
+\begin{definition}[Consistent density cluster estimation]
+	For an estimator $\widehat{C}_n$, and any $C, C' \in C_f(\lambda),$ we say $\widehat{C}_n$ is a consistent estimator of $C$ if the following statement holds: as the sample size $n \to \infty$,
+	\begin{equation}
+	C[\x] \subseteq \widehat{C}_n, ~\mathrm{ and }~ \widehat{C}_n \cap C'[\x] = \emptyset
+	\end{equation}
+	occurs with probability tending to $1$.
+	
+\end{definition}
 
 
-
-\subsection{Summary of Results}
+Our results can now be summarized by the following two points:
 
 \begin{enumerate}
 	\item 
-	Theorem: Well-conditioned density clusters have low conductance.
-	
-	\item
-	Theorem: Well-conditioned density clusters have high internal connectivity.
+	Under a natural set of geometric conditions\footnote{We formally introduce the geometric conditions in \ref{sec: measures_of_cluster_quality}. They preclude clusters which are too thin and long, or those for which the gap in density between the high density area and the outside is not sufficiently large}, Theorems \ref{thm: conductance_upper_bound} and \textcolor{red}{Theorem 2} upper and lower bound, respectively, the normalized cut and inverse mixing time of an empirical density cluster $C[\x]$.
 	
 	\item 
-	Corollary: PPR local clustering algorithm, run on a well-conditioned density cluster and appropriately initialized, will output a low conductance set, which also has low symmetric set difference with the density cluster.
-	
-	\item
-	Theorem: PPR local clustering algorithm,run on a well-conditioned density cluster and appropriately initialized, exhibits successful density cluster recovery.
+	We show these bounds on the graph connectivity criteria have algorithmic consequences for the PPR algorithm. An immediate consequence of Theorems \ref{thm: conductance_upper_bound} and \textcolor{red}{Theorem 2}, along with the previous work of \cite{zhu2013}, is to yield an upper bound on the normalized cut of the set $\widehat{C}_n$ output by Algorithm \ref{alg: ppr_cluster}, as well as upper bounding the symmetric set difference between $\widehat{C}_n$ and $C[\x]$. Further, in Section 4 we show that a careful analysis of the form typical to local clustering algorithms yields \textcolor{red}{Theorem 4}, which states that Algorithm \ref{alg: ppr_cluster}, properly initialized, performs consistent density cluster estimation.
 \end{enumerate}
+
+\paragraph{Organization.}
+In Section \ref{section: everything_else}, we provide some example density functions, to clarify the relevance of our results. In \textcolor{red}{Section 5}, we show empirical performance of the PPR algorithm, which demonstrates that violations of the geometric conditions we set out in Section \ref{sec: measures_of_cluster_quality} manifestly impact density cluster recovery (i.e. the conditions are not superfluous), before concluding in \textcolor{red}{Section 6}. First, however, we summarize some related work.
+\subsection{Related Work}
+
 
 \paragraph{Graph notation.}
 
@@ -161,8 +237,6 @@ We can now formally introduce our first criterion for assessing the quality of g
 \Phi(S; G) \defeq \frac{\abs{E(S, V \setminus S; G)}}{B(S; G)}.
 \end{equation}
 We typically seek a set $S^{\star} \subset V$ such that $\Phi(S^{\star}; G)$ is small. 
-
-\textcolor{red}{Introduce and define the \textbf{internal connectivity}.}
 
 \paragraph{Neighborhood graph.}
 
