@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6600 64-bit) (preloaded format=pdflatex 2018.3.7)  9 JAN 2019 18:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6600 64-bit) (preloaded format=pdflatex 2018.3.7)  10 JAN 2019 17:29
 entering extended mode
 **./icml_local_density_clustering_supplement.tex
 (icml_local_density_clustering_supplement.tex
@@ -640,6 +640,10 @@ msy/m/n/10 T[] \OT1/cmr/m/n/10 =
  []
 
 
+LaTeX Warning: Reference `asmp: cluster_regularity' on page 1 undefined on inpu
+t line 112.
+
+
 Overfull \hbox (17.47372pt too wide) detected at line 134
 []
  []
@@ -654,6 +658,11 @@ Overfull \hbox (22.39725pt too wide) detected at line 142
 
 
 ]
+
+LaTeX Warning: Reference `asmp: cluster_regularity' on page 2 undefined on inpu
+t line 196.
+
+
 Overfull \hbox (10.26323pt too wide) detected at line 237
 []
  []
@@ -704,26 +713,27 @@ Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 327.
 Package rerunfilecheck Info: File `icml_local_density_clustering_supplement.out
 ' has not changed.
 (rerunfilecheck)             Checksum: D518DACB73B78DA104B97269C97B46FF;323.
+
+
+LaTeX Warning: There were undefined references.
+
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 327.
  ) 
 Here is how much of TeX's memory you used:
  9305 strings out of 493303
- 142001 string characters out of 3129785
- 275795 words of memory out of 3000000
- 12594 multiletter control sequences out of 15000+200000
- 27702 words of font info for 100 fonts, out of 3000000 for 9000
+ 142098 string characters out of 3129785
+ 275990 words of memory out of 3000000
+ 12601 multiletter control sequences out of 15000+200000
+ 27464 words of font info for 96 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 32i,12n,45p,968b,422s stack positions out of 5000i,500n,10000p,200000b,50000s
-pdfTeX warning (dest): name{equation.3.9} has been referenced but does not ex
-ist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Item.7} has been referenced but does not exist, rep
-laced by a fixed one
-
-pdfTeX warning (dest): name{Item.6} has been referenced but does not exist, rep
-laced by a fixed one
+ 32i,12n,45p,968b,423s stack positions out of 5000i,500n,10000p,200000b,50000s
+pdfTeX warning (dest): name{equation.3.12} has been referenced but does not e
+xist, replaced by a fixed one
 
 pdfTeX warning (dest): name{Item.5} has been referenced but does not exist, rep
+laced by a fixed one
+
+pdfTeX warning (dest): name{Item.4} has been referenced but does not exist, rep
 laced by a fixed one
 
 pdfTeX warning (dest): name{theorem.1} has been referenced but does not exist, 
@@ -749,10 +759,10 @@ sbm10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/tim
 es/utmb8a.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw
 /times/utmr8a.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1
 /urw/times/utmri8a.pfb>
-Output written on icml_local_density_clustering_supplement.pdf (3 pages, 202361
+Output written on icml_local_density_clustering_supplement.pdf (3 pages, 202547
  bytes).
 PDF statistics:
- 163 PDF objects out of 1000 (max. 8388607)
- 28 named destinations out of 1000 (max. 500000)
+ 160 PDF objects out of 1000 (max. 8388607)
+ 27 named destinations out of 1000 (max. 500000)
  22057 words of extra memory for PDF output out of 24883 (max. 10000000)
 

@@ -138,7 +138,7 @@ For $A \subset \mathcal{X}$, let $P(A) = \mathbb{P}_{X \sim P}(X \in A)$. To sim
 	\begin{align*}
 	& \lim_{k \to \infty} \sum_{i = 0}^{k-1} \biggl\{ \left(1 + \frac{r (i+1)}{k\sigma}\right)^d - \left(1 + \frac{r i}{k\sigma}\right)^d \biggr\} \left(\tau_{\sigma} - \left(\frac{ri}{k}\right)^{\gamma}\right)  \\
 	 & = \int_{0}^{1} \frac{rd}{\sigma} (1 + \frac{r t}{\sigma})^{d-1} (\tau_{\sigma} - (rt)^{\gamma}) dt \\
-	& \leq 2^{d-1} \frac{rd}{\sigma} \left(\tau_{\sigma} - \frac{r^{\gamma + 1}}{\gamma + 1}\right)
+	& \leq 2^{d-1} \frac{rd}{\sigma} \left(\tau_{\sigma} - \frac{r^{\gamma }}{\gamma + 1}\right)
 	\end{align*}
 	where the inequality comes from $t \leq 1$ and $r < \sigma$. 
 	
@@ -153,7 +153,7 @@ For $A \subset \mathcal{X}$, let $P(A) = \mathbb{P}_{X \sim P}(X \in A)$. To sim
 	\label{lem: expected_density_cut}
 	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $r < \sigma$,
 	\begin{equation*}
-	\widetilde{p} \leq \frac{2^d d}{\sigma} \nu(\Asig) \nu_d r^{d+1} \tau \left(\tau_{\sigma} - \frac{r^{\gamma + 1}}{\gamma + 1}\right)
+	\widetilde{p} \leq \frac{2^d d}{\sigma} \nu(\Asig) \nu_d r^{d+1} \tau \left(\tau_{\sigma} - \frac{r^{\gamma}}{\gamma + 1}\right)
 	\end{equation*}
 \end{lemma}
 \begin{proof}
@@ -166,7 +166,7 @@ For $A \subset \mathcal{X}$, let $P(A) = \mathbb{P}_{X \sim P}(X \in A)$. To sim
 	\begin{align*}
 	\frac{\widetilde{\mu}}{{n \choose 2}} & = 2 \int_{\Asigr} f(x) \left\{ \int_{B(x,r) \cap \Asig} f(x') dx'\right\} dx \\
 	& \overset{(i)}{\leq} 2 \int_{\Asigr} f(x) \nu_d r^d \tau dx \\
-	& \overset{(ii)}{\leq} 2^d \nu_d r^d \tau \nu(A_\sigma) \frac{rd}{\sigma} \left(\tau_{\sigma} - \frac{r^{\gamma + 1}}{\gamma + 1}\right) 
+	& \overset{(ii)}{\leq} 2^d \nu_d r^d \tau \nu(A_\sigma) \frac{rd}{\sigma} \left(\tau_{\sigma} - \frac{r^{\gamma}}{\gamma + 1}\right) 
 	\end{align*}
 	where $(i)$ follows from Assumption \ref{asmp: cluster_separation}, which implies $f(x') \leq \tau$ for all $x' \in \Asig \setminus A$, and $(ii)$ follows from Lemma \ref{lem: expected_number_boundary_points}.
 \end{proof}
