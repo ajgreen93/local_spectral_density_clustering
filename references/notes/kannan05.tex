@@ -1,0 +1,202 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\newcommand{\Rd}{\Reals^d}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\A}{\mathcal{A}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes on 'BLOCKING CONDUCTANCE AND MIXING IN RANDOM WALKS'}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{SETUP}
+
+\paragraph{Continuous state Markov chains.}
+
+Let $(K, \mathcal{A})$ be a $\sigma$-algebra. For every $u \in K$, let $P_u$ be a probability measure on $(K, \mathcal{A})$, and assume that for every $S \in \mathcal{A}$, the value $P_u(S)$ is a measurable function of $u$. We call $P_u$ the \textbf{1-step transition probability density} out of $u$. The triple $(K, \A, \set{P_u: u \in K})$ is a \textbf{Markov chain}.
+
+Let $\mathcal{M}$ be a continuous state Markov chain with no-atoms. Let the \textbf{random-stopping Markov chain} $\rho^m$ be the distribution induced by choosing an integer $Y \in \set{0, 1, \ldots, m - 1}$ uniformly at random, then stopping after $Y$ steps. 
+
+\paragraph{Random walks on geometric sets.}
+We specify $\mathcal{M}$ to be the \textbf{ball walk in $K$} with step size $r$. In this walk, at every step, we go from the current point $x \in K$, to a random point in $B(x, r) \cap K$ where $B(x,r)$ is the ball of radius $r$ with center $x$. 
+
+Note that the stationary distribution of $\mathcal{M}$ is not exactly the uniform measure. Define \textbf{local conductance}, $\ell(x)$, by
+\begin{equation*}
+\ell(x) = \frac{\vol(K \cap B(x,r))}{\vol(B(x,r))}
+\end{equation*}
+for $x \in K$. Then, letting normalizing constant $E$ be
+\begin{equation*}
+E = \int_{L} \ell(x) dx
+\end{equation*}
+the stationary distribution $\pi$ of the ball walk has density function $\ell/E$.
+
+\paragraph{Long-run behavior.}
+
+To reason about the long-run convergence of $\rho$, we will need to understand what distribution $\rho$ is convergence towards.
+
+\begin{assumption}
+	\label{asmp: long_run_behavior}
+	We will assume that our Markov chain is ergodic, time-reversible, atom-free, and has stationary distribution $\pi$.
+\end{assumption}
+
+Intuitively, the rate of convergence is affected by how quickly the random walk can escape bottlenecks. The \textbf{ergodic flow} is defined for $X, Y \in \A$ by
+\begin{equation*}
+Q(X,Y) := \int_X P_x(Y) d \pi(x).
+\end{equation*}
+Then, we define the \textbf{conductance function} $\Psi(t)$ for $t \in (0,1)$ to be
+\begin{equation*}
+\Psi(t) := \min_{ \substack{S \subset V, \\ \pi(S) = t} } Q(S, K \setminus S).
+\end{equation*}
+Large conductance functions mean that there are less pronounced bottlenecks, and therefore $\rho$ should mix faster. 
+
+We will also need to formalize what type of convergence we are referring to. Define the \textbf{total variation distance} $d_{TV}$ between two measures $\mu$ and $\nu$ defined over $(K,\mathcal{A})$ to be
+\begin{equation*}
+d_{TV}(\mu, \nu) = \sup_{A \in \mathcal{A}} \abs{\mu(A) - \nu(A)}.
+\end{equation*}
+
+Define the \textbf{total variation mixing time} $\tau_{TV}$ of a sequence of distributions $\rho^1, \rho^2, \ldots$ converging to stationary distribution $\pi$ to be 
+\begin{equation*}
+\min \set{T: d_{TV}(\rho^t, \pi) \leq 1/4 \text{ for all } t \geq T}.
+\end{equation*} 
+
+\paragraph{Local spread.}
+Markov chains on geometric sets will have the nice property that the chain quickly disperses probability out of small sets. To quantify this, we introduce $\xi(A)$ to be
+\begin{equation*}
+\xi(A) := \inf \set{P_u(K \setminus A): u \in A} \\ ~~~ \xi(t) = \inf \set{\xi(A): \pi(A) = t} ~~ (0 \leq t \leq 1).
+\end{equation*}
+Intuitively, on geometric sets, $\xi(t)$ should be large when $t$ is small. Define the \textbf{local spread},$\pi_1$, to be 
+\begin{equation*}
+\pi_1 := \inf \set{t: \xi(t) \leq 1/10}
+\end{equation*}
+Part of the theory developed allows us to ignore sets $S$ of stationary probability less than $\pi_1$. 
+
+\section{RESULTS}
+
+\begin{theorem}
+	\label{thm: conductance_function_lb}
+	Consider a continuous state Markov chain $\mathcal{M}$ which satisfies Assumption \ref{asmp: long_run_behavior}, and further assume $\xi(a) > 0$ for some $a > 0$. Suppose that for some $A, B > 0$, an inequality of the form
+	\begin{equation}
+	\label{eqn: conductance_function_lb}
+	\Psi(x) \geq \min \set{ Ax , B x \ln(1 / x)} 
+	\end{equation}
+	holds for all $a \leq x \leq 1/2$. Then
+	\begin{equation*}
+	d(\rho^m, \pi) \leq \frac{8 \ln m}{m \xi(a)} + \frac{1}{m} \left(\frac{32}{A^2} \ln\left(\frac{1}{a}\right) + \frac{100}{B^2}\right)
+	\end{equation*}
+\end{theorem}
+
+To use Theorem \ref{thm: conductance_function_lb}, we will need to both find $a$ and assert (\ref{eqn: conductance_function_lb}) holds for $x \geq a$. 
+
+\begin{theorem}
+	\label{thm: local_spread}
+	The local spread of the proper move walk satisfies $\pi_1 \geq \frac{1}{2} (r / D)^{2d}$.
+\end{theorem}
+
+\begin{theorem}
+	\label{thm: conductance_function_lb_ballwalk}
+	Suppose that $K$ is a convex set in $\Rd$ with diameter at most $D$, containing the unit ball $B = B(0,1)$, and further that the step size for the ball walk in $K$ satisfies $r < \frac{D}{100}$. For $0 < x < 1/2$, we have
+	\begin{equation}
+	\label{eqn: conductance_function_lb_ballwalk}
+	\Psi(x) > \min \set{\frac{1}{288 \sqrt{d}} x, \frac{r}{81 \sqrt{d} D } x \ln(1 + 1/2) }
+	\end{equation}
+\end{theorem}
+
+Theorem \ref{thm: conductance_function_lb_ballwalk} states that the ball walk satisfies (\ref{eqn: conductance_function_lb}), and Theorem \ref{thm: local_spread} gives us values for $\xi(a)$ and $a$. Deploying Theorem \ref{thm: conductance_function_lb} therefore gives us
+\begin{equation*}
+\tau_{TV} = \mathcal{O} \biggl(d\left(\frac{D}{r}\right)^2 + d^2\ln(D / r) \biggr)
+\end{equation*}
+
+\section{SUPPLEMENTAL RESULTS}
+
+\section{PROOFS}
+
+\end{document}

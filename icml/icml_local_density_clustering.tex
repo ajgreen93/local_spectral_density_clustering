@@ -162,7 +162,7 @@ A somewhat more standard mode of understanding spectral clustering methods is to
 
 For $\Abf$ as before, consider the graph $G  = (V,E)$, with vertices $V = \set{v_1, \ldots, v_n}$ corresponding to the $n$ rows of $\Abf$, and (possibly weighted) edges $E = \set{(v_i,v_j,\Abf_{ij}): 1 \leq i < j \leq n, \Abf_{ij} > 0}$ (Since $\Abf$ is symmetric, $G$ is an undirected graph; also, by convention, we preclude self-loops, hence $i \neq j$). There are many \cite{yang2015,fortunato2010} graph-based measures which assess the cluster quality of a subset $S \subseteq V$ (or more generally the quality of a partition $S_1 \cup \ldots \cup S_m = V$, for $m \geq 2$.)
 
-Arguably a natural way to assess cluster quality is via a pair of criteria capturing the \textit{external} and \textit{internal connectivity} of $S$, respectively.  As the names suggest, external connectivity should relate to the number of edges between $S$ and its complement $G / S$ (hereafter denoted $S^c$), while internal connectivity in turn measures the number of edges between subsets within $S$. The graph clustering task then becomes to find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. 
+Arguably a natural way to assess cluster quality is via a pair of criteria capturing the \textit{external} and \textit{internal connectivity} of $S$, respectively.  As the names suggest, external connectivity should relate to the number of edges between $S$ and its complement $V / S$ (hereafter denoted $S^c$), while internal connectivity in turn measures the number of edges between subsets within $S$. The graph clustering task then becomes to find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. 
 
 We will assess the external connectivity of a subset $S \subseteq V$ through its normalized cut. The cut of $S$ is
 \begin{equation*}
@@ -398,28 +398,22 @@ where $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ is some 'good' subset of $\Csig[\Xbf
 
 In this section we provide bounds for the normalized cut and inverse mixing time of an empirical density cluster $\Cset[\Xbf]$. As a result we can lower bound $\Phi(\widehat{C}; G_{n,r})$ for $\widehat{C}$ the output of a well-initialized \textcolor{red}{PPR algorithm}, and upper bound the symmetric set difference between $\widehat{C}$ and $\Cset[\Xbf]$. 
 
-For notational simplicity, hereafter for $S \subseteq \Xbf$ we will refer to $\Phi(S; G_{n,r})$ as $\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$.
+For notational simplicity, hereafter for $S \subseteq \Xbf$ we will refer to $\Phi(S; G_{n,r})$ as $\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$. We will also use $\nu(\cdot)$ to denote the uniform measure over $\Rd$, and $\nu_d = \nu\bigl(B(0,d)\bigr)$ as the measure of the unit ball.
 
 We begin with a lower bound on the normalized cut in Theorem \ref{thm: conductance_upper_bound}. We will require Assumptions \ref{asmp: bounded_density}-\ref{asmp: cluster_separation} to hold; however, the upper bound on density in (\ref{eqn: bounded_density}) will not be needed and so we omit the parameter $\Lambda_{\sigma}$ from the statement of the theorem.
 \begin{theorem}
 	\label{thm: conductance_upper_bound}
-	For some $\lambda > 0$, let $\Cset \in \mathbb{C}_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density}-\ref{asmp: cluster_separation} for some $\sigma, \lambda_{\sigma}, c_1, \gamma > 0$ . Then, for any $r < \sigma$ and $\delta > 0$, the following statements hold with probability at least $1 - \delta$: 
-	\begin{itemize}
-		\item 
-		\textbf{Additive error bound.} Fix $\epsilon > 0$. Then, for
+	For some $\lambda > 0$, let $\Cset \in \mathbb{C}_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density}-\ref{asmp: cluster_separation} for some $\sigma, \lambda_{\sigma}, c_1, \gamma > 0$ . Then, for any $r < \sigma$ and $\delta \in (0,1]$, the following statements hold with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then, for
 		\begin{equation}
 		\label{eqn: conductance_sample_complexity}
-		n \geq \frac{\log(2/\delta)}{\epsilon^2}\left(\frac{3}{2 \lambda_{\sigma}^2 \nu(\Asig) \nu_d (r/2)^d}\right)^2 
+		n \geq \frac{9\log(2/\delta)}{\epsilon^2}\left(\frac{1}{ \lambda_{\sigma}^2 \nu(\Csig) \nu_d r^d}\right)^2 
 		\end{equation}
 		we have
 		\begin{equation}
 		\label{eqn: conductance_additive_error_bound}
-		\frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \leq c_{\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon
+		\frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq c_{\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon
 		\end{equation}
-		\item
-		\textcolor{red}{\textbf{Multiplicative error bound.}}
-	\end{itemize}
-	where $c_0 = c_1 2^{2d+1}d$ and $c_{\sigma} = c_0 / \sigma$. 
+	where $c_0 = 4d$ and $c_{\sigma} = c_0 / \sigma$. 
 \end{theorem}
 
 The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other proofs, can be found in the supplementary document. A few remarks are in order. 
@@ -447,7 +441,7 @@ The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other pr
 We now provide an upper bound for $\Psi_{n,r}(\Cset[\Xbf])$.
 \begin{theorem}
 	\label{thm: inverse_mixing_time_lower_bound}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma$ and $\delta > 0$, the following statement holds with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then for
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$ and $\delta > 0$, the following statement holds with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then for
 	\begin{equation*}
 	\textcolor{red}{n \geq }
 	\end{equation*}
