@@ -43,9 +43,13 @@
 
 %%% Vectors
 \newcommand{\pbf}{\mathbf{p}}
+\newcommand{\qbf}{\mathbf{q}}
 \newcommand{\ebf}[1]{\mathbf{e}_{#1}}
 \newcommand{\pibf}{\bm{\pi}}
 \newcommand{\rhobf}{\bm{\rho}}
+\newcommand{\Deltabf}{\bm{\Delta}}
+\newcommand{\deltabf}{\bm{\delta}}
+
 
 %%% Matrices
 \newcommand{\Abf}{\mathbf{A}}
@@ -207,7 +211,7 @@ As part of the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}, we w
 	\end{equation*}
 \end{proof}
 
-The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} also on a parameter -- which we term \emph{discrete local spread} -- to handle the mixing over very small steps. Formally, the discrete local spread $\pi_1(G)$ is given by
+The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} also depends on a parameter -- which we term \emph{discrete local spread} -- to handle the mixing over very small steps. Formally, the discrete local spread $\pi_1(G)$ is given by
 \begin{equation}
 \label{eqn: local_spread}
 \pi_1(G) := \frac{d_{\min}(G)^2}{10 \vol(V; G)} 
@@ -439,42 +443,91 @@ For both Lemmas \ref{lem: bounded_difference} and \ref{lem: bernstein}, let $X_1
 
 \textcolor{red}{Give proof structure.}
 
-We begin by introducing some more notation. Take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, random walk matrix $\Wbf$, and stationary distribution $\pibf$. We slightly overload notation and let the \emph{conductance function} be given by
+We begin by introducing some more notation. For vertex set $V = \set{v_1, \ldots, v_N}$, take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, random walk matrix $\Wbf$, and stationary distribution $\pibf$. We slightly overload notation and let the \emph{conductance function} be given by
 \begin{equation*}
 \Phi(t; G) := \min_{\substack{S \subseteq V \\ \pi(S) \leq t} } \Phi(S; G)
 \end{equation*}
 
 We will pay special attention to the conductance function evaluated over the subgraph $G_{n,r}[\Csig[\Xbf]]$. For ease of notation, we therefore introduce $\widetilde{\Phi}_{n,r}(t) = \Phi(t; G_{n,r}[\Csig[\Xbf]])$. 
 
-Lemma \ref{lem: montenegro} is from the \textcolor{red}{PhD thesis of Montenegro.} It leverages the conductance function to produce an upper bound on the \textcolor{red}{total variation distance} between the random walk 
-\begin{equation*}
+Lemma \ref{lem: montenegro} is adapted from the \textcolor{red}{PhD thesis of Montenegro.} It leverages the conductance function to produce an upper bound on the \textcolor{red}{total variation distance} between the random walk 
+\begin{equation}
+\label{eqn: uniform_stopping_random_walk}
 \rhobf^t = \frac{1}{t} \sum_{s = 1}^{t} e_v \Wbf^s
+\end{equation}
+and the stationary distribution $\pibf$. Consider $\qbf = (\qbf^1, \qbf^2, \ldots)$ a sequence of distributions over $V$, where $\qbf^t = (\qbf_1^t, \ldots, \qbf_{\abs{V}}^t)$. The \emph{total variation mixing time} of $\qbf$ to stationary distribution $\pibf$ is given by
+\begin{equation*}
+\tau_1(\qbf; G) = \min_{t_0 \in N} \set{t: \norm{\qbf^t - \pibf}_{TV} \leq 1/4}
 \end{equation*}
-and the stationary distribution $\pibf$. 
+where $\norm{\qbf^t - \pibf}_{TV} = \sum_{v_i \in V} \abs{\qbf_i - \pibf_i}$ is the total variation distance. Then,
 
 \begin{lemma}
 	\label{lem: montenegro}
 	Let $\Wbf$ be the random walk matrix over a graph $G = (V,E)$, with stationary distribution $\pibf$. Then, for any $v \in V$:
 	\begin{equation*}
-	\norm{\rho^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, \frac{1}{10} +  \frac{70}{t}\left(\frac{4}{\Phi^2(\pi_1(G); G)} + \int_{x = \pi_1(G)}^{1/2} \frac{4}{x \Phi^2(x; G)} dx\right) \right\}
+	\norm{\rho^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, \frac{1}{10} +  \frac{70}{t}\left(5 + \int_{x = \pi_1(G)}^{1/2} \frac{4}{x \Phi^2(x; G)} dx\right) \right\}
 	\end{equation*}
 	where $\pi_1(G)$ is defined as in \eqref{eqn: local_spread}.
 \end{lemma}
 
-\begin{proof}
+To prove Lemma \ref{lem: montenegro} we must first introduce the concept of a blocking conductance function.\footnote{For more details, see \textcolor{red}{PhD thesis of Montenegro}}
+
+\begin{definition}[Blocking Conductance Function of \textcolor{red}{PhD thesis of Montenegro}]
+	\label{def: bcf}
+	Let $x_0$ satisfy
+	\begin{equation*}
+	x_0 \geq \min_{v \in V} \pibf(v)
+	\end{equation*}
+	A function $\phi(x; G): [x_0, 1/2] \to [0,1]$ is a \emph{blocking conductance function} if for all $S \subset V$ with $\pibf(S) = x \in [x_0, 1/2]$, either of the following hold: 
+	\begin{enumerate}
+		\item \emph{Exterior inequality.} For all $y \in \left[\frac{1}{2}x, x\right]: \phi_{int}(S) \geq \phi(\max\{x_0,y\})$
+		\item \emph{Interior inequality.} For all $y  \in \left[x, \frac{3}{2}x\right]: \phi_{ext}(S) \geq \phi(\max\{y,1 -y\})$.
+	\end{enumerate}
+	where $\phi_{int}$ and $\phi_{ext}$ are defined respectively as
+	\begin{align*}
+	\phi_{int}(S) & = \sup_{\lambda \leq \pibf(S)} \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{\vol(V; G) \left[\pibf(S) \pibf(S^c)\right]^2} \\
+	\phi_{ext}(S) & = \sup_{\lambda \leq \pibf(S)} \min_{\substack{B \subset S^c \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{\vol(V; G) \left[\pibf(S) \pibf(S^c)\right]^2}
+	\end{align*}
+\end{definition}
+
+\begin{proof}[Proof of Lemma \ref{lem: montenegro}]
+	Consider the function $\phi(\cdot, G): [\pi_1(G), 1/2] \to [0,1]$ defined by
+	\begin{equation}
+	\label{eqn: bcf}
+	\phi(x; G) = 
+	\begin{cases}
+	\frac{1}{5}, ~~~~~~~~~~~ x = \pi_1(G) \\
+	\frac{1}{4} \Phi^2(x; G), ~ x \in \left(\pi_1(G), 1/2\right] \\
+	\end{cases}
+	\end{equation}
 	In \textcolor{red}{the PhD thesis of Montenegro}, letting
 	\begin{equation*}
 	h^t(x_0) = \sup_{S: \pi(S) < x_0}  \bigl(\rhobf^t(S) - \pibf(S) \bigr)
 	\end{equation*}
-	the following statement is shown: for $\pi_{\min} < x_0 < 1/2$, 
-	\begin{equation*}
-	\norm{\rho^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, h^t(x_0) +  \frac{70}{t}\left(\frac{4}{\Phi^2(x_0); G)} + \int_{x = x_0}^{1/2} \frac{4}{x \Phi^2(x; G)}\right) \right\}
-	\end{equation*}
-	It is also observed therein that the function $h^t(x)$ is decreasing for any fixed $x$, as $t$ increases. All that remains for us to show is that $h^s(\pi_1(G)) \leq 1/10$ for some $s \leq t$. We choose $s = 1$, and note that for any set $S \subset V$ with $\pibf(S) \leq \pi_1(G)$,
+	the following theorem is given: if $\phi$ is a blocking conductance function (meaning it satisifies Definition \ref{def: bcf}), 
+	\begin{align*}
+	\norm{\rhobf^t - \pibf}_{TV} & \leq \max\left\{ \frac{1}{4}, h^t(x_0) +  \frac{70}{t}\left(\frac{1}{\phi(x_0; G)} + \int_{x = x_0}^{1/2} \frac{4}{x \phi(x; G)}\right) \right\} \\
+	& = \max\left\{ \frac{1}{4}, h^t(x_0) +  \frac{70}{t}\left(5 + \int_{x = x_0}^{1/2} \frac{4}{x \Phi^2(x; G)}\right) \right\}.
+	\end{align*}
+	We will wait to the end to show the $\phi$ is in fact a blocking conductance function, and first show that the above expression reduces to the desired result.
+	
+	It is also observed in \textcolor{red}{the PhD thesis of Montenegro} that the function $h^t(x)$ is decreasing for any fixed $x$, as $t$ increases. All that remains for us to show is that $h^s(\pi_1(G)) \leq 1/10$ for some $s \leq t$. We choose $s = 1$, and note that for any set $S \subset V$ with $\pibf(S) \leq \pi_1(G)$,
 	\begin{equation*}
 	\rhobf^1(S) \leq \frac{\abs{S}}{d_{\min}(G)} \leq \frac{\pibf(S) \vol(V; G)}{d_{\min}(G)^2} \leq \frac{1}{10},
 	\end{equation*}
 	where we use the fact that $\pibf(S) \geq \frac{\abs{S} d_{\min}(G)}{\vol(V; G)}$.
+	
+	Now we complete the proof by verifying that $\phi$ is in fact a blocking conductance function. It is easy to see that $\frac{1}{4} \Phi^2(x;G)$ is a valid blocking conductance function for all $x \in (\pi_1(G), 1/2]$, (as it satisfies the exterior inequality). For $x = \pi_1(G)$ we will instead turn to the interior inequality, and show the following: for any $S \subset V$ such that $\pi(S) = \pi_1(G)$, 
+	\begin{equation*}
+	\frac{1}{5} \leq \phi_{int}(S).
+	\end{equation*}
+	For any $S$ such that $\pi(S) \leq \pi_1(G)$, the following statement holds: for every $u \in S$, $\cut(u, S^c; G) \geq 9/10 \cdot \deg(u; G)$. 
+	Fixing $\lambda = \pi(S)/2$, we have
+	\begin{align*}
+	\phi_{int}(S) & \geq 4 \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{4 \vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
+	& \geq  \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{9 \lambda \sum_{u \in S \setminus B} \deg(u; G)}{40 \vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
+	& \geq \frac{9\lambda^2}{40[\lambda(1 - \lambda)^2]} \geq \frac{1}{5}. 
+	\end{align*} 
 \end{proof}
 
 We turn to lower bounding $\widetilde{\Phi}_{n,r}(t)$. First, we exhibit a lower bound on a continuous space analogue, over the set $\Csig$. Let $\nu_{\Pbb}(\cdot)$ denote the weighted volume; formally, for $\Sset \subset \Rd$
@@ -538,7 +591,7 @@ The introduction of the stepwise approximation allows us to make use of Lemma \r
 	\begin{equation*}
 	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t)
 	\end{equation*}
-	As a consequence, $m$ and $(t_i)_{i=1}^{m}$ defined as in Lemma \ref{lem: continuous_conductance_lb}, we have that
+	As a consequence, for $m$ and $(t_i)_{i=1}^{m}$ defined as in Lemma \ref{lem: continuous_conductance_lb}, we have that
 	\begin{equation}
 	\label{eqn: consistency_of_stepapprox_conductance_function}
 	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
@@ -558,10 +611,64 @@ In particular, this will occur for $t_0, t_1, \ldots, t_m$ and therefore
 uniformly over $[1/m,1/2]$. But by Lemma \ref{lem: stepwise_approximation}, $\widetilde{\Phi}_{n,r} \geq \overline{\Phi}_{n,r}$, so we have shown \eqref{eqn: consistency_of_stepapprox_conductance_function}.
 \end{proof}
 
-Lemma \ref{lem: consistency_of_conductance_function} coupled with Lemma \ref{lem: montenegro} yields a bound on the total variation mixing time.
+Lemma \ref{lem: consistency_of_conductance_function} coupled with Lemma \ref{lem: montenegro} will yield a bound on the total variation mixing time of $\rhobf^t$. Lemma \ref{lem: tv_mixing_to_pointwise_mixing} handles the last step, conversion from the total variation mixing time of $\rhobf^t$ to the relative pointwise mixing time of $e_v \Wbf^t$. 
 \begin{lemma}
-	
+\label{lem: tv_mixing_to_pointwise_mixing}
+	Let $\rhobf = (\rhobf^1, \rhobf^2, \ldots)$ be a sequence of distributions, with $\rhobf^t$ defined as in \eqref{eqn: uniform_stopping_random_walk}. Then, for $\qbf = (e_v\Wbf^1, e_v\Wbf^2, \ldots)$
+	\begin{equation*}
+	\tau_{\infty}(\qbf; G) \leq 2752 \tau_1(\rhobf; G) \log \left(\frac{4}{\min\left\{1,10 \pi_1(G)\right\}}\right)
+	\end{equation*}
 \end{lemma}
+\begin{proof}
+	We introduce a few pieces of notation to simplify the analysis. Let
+	\begin{equation*}
+	\Delta_k^{(t)} = (e_v\Wbf^t)[k] - \pibf[k], ~~ \delta_k^{(t)} = \frac{\Delta_k^{(t)}}{\pibf[k]}
+	\end{equation*}
+	and $\Deltabf^{(t)} = (\Delta_1^{(t)}, \ldots, \Delta_N^{(t)})$, $\deltabf^{(t)} = (\delta_1^{(t)}, \ldots, \delta_N^{(t)})$. For a vector $\Deltabf = (\Delta_1, \ldots, \Delta_{N})$, the $L^{p}(\pibf)$ norm is given by
+	\begin{equation*}
+	\norm{\Deltabf}_{L^p(\pibf)} = \left(\sum_{k = 1}^{N} \left(\Delta_k\right)^{p} \pi_k \right)^{1/p}
+	\end{equation*}
+	The $L^{p}(\pibf)$ norms are relevant because
+	\begin{enumerate}
+		\item If $t > \tau_{\infty}(\qbf; G)$, then $\norm{\deltabf^{(t)}}_{L^{\infty}(\pi)} < 1/4$. 
+		\item If $t > \tau_{1}(\qbf; G)$, then 
+		$\norm{\deltabf^{(t)}}_{L^{1}(\pi)} < 1/4$.
+	\end{enumerate}
+	
+	To go between the two, we have
+	\begin{align*}
+	\norm{\deltabf^{(2t)}}_{L^{\infty}(\pi)} & \overset{(i)}{\leq} \norm{\deltabf^{(t)}}^2_{L^{2}(\pi)} \\
+	& = \norm{(\deltabf^{(t)})^2}^2_{L^{1}(\pi)} \\
+	& \overset{(ii)}{\leq}  \norm{(\deltabf^{(t)})}_{L^{1}(\pi)} \norm{(\deltabf^{(t)})}_{L^{\infty}(\pi)}
+	\end{align*}
+	where $(i)$ is a result of \textcolor{red}{Benjamini and Morris} and $(ii)$ follows from Holder's inequality. Now, we upper bound the second factor on the right hand side by observing
+	\begin{align*}
+	\norm{(\deltabf^{(t)})}_{L^{\infty}(\pi)} & \leq \max\left\{1, \max_{k  = 1,\ldots,N} \frac{(e_v\Wbf^t)[k]}{\pibf[k]} \right\} \\
+	& \overset{(iii)}{\leq} \max\left\{1, \frac{\vol(V; G)}{d_{\min}(G)^2} \right\} \\
+	& = \max\left\{1, \frac{1}{10 \pi_1(G)}\right\}
+	\end{align*}
+	where $(iii)$ follows from $\pibf[k] \geq d_{\min}(G) / \vol(V; G)$ and $(e_v\Wbf^t) \geq 1/d_{\min}$.
+	
+	As a result, it is sufficient to exhibit $t > 0$ such that
+	\begin{equation*}
+	\norm{(\deltabf^{(t)})}_{L^{1}(\pi)} \leq \min \left\{1/4,\frac{10 \pi_1(G)}{4}\right\}
+	\end{equation*}
+	Here, we leverage the following well-known fact (\textcolor{red}{PhD thesis of Montenegro}): for any $\epsilon > 0$, if $t \geq \tau_1(e_v \Wbf^t; G) \cdot \log(1/\epsilon)$ then
+	\begin{equation*}
+	\norm{(\deltabf^{(t)})}_{L^{1}(\pi)} \leq \epsilon
+	\end{equation*}
+	Therefore, picking 
+	\begin{equation*}
+	t_0 = \tau_1(e_v \Wbf^t; G) \cdot \log \left(\frac{1}{\min\left\{1/4,\frac{10 \pi_1(G)}{4}\right\}}\right)
+	\end{equation*} implies $\norm{(\deltabf^{(t)})}_{L^{\infty}(\pi)} \leq 1/4$ for all $t \geq 2 t_0$. 
+	
+	Finally, it is known (\textcolor{red}{PhD thesis of Montenegro}) that
+	\begin{equation*}
+	\tau_{1}(\qbf; G) \leq 1376 \tau_{1}(\rhobf; G)
+	\end{equation*}
+	and so the desired result holds.
+	
+\end{proof}
 
 \subsection{Proof of pointwise consistency of conductance function.}
 \label{subsection: proof_of_pointwise consitency_of_conductance_function}
