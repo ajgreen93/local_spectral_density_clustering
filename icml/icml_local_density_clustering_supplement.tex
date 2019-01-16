@@ -45,6 +45,7 @@
 \newcommand{\pbf}{\mathbf{p}}
 \newcommand{\ebf}[1]{\mathbf{e}_{#1}}
 \newcommand{\pibf}{\bm{\pi}}
+\newcommand{\rhobf}{\bm{\rho}}
 
 %%% Matrices
 \newcommand{\Abf}{\mathbf{A}}
@@ -56,10 +57,12 @@
 
 %%% Probability distributions (and related items)
 \newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
 \newcommand{\Cbb}{\mathbb{C}}
 \newcommand{\Ebb}{\mathbb{E}}
 
 %%% Sets
+\newcommand{\Sset}{\mathcal{S}}
 \newcommand{\Cset}{\mathcal{C}}
 \newcommand{\Aset}{\mathcal{A}}
 \newcommand{\Asig}{\Aset_{\sigma}}
@@ -130,7 +133,6 @@ Throughout, we will fix $\Aset \subset \Rd$ to be an arbitrary set. To simplify 
 \Asigr := \set{x: 0 < \rho(x, \Asig) \leq r},
 \end{equation*}
 where $\rho(x, \Aset) = \min_{x' \in \Aset} \norm{x - x'}$.
-. 
 
 For notational ease, we write
 \begin{align*}
@@ -179,10 +181,53 @@ We will repeatedly employ Lemma \ref{lem: expansion_sets} and Lemma \ref{lem: Ta
 	where the inequality follows from Lemma \ref{lem: expansion_sets}. Of course, $\sigma - q = r$, and $\frac{r}{q} \leq \frac{1}{2d}$ for $r \leq \frac{1}{4d}$. The claim then follows from Lemma \ref{lem: Taylor_series}.
 \end{proof}
 
+As part of the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}, we will require an estimate of a function $g(t)$ for $t \in [x_0, 1/2]$ for some $x_0 > 0$. For $m > 0$ and $x_0 = t_0 < t_1 < \ldots < t_m = 1/2$, define the \emph{stepwise approximation to $g$} to be $\bar{g}$, given by 
+\begin{equation}
+\label{eqn: stepwise_approximation}
+\bar{g}(t) = g(t_i), ~~ \text{ for $t \in [t_{i-1}, t_i]$ }
+\end{equation}
+\begin{lemma}
+	\label{lem: stepwise_approximation}
+	Fix
+	\begin{equation*}
+	g(t) = \log\left(\frac{1}{t}\right) \text{ for $x \in [x_0, 1/2]$}
+	\end{equation*}
+	 If for all $i$ in $1,\ldots,m$, $(t_i - t_{i - 1}) \leq x_0/2$, then $g(t) \geq \bar{g}(t)\geq g(t) / 2$.
+\end{lemma}
+\begin{proof}
+	The upper bound $g(t) \geq \bar{g}(t)$ follows immediately from the fact that $g(t)$ is a decreasing function.
+	
+	By the concavity of the $\log$ function, 
+	\begin{equation*}
+	\bar{g}(t) = \log\left(\frac{1}{t_i}\right) \geq \log\left(\frac{1}{t}\right) - \frac{(t_i - t)}{t}.
+	\end{equation*}
+	As a result,
+	\begin{equation*}
+	\bar{g}(t) - \frac{g(t)}{2} \geq \frac{\log\left(\frac{1}{t}\right)}{2} - \frac{(t_i - t)}{t} \geq 1/2 - 1/2 = 0.
+	\end{equation*}
+\end{proof}
+
+The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} also on a parameter -- which we term \emph{discrete local spread} -- to handle the mixing over very small steps. Formally, the discrete local spread $\pi_1(G)$ is given by
+\begin{equation}
+\label{eqn: local_spread}
+\pi_1(G) := \frac{d_{\min}(G)^2}{10 \vol(V; G)} 
+\end{equation}
+where $d_{\min}(G) = \min_{v \in V} d(v)$ is the minimum degree in $G$. Intuitively, the discrete local spread gauges how much the walk given by $\Wbf$ has mixed after one step, starting from any node $v$. We will denote $\pi_1(G_{n,r}[\Csig[\Xbf]])$ by $\widetilde{\pi}_{1,n}$. 
+
+\begin{lemma}
+	\label{lem: local_spread_lb}
+	For $\Csig$ satisfying the conditions of Theorem \ref{thm: inverse_mixing_time_lower_bound}:
+	\begin{equation*}
+	\liminf_{n \to \infty}~ \widetilde{\pi}_{1,n} \geq \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{(2D)^d}
+	\end{equation*}
+\end{lemma}
+
+\textcolor{red}{Prove Lemma \ref{lem: local_spread_lb}}.
+
 \subsection{Cut and volume estimates}
 \begin{lemma}
 	\label{lem: expected_number_boundary_points}
-	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $r < \sigma/2d$,
+	Under the conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $r < \sigma/2d$,
 	\begin{equation*}
 	\Pbb(\Csigr) \leq 2 \nu(\Csig) \frac{rd}{\sigma}  \left(\lambda_{\sigma} - \frac{r^{\gamma}}{\gamma + 1}\right)
 	\end{equation*}	
@@ -390,7 +435,136 @@ For both Lemmas \ref{lem: bounded_difference} and \ref{lem: bernstein}, let $X_1
 	each with probability at least $1 - \delta$. 
 \end{lemma}
 
+\subsection{Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}}
 
+\textcolor{red}{Give proof structure.}
+
+We begin by introducing some more notation. Take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, random walk matrix $\Wbf$, and stationary distribution $\pibf$. We slightly overload notation and let the \emph{conductance function} be given by
+\begin{equation*}
+\Phi(t; G) := \min_{\substack{S \subseteq V \\ \pi(S) \leq t} } \Phi(S; G)
+\end{equation*}
+
+We will pay special attention to the conductance function evaluated over the subgraph $G_{n,r}[\Csig[\Xbf]]$. For ease of notation, we therefore introduce $\widetilde{\Phi}_{n,r}(t) = \Phi(t; G_{n,r}[\Csig[\Xbf]])$. 
+
+Lemma \ref{lem: montenegro} is from the \textcolor{red}{PhD thesis of Montenegro.} It leverages the conductance function to produce an upper bound on the \textcolor{red}{total variation distance} between the random walk 
+\begin{equation*}
+\rhobf^t = \frac{1}{t} \sum_{s = 1}^{t} e_v \Wbf^s
+\end{equation*}
+and the stationary distribution $\pibf$. 
+
+\begin{lemma}
+	\label{lem: montenegro}
+	Let $\Wbf$ be the random walk matrix over a graph $G = (V,E)$, with stationary distribution $\pibf$. Then, for any $v \in V$:
+	\begin{equation*}
+	\norm{\rho^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, \frac{1}{10} +  \frac{70}{t}\left(\frac{4}{\Phi^2(\pi_1(G); G)} + \int_{x = \pi_1(G)}^{1/2} \frac{4}{x \Phi^2(x; G)} dx\right) \right\}
+	\end{equation*}
+	where $\pi_1(G)$ is defined as in \eqref{eqn: local_spread}.
+\end{lemma}
+
+\begin{proof}
+	In \textcolor{red}{the PhD thesis of Montenegro}, letting
+	\begin{equation*}
+	h^t(x_0) = \sup_{S: \pi(S) < x_0}  \bigl(\rhobf^t(S) - \pibf(S) \bigr)
+	\end{equation*}
+	the following statement is shown: for $\pi_{\min} < x_0 < 1/2$, 
+	\begin{equation*}
+	\norm{\rho^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, h^t(x_0) +  \frac{70}{t}\left(\frac{4}{\Phi^2(x_0); G)} + \int_{x = x_0}^{1/2} \frac{4}{x \Phi^2(x; G)}\right) \right\}
+	\end{equation*}
+	It is also observed therein that the function $h^t(x)$ is decreasing for any fixed $x$, as $t$ increases. All that remains for us to show is that $h^s(\pi_1(G)) \leq 1/10$ for some $s \leq t$. We choose $s = 1$, and note that for any set $S \subset V$ with $\pibf(S) \leq \pi_1(G)$,
+	\begin{equation*}
+	\rhobf^1(S) \leq \frac{\abs{S}}{d_{\min}(G)} \leq \frac{\pibf(S) \vol(V; G)}{d_{\min}(G)^2} \leq \frac{1}{10},
+	\end{equation*}
+	where we use the fact that $\pibf(S) \geq \frac{\abs{S} d_{\min}(G)}{\vol(V; G)}$.
+\end{proof}
+
+We turn to lower bounding $\widetilde{\Phi}_{n,r}(t)$. First, we exhibit a lower bound on a continuous space analogue, over the set $\Csig$. Let $\nu_{\Pbb}(\cdot)$ denote the weighted volume; formally, for $\Sset \subset \Rd$
+\begin{equation*}
+\nu_{\Pbb}(\Sset) := \int_{\Sset} f(x) dx
+\end{equation*} 
+ 
+The $r$-ball walk over $\Csig$ is a Markov chain with transition probability for $x \in \Csig, \Sset, \Sset' \subset \Csig$ given by,
+\begin{equation*}
+P_{\Pbb, r}(x;\Sset) := \frac{\nu_\Pbb(\Sset \cap B(x,r))}{\nu_\Pbb(\Csig \cap B(x,r))}, ~~~ Q_{\Pbb, r}(\Sset, \Sset') := \int_{x \in \Sset} f(x) P_{\Pbb, r}(x;\Sset') dx. 
+\end{equation*}
+stationary distribution defined by
+\begin{equation*}
+\ell_{\Pbb,r}(x) := \frac{\nu_\Pbb(\Csig \cap B(x,r))}{\nu_{\Pbb}(B(x,r))}, ~~~ \pi_{\Pbb,r}(\Sset) := \frac{1}{\int_{\Csig} f(x) \ell_{\Pbb,r}(x) dx} \int_{\Sset} f(x) \ell_{\Pbb,r}(x) dx
+\end{equation*}
+and corresponding conductance function
+\begin{equation*}
+\widetilde{\Phi}_{\Pbb,r}(t) := \min_{\substack{\Sset \subset \Csig, \\ \pi_{\Pbb,r}(\Sset) \leq t} } \frac{Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)}
+\end{equation*}
+Lemma \ref{lem: continuous_conductance_lb} (\textcolor{red}{a weighted analogue of Theorem 4.6 of Kannan}) provides a lower bound on $\widetilde{\Phi}_{\Pbb, r}(t)$, as well as a stepwise approximation to $\widetilde{\Phi}_{\Pbb, r}$.
+\begin{lemma}
+	\label{lem: continuous_conductance_lb}
+	Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, the following bounds hold: 
+	\begin{itemize}
+		\item 
+		for $0 < t < 1/2$,
+		\begin{equation*}
+		\widetilde{\Phi}_{\Pbb,r}(t) > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(\frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2 t}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
+		\end{equation*}
+		\item
+		Let
+		\begin{equation*}
+		m = \frac{2^{d+1}D^d \Lambda_{\sigma}^2}{r^d \lambda_{\sigma}^2}
+		\end{equation*}
+		 and $t_i = (i + 1)/m$ for $i = 0, \ldots, m - 1$. Then, for $1/m < t < 1/2$
+		\begin{equation*}
+		\overline{\Phi}_{\Pbb,r}(t) > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{162 \sqrt{d}D}\log\left(\frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2 t}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
+		\end{equation*}
+		where $\overline{\Phi}_{\Pbb,r}(t)$ is defined as in \eqref{eqn: stepwise_approximation} with respect to $t_0, \ldots t_{m - 1}$. 
+	\end{itemize}
+	
+\end{lemma}
+\begin{proof}
+	We begin by stating directly the result of \textcolor{red}{Kannan et al.}: for $0 < t < 1/2$, and any $S$ such that $\pi_{\nu,r}(S) = t$,
+	\begin{equation}
+	\label{eqn: kannan_1}
+	\frac{Q_{\nu,r}(\Sset, \Csig \setminus \Sset)}{t} > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(\frac{1}{t}\right)\right\}.
+	\end{equation}
+	Now, we note that
+	\begin{equation*}
+	\pi_{\Pbb,r}(S) \leq \pi_{\nu,r}(S) \cdot \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2}, ~~~ Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset) \geq Q_{\nu,r}(\Sset, \Csig \setminus \Sset) \cdot \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2}
+	\end{equation*}
+	and plugging these estimates in to \eqref{eqn: kannan_1} gives the final bound on $\widetilde{\Phi}_{\Pbb,r}(t)$.  The bound on $\overline{\Phi}_{\Pbb,r}(t)$ then follows immediately from application of Lemma \ref{lem: stepwise_approximation}.
+\end{proof}
+
+The introduction of the stepwise approximation allows us to make use of Lemma \ref{lem: consistency_of_conductance_function}, which gives us (pointwise) consistency of the discrete graph functionals $\widetilde{\Phi}_{n,r}(t)$ to the continuous functionals $\widetilde{\Phi}_{\Pbb,r}(t)$. 
+
+\begin{lemma}
+	\label{lem: consistency_of_conductance_function}
+	Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, fix any $0 < t < 1/2$. Then the following statement holds: with probability one, as $n \to \infty$,
+	\begin{equation*}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t)
+	\end{equation*}
+	As a consequence, $m$ and $(t_i)_{i=1}^{m}$ defined as in Lemma \ref{lem: continuous_conductance_lb}, we have that
+	\begin{equation}
+	\label{eqn: consistency_of_stepapprox_conductance_function}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
+	\end{equation}
+\end{lemma}
+Lemma \ref{lem: consistency_of_conductance_function} stems from \textcolor{red}{Garcia Trillos 16}, with a pair of notable distinctions: here, we do not allow the radius $r$ to go to zero, but rather set it to be constant, and in the minimization we have an additional constraint on the measure $\pi(\cdot)$, in both the discrete and continuous functionals. As such, we will need to re-prove a number of the statements of \textcolor{red}{Garcia Trillos 16} to work in this context. We defer this work to Section \ref{subsection: proof_of_pointwise consitency_of_conductance_function}, and here will only show that  \eqref{eqn: consistency_of_stepapprox_conductance_function} is implied immediately by the pointwise result. 
+
+\begin{proof}[Proof of \eqref{eqn: consistency_of_stepapprox_conductance_function}]
+We take as given that for any $0 < t < 1/2$,
+\begin{equation*}
+\lim_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t).
+\end{equation*}
+In particular, this will occur for $t_0, t_1, \ldots, t_m$ and therefore
+\begin{equation*}
+\lim_{n \to \infty} \overline{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
+\end{equation*}
+uniformly over $[1/m,1/2]$. But by Lemma \ref{lem: stepwise_approximation}, $\widetilde{\Phi}_{n,r} \geq \overline{\Phi}_{n,r}$, so we have shown \eqref{eqn: consistency_of_stepapprox_conductance_function}.
+\end{proof}
+
+Lemma \ref{lem: consistency_of_conductance_function} coupled with Lemma \ref{lem: montenegro} yields a bound on the total variation mixing time.
+\begin{lemma}
+	
+\end{lemma}
+
+\subsection{Proof of pointwise consistency of conductance function.}
+\label{subsection: proof_of_pointwise consitency_of_conductance_function}
 
 
 
