@@ -188,39 +188,6 @@ We will repeatedly employ Lemma \ref{lem: expansion_sets} and Lemma \ref{lem: Ta
 	where the inequality follows from Lemma \ref{lem: expansion_sets}. Of course, $\sigma - q = r$, and $\frac{r}{q} \leq \frac{1}{2d}$ for $r \leq \frac{1}{4d}$. The claim then follows from Lemma \ref{lem: Taylor_series}.
 \end{proof}
 
-As part of the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}, we will require an estimate of a function $g(t)$ for $t \in [x_0, 1/2]$ for some $x_0 > 0$. For $m > 0$ and $x_0 = t_0 < t_1 < \ldots < t_m = 1/2$, define the \emph{stepwise approximation to $g$} to be $\bar{g}$, given by 
-\begin{equation}
-\label{eqn: stepwise_approximation}
-\bar{g}(t) = g(t_i), ~~ \text{ for $t \in [t_{i-1}, t_i]$ }
-\end{equation}
-\begin{lemma}
-	\label{lem: stepwise_approximation}
-	\begin{itemize}
-		\item For any function $f$ monotone decreasing in $t$ on the interval $[x_0,1/2]$, $\bar{f}(t) \leq f(t)$ for all $t \in [x_0,1/2]$.
-		\item Fix
-		\begin{equation*}
-		g(t) = \log\left(\frac{1}{t}\right) \text{ for $x \in [x_0, 1/2]$}
-		\end{equation*}
-		If for all $i$ in $1,\ldots,m$, $(t_i - t_{i - 1}) \leq x_0/2$, then $\bar{g}(t)\geq g(t) / 2$.
-	\end{itemize}
-	
-	
-\end{lemma}
-\begin{proof}
-	The first statement is immediately obvious, and we turn to proving the second. 
-	
-	The upper bound $g(t) \geq \bar{g}(t)$ follows immediately from the fact that $g(t)$ is a decreasing function along with the first statement.
-	
-	By the concavity of the $\log$ function, 
-	\begin{equation*}
-	\bar{g}(t) = \log\left(\frac{1}{t_i}\right) \geq \log\left(\frac{1}{t}\right) - \frac{(t_i - t)}{t}.
-	\end{equation*}
-	As a result,
-	\begin{equation*}
-	\bar{g}(t) - \frac{g(t)}{2} \geq \frac{\log\left(\frac{1}{t}\right)}{2} - \frac{(t_i - t)}{t} \geq 1/2 - 1/2 = 0.
-	\end{equation*}
-\end{proof}
-
 The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} also depends on a parameter -- which we term \emph{discrete local spread} -- to handle the mixing over very small steps. Formally, the discrete local spread $\pi_1(G)$ is given by
 \begin{equation}
 \label{eqn: local_spread}
@@ -228,15 +195,7 @@ The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} also depends on 
 \end{equation}
 where $d_{\min}(G) = \min_{v \in V} d(v)$ is the minimum degree in $G$. Intuitively, the discrete local spread gauges how much the walk given by $\Wbf$ has mixed after one step, starting from any node $v$. We will denote $\pi_1(G_{n,r}[\Csig[\Xbf]])$ by $\widetilde{\pi}_{1,n}$. 
 
-\begin{lemma}
-	\label{lem: local_spread_lb}
-	For $\Csig$ satisfying the conditions of Theorem \ref{thm: inverse_mixing_time_lower_bound}:
-	\begin{equation*}
-	\liminf_{n \to \infty}~ \widetilde{\pi}_{1,n} \geq \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{(2D)^d}
-	\end{equation*}
-\end{lemma}
-
-\textcolor{red}{Prove Lemma \ref{lem: local_spread_lb}}.
+\textcolor{red}{Prove Lemma \ref{lem: local_spread_lower_bound}}.
 
 \subsection{Cut and volume estimates}
 \begin{lemma}
@@ -473,7 +432,7 @@ where $\beta(S) := \inf_{v \in S} \qbf_{v}^{(1)}(S^c)$, and by convention we let
 \begin{lemma}
 	\label{lem: local_spread_G}
 	\begin{itemize}
-		\item If $\pibf(S) \leq s(G)$, then for every $u \in S$, $\qbf_u^{(1)}(S) \geq 1/10$.
+		\item If $\pibf(S) \leq s(G)$, then for every $u \in S$, $\qbf_u^{(1)}(S^c) \geq 1/10$.
 		\item For any $v, u \in V$, and $m \in N$ greater than $0$, $q_{vu}^{(m)}/ \pi_{\min} \leq 1/s(G)$.
 	\end{itemize}
 	
@@ -503,11 +462,11 @@ and $\norm{\pbf - \pibf}_{TV} = \sum_{v \in V}\abs{p_v - \pi_v}$ is the total va
 	\label{lem: tv_mixing_to_pointwise_mixing1}
 	For $\qbf$ as in \eqref{eqn: random_walk} and $\rhobf$ as in \eqref{eqn: uniform_random_walk},
 	\begin{equation*}
-	\tau_{\infty}(\qbf; G) \leq 2752 \tau_1(\rhobf; G) \log \left(4 \max\left\{1, \frac{1}{10 s(G)}\right\}\right)
+	\tau_{\infty}(\qbf; G) \leq 2752 \tau_1(\rhobf; G) \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\}\right)
 	\end{equation*}
 \end{lemma}
 \begin{proof}
-	Masking dependence on $v$ for the moment, let
+	Masking dependence on the starting vertex $v$ for the moment, let
 	\begin{equation*}
 	\Delta_u^{(m)} = q_{vu}^{(m)} - \pi_u, ~~ \delta_u^{(m)} = \frac{\Delta_u^{(m)}}{\pi_u}
 	\end{equation*}
@@ -539,77 +498,41 @@ and $\norm{\pbf - \pibf}_{TV} = \sum_{v \in V}\abs{p_v - \pi_v}$ is the total va
 	\begin{equation*}
 	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} = \sup_{u}\left\{ \frac{\abs{q_{vu}^{(m)} - \pibf_u}}{\pibf_u} \right\}.
 	\end{equation*}
-	and since none of the above depended on a specific choice for $v$, the supremum can be taken over all seed nodes $v$ as well. Thus $\tau_{\infty}(\qbf^{(m)}; G) \leq 2m_0$. 
+	and since none of the above depended on a specific choice for $v$, the supremum can be taken over all starting vertices $v$ as well. Thus $\tau_{\infty}(\qbf^{(m)}; G) \leq 2m_0$. 
 	
 	Finally, it is known (\textcolor{red}{PhD thesis of Montenegro}) that
 	\begin{equation*}
 	\tau_{1}(\qbf^{(m)}; G) \leq 1376 \tau_{1}(\rhobf^{(m)}; G)
 	\end{equation*}
-	and so the desired result holds.
-	
+	and so the desired result holds.	
 \end{proof}
 
-
 The second key quantity is the \emph{conductance function}
-\begin{equation*}
-\Phi(t; G) := \min_{\substack{S \subseteq V, \\ \pibf(S) \leq t} } \Phi(S; G) ~~~~~~~ (\pi_{\min} \leq t < 1)
-\end{equation*}
-where $\Phi(S; G)$ is the normalized cut of $S$ in $G$ given by \eqref{eqn: norm_cut}.
-
-
-
-
-
-
-
-
-
-
-
-
-\subsection{Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}}
-
-\textcolor{red}{Give proof structure.}
-
-We begin by introducing some more notation. For vertex set $V = \set{v_1, \ldots, v_N}$, take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, random walk matrix $\Wbf$, and stationary distribution $\pibf$. We slightly overload notation and let the \emph{conductance function} be given by
-\begin{equation*}
-\Phi(t; G) := \min_{\substack{S \subseteq V \\ \pi(S) \leq t} } \Phi(S; G)
-\end{equation*}
-
-We will pay special attention to the conductance function evaluated over the subgraph $G_{n,r}[\Csig[\Xbf]]$. For ease of notation, we therefore introduce $\widetilde{\Phi}_{n,r}(t) = \Phi(t; G_{n,r}[\Csig[\Xbf]])$. 
-
-Lemma \ref{lem: montenegro} is adapted from the \textcolor{red}{PhD thesis of Montenegro.} It leverages the conductance function to produce an upper bound on the \textcolor{red}{total variation distance} between the random walk 
 \begin{equation}
-\label{eqn: uniform_stopping_random_walk}
-\rhobf^t = \frac{1}{t} \sum_{s = 1}^{t} e_v \Wbf^s
+\label{eqn: conductance_function}
+\Phi(t; G) := \min_{\substack{S \subseteq V, \\ \pibf(S) \leq t} } \Phi(S; G) ~~~~~~~ (\pi_{\min} \leq t < 1)
 \end{equation}
-and the stationary distribution $\pibf$. Consider $\qbf = (\qbf^1, \qbf^2, \ldots)$ a sequence of distributions over $V$, where $\qbf^t = (\qbf_1^t, \ldots, \qbf_{\abs{V}}^t)$. The \emph{total variation mixing time} of $\qbf$ to stationary distribution $\pibf$ is given by
-\begin{equation*}
-\tau_1(\qbf; G) = \min_{t_0 \in N} \set{t: \norm{\qbf^t - \pibf}_{TV} \leq 1/4}
-\end{equation*}
-where $\norm{\qbf^t - \pibf}_{TV} = \sum_{v_i \in V} \abs{\qbf_i - \pibf_i}$ is the total variation distance. Then,
+where $\Phi(S; G)$ is the normalized cut of $S$ in $G$ given by \eqref{eqn: norm_cut}. 
 
+Lemma \ref{lem: expansion_to_tv_distance} leverages the conductance function and local spread to produce an upper bound on the total variation distance between $\rhobf_{v}^{(m)}$ and $\pibf.$
 \begin{lemma}
-	\label{lem: montenegro}
-	Let $\Wbf$ be the random walk matrix over a graph $G = (V,E)$, with stationary distribution $\pibf$. Then, for any $v \in V$:
+	\label{lem: expansion_to_tv_distance}
+	If $D_{\min} > 10$, for any $v \in V$:
 	\begin{equation*}
-	\norm{\rho^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, \frac{1}{10} +  \frac{70}{t}\left(5 + \int_{x = \pi_1(G)}^{1/2} \frac{4}{x \Phi^2(x; G)} dx\right) \right\}
+	\norm{\rhobf_v^{(m)} - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, \frac{1}{10} +  \frac{70}{m}\left(\frac{20}{9} + \int_{t = s'(G)}^{1/2} \frac{4}{t \Phi^2(t; G)} dt\right) \right\}
 	\end{equation*}
-	where $\pi_1(G)$ is defined as in \eqref{eqn: local_spread}.
+	where $s'(G) = s(G) / 9$.
 \end{lemma}
 
-To prove Lemma \ref{lem: montenegro} we must first introduce the concept of a blocking conductance function.\footnote{For more details, see \textcolor{red}{PhD thesis of Montenegro}}
+To prove Lemma \ref{lem: expansion_to_tv_distance} we first introduce a generalization of $\Phi(t;G) \cdot \Phi(t;G)$ known as a blocking conductance function.
+\footnote{For more details, see \textcolor{red}{PhD thesis of Montenegro}}
 
 \begin{definition}[Blocking Conductance Function of \textcolor{red}{PhD thesis of Montenegro}]
-	\label{def: bcf}
-	Let $x_0$ satisfy
-	\begin{equation*}
-	x_0 \geq \min_{v \in V} \pibf(v)
-	\end{equation*}
-	A function $\phi(x; G): [x_0, 1/2] \to [0,1]$ is a \emph{blocking conductance function} if for all $S \subset V$ with $\pibf(S) = x \in [x_0, 1/2]$, either of the following hold: 
+	\label{def: blocking_conductance_function}
+	For $t_0 \geq \pi_{\min}$, a function $\phi(t; G): [t_0, 1/2] \to [0,1]$ is a \emph{blocking conductance function} if for all $S \subset V$ with $\pibf(S) = t \in [t_0, 1/2]$, either of the following hold: 
 	\begin{enumerate}
-		\item \emph{Exterior inequality.} For all $y \in \left[\frac{1}{2}x, x\right]: \phi_{int}(S) \geq \phi(\max\{x_0,y\})$
-		\item \emph{Interior inequality.} For all $y  \in \left[x, \frac{3}{2}x\right]: \phi_{ext}(S) \geq \phi(\max\{y,1 -y\})$.
+		\item \emph{Exterior inequality.} For all $y \in \left[\frac{1}{2}t, t\right]: \phi_{int}(S) \geq \phi(\max\{t_0,y\})$
+		\item \emph{Interior inequality.} For all $y  \in \left[t, \frac{3}{2}t\right]: \phi_{ext}(S) \geq \phi(\max\{y,1 - y\})$.
 	\end{enumerate}
 	where $\phi_{int}$ and $\phi_{ext}$ are defined respectively as
 	\begin{align*}
@@ -618,54 +541,70 @@ To prove Lemma \ref{lem: montenegro} we must first introduce the concept of a bl
 	\end{align*}
 \end{definition}
 
-\begin{proof}[Proof of Lemma \ref{lem: montenegro}]
-	Consider the function $\phi(\cdot, G): [\pi_1(G), 1/2] \to [0,1]$ defined by
+\begin{theorem}[\textcolor{red}{PhD thesis of Montenegro} Theorem 3.2]
+	\label{thm: montenegro}
+	Consider $\phi(t; G): [t_0, 1/2] \to [0,1]$ a blocking conductance function. Then, letting
+	\begin{equation*}
+	h^m(t_0) = \sup_{S: \pibf(S) < t_0}  \bigl(\rhobf_v^{(m)}(S) - \pibf(S) \bigr)
+	\end{equation*}
+	the following statement holds: if $\phi$ is a blocking conductance function,
+	\begin{align*}
+	\norm{\rhobf_v^{(m)} - \pibf}_{TV} & \leq \max\left\{ \frac{1}{4}, h^1(t_0) +  \frac{70}{m}\left(\frac{1}{\phi(t_0; G)} + \int_{t = t_0}^{1/2} \frac{4}{t \phi(t; G)} dt\right) \right\} \\
+	\end{align*}
+\end{theorem}
+
+Note that in \textcolor{red}{PhD thesis of Montenegro} this theorem is stated with respect to $h^0$. However, in the subsequent proof it holds with respect to $h^m$, and it is observed that $h^m$ is decreasing in $m$. For our purposes it is more useful to state it with respect to $h^1$, as we have done.
+
+\begin{proof}[Proof of Lemma \ref{lem:  expansion_to_tv_distance}]
+	Consider the function $\phi_0(t, G): [s(G), 1/2] \to [0,1]$ defined by
 	\begin{equation}
-	\label{eqn: bcf}
-	\phi(x; G) = 
+	\label{eqn: local_spread_blocking_conductance_function}
+	\phi_0(t; G) = 
 	\begin{cases}
-	\frac{1}{5}, ~~~~~~~~~~~ x = \pi_1(G) \\
-	\frac{1}{4} \Phi^2(x; G), ~ x \in \left(\pi_1(G), 1/2\right] \\
+	\frac{1}{5}, ~~~~~~~~~~~~ t = s'(G) \\
+	\frac{1}{4} \Phi^2(t; G), ~ t \in \left(s'(G), 1/2\right] \\
 	\end{cases}
 	\end{equation}
-	In \textcolor{red}{the PhD thesis of Montenegro}, letting
-	\begin{equation*}
-	h^t(x_0) = \sup_{S: \pi(S) < x_0}  \bigl(\rhobf^t(S) - \pibf(S) \bigr)
-	\end{equation*}
-	the following theorem is given: if $\phi$ is a blocking conductance function (meaning it satisifies Definition \ref{def: bcf}), 
-	\begin{align*}
-	\norm{\rhobf^t - \pibf}_{TV} & \leq \max\left\{ \frac{1}{4}, h^t(x_0) +  \frac{70}{t}\left(\frac{1}{\phi(x_0; G)} + \int_{x = x_0}^{1/2} \frac{4}{x \phi(x; G)}\right) \right\} \\
-	& = \max\left\{ \frac{1}{4}, h^t(x_0) +  \frac{70}{t}\left(5 + \int_{x = x_0}^{1/2} \frac{4}{x \Phi^2(x; G)}\right) \right\}.
-	\end{align*}
-	We will wait to the end to show the $\phi$ is in fact a blocking conductance function, and first show that the above expression reduces to the desired result.
+	\begin{lemma}
+		\label{lem: local_spread_blocking_conductance_function}
+		If $D_{\min} > 10$, $\phi_0$ is a blocking conductance function.
+	\end{lemma}
+	We take Lemma \ref{lem: local_spread_blocking_conductance_function} as given, and defer the proof until after the proof of Lemma \ref{lem: expansion_to_tv_distance}. 
 	
-	It is also observed in \textcolor{red}{the PhD thesis of Montenegro} that the function $h^t(x)$ is decreasing for any fixed $x$, as $t$ increases. All that remains for us to show is that $h^s(\pi_1(G)) \leq 1/10$ for some $s \leq t$. We choose $s = 1$, and note that for any set $S \subset V$ with $\pibf(S) \leq \pi_1(G)$,
+	Lemma \ref{lem: local_spread_blocking_conductance_function} and Theorem \ref{thm: montenegro} together yield:
 	\begin{equation*}
-	\rhobf^1(S) \leq \frac{\abs{S}}{d_{\min}(G)} \leq \frac{\pibf(S) \vol(V; G)}{d_{\min}(G)^2} \leq \frac{1}{10},
+	\norm{\rhobf^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, h^1(s'(G)) +  \frac{70}{m}\left(5 + \int_{t = s'(G)}^{1/2} \frac{4}{t \Phi^2(t; G)}\right) \right\}
 	\end{equation*}
-	where we use the fact that $\pibf(S) \geq \frac{\abs{S} d_{\min}(G)}{\vol(V; G)}$.
 	
-	Now we complete the proof by verifying that $\phi$ is in fact a blocking conductance function. It is easy to see that $\frac{1}{4} \Phi^2(x;G)$ is a valid blocking conductance function for all $x \in (\pi_1(G), 1/2]$, (as it satisfies the exterior inequality). For $x = \pi_1(G)$ we will instead turn to the interior inequality, and show the following: for any $S \subset V$ such that $\pi(S) = \pi_1(G)$, 
-	\begin{equation*}
-	\frac{1}{5} \leq \phi_{int}(S).
-	\end{equation*}
-	For any $S$ such that $\pi(S) \leq \pi_1(G)$, the following statement holds: for every $u \in S$, $\cut(u, S^c; G) \geq 9/10 \cdot \deg(u; G)$. 
+	Then, $h^1(s'(G)) \leq 1/10$ follows exactly from the proof of Lemma \ref{lem: local_spread_G}, except now $\pibf(S) \leq s'(G)$ results in the sharper bound of $\qbf_u^{(1)}(S^c) \geq 9/10$ for every $u \in S$.
+\end{proof}
+\begin{proof}[Lemma \ref{lem: local_spread_blocking_conductance_function}]
+	The condition $D_{\min} > 10$ ensures that $s(G) \geq \pi_{\min}$.
+	
+	It is known that $\frac{1}{4} \Phi^2(x;G)$ satisfies the exterior inequality for all $t \in (\pi_{\min}, 1/2]$.
+	
+	For $t = s'(G)$ we will instead use the interior inequality. For any $S$ such that $\pibf(S) \leq s'(G)$, the following statement holds: for every $u \in S$, $\cut(u, S^c; G) \geq 9/10 \cdot \deg(u; G)$. 
 	Fixing $\lambda = \pi(S)/2$, we have
 	\begin{align*}
-	\phi_{int}(S) & \geq 4 \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{4 \vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
-	& \geq  \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{9 \lambda \sum_{u \in S \setminus B} \deg(u; G)}{40 \vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
-	& \geq \frac{9\lambda^2}{40[\lambda(1 - \lambda)^2]} \geq \frac{1}{5}. 
+	\phi_{int}(S) & \geq \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{\vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
+	& \geq  \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{9 \lambda \sum_{u \in S \setminus B} \deg(u; G)}{10 \vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
+	& \geq \frac{9\lambda^2}{20[\lambda^2(1 - \lambda)^2]} \geq \frac{9}{20}. 
 	\end{align*} 
 \end{proof}
 
-We turn to lower bounding $\widetilde{\Phi}_{n,r}(t)$. First, we exhibit a lower bound on a continuous space analogue, over the set $\Csig$. Let $\nu_{\Pbb}(\cdot)$ denote the weighted volume; formally, for $\Sset \subset \Rd$
+\subsection{Population-level conductance function.}
+
+We will make use of the above theory with respect to the conductance function $\Phi(t; G_{n,r}[\Csig(\Xbf)])$. First, however, we introduce a population-level analogue to $\Phi(t; G_{n,r}[\Csig(\Xbf)])$ over the set $\Csig$, which we denote $\widetilde{\Phi}_{\Pbb,r}$. (In general, we will adopt the convention of using $\widetilde{f}$ to denote functionals computed with respect to $\Csig$.)
+
+For $\Sset \subset \Rd$
 \begin{equation*}
 \nu_{\Pbb}(\Sset) := \int_{\Sset} f(x) dx
 \end{equation*} 
- 
-The $r$-ball walk over $\Csig$ is a Markov chain with transition probability for $x \in \Csig, \Sset, \Sset' \subset \Csig$ given by,
+is the weighted volume.
+
+The $r$-ball walk over $\Csig$ is a Markov chain. For $x \in \Csig$ and $\Sset, \Sset' \subset \Csig$ the transition probability is given by
 \begin{equation*}
-P_{\Pbb, r}(x;\Sset) := \frac{\nu_\Pbb(\Sset \cap B(x,r))}{\nu_\Pbb(\Csig \cap B(x,r))}, ~~~ Q_{\Pbb, r}(\Sset, \Sset') := \int_{x \in \Sset} f(x) P_{\Pbb, r}(x;\Sset') dx. 
+\widetilde{P}_{\Pbb, r}(x;\Sset) := \frac{\nu_\Pbb(\Sset \cap B(x,r))}{\nu_\Pbb(\Csig \cap B(x,r))}, ~~~ \widetilde{Q}_{\Pbb, r}(\Sset, \Sset') := \int_{x \in \Sset} f(x) P_{\Pbb, r}(x;\Sset') dx,
 \end{equation*}
 stationary distribution defined by
 \begin{equation*}
@@ -673,11 +612,54 @@ stationary distribution defined by
 \end{equation*}
 and corresponding conductance function
 \begin{equation*}
-\widetilde{\Phi}_{\Pbb,r}(t) := \min_{\substack{\Sset \subset \Csig, \\ \pi_{\Pbb,r}(\Sset) \leq t} } \frac{Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)}
+\widetilde{\Phi}_{\Pbb,r}(t) := \min_{\substack{\Sset \subset \Csig, \\ \pi_{\Pbb,r}(\Sset) \leq t} } \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)}.
 \end{equation*}
-Lemma \ref{lem: continuous_conductance_lb} (\textcolor{red}{a weighted analogue of Theorem 4.6 of Kannan}) provides a lower bound on $\widetilde{\Phi}_{\Pbb, r}(t)$, as well as a stepwise approximation to $\widetilde{\Phi}_{\Pbb, r}$.
+
+For $m > 0$ and $0 < t_0 < t_1 < \ldots < t_m < 1$, denote the \emph{stepwise approximation to $g$} by $\bar{g}$, defined as
+\begin{equation}
+\label{eqn: stepwise_approximation}
+\bar{g}(t) = g(t_i), ~~ \text{ for $t \in [t_{i-1}, t_i]$ }
+\end{equation}
+The stepwise approximation will be important to showing the consistency results of Section \textcolor{red}{(A.7)} hold across the entire conductance function. Lemma \ref{lem: stepwise_approximation} shows that the approximation will not overly degrade our estimates of the population-level conductance function.
 \begin{lemma}
-	\label{lem: continuous_conductance_lb}
+	\label{lem: stepwise_approximation}
+	\begin{itemize}
+		\item For any function $f$ monotone decreasing in $t$ on the interval $[t_0,t_m]$, $\bar{f}(t) \leq f(t)$ for all $t \in [t_0,t_m]$.
+		\item Fix
+		\begin{equation*}
+		g(t) = \log\left(\frac{1}{t}\right) \text{ for $x \in [t_0, 1/2]$}
+		\end{equation*}
+		If for all $i$ in $1,\ldots,m$, $(t_i - t_{i - 1}) \leq t_0/2$, then $\bar{g}(t)\geq g(t) / 2$.
+	\end{itemize}
+\end{lemma}
+
+\begin{proof}
+	The first statement is immediately obvious, and we turn to proving the second. 
+	
+	The upper bound $g(t) \geq \bar{g}(t)$ follows immediately from the fact that $g(t)$ is a decreasing function along with the first statement.
+	
+	By the concavity of the $\log$ function, 
+	\begin{equation*}
+	\bar{g}(t) = \log\left(\frac{1}{t_i}\right) \geq \log\left(\frac{1}{t}\right) - \frac{(t_i - t)}{t}.
+	\end{equation*}
+	As a result,
+	\begin{equation*}
+	\bar{g}(t) - \frac{g(t)}{2} \geq \frac{\log\left(\frac{1}{t}\right)}{2} - \frac{(t_i - t)}{t} \geq 1/2 - 1/2 = 0.
+	\end{equation*}
+\end{proof}
+
+
+\begin{theorem}[Restatement of \textcolor{red}{Kannan 2004} Theorem 4.6]
+	\label{thm: kannan}
+	Let $K \subset \Rd$ be a convex body of diameter $D$. Then for any $\Sset \subset K$ with $\pi_{\nu,r}(\Sset) \leq 1/2$,
+	\begin{equation}
+	\label{eqn: kannan}
+	\frac{Q_{\nu,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\nu,r}(\Sset)} > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(1 + \frac{1}{\pi_{\nu,r}(\Sset)}\right)\right\}.
+	\end{equation}
+\end{theorem}
+
+\begin{lemma}
+	\label{lem: continuous_conductance_lower_bound}
 	Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, the following bounds hold: 
 	\begin{itemize}
 		\item 
@@ -688,169 +670,130 @@ Lemma \ref{lem: continuous_conductance_lb} (\textcolor{red}{a weighted analogue 
 		\item
 		Let
 		\begin{equation*}
-		m = \frac{2^{d+1}D^d \Lambda_{\sigma}^2}{r^d \lambda_{\sigma}^2}
+		M = \frac{2^{d+1}D^d \Lambda_{\sigma}^2}{r^d \lambda_{\sigma}^2}
 		\end{equation*}
-		 and $t_i = (i + 1)/m$ for $i = 0, \ldots, m - 1$. Then, for $1/m < t < 1/2$
+		and $t_i = (i + 1)/M$ for $i = 0, \ldots, m - 1$. Then, for $1/M < t < 1/2$
 		\begin{equation*}
 		\overline{\Phi}_{\Pbb,r}(t) > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{162 \sqrt{d}D}\Log\left( \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2 t}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
 		\end{equation*}
-		where $\overline{\Phi}_{\Pbb,r}(t)$ is defined as in \eqref{eqn: stepwise_approximation} with respect to $t_0, \ldots t_{m - 1}$, and $\Log(A/t) = \max\{\log(1 + 2A), \log(A/t)\}$.
+		where $\overline{\Phi}_{\Pbb,r}(t)$ is defined as in \eqref{eqn: stepwise_approximation} with respect to $t_0, \ldots t_{M - 1}$, and $\Log(A/t) = \max\{\log(1 + 2A), \log(A/t)\}$.
 	\end{itemize}
-	
 \end{lemma}
-\begin{proof}
-	We begin by stating directly the result of \textcolor{red}{Kannan et al.}: for $0 < t < 1/2$, and any $S$ such that $\pi_{\nu,r}(S) = t$,
-	\begin{equation}
-	\label{eqn: kannan_1}
-	\frac{Q_{\nu,r}(\Sset, \Csig \setminus \Sset)}{t} > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(1 + \frac{1}{t}\right)\right\}.
-	\end{equation}
-	Now, we note that
+Before we prove Lemma \ref{lem: continuous_conductance_lower_bound}, note that the choice of $M$ is made to ensure $t_0$ is greater than the local spread of $G_{n,r}\left[\Csig[\Xbf]\right]$, as we will see in Section \ref{sec: consistency}.
+\begin{proof}[Proof of Lemma \ref{lem: continuous_conductance_lower_bound}]
+	We note that
 	\begin{equation*}
 	\pi_{\Pbb,r}(S) \leq \pi_{\nu,r}(S) \cdot \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2}, ~~~ Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset) \geq Q_{\nu,r}(\Sset, \Csig \setminus \Sset) \cdot \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2}
 	\end{equation*}
-	 
-	and plugging these estimates in to \eqref{eqn: kannan_1} gives the final bound on $\widetilde{\Phi}_{\Pbb,r}(t)$.  The bound on $\overline{\Phi}_{\Pbb,r}(t)$ then follows from  $\Log(A/t) \leq \log(1 + 1/t)$ for all $0 < t < 1/2$ and application of Lemma \ref{lem: stepwise_approximation}.
+	
+	Plugging these estimates in to \eqref{eqn: kannan} gives
+	\begin{equation*}
+	\frac{Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)} > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(1 + \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2 \pi_{\Pbb,r}(\Sset)}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
+	\end{equation*}
+	and since the right hand side is decreasing in $\pi_{\Pbb,r}(\Sset)$, the desired lower bound holds on $\widetilde{\Phi}_{\Pbb,r}(t)$.  The bound on $\overline{\Phi}_{\Pbb,r}(t)$ then follows from  $\Log(A/t) \leq \log(1 + 1/t)$ for all $0 < t < 1/2$ and application of Lemma \ref{lem: stepwise_approximation}.
 \end{proof}
+
+\subsection{Consistency of local spread and conductance function.}
+\label{sec: consistency}
+
+For notational ease, we write 
+\begin{equation*}
+\widetilde{\Phi}_{n,r}(t) = \Phi(t; G_{n,r}[\Csig[\Xbf]]), ~~ \widetilde{s}_{n,r} = s(G_{n,r}[\Csig[\Xbf]])
+\end{equation*}
+
+\begin{lemma}
+	\label{lem: local_spread_lower_bound}
+	For $\Csig$ satisfying the conditions of Theorem \ref{thm: inverse_mixing_time_lower_bound}:
+	\begin{equation*}
+	\liminf_{n \to \infty}~ \widetilde{s}_{n,r} \geq \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{(2D)^d}
+	\end{equation*}
+\end{lemma}
+
+\textcolor{red}{Prove Lemma \ref{lem: local_spread_lower_bound}}.
 
 The introduction of the stepwise approximation allows us to make use of Lemma \ref{lem: consistency_of_conductance_function}, which gives us (pointwise) consistency of the discrete graph functionals $\widetilde{\Phi}_{n,r}(t)$ to the continuous functionals $\widetilde{\Phi}_{\Pbb,r}(t)$. 
 
 \begin{lemma}
 	\label{lem: consistency_of_conductance_function}
-	Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, fix any $0 < t < 1/2$. Then the following statement holds: with probability one, as $n \to \infty$,
-	\begin{equation*}
+	Fix $0 < t < 1/2$. Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, the following statement holds: with probability one, as $n \to \infty$,
+	\begin{equation}
+	\label{eqn: pointwise_consistency_of_conductance_function}
 	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t)
-	\end{equation*}
-	As a consequence, for $m$ and $(t_i)_{i=1}^{m}$ defined as in Lemma \ref{lem: continuous_conductance_lb}, we have that
+	\end{equation}
+	As a consequence, for $M$ and $(t_i)_{i=0}^{M-1}$ defined as in Lemma \ref{lem: continuous_conductance_lower_bound}, we have that
 	\begin{equation}
 	\label{eqn: consistency_of_stepapprox_conductance_function}
 	\liminf_{n \to \infty} \overline{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
 	\end{equation}
 \end{lemma}
-Lemma \ref{lem: consistency_of_conductance_function} stems from \textcolor{red}{Garcia Trillos 16}, with a pair of notable distinctions: here, we do not allow the radius $r$ to go to zero, but rather set it to be constant, and in the minimization we have an additional constraint on the measure $\pi(\cdot)$, in both the discrete and continuous functionals. As such, we will need to re-prove a number of the statements of \textcolor{red}{Garcia Trillos 16} to work in this context. We defer this work to Section \ref{subsection: proof_of_pointwise consitency_of_conductance_function}, and here will only show that  \eqref{eqn: consistency_of_stepapprox_conductance_function} is implied immediately by the pointwise result. 
+We defer the proof of pointwise consistency to Section \ref{subsection: proof_of_pointwise consitency_of_conductance_function}. For now, we show assume  that \eqref{eqn: consistency_of_stepapprox_conductance_function} is immediately implied by \eqref{eqn: pointwise_consistency_of_conductance_function}.
 
 \begin{proof}[Proof of \eqref{eqn: consistency_of_stepapprox_conductance_function}]
-We take as given that for any $0 < t < 1/2$,
-\begin{equation*}
-\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t).
-\end{equation*}
-In particular, this will occur for $t_0, t_1, \ldots, t_m$ and therefore
-\begin{equation*}
-\liminf_{n \to \infty} \overline{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
-\end{equation*}
-uniformly over $[1/m,1/2]$.
+	We take as given that for any $0 < t < 1/2$,
+	\begin{equation*}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t).
+	\end{equation*}
+	In particular, this will occur for $t_0, t_1, \ldots, t_m$ and therefore
+	\begin{equation*}
+	\liminf_{n \to \infty} \overline{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
+	\end{equation*}
+	uniformly over $[1/m,1/2]$.
 \end{proof}
-
-Lemma \ref{lem: consistency_of_conductance_function} coupled with Lemma \ref{lem: montenegro} will yield a bound on the total variation mixing time of $\rhobf^t$. Lemma \ref{lem: tv_mixing_to_pointwise_mixing} handles the last step, conversion from the total variation mixing time of $\rhobf^t$ to the relative pointwise mixing time of $e_v \Wbf^t$. 
-\begin{lemma}
-\label{lem: tv_mixing_to_pointwise_mixing}
-	Let $\rhobf = (\rhobf^1, \rhobf^2, \ldots)$ be a sequence of distributions, with $\rhobf^t$ defined as in \eqref{eqn: uniform_stopping_random_walk}. Then, for $\qbf = (e_v\Wbf^1, e_v\Wbf^2, \ldots)$
-	\begin{equation*}
-	\tau_{\infty}(\qbf; G) \leq 2752 \tau_1(\rhobf; G) \log \left(\frac{4}{\min\left\{1,10 \pi_1(G)\right\}}\right)
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	We introduce a few pieces of notation to simplify the analysis. Let
-	\begin{equation*}
-	\Delta_k^{(t)} = (e_v\Wbf^t)[k] - \pibf[k], ~~ \delta_k^{(t)} = \frac{\Delta_k^{(t)}}{\pibf[k]}
-	\end{equation*}
-	and $\Deltabf^{(t)} = (\Delta_1^{(t)}, \ldots, \Delta_N^{(t)})$, $\deltabf^{(t)} = (\delta_1^{(t)}, \ldots, \delta_N^{(t)})$. For a vector $\Deltabf = (\Delta_1, \ldots, \Delta_{N})$, the $L^{p}(\pibf)$ norm is given by
-	\begin{equation*}
-	\norm{\Deltabf}_{L^p(\pibf)} = \left(\sum_{k = 1}^{N} \left(\Delta_k\right)^{p} \pi_k \right)^{1/p}
-	\end{equation*}
-	The $L^{p}(\pibf)$ norms are relevant because
-	\begin{enumerate}
-		\item If $t > \tau_{\infty}(\qbf; G)$, then $\norm{\deltabf^{(t)}}_{L^{\infty}(\pi)} < 1/4$. 
-		\item If $t > \tau_{1}(\qbf; G)$, then 
-		$\norm{\deltabf^{(t)}}_{L^{1}(\pi)} < 1/4$.
-	\end{enumerate}
-	
-	To go between the two, we have
-	\begin{align*}
-	\norm{\deltabf^{(2t)}}_{L^{\infty}(\pi)} & \overset{(i)}{\leq} \norm{\deltabf^{(t)}}^2_{L^{2}(\pi)} \\
-	& = \norm{(\deltabf^{(t)})^2}_{L^{1}(\pi)} \\
-	& \overset{(ii)}{\leq}  \norm{(\deltabf^{(t)})}_{L^{1}(\pi)} \norm{(\deltabf^{(t)})}_{L^{\infty}(\pi)}
-	\end{align*}
-	where $(i)$ is a result of \textcolor{red}{Benjamini and Morris} and $(ii)$ follows from Holder's inequality. Now, we upper bound the second factor on the right hand side by observing
-	\begin{align*}
-	\norm{(\deltabf^{(t)})}_{L^{\infty}(\pi)} & \leq \max\left\{1, \max_{k  = 1,\ldots,N} \frac{(e_v\Wbf^t)[k]}{\pibf[k]} \right\} \\
-	& \overset{(iii)}{\leq} \max\left\{1, \frac{\vol(V; G)}{d_{\min}(G)^2} \right\} \\
-	& = \max\left\{1, \frac{1}{10 \pi_1(G)}\right\}
-	\end{align*}
-	where $(iii)$ follows from $\pibf[k] \geq d_{\min}(G) / \vol(V; G)$ and $(e_v\Wbf^t) \geq 1/d_{\min}$.
-	
-	As a result, it is sufficient to exhibit $t > 0$ such that
-	\begin{equation*}
-	\norm{(\deltabf^{(t)})}_{L^{1}(\pi)} \leq \min \left\{1/4,\frac{10 \pi_1(G)}{4}\right\}
-	\end{equation*}
-	Here, we leverage the following well-known fact (\textcolor{red}{PhD thesis of Montenegro}): for any $\epsilon > 0$, if $t \geq \tau_1(e_v \Wbf^t; G) \cdot \log(1/\epsilon)$ then
-	\begin{equation*}
-	\norm{(\deltabf^{(t)})}_{L^{1}(\pi)} \leq \epsilon
-	\end{equation*}
-	Therefore, picking 
-	\begin{equation*}
-	t_0 = \tau_1(e_v \Wbf^t; G) \cdot \log \left(\frac{1}{\min\left\{1/4,\frac{10 \pi_1(G)}{4}\right\}}\right)
-	\end{equation*} implies $\norm{(\deltabf^{(t)})}_{L^{\infty}(\pi)} \leq 1/4$ for all $t \geq 2 t_0$. 
-	
-	Finally, it is known (\textcolor{red}{PhD thesis of Montenegro}) that
-	\begin{equation*}
-	\tau_{1}(\qbf; G) \leq 1376 \tau_{1}(\rhobf; G)
-	\end{equation*}
-	and so the desired result holds.
-	
-\end{proof}
-
-\begin{proof}[Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}]
-	Fix arbitrary $v = x_i \in \Csig[\Xbf]$, and let
-	\begin{equation*}
-	\widetilde{q}_n^{(t)} = e_v \Wbf_{\Csig[\Xbf]}^t, ~~ \widetilde{\qbf}_n = (\widetilde{q}_n^{(1)}, \widetilde{q}_n^{(2)}, \ldots)
-	\end{equation*}
-	be the distribution of a random walk over the subgraph $G_{n,r}[\Csig[\Xbf]]$ after $t$. For simplicity, we will refer to the subgraph $G_{n,r}[\Csig[\Xbf]]$ as $\widetilde{G}_{n,r}$ hereafter. Our goal is to upper bound $\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.
-	
-	By Lemma \ref{lem: tv_mixing_to_pointwise_mixing}, 
-	\begin{equation*}
-	\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, \log\left(\frac{4}{10 \widetilde{\pi}_{1,n}}\right) \right\}
-	\end{equation*} 
-	
-	We first upper bound $\tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.  From Lemma \ref{lem: montenegro}, we have that
-	\begin{equation*}
-	\limsup_{n \to \infty} \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \leq \limsup_{n \to \infty} \frac{1400}{3}\left(5 + \int_{x = \widetilde{\pi}_{1,n}}^{1/2} \frac{4}{\widetilde{\Phi}_{n,r}^2(x)} dx\right)
-	\end{equation*}
-	We set aside the constant term for the moment and turn to the integral. By Lemma \ref{lem: local_spread_lb},
-	\begin{equation*}
-	\limsup_{n \to \infty}\int_{x = \widetilde{\pi}_{1,n}}^{1/2} \frac{4}{\widetilde{\Phi}_{n,r}^2(x)} \leq \limsup_{n \to \infty}\int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{4}{\widetilde{\Phi}_{n,r}^2(x)} dx
-	\end{equation*}
-	where $\pi_{1,\Pbb,r} = \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{(2D)^d}$. We now replace the discrete conductance function $\widetilde{\Phi}_{n,r}$ by the continuous conductance function $\overline{\Phi}_{n,r}$:
-	\begin{align*}
-	\limsup_{n \to \infty}\int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{4}{\widetilde{\Phi}_{n,r}^2(x)} dx & \overset{(i)}{\leq} \limsup_{n \to \infty}\int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{4}{\overline{\Phi}_{n,r}^2(x)} dx \\
-	& = \int_{x = \pi_{1,\Pbb,r}}^{1/2} \limsup_{n \to \infty} \frac{4}{\overline{\Phi}_{n,r}^2(x)} dx \\
-	& \overset{(ii)}{\leq} \int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{4}{\overline{\Phi}_{\Pbb,r}^2(x)} dx \\
-	\end{align*}
-	where $(i)$ follows from Lemma \ref{lem: stepwise_approximation} and $(ii)$ from Lemma \ref{lem: consistency_of_conductance_function} (along with the continuous mapping theorem). Now, we make use of the lower bound on the continuous conductance function of Lemma \ref{lem: continuous_conductance_lb}:
-	\begin{align*}
-	& \int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{4}{\overline{\Phi}_{\Pbb,r}^2(x)} dx \leq \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} \cdot \left( 331776
-	\int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{d}{x} dx + \int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{81dD^2}{r^2x \Log(\frac{\Lambda_{\sigma}^2}{x\lambda_{\sigma}^2})}  \right) dx \\
-	& \leq \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} \cdot \left( 331776
-	\underbrace{\int_{x = \pi_{1,\Pbb,r}}^{1/2} \frac{d}{x} dx}_{:= \mathcal{J}_1} + 
-	81\underbrace{\int_{x = \pi_{1,\Pbb,r}}^{\lambda_{\sigma}^2/(4 \Lambda_{\sigma}^2)} \frac{dD^2}{r^2x \log(\frac{\Lambda_{\sigma}^2}{x\lambda_{\sigma}^2})}}_{:= \mathcal{J}_2} +
-	81\underbrace{\int_{x = \lambda_{\sigma}^2/(4 \Lambda_{\sigma}^2)}^{1/2} \frac{dD^2}{r^2x \log(1 + \frac{4 \lambda_{\sigma}^2}{\Lambda_{\sigma}^2})}}_{:= \mathcal{J}_3}  \right)
-	\end{align*}
-\end{proof}
-
-Simple integration yields the following upper bounds on $\mathcal{J}_1, \mathcal{J}_2, \mathcal{J}_3$:
-\begin{align*}
-\mathcal{J}_1 & \leq d^2 \log\left( \frac{2D\Lambda_{\sigma}^2}{r\lambda_{\sigma}^2} \right) \\
-\mathcal{J}_2 & \leq \frac{dD^2}{r^2} \left[ \log\left(2d\right) + \log\left(\log\left(\frac{2d}{r}\right)\right) \right] \\
-\mathcal{J}_3 & \overset{(iii)}{\leq} 2 \frac{dD^2}{r^2} \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2} \log\left(4 \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2}\right)
-\end{align*}
-where $(iii)$ uses the upper bound $\frac{1}{\log(1 + x)} \leq \frac{1}{x}$.
-
 
 \subsection{Proof of pointwise consistency of conductance function.}
 \label{subsection: proof_of_pointwise consitency_of_conductance_function}
 
 
+\subsection{Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}}
+Throughout this proof, we will refer to the subgraph $G_{n,r}\left[\Csig[\Xbf]\right]$ as $\widetilde{G}_{n,r}$.
 
+Fix arbitrary $v = x_i \in \Csig[\Xbf]$, and let
+\begin{equation*}
+\widetilde{\qbf}_n^{(m)} = e_v \Wbf_{\Csig[\Xbf]}^t, ~~ \widetilde{\qbf}_n = (\widetilde{q}_n^{(1)}, \widetilde{q}_n^{(2)}, \ldots)
+\end{equation*}
+Our goal is to upper bound $\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.
 
+By Lemmas \ref{lem: local_spread_G} and \ref{lem: local_spread_lower_bound},
+\begin{align*}
+\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) & \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, \log\left(\frac{4}{\widetilde{s}_{n,r}}\right) \right\} \nonumber \\
+& \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, 4d\log\left(\frac{2D \Lambda_{\sigma}^2}{\lambda_{\sigma}^2}\right) \right\}
+\end{align*} 
+
+We now upper bound $\tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.  From Lemma \ref{lem: expansion_to_tv_distance}, we have that
+\begin{equation}
+\label{eqn: mixing_time_bound_on_neighborhood_graph}
+\limsup_{n \to \infty} \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \leq \limsup_{n \to \infty} \frac{1400}{3}\left(5 + \int_{\widetilde{s}_{1,n}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt\right)
+\end{equation}
+(As $r$ remains constant and $n \to \infty$, $\Dbf_{xx} > C$ will be fulfilled for any $x \in \Csig[\Xbf]$, and any $C < \infty$.)
+We set aside the constant term for the moment and turn to the integral. By Lemma \ref{lem: local_spread_lower_bound},
+\begin{equation*}
+\limsup_{n \to \infty}\int_{\widetilde{s}_{n,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt \leq \limsup_{n \to \infty}\int_{ s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt
+\end{equation*}
+where $s_{\Pbb,r} = \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{(2D)^d}$. We now replace the discrete conductance function $\widetilde{\Phi}_{n,r}$ by the stepwise approximation to the continuous conductance function, $\overline{\Phi}_{n,r}$:
+\begin{align*}
+\limsup_{n \to \infty}\int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt & \overset{(i)}{\leq} \limsup_{n \to \infty}\int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\overline{\Phi}_{n,r}^2(t)} dt \\
+& = \int_{s_{\Pbb,r}}^{1/2} \limsup_{n \to \infty} \frac{4}{t\overline{\Phi}_{n,r}^2(t)} dt\\
+& \overset{(ii)}{\leq} \int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\overline{\Phi}_{\Pbb,r}^2(t)} dt \\
+\end{align*}
+where $(i)$ follows from Lemma \ref{lem: stepwise_approximation} and $(ii)$ from Lemma \ref{lem: consistency_of_conductance_function} (along with the continuous mapping theorem). Now, we make use of Lemma \ref{lem: continuous_conductance_lower_bound}:
+\begin{align*}
+& \int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\overline{\Phi}_{\Pbb,r}^2(t)} dt \leq \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} \cdot \left( 331776
+\int_{s_{\Pbb,r}}^{1/2} \frac{d}{t} dt + \int_{s_{\Pbb,r}}^{1/2} \frac{81dD^2}{r^2t \Log(\frac{\Lambda_{\sigma}^2}{t\lambda_{\sigma}^2})}  dt\right) \\
+& \leq \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} \cdot \left( 331776
+\underbrace{\int_{s_{\Pbb,r}}^{1/2} \frac{d}{t} dt}_{:= \mathcal{J}_1} + 
+81\underbrace{\int_{s_{\Pbb,r}}^{\lambda_{\sigma}^2/(4 \Lambda_{\sigma}^2)} \frac{dD^2}{r^2t \log(\frac{\Lambda_{\sigma}^2}{t\lambda_{\sigma}^2})} dt}_{:= \mathcal{J}_2} +
+81\underbrace{\int_{\lambda_{\sigma}^2/(4 \Lambda_{\sigma}^2)}^{1/2} \frac{dD^2}{r^2t \log(1 + \frac{4 \lambda_{\sigma}^2}{\Lambda_{\sigma}^2})}dt}_{:= \mathcal{J}_3}  \right)
+\end{align*}
+
+Computing a few simple integrals yields the following upper bounds on $\mathcal{J}_1, \mathcal{J}_2, \mathcal{J}_3$:
+\begin{align*}
+\mathcal{J}_1 & \leq d^2 \log\left( \frac{2D\Lambda_{\sigma}^2}{r\lambda_{\sigma}^2} \right) \\
+\mathcal{J}_2 & \leq \frac{dD^2}{r^2} \left[ \log\left(2d\right) + \log\left(\log\left(\frac{2D}{r}\right)\right) \right] \\
+\mathcal{J}_3 & \overset{(iii)}{\leq} 2 \frac{dD^2}{r^2} \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2} \log\left(4 \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2}\right)
+\end{align*}
+where $(iii)$ uses the upper bound $\frac{1}{\log(1 + x)} \leq \frac{1}{x}$.
+
+Plugging these bounds in to \eqref{eqn: mixing_time_bound_on_neighborhood_graph} gives the desired upper bound on $\tau_{\infty}(\widetilde{q}_n, \widetilde{G}_{n,r})$, which translates to the lower bound of \eqref{eqn: inverse_mixing_time_lower_bound}.
 
 
 

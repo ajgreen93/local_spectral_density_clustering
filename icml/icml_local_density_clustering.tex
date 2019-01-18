@@ -335,8 +335,9 @@ Let $B(x,r) = \set{y \in \Rd: \norm{y - x} \leq r}$ be a closed ball of radius $
 	\textit{Cluster diameter:}
 	There exists $D < \infty$ such that for all $x, x' \in \Csig$:
 	\begin{equation*}
-	\norm{x - x'} \leq D.
+	\norm{x - x'} \leq D,
 	\end{equation*}
+	and \textcolor{red}{$\Csig$ is a convex set.}
 \end{enumerate}
 
 We note that $\sigma$ plays several roles here, precluding arbitrarily narrow clusters and long clusters in \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter}, flat densities around the level set in \ref{asmp: low_noise_density}, and poorly separated clusters in \ref{asmp: cluster_separation}.
@@ -440,15 +441,14 @@ The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other pr
 We now provide an upper bound for $\Psi_{n,r}(\Cset[\Xbf])$.
 \begin{theorem}
 	\label{thm: inverse_mixing_time_lower_bound}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$ and $\delta > 0$, the following statement holds with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then for
-	\begin{equation*}
-	\textcolor{red}{n \geq }
-	\end{equation*}
-	we have
-	\begin{equation*}
-	\Psi_{n,r}(\Cset[\Xbf]) \geq c_d \frac{r^d}{D^d} \frac{\lambda_{\min}^7}{\lambda_{\max}^7} \frac{1}{\log(\lambda_{\max}^2/(\lambda_{\min} r^d \nu_d))}
-	\end{equation*}
-	for \textcolor{red}{$c_d = (1 + \epsilon)$}.
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$, the following statement holds: with probability one
+	\begin{align}
+	\label{eqn: inverse_mixing_time_lower_bound}
+	\liminf_{n \to \infty} & \Psi_{n,r}(\Csig[\Xbf]) \geq \nonumber \\ & c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu + c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) + \nonumber \\
+	& \frac{d^2D^2}{r^2} \bigl( \log d + c_2 \frac{d^2D^2}{r^2} \frac{\Lambda_{\sigma}^{2}}{\lambda_{\sigma}^{2}}c_{\lambda} + \nonumber \\
+	& c_3  + \log \log \mu \bigr) \biggr),
+	\end{align}
+	where $\mu = \log(\frac{2D}{r})$, $c_1 = 3852800/3$, $c_2 = 331776$, and $c_3 = \log 2$ are all dimension free, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$. 
 \end{theorem}
 
 \paragraph{Approximate density cluster recovery with PPR.}
