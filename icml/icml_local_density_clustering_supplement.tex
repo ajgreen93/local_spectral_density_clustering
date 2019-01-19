@@ -38,6 +38,7 @@
 \newcommand{\var}{\mathrm{Var}}
 \newcommand{\Err}{\mathrm{Err}}
 \newcommand{\Log}{\mathrm{Log}}
+\newcommand{\TV}{\mathrm{TV}}
 
 %%% Graph terms
 \newcommand{\cut}{\mathrm{cut}}
@@ -84,6 +85,13 @@
 %%% Algorithm notation
 \newcommand{\ppr}{{\sc PPR}}
 \newcommand{\pprspace}{{\sc PPR~}}
+
+%%% Tilde notation for quantities over the expansion set 
+\newcommand{\wn}{\widetilde{n}}
+\newcommand{\wX}{\widetilde{\Xbf}}
+\newcommand{\wx}{\widetilde{x}}
+\newcommand{\wu}{\widetilde{u}}
+\newcommand{\wPbb}{\widetilde{\Pbb}}
 
 
 \newtheoremstyle{aldenthm}
@@ -726,7 +734,7 @@ The introduction of the stepwise approximation allows us to make use of Lemma \r
 	\liminf_{n \to \infty} \overline{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
 	\end{equation}
 \end{lemma}
-We defer the proof of pointwise consistency to Section \ref{subsection: proof_of_pointwise consitency_of_conductance_function}. For now, we show assume  that \eqref{eqn: consistency_of_stepapprox_conductance_function} is immediately implied by \eqref{eqn: pointwise_consistency_of_conductance_function}.
+We defer the proof of pointwise consistency to Section \ref{subsection: proof_of_pointwise consitency_of_conductance_function}. For now, we show that \eqref{eqn: consistency_of_stepapprox_conductance_function} is immediately implied by \eqref{eqn: pointwise_consistency_of_conductance_function}.
 
 \begin{proof}[Proof of \eqref{eqn: consistency_of_stepapprox_conductance_function}]
 	We take as given that for any $0 < t < 1/2$,
@@ -742,6 +750,47 @@ We defer the proof of pointwise consistency to Section \ref{subsection: proof_of
 
 \subsection{Proof of pointwise consistency of conductance function.}
 \label{subsection: proof_of_pointwise consitency_of_conductance_function}
+
+Throughout, let $\wn = \abs{\Csig[\Xbf]}$, $\wX = \Csig[\Xbf] = \set{\wx_1, \ldots, \wx_{\wn}}$, and 
+\begin{equation*}
+\widetilde{\Pbb}_n := \frac{1}{\wn} \sum_{\wx_i \in \wX} \delta_{\wx_i}
+\end{equation*}
+be the empirical distribution of $\wX$. For $S \subset \wX$, we will denote $\vol(S; \widetilde{G}_{n,r})$ by $\widetilde{\vol}_{n,r}(S)$, and likewise $\cut(S; \widetilde{G}_{n,r})$ by $\widetilde{\cut}_{n,r}(S)$.
+
+Consider a sequence of sets $(S_{\wn})_{\wn \in \mathbb{N}}$, with $u_{\wn} = \1_{S_{\wn}}$ the characteristic function of $S_{\wn}$. Similarly, for $\Sset \subset \Csig$ let $u = \1_{\Sset}$. 
+\begin{lemma}
+	If $u_{\wn} \overset{TL^1}{\to} u$,
+	\begin{equation*}
+	\liminf_{n \to \infty} \frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\wn^2} \geq \widetilde{Q}_{\Pbb,r}(S, \Csig \setminus S) \cdot \left(\int_{\Csig \cap B(x,r)} f(x) \right)
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We note immediately that $n \to \infty$ implies $\wn \to \infty$ with probability one.
+	
+	Now, we can write
+	\begin{align*}
+	 \frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\wn^2} & = \frac{1}{\wn^2} \sum_{i = 1}^{\wn} \sum_{j = 1}^{\wn} u_{\wn}(\wx_i) \bigl( 1 - u_{\wn}(\wx_j) \1(\norm{\wx_i - \wx_j} \leq r) \bigr)  \\
+	& = \int_{\Csig} \left(\int_{\Csig \cap B(x,r)} u_{\wn}(x) \bigl( 1 - u_{\wn}(x') \bigr) d\Pbb_n(x') \right) d\Pbb_n(x) \\
+	& = \int_{\Csig} \left(u_{\wn} \circ T_{\wn}(x)\right) \left(\int_{\Csig \cap B(T_{\wn}(x),r)}  1 - u_{\wn} \circ T_{\wn}(x') d\Pbb(x') \right) d\Pbb(x).
+	\end{align*}
+	
+	Note that
+	\begin{align*}
+	\lim_{n \to \infty} \nu\bigl(B(T_{\wn}(x),r) \setminus B(x,r)\bigr) & = 0 \\
+	\lim_{n \to \infty} \nu\bigl(B(x,r) \setminus B(T_{\wn}(x),r)\bigr) & = 0
+	\end{align*}
+	and therefore 
+	\begin{equation*}
+	\int_{\Csig \cap B(T_{\wn}(x),r)}  1 - u_{\wn} \circ T_{\wn}(x') d\Pbb(x') = \int_{\Csig \cap B(x,r)}  1 - u_{\wn} \circ T_{\wn}(x') d\Pbb(x')
+	\end{equation*}
+	Writing $u_{\wn} \circ T_{\wn}(x') = $
+\end{proof}
+
+
+
+
+
+
 
 
 \subsection{Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}}
