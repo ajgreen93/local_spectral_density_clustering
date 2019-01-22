@@ -1,0 +1,313 @@
+\documentclass{article}
+
+% \usepackage{icml2019}
+% \usepackage[accepted]{icml2019}
+
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\theequation}{A.\arabic{equation}}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs}
+%\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{xr-hyper}
+\usepackage{bm}
+\usepackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+\usepackage{natbib}
+
+\externaldocument{icml_local_density_clustering}
+
+\newcommand{\diam}{\mathrm{diam}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\Err}{\mathrm{Err}}
+\newcommand{\Log}{\mathrm{Log}}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\Id}{\mathrm{Id}}
+
+%%% Graph terms
+\newcommand{\cut}{\mathrm{cut}}
+
+%%% Vectors
+\newcommand{\pbf}{\mathbf{p}}
+\newcommand{\qbf}{\mathbf{q}}
+\newcommand{\ebf}[1]{\mathbf{e}_{#1}}
+\newcommand{\pibf}{\bm{\pi}}
+\newcommand{\rhobf}{\bm{\rho}}
+\newcommand{\Deltabf}{\bm{\Delta}}
+\newcommand{\deltabf}{\bm{\delta}}
+\newcommand{\zbf}{\mathbf{z}}
+
+%%% Random walk vectors
+
+
+%%% Matrices
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Ibf}[1]{\mathbf{I}_{#1}}
+
+%%% Probability distributions (and related items)
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Cbb}{\mathbb{C}}
+\newcommand{\Ebb}{\mathbb{E}}
+
+%%% Sets
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Asig}{\Aset_{\sigma}}
+\newcommand{\Csig}{\Cset_{\sigma}}
+\newcommand{\Asigr}{\Aset_{\sigma,\sigma + r}}
+\newcommand{\Csigr}{\Cset_{\sigma,\sigma + r}}
+
+%%% Operators
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
+%%% Algorithm notation
+\newcommand{\ppr}{{\sc PPR}}
+\newcommand{\pprspace}{{\sc PPR~}}
+
+%%% Tilde notation for quantities over the expansion set 
+\newcommand{\wn}{\widetilde{n}}
+\newcommand{\wX}{\widetilde{\Xbf}}
+\newcommand{\wx}{\widetilde{x}}
+\newcommand{\wz}{\widetilde{z}}
+\newcommand{\wbz}{\widetilde{\bf{z}}}
+\newcommand{\wu}{\widetilde{u}}
+\newcommand{\wPbb}{\widetilde{\Pbb}}
+\newcommand{\wf}{\widetilde{f}}
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+
+
+%\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+
+%\icmltitlerunning{Local clustering of density upper level sets}
+
+\begin{document}
+	
+Let $\pbf = (p_u)_{u \in \Xbf}$ denote the \pprspace vector computed over $G_{n,r}$ (where for ease of reading we suppress dependence on the hyperparameter $\alpha$ and seed node $v$.) 
+	
+\begin{lemma} 
+	\label{lem: setup}
+	Consider running Algorithm \ref{alg: ppr} with any $r < \sigma$ and
+	
+	\begin{equation} 
+	\label{eqn: upper_bound_alpha}
+	\frac{\Psi_{n,r}(\Csig[\Xbf])}{10} \leq \alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}.
+	\end{equation}
+	
+	There exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$ such that the following statements hold for all $v \in \Csig[\Xbf]^g$:
+	\begin{itemize}
+		\item For all $u \in \Cset[\Xbf]$,
+		\begin{equation*}
+		p_u \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\end{equation*}
+		\item For all $u' \in \Csig'[\Xbf]$,
+		\begin{equation*}
+		p_{u'} \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\end{equation*}
+	\end{itemize}
+\end{lemma}
+
+\begin{proof}
+	
+	For $S \subseteq X_1^n$, let $I_{S}$ be a diagonal matrix where $I_{jj} = 1$ if $X_j \in S$ and 0 otherwise. Let $D_S$ be the corresponding degree matrix for the subgraph induced by $S$. $D_S$ is a diagonal matrix where for $X_j \in S$, $(D_S)_{jj} = \sum_{i: X_i \in S} A_{ij}$, and if $X_j \not \in S$ then $(D_S)_{jj} = 0$. Then, define \textit{leakage} and \textit{soakage} vectors
+	
+	\begin{align*}
+	\ell_t & := e_v  (W I_{\Csig[\Xbf]})^t (I - D^{-1} D_{\Csig[\Xbf]}) \\
+	\ell & := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t \\
+	s_t & := e_v (W I_{\Csig[\Xbf]})^t (W I_{G / \Csig[\Xbf]}) \\
+	s & := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t
+	\end{align*}
+	
+	Roughly, the proof will unfold in four steps. The first two will result in the lower bound of (\ref{eqn: lower_bound_PPR_in_cluster}), while the latter two will imply the upper bound in (\ref{eqn: upper_bound_PPR_in_other_cluster}).
+	
+	\begin{enumerate}
+		\item For $u \in \Cset'[\Xbf]$, use the results of \cite{zhu2013} to lower bound $p_v(u) \geq 4/5 \widetilde{\pi}(u) - \widetilde{p}_{\ell}(u)$, where $\widetilde{p}$ is the PPR random walk over the subgraph induced by $\Csig[\Xbf]$, and $\ell$ has bounded norm $||\ell||_1 \leq 2\frac{\Phi^{btw}(\Csig[\Xbf])}{\alpha}$.
+		\item Since $r < \sigma$, there are no edges between $u$ and $G / \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{p}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
+		\item For vertices $u' \in G / \Csig[\Xbf]$, we can upper bound $p_v(u) \leq p_s(u')$. In particular, this hold for all $u' \in \Cset'[\Xbf]pr$.
+		\item Since $r < \sigma$, there are no edges between $u'$ and $G / \Cset'[\Xbf]prthick$. Therefore, the page-rank vector $p_{s}$ will assign no more than $||s||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. Additionally, $s$ has bounded norm $||s||_1 \leq ||\ell||_1$. This will conclude our proof of (\ref{eqn: upper_bound_PPR_in_other_cluster}), and hence Proposition \ref{thm: setup}.
+	\end{enumerate}
+	
+	\paragraph{Step 1}
+	We will begin by restating the results of \cite{zhu2013}.
+	
+	Denote by $\widetilde{p}$ the PageRank vector computed only over the subgraph induced by $\Csig[\Xbf]$.
+	
+	\begin{align} \label{eqn: page_rank_body}
+	\widetilde{p}_v & = \alpha e_v + (1 - \alpha) \widetilde{p}_v \widetilde{W} \\
+	& = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(e_v \widetilde{W}^t \right)
+	\end{align}
+	
+	and correspondingly for the leakage vector
+	
+	\begin{equation*}
+	\widetilde{p}_{\ell} = \alpha \ell + (1 - \alpha) \widetilde{p}_{\ell} \widetilde{W}.
+	\end{equation*}
+	
+	From Lemma 3.1 of \cite{zhu2013} we have for all $u \in \Csig[\Xbf]$
+	
+	\begin{equation*} \label{eqn: zhu_body}
+	p_v(u) \geq \widetilde{p}_v(u) - \widetilde{p}_{\ell}(u).
+	\end{equation*}
+	
+	with $||\ell||_1 \leq \frac{2 \Phi^{btw}(\Csig[\Xbf])}{\alpha}$. Moreover if, as we have specified, $\alpha \leq \frac{1}{9 T_{\infty}(\Csig[\Xbf])}$, Lemma 3.2 of \cite{zhu2013} yields a lower bound on $\widetilde{p}$
+	
+	\begin{equation} \label{eqn: page_rank_mixes}
+	\widetilde{p}_v(u) \geq \frac{4}{5} \widetilde{\pi}(u).
+	\end{equation}
+	
+	\paragraph{Step 2}
+	
+	We turn to upper bounding $\widetilde{p}_{\ell}(u)$. We have
+	
+	\begin{align} \label{eqn: leakage_page_rank_body}
+	\widetilde{p}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{W}^t \right)[u]  \nonumber \\
+	& = \|\ell\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
+	& \overset{\text{(i)}}{=} \|\ell\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
+	& \overset{\text{(ii)}}{\leq} \|\ell\|_1 \frac{1}{d_{\min}(\Csig[\Xbf])} 
+	\end{align}
+	
+	where $\text{(i)}$ follows from the fact that since $r < \sigma$, $E(\Cset'[\Xbf], G / \Csig[\Xbf]) = 0$ and therefore $\ell(u) = 0$. To see $\text{(ii)}$, let $q = \frac{\ell}{\|\ell\|_1}  \widetilde{W}^{t-1}$, and then 
+	
+	\begin{align*}
+	\left(\frac{\ell}{\|\ell\|_1}  \widetilde{W}^t \right)[u] & = \left(q W \right)[u] \\
+	& \leq \|q\|_1 \|W(\cdot, u)\|_{\infty} \\
+	& \overset{\text{(iii)}}{\leq} \frac{1}{d_{\min}(C^{\sigma}_n)}.
+	\end{align*}
+	
+	where $\text{(iii)}$ comes from the fact that $\|u-v\| \leq r$ means $v \in \Csig[\Xbf]$.
+	Combining (\ref{eqn: leakage_page_rank_body}) with (\ref{eqn: page_rank_mixes}), and since $||\ell||_1 \leq 2 \frac{\Phi^{btw}(\Csig[\Xbf])}{\alpha}$, we have
+	
+	\begin{equation*}
+	p_v(u) \geq \frac{4}{5} \widetilde{\pi}(u) - 2\frac{9 \Phi^{btw}(\Csig[\Xbf])}{d_{\min}(\Csig[\Xbf]) \alpha}.
+	\end{equation*}
+	
+	\paragraph{Step 3}
+	To get the corresponding upper bound on $p_v(u')$, we will use the soakage vectors $s$ and $s_t$. We will first argue that $s$ is a worse starting distribution -- meaning it puts uniformly more mass outside the cluster -- than simply starting at $v$.
+	
+	\begin{lemma} \label{lem: gained mass is soaked_body}
+		For all $u' \notin \Csig[\Xbf]$,
+		\begin{equation}
+		p_v(u') \leq p_{s}(u').
+		\end{equation}
+	\end{lemma}
+	
+	The proof of Lemma \ref{lem: gained mass is soaked_body} is left to the supplement. It follows largely the same steps as Lemma 3.1 of \cite{zhu2013}, except over $G / \Csig[\Xbf]$ rather than $\Csig[\Xbf]$. 
+	
+	\paragraph{Step 4}
+	
+	Just as we upper bounded the probability mass $\widetilde{p}_{\ell}$ could assign to any one vertex, we can upper bound 
+	
+	\begin{align} \label{eqn: soakage_page_rank_body}
+	\widetilde{p}_{s}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \widetilde{W}^t \right)[u]  \nonumber \\
+	& = \|s\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
+	& = \|s\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
+	& \leq \|s\|_1 \frac{1}{d_{\min}(\Csig[\Xbf])}.
+	\end{align}
+	
+	Finally, by the definition of $s_t = e_v (W I_{\Csig[\Xbf]})^t (W I_{G / \Csig[\Xbf]})$, letting $q_t = e_v (W I_{\Csig[\Xbf]})^t$ for ease of notation, we have
+	\begin{align*}
+	\|s_t\|_1 & = \|q_t (W I_{G / \Csig[\Xbf]})\|_1 \\
+	& = \sum_{u' \in G} \sum_{u \in G} q_t(u) (W I_{G / \Csig[\Xbf]})[u, u'] \\
+	& = \sum_{u' \in G / \Csig[\Xbf]} \sum_{u \in \Csig[\Xbf]} \frac{q(u)}{d(u)} I(e_{u,u'} \in G) \\
+	& = \sum_{u \in \Csig[\Xbf]} \frac{q(u) (d(u) - d_{\Csig[\Xbf]}(u) )}{d(u)} \\
+	& = \|q_t (I - D^{-1} D_{\Csig[\Xbf]})\|_1 = \|\ell_t\|_1.
+	\end{align*}
+	
+	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\Phi^{btw}(\Csig[\Xbf])}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
+	
+\end{proof}
+
+\begin{lemma}
+	\label{lem: ball_bounds_in_probability}
+	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
+	\begin{align*}
+	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
+	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
+	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
+	\end{align*}
+	 where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
+\end{lemma}
+
+The statement follows immediately from Lemma \ref{lem: ball_bounds}.
+
+\subsection{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
+
+We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
+\begin{equation*}
+\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
+\end{equation*}
+As a result Lemma \ref{lem: setup} implies
+\begin{align}
+\label{eqn: theorem_4_1}
+p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
+p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
+\end{align}
+
+We then have
+\begin{align*}
+\widetilde{\pi}_{n,r}(u) & \geq \frac{D_{\min}(\Csig[X]; \widetilde{G}_{n,r})}{\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})} \\
+& \geq \frac{D_{\min}(\Csig[X]; \widetilde{G}_{n,r})}{\wn \widetilde{D}_{\max}}
+\end{align*}
+and application of Lemma \ref{lem: ball_bounds_in_probability} yields
+\begin{equation}
+\label{eqn: theorem_4_2}
+\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{equation}
+and
+\begin{equation}
+\label{eqn: theorem_4_3}
+\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
+\end{equation}
+with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$.
+
+Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
+\begin{align*}
+p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
+p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{align*}
+for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
+
+
+\bibliography{icml_bib}
+\bibliographystyle{plain}
+	
+\end{document}

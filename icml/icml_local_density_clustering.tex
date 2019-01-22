@@ -31,9 +31,11 @@
 \newcommand{\1}{\mathbf{1}}
 \newcommand{\Phibf}{\mathbf{\Phi}}
 \newcommand{\Psibf}{\mathbf{\Psi}}
+\newcommand{\dist}{\mathrm{dist}}
 
 %%% Vectors
 \newcommand{\pbf}{\mathbf{p}}
+\newcommand{\qbf}{\mathbf{q}}
 \newcommand{\ebf}[1]{\mathbf{e}_{#1}}
 \newcommand{\pibf}{\bm{\pi}}
 
@@ -79,8 +81,21 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
 
-\theoremstyle{remark}
+\newtheoremstyle{aldenrmrk}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\itshape} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenrmrk}
 \newtheorem{remark}{Remark}
+
+
+
 
 
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
@@ -123,24 +138,24 @@
 	we analyze the personalized PageRank (\ppr) algorithm in the classical statistical learning setup,
 	where we obtain samples from an unknown distribution, and aim to identify connected
 	regions of high-density (density clusters).
-	With respect to a neighborhood graph formed over these samples, we provide guarantees for a pair of cluster quality criteria evaluated on empirical analogues to these density clusters. As a result, the \pprspace algorithm is shown to 
+	We introduce a bicriteria for evaluating cluster quality and provide guarantees for these criteria evaluated on empirical analogues to these density clusters. As a result, the \pprspace algorithm run over a neighborhood graph is shown to 
 	extract sufficiently salient density clusters.
 \end{abstract}
 
 \section{Introduction}
 \label{introduction}
 
-Let $\mathbf{X} := (x_1, \ldots, x_n)$ with $x_i \in \Rd$ for $i = 1,\ldots,n$. Our statistical learning task is clustering: splitting data into groups which satisfy some notion of within-group similarity and between-group difference. 
+Let $\mathbf{X} := (x_1, \ldots, x_n)$ be a sample drawn i.i.d from a distribution $\Pbb$ with density $f$ supported on $\Rd$. Our statistical learning task is clustering: splitting data into groups which satisfy some notion of within-group similarity and between-group difference. 
 
-In particular, spectral clustering methods are a family of powerful non-parametric clustering algorithms. Given a symmetric adjacency matrix $\Abf \in \Reals^{n \times n}$ with $(i,j)$th entry representing the similarity between data points $x_i$ and $x_j$, we form the random walk transition probability matrix $\Wbf$, and corresponding graph Laplacian matrix $\Lbf$\footnote{Often, either of the Laplacian matrices  $\Lbf_{sym} := \Dbf^{\frac{1}{2}}\Wbf \Dbf^{-\frac{1}{2}}$ or $\Lbf_{unn} := \Dbf - \Abf$ are used instead.}:
+Spectral clustering methods are a family of powerful non-parametric clustering algorithms. Let $G = (V,E)$ be an unweighted and undirected graph, with $\Abf \in \Reals^{V \times V}$ the symmetric adjacency where $A_{uv} = 1$ if $(u,v) \in G$. We form the random walk transition probability matrix $\Wbf$, and corresponding graph Laplacian matrix $\Lbf$\footnote{Often, either of the Laplacian matrices  $\Lbf_{sym} := \Dbf^{\frac{1}{2}}\Wbf \Dbf^{-\frac{1}{2}}$ or $\Lbf_{unn} := \Dbf - \Abf$ are used instead.}:
 \begin{equation}
 \label{eqn: random_walk_laplacian}
 \Wbf := \Dbf^{-1}\Abf; ~~~ \Lbf = \Ibf{n} - \Wbf
 \end{equation}
-where the degree matrix $\Dbf$ is a diagonal matrix with $\Dbf_{ii} := \sum_j \Abf_{ij}$, and $\Ibf{n}$ is the $n \times n$ identity matrix.
+where the degree matrix $\Dbf$ is a diagonal matrix with $\Dbf_{uu} := \sum_{v \in V} \Abf_{uv}$, and $\Ibf{n}$ is the $n \times n$ identity matrix.
 
-Roughly speaking, spectral clustering techniques first embed the data $\Xbf$ using the spectrum of the graph Laplacian, and subsequently 
-use this \emph{spectral embedding} to find a clustering of the data.
+Roughly speaking, spectral clustering techniques first learn an embedding the data $\Xbf$ using the spectrum of the graph Laplacian, and subsequently 
+apply a simple clustering technique (such as k-means) to this \emph{spectral embedding}.
 When applied to large graphs (or large point clouds) classical global spectral 
 methods can be computationally cumbersome and 
 insensitive to the local geometry of the distribution of the samples
@@ -149,81 +164,100 @@ This in turn has led to the investigation of local spectral algorithms \citep{sp
 which leverage locally-biased spectra computed using random walks around 
 a user-specified seed node. 
 
-A natural model to consider when analyzing point cloud data such as $\Xbf$ is the following:
-\begin{equation}
-x_i \sim \Pbb, ~~~ \text{independently, for $i = 1,\ldots,n$},
-\end{equation} 
-with $f$ the density function of $\Pbb$ with respect to the uniform measure over $\Rd$. In this case, we are interested in understanding what the output of a clustering algorithm on this finite sample reveals about the unknown density $f$. For $\lambda > 0$ and the upper level set $\set{x: f(x) \geq \lambda}$, it is intuitive \cite{hartigan1981,chaudhuri2010} to define clusters as the connected components $\mathbb{C}_f(\lambda)$ of the upper level set; we call these connected regions of high density \textit{density clusters}, and study the ability of spectral methods to identify such clusters. 
+We are interested in understanding what the output of a clustering algorithm on $\Xbf$ reveals about the unknown density $f$. For $\lambda > 0$ and the upper level set $\set{x: f(x) \geq \lambda}$, it is intuitive \cite{hartigan1981,chaudhuri2010} to define clusters as the connected components $\mathbb{C}_f(\lambda)$ of the upper level set; we call these connected regions of high density \textit{density clusters}, and study the ability of spectral methods to identify such clusters. 
 
 \paragraph{Graph connectivity criteria.}
 
-A somewhat more standard mode of understanding spectral clustering methods is to view them as approximating some graph connectivity criteria.
+A somewhat more standard mode of understanding spectral clustering methods is to view them as approximating some graph connectivity criteria. There are many graph-based measures which assess the cluster quality of a subset $S \subseteq V$ (or more generally the quality of a partition $S_1 \cup \ldots \cup S_m = V$, for $m \geq 2$. See \cite{yang2015,fortunato2010} for an overview.)
 
-For $\Abf$ as before, consider the graph $G  = (V,E)$, with vertices $V = \set{v_1, \ldots, v_n}$ corresponding to the $n$ rows of $\Abf$, and (possibly weighted) edges $E = \set{(v_i,v_j,\Abf_{ij}): 1 \leq i < j \leq n, \Abf_{ij} > 0}$ (Since $\Abf$ is symmetric, $G$ is an undirected graph; also, by convention, we preclude self-loops, hence $i \neq j$). There are many \cite{yang2015,fortunato2010} graph-based measures which assess the cluster quality of a subset $S \subseteq V$ (or more generally the quality of a partition $S_1 \cup \ldots \cup S_m = V$, for $m \geq 2$.)
-
-Arguably a natural way to assess cluster quality is via a pair of criteria capturing the \textit{external} and \textit{internal connectivity} of $S$, respectively.  As the names suggest, external connectivity should relate to the number of edges between $S$ and its complement $V / S$ (hereafter denoted $S^c$), while internal connectivity in turn measures the number of edges between subsets within $S$. The graph clustering task then becomes to find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. 
-
-We will assess the external connectivity of a subset $S \subseteq V$ through its normalized cut. The cut of $S$ is
+Arguably a natural way to assess cluster quality is via a pair of criteria capturing the \emph{external} and \emph{internal connectivity} of $S$, respectively.  We define the external connectivity of a subset $S \subseteq V$ to be its normalized cut. For $S' \subset V$, the cut between $S$ and $S'$ is
 \begin{equation*}
-\cut(S; G) := \sum_{u \in S} \sum_{v \in S^c} \1\left((u,v) \in E \right)
+\cut(S, S'; G) := \sum_{u \in S} \sum_{v \in S'} \1\left((u,v) \in E \right)
 \end{equation*}
--- where $S^c = V / S$ is the complement of $S$ in $V$ -- and the volume of $S$ is
+and the volume of $S$ is
 \begin{equation*}
 \vol(S; G) := \sum_{u \in S} \sum_{v \in V} \1\left((u,v) \in E \right).
 \end{equation*}
-Then, the \emph{normalized cut} of $S$ is given by
+Then, the \emph{normalized cut} of $S$ is
 \begin{equation}
 \label{eqn: norm_cut}
 \Phi(S; G) := \frac{\cut(S; G)}{ \min\left\{\vol(S; G), \vol(S^c; G) \right\} }
 \end{equation} 
-Intuitively, a set with low \textit{normalized cut} has many more edges which do not cross the cut than edges which do cross the cut. 
+(where we abbreviate $\cut(S; G) = \cut(S; S^c; G)$).
 
-Given $S \subseteq V$, the subgraph induced by $S$ is given by $G[S] = (S, E_S)$, where $(u,v) \in E_S$ if both $u$ and $v$ are in $S$ and $(u,v) \in E_S$. Letting $\abs{S} = m$, $\Abf_S$ then denotes the $m \times m$ adjacency matrix representation of $G[S]$; similarly, $\Dbf_S$ is the diagonal degree matrix with entries $(\Dbf_{S})_{ii} = \sum_{j: v_j \in S} \Abf_{ij}$, and $\Wbf = \Dbf_S^{-1} \Abf_S$ is the corresponding random walk matrix (again, defined only over $G[S]$.)
 
-Our internal connectivity parameter $\Psi(S)$ will capture the time it takes for the random walk governed by $\Wbf_S$ to mix (that is, approach a stationary distribution) uniformly over $S$. Denoting the stationary distribution of this random walk by $\widetilde{\pibf} = (\widetilde{\pi}_{1}, \ldots, \widetilde{\pi}_{m})$, the \emph{relative pointwise mixing time} $\tau_{\infty}(S; G[S])$ is defined to be: the smallest integer $t_0 > 0$ such that for all $v = v_i,v' = v_j \in S$:
+Given $S \subseteq V$, the subgraph induced by $S$ is given by $G[S] = (S, E_S)$, where $(u,v) \in E_S$ if both $u$ and $v$ are in $S$ and $(u,v) \in E_S$.
+Our internal connectivity parameter $\Psi(S)$ will capture the time it takes for the random walk over $G[S]$ to mix (that is, approach a stationary distribution) uniformly over $S$. Letting $\abs{S} = m$, $\Abf_S$ denotes the $m \times m$ adjacency matrix representation of $G[S]$; similarly, $\Dbf_S$ is the diagonal degree matrix with entries $(\Dbf_{S})_{ii} = \sum_{j: v_j \in S} \Abf_{ij}$, and $\Wbf = \Dbf_S^{-1} \Abf_S$ is the corresponding random walk matrix (again, defined only over $G[S]$.)
+
+For $v \in V$ we write
+\begin{equation}
+\label{eqn: random_walk}
+\pibf = (\pi_{u})_{u \in S}, ~~ q_{vu}^{(m)} = e_v\Wbf_S^m e_u
+\end{equation}
+for the stationary distribution and the $m$-step transition probability of the random walk over $G[S]$ originating at $v$.
+\footnote{Given a starting node $v$ and and a random walk defined by transition probability matrix $\mathbf{P}$, the rotation $e_v \mathbf{P}^t$ is used to denote the distribution of the random walk after $t$ steps. }
+(Of course, given the definition of $\Wbf_S$ it is of course well known that the stationary distribution $\widetilde{\pibf}$ is given by $\widetilde{\pi}_{u} = (\Dbf_{S})_{uu} / \vol(S; G[S])$.)
+
+The \emph{relative pointwise mixing time} is defined as 
 \begin{equation*}
-\abs{\frac{e_v \Wbf_S^t - \widetilde{\pi}_{j}}{\widetilde{\pi}_{j}}} \leq \frac{1}{4}
+\tau_{\infty}(\qbf; G[S]) := \min\set{m: \forall u,v \in V, \frac{\abs{q_{vu}^{(m)} - \pi_u}}{\pi_u} \leq 1/4} 
 \end{equation*}
-for all $t > t_0$
-\footnote{Given a starting node $v$ and and a random walk defined by transition probability matrix $\mathbf{P}$, the rotation $e_v \mathbf{P}^t$ is used to denote the distribution of the random walk after $t$ steps.} (Of course, given the definition of $\Wbf_S$ it is well known that the stationary distribution $\pibf_S$ will be defined by $\widetilde{\pi}_{i} = (\Dbf_{S})_{ii} / \vol(S; G[S])$. 
+where $\qbf = (\qbf_v^{(1)}, \qbf_v^{(2)}, ...)_{v \in V}, \qbf_v^{(m)} = (q_{vu}^{(m)})_{u \in V}$. 
 
-Intuitively, the smaller the pointwise mixing time, the more connected every pair of points $v$ and $v'$ are in the graph $G[S]$. Therefore, the internal connectivity parameter $\Psi(S; G)$ is simply one over the mixing time:
+The internal connectivity parameter $\Psi(S; G)$ is simply one over the mixing time:
 \begin{equation}
 \label{eqn: inv_mixing_time}
-\Psi(S; G) = \frac{1}{\tau_{\infty}(S; G[S])}
+\Psi(S; G) = \frac{1}{\tau_{\infty}(\qbf; G[S])}
 \end{equation}
 
-If $S$ has normalized cut no greater than $\Phi$, and inverse mixing time no less than $\Psi$, we will refer to it as a $(\Phi,\Psi)$-cluster. Both local \cite{zhu2013} and global \cite{kannan04} spectral algorithms have been shown to output clusters (or partitions) which provably satisfy approximations to the optimal $(\Phi, \Psi)$-cluster (or partition) for a given graph $G$. \footnote{In the case of \cite{kannan04}, the internal connectivity parameter $\phi$ is actually the conductance, i.e. the minimum normalized cut within the subgraph $G[S]$. See Theorem 3.1 for details; however, note that $\phi^2 / \log(\vol(S)) \leq O(\Psi)$, and so the lower bound on $\phi$ translates to a lower bound on $\Psi$.}
+The graph clustering task is thus find a subset $S$ (or, for global algorithms, a partition $S_1 \cup \ldots \cup S_m = V$), which has both small external and large internal connectivity. If $S$ has normalized cut no greater than $\Phi$, and inverse mixing time no less than $\Psi$, we will refer to it as a $(\Phi,\Psi)$-cluster. Both local \cite{zhu2013} and global \cite{kannan04} spectral algorithms have been shown to output clusters (or partitions) which provably satisfy approximations to the optimal $(\Phi, \Psi)$-cluster (or partition) for a given graph $G$. \footnote{In the case of \cite{kannan04}, the internal connectivity parameter $\phi$ is actually the conductance, i.e. the minimum normalized cut within the subgraph $G[S]$. See Theorem 3.1 for details; however, note that $\phi^2 / \log(\vol(S)) \leq O(\Psi)$, and so the lower bound on $\phi$ translates to a lower bound on $\Psi$.}
 
 \paragraph{Personalized PageRank.}
 As mentioned previously, global algorithms which find spectral cuts may be computationally infeasible for large graphs; in this setting, local algorithms may be preferred or even required. We will restrict our attention in particular to one such popular algorithm: \emph{personalized PageRank} (\ppr). The personalized PageRank algorithm was first introduced by \cite{haveliwala2003} and variants of this algorithm have been studied further in several recent works \citep{spielman2011,spielman2014,zhu2013,anderson2006,mahoney2012}. 
 
-The random walk matrix $\Wbf$ over the graph $G = (V,E)$ with associated adjacency matrix $\Abf$ is given by (\ref{eqn: random_walk_laplacian}). \pprspace is then defined with respect to the following inputs: a user-specified seed node $v_i \in V$ , and  $\alpha \in [0,1]$ a teleportation parameter. Letting $v = v_i$ for notational simplicity, and $e_{v}$ be the indicator vector for $v$ (meaning $e_v$ has a $1$ in the $i$th location and $0$ everywhere else), the \emph{PPR vector} is given by the recursive formulation
+The random walk matrix $\Wbf$ over the graph $G = (V,E)$ with associated adjacency matrix $\Abf$ is given by (\ref{eqn: random_walk_laplacian}). \pprspace is then defined with respect to the following inputs: a user-specified seed node $v \in V$ , and  $\alpha \in [0,1]$ a teleportation parameter. Letting $e_{v}$ be the indicator vector for $v$ (meaning $e_v$ has a $1$ in the $v$th location and $0$ everywhere else), the \emph{PPR vector} is the solution to the following linear equation:
 \begin{equation}
 \label{eqn: ppr_vector}
 \pbf(v,\alpha;G) := \alpha \ebf{v} + (1 - \alpha) \pbf(v,\alpha;G) \Wbf
 \end{equation}
 We note in passing that, for $\alpha > 0$, the vector $\pbf(v,\alpha;G)$ can be well-approximated by a simple local computation (of a random walk with restarts at the node $v$.) We also point out that, from a density clustering standpoint, since density clusters are inherently local, using the PPR algorithm eases the analysis, and as we will observe in the sequel our analysis requires fewer global regularity conditions relative to more classical global spectral algorithms. 
 
-To compute a cluster $\widehat{C} \subset V$ using the \pprspace vector, we will take sweep cuts of $\pbf(v, \alpha; G)$. Denote the entries of $\pbf(v, \alpha; G)$ by $\pbf(v, \alpha; G) = (p_1, \ldots, p_n)$, and let the \emph{stationary distribution} $\pibf$ of the random walk defined by $\Wbf$ be given by
-\begin{equation*}
-\pibf = (\pi_1, \ldots, \pi_n), ~~~ \pi_j := \frac{\Dbf_{jj}}{\vol(V; G)}.
-\end{equation*}
-Then, for a number $\beta \geq 0$, the sweep cut $S_\beta$ is
+To compute a cluster $\widehat{C} \subset V$ using the \pprspace vector, we will take sweep cuts of $\pbf(v, \alpha; G)$. To do so we require another parameter $\pi_0$. For a number $\beta \geq 0$, the sweep cut $S_\beta$ is then
 \begin{equation}
 \label{eqn: sweep_cuts}
-S_\beta = \set{u_j \in V: p_j > \beta \pi_j}.
+S_\beta = \set{u \in V: p_u > \beta \pi_{0}}.
 \end{equation}
 We will choose one such sweep cut to be our cluster estimate $\widehat{C}$.  
-(We delay formal introduction of the local clustering algorithm we analyze until \ref{sec: background}, after we have given a method for forming a graph over the data $\Xbf$.)
 
-\paragraph{Large sample behavior.}
+\paragraph{Neighborhood graph.}
 
-Let $(r_n)$ be a sequence of positive numbers. Given a sequence of kernel functions $k_n: \Rd \times \Rd \to [0,\infty)$ of the form $k_n(x,x') = k(\norm{x - x'}/ r_n)$ for $k$ a non-increasing function, and data $\Xbf = \set{x_1, \ldots, x_n}$ sampled from $\Pbb$ as before, form the (weighted, complete) similarity graph $G_n = (\Xbf, E_n)$ with $E_n = \set{k(x_i,x_j): 1 \leq i < j \leq n}$. (Here, $\norm{\cdot}$ is used to denote Euclidean norm). 
+To formally introduce the local clustering algorithm we consider, we must first give a method for forming a graph over the data $\Xbf$. 
 
-In this context, continuous analogues to (for instance) normalized cut have been defined, over the data-manifold rather than the graph, and convergence of finite sample graph-theoretic functionals to their continuous counterparts has been shown
+Let $(r_n)$ be a sequence of positive numbers. Given a sequence of kernel functions $k_n: \Rd \times \Rd \to [0,\infty)$ of the form $k_n(x,x') = k(\norm{x - x'}/ r_n)$ for $k$ a non-increasing function, and data $\Xbf = \set{x_1, \ldots, x_n}$ sampled from $\Pbb$ as before, form the \emph{neighborhood graph} $G_n = (\Xbf, E_n)$ with $E_n = \set{k(x_i,x_j): 1 \leq i < j \leq n}$. (Here, $\norm{\cdot}$ is used to denote Euclidean norm). 
+
+Algorithm \ref{alg: ppr} will be the simple variant of PPR we analyze. It will take as input the data $\Xbf$ along with user-specified parameters $r, \alpha$, $\pi_0$, and $v \in \Xbf$. 
+\begin{algorithm}
+	\caption{PPR on a neighborhood graph}
+	\label{alg: ppr}	
+	{\bfseries Input:} data $\Xbf$, radius $r$, teleportation parameter $\alpha \in [0,1]$, seed node $v \in \Xbf$, target $\pi_0$. \\
+	{\bfseries Output:} $\widehat{C} \subset V$.
+	\begin{algorithmic}[1]
+		\STATE Form the neighborhood graph $G_{n,r}$ as given in (\ref{eqn: neighborhood_graph})
+		\STATE Compute PPR vector $\pbf(v, \alpha; G_{n,r})$  as defined by (\ref{eqn: ppr_vector}).
+		\STATE For $\beta \in (\frac{3}{10}, \frac{1}{2})$ compute sweep cuts $S_{\beta}$ as defined by (\ref{eqn: sweep_cuts}).
+		\STATE Return
+		\begin{equation*}
+		\label{eqn: sweep_cuts_min_conductance}
+		\widehat{C} = \argmin_{\beta \in (\frac{3}{10}, \frac{1}{2})} \Phi(S_{\beta}; G_{n,r})
+		\end{equation*}
+	\end{algorithmic}
+\end{algorithm}
+
+We note that the choice of a specific interval such as $(\frac{3}{10}, \frac{1}{2})$ for the range of $\beta$ is standard in the analysis of \pprspace algorithms. 
+
+It is worth calling attention to some other work on computing the normalized cut over neighborhood graphs. In this context, continuous analogues to (for instance) normalized cut have been defined, over the data-manifold rather than the graph, and convergence finite sample graph-theoretic functionals to their continuous counterparts has been shown
 \cite{garciatrillos16, arias-castro12, maier11}.
-However these continuous analogues are not always easily interpretable -- and their corresponding minimizers not always easily identifiable -- for the particular density function under consideration. Of course, relating these partitions to the arguably more simply defined high density clusters can be also challenging in general. Intuitively, however, under the right conditions such high-density clusters should have more edges within themselves than to the remainder of the graph. We formalize this intuition next.
+However, in addition to the graph-minimization problem being computationally infeasible, these continuous analogues are not always easily interpretable -- and their corresponding minimizers not always easily identifiable -- for the particular density function under consideration. Of course, relating these partitions to the arguably more simply defined high density clusters can be also challenging in general. Intuitively, however, under the right conditions such high-density clusters should have more edges within themselves than to the remainder of the graph. We formalize this intuition next.
 
 %It is worth pointing out that in this context, some theory has been developed regarding how graph theoretic quantities such as the normalized cut $\Phi$ (and others) relate to properties of the underlying distribution $f$ as well as the kernel function $k$. Such analyses typically proceed by defining a continuous analogue to the measure of cluster quality under consideration. Then, under appropriate specification of $k$ and a proper schedule of $(r_n)$, convergence of clusters output by spectral (and other) algorithms to the corresponding minima of these continuous analogues has been shown \cite{vonluxburg2008, garciatrillos18}.
 
@@ -254,14 +288,20 @@ For a given high density cluster $\Cset \subseteq \Cbb_f(\lambda)$, we call $\Cs
 \end{definition}
 
 
-Our results can now be summarized by the following two points:
+Our results can now be summarized by the following points:
 
 \begin{enumerate}
 	\item 
-	Under a natural set of geometric conditions\footnote{We formally introduce the geometric conditions in Section \ref{sec: background}. They preclude clusters which are too thin and long, or those for which the gap in density between the high density area and the outside is not sufficiently large}, the normalized cut and inverse mixing time of an empirical density cluster $\Cset[\Xbf]$ can be bounded. Theorems \ref{thm: conductance_upper_bound} and \textcolor{red}{Theorem 2} provide an upper and lower bound, respectively
+	Under a natural set of geometric conditions
+	\footnote{We formally introduce the geometric conditions in Section \ref{sec: background}. They preclude clusters which are too thin and long, or those for which the gap in density between the high density area and the outside is not sufficiently large}, 
+	the normalized cut of an empirical density cluster $C[\Xbf]$ can be bounded. Theorem \ref{thm: conductance_upper_bound} provides an upper bound.
+
+	\item Under largely the same set of geometric conditions to Theorem \ref{thm: conductance_upper_bound}, Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} provides a lower bound on the inverse mixing time of a random walk over $C[\Xbf]$. Theorem \ref{thm: inverse_mixing_time_lower_bound} gives a tighter lower bound, but requires the additional (restrictive) assumption of convexity.
 	
 	\item 
-	We show these bounds on the graph connectivity criteria have algorithmic consequences for personalized PageRank. An immediate consequence of Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, along with the previous work of \cite{zhu2013}, is to yield an upper bound on the normalized cut of the set $\widehat{C}$ output by Algorithm \ref{alg: ppr}, as well as upper bounding the symmetric set difference between $\widehat{C}$ and $\Cset[\Xbf]$. Furthermore, in \ref{sec: consistent_cluster_estimation_with_ppr} we show that a careful analysis of the form typical to local clustering algorithms yields Theorem \ref{thm: consistent_recovery_of_density_clusters}, which states that Algorithm \ref{alg: ppr}, properly initialized, performs consistent density cluster estimation in the sense of (\ref{eqn: consistent_density_cluster_recovery}).
+	In Section \ref{sec: consistent_cluster_estimation_with_ppr}, we show these bounds on the graph connectivity criteria have algorithmic consequences for personalized PageRank. we show that a careful analysis of the form typical to local clustering algorithms yields Theorem \ref{thm: consistent_recovery_of_density_clusters}, which states that Algorithm \ref{alg: ppr}, properly initialized, performs consistent density cluster estimation in the sense of (\ref{eqn: consistent_density_cluster_recovery}).
+	
+	\item Corollary \ref{cor: ppr_cluster} follows as an immediate consequence of Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, along with the previous work of \cite{zhu2013}. It gives an upper bound on the normalized cut of the set $\widehat{C}$ output by Algorithm \ref{alg: ppr}, as well as upper bounding the symmetric set difference between $\widehat{C}$ and $\Cset[\Xbf]$.
 \end{enumerate}
 
 \paragraph{Organization.}
@@ -289,17 +329,30 @@ Perhaps most similar to our results are \citep{vempala2004,shi2009,schiebinger20
 which study the consistency of spectral algorithms in recovering the latent labels in certain 
 parametric and non-parametric mixture models. These results focus on global rather than local algorithms, and as such impose global rather than local conditions on the nature of the density. Moreover, they do not in general ensure recovery of density clusters which is a focus of our work.
 
-\section{Background and Assumptions.}
+\section{Graph Quality Criteria on Well-Conditioned Density Clusters.}
 \label{sec: background}
-
-We begin by introducing an defining well-conditioned density clusters before turning to formally define the PPR algorithm under consideration, Algorithm \ref{alg: ppr}, and discussing the choice of tuning-parameters.
-
-\subsection{Well-conditioned density clusters.}
 
 In order to provide meaningful bounds on the normalized cut and inverse mixing time of an empirical density cluster $\Cset[\Xbf]$, we must introduce some assumptions on the density $f$. 
 
 Let $B(x,r) = \set{y \in \Rd: \norm{y - x} \leq r}$ be a closed ball of radius $r$ around the point $x$.  Given a set $\Aset \subset \Rd$, and a number $\sigma > 0$, define the $\sigma$-expansion of $\Aset$ to be $\Asig = \Aset + B(0,\sigma) = \set{y \in \Rd: \inf_{x \in \Aset} \norm{y - x} \leq \sigma}$. We are now ready to give the assumptions, which we state with respect to a density cluster $\Cset \in \Cbb_f(\lambda)$ for some $\lambda > 0$, and expansion parameter $\sigma > 0$:
 \begin{enumerate}[label=(A\arabic*)]
+	\item
+	\label{asmp: cluster_separation}
+	\textit{Cluster separation:}
+	For all $\Cset' \in \Cbb_f(\lambda)$,
+	\begin{equation*}
+	\dist(\Csig,\Csig') > \sigma,
+	\end{equation*}
+	where $\dist(\Aset,\Aset') = \min_{x \in \Aset} \dist(x,\Aset')$ for $\Aset' \subset \Rd$. 
+	
+	\item
+	\label{asmp: cluster_diameter}
+	\textit{Cluster diameter:}
+	There exists $D < \infty$ such that for all $x, x' \in \Csig$:
+	\begin{equation*}
+	\norm{x - x'} \leq D.
+	\end{equation*}
+	
 	\item
 	\label{asmp: bounded_density}
 	\textit{Bounded density within cluster:} There exist numbers $0 < \lambda_{\sigma} <  \Lambda_{\sigma} < \infty$ such that:
@@ -315,94 +368,23 @@ Let $B(x,r) = \set{y \in \Rd: \norm{y - x} \leq r}$ be a closed ball of radius $
 	
 	\item 
 	\label{asmp: low_noise_density}
-	\textit{Low noise density:} For some $\gamma > 0 $, there exists a constant $c_1 > 0$ such that for all $x \in \Rd$ with $0 < \rho(x, \Csig) \leq \sigma$,
+	\textit{Low noise density:} For some $\gamma > 0 $, there exists a constant $c_1 > 0$ such that for all $x \in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,
 	\begin{equation*}
-	\inf_{x' \in \Csig} f(x') - f(x) \geq c_1 \rho(x, \Csig)^{\gamma},
+	\inf_{x' \in \Csig} f(x') - f(x) \geq c_1 \dist(x, \Csig)^{\gamma},
 	\end{equation*}
-	where $\rho(x,\Aset) = \min_{x_0 \in \Aset} \norm{x - x_0}$ for $\Aset \subset \Rd$.
-	
-	\item
-	\label{asmp: cluster_separation}
-	\textit{Cluster separation:}
-	For all $\Cset' \in \Cbb_f(\lambda)$,
-	\begin{equation*}
-	\rho(\Csig,\Csig') > \sigma,
-	\end{equation*}
-	where $\rho(\Aset,\Aset') = \min_{x \in \Aset} \rho(x,\Aset')$ for $\Aset' \subset \Rd$. 
-	
-	\item
-	\label{asmp: cluster_diameter}
-	\textit{Cluster diameter:}
-	There exists $D < \infty$ such that for all $x, x' \in \Csig$:
-	\begin{equation*}
-	\norm{x - x'} \leq D.
-	\end{equation*}
+	where $\dist(x,\Aset) = \min_{x_0 \in \Aset} \norm{x - x_0}$ for $\Aset \subset \Rd$.
 \end{enumerate}
 
-We note that $\sigma$ plays several roles here, precluding arbitrarily narrow clusters and long clusters in \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter}, flat densities around the level set in \ref{asmp: low_noise_density}, and poorly separated clusters in \ref{asmp: cluster_separation}.
+We note that $\sigma$ plays several roles here, precluding arbitrarily narrow clusters and long clusters in \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density}, flat densities around the level set in \ref{asmp: low_noise_density}, and poorly separated clusters in \ref{asmp: cluster_separation}.
 
-Assumptions \ref{asmp: bounded_density}-\ref{asmp: cluster_separation} are used to upper bound $\Phi(\Cset[\Xbf]; G_{n,r})$, whereas \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} are necessary to lower bound $\Psi(\Cset[\Xbf]; G_{n,r})$. We note that the lower bound on minimum density in (\ref{eqn: bounded_density}) and \ref{asmp: cluster_separation} combined are similar to the $(\sigma,\epsilon)$-saliency of \cite{chaudhuri2010}, a standard density clustering assumption, while \ref{asmp: low_noise_density} is seen in, for instance, \cite{singh2009}, (as well as many other works on density clustering and level set estimation.) It is worth highlighting that these assumptions are all local in nature, a benefit of studying a local algorithm such as PPR.
+Assumptions \ref{asmp: cluster_separation}, \ref{asmp: bounded_density} and \ref{asmp: low_noise_density} are used to upper bound $\Phi(\Cset[\Xbf]; G_{n,r})$, whereas \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density} are necessary to lower bound $\Psi(\Cset[\Xbf]; G_{n,r})$. We note that the lower bound on minimum density in (\ref{eqn: bounded_density}) and \ref{asmp: cluster_separation} combined are similar to the $(\sigma,\epsilon)$-saliency of \cite{chaudhuri2010}, a standard density clustering assumption, while \ref{asmp: low_noise_density} is seen in, for instance, \cite{singh2009}, (as well as many other works on density clustering and level set estimation.) It is worth highlighting that these assumptions are all local in nature, a benefit of studying a local algorithm such as PPR.
 
-Now we make the crucial distinction between the assumptions made in density clustering, and the stronger conditions we will require here. First, we introduce
-\begin{align*}
-\mathbf{\Phi}(\sigma, \lambda,\lambda_{\sigma},\gamma) & := \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{\sigma^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} \\
-\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D) & := \frac{\sigma^d}{D^d} \frac{\lambda_{\sigma}^7}{\Lambda_{\sigma}^7} \frac{1}{\log(\Lambda_{\sigma}^2/(\lambda_{\sigma} \sigma^d \nu_d))}.
-\end{align*}
+We are ready to provide bounds on the graph quality bicriteria. For notational simplicity, hereafter for $S \subseteq \Xbf$ we will refer to $\Phi(S; G_{n,r})$ as $\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$. We will also use $\nu(\cdot)$ to denote the uniform measure over $\Rd$, and $\nu_d = \nu\bigl(B(0,d)\bigr)$ as the measure of the unit ball.
 
-Well-conditioned density clusters satisfy all of the given assumptions, for parameters which results in `good' values of $\Phibf$ and $\Psibf$.
-\begin{definition}[Well-conditioned density clusters]
-	For $\lambda > 0$ and $\Cset \in \Cbb_f(\lambda)$, let $\Cset$ satisfy \ref{asmp: bounded_density} - \ref{asmp: cluster_diameter} with respect to parameters $\sigma, \lambda_{\sigma}, \gamma > 0$ and $\Lambda_{\sigma}, D < \infty.$ Letting $\kappa_1(\Cset)$ and $\kappa_2(\Cset)$ be given by
-	\begin{align*}
-	\kappa_1(\Cset) & := \frac{\mathbf{\Phi}(\sigma, \lambda,\lambda_{\sigma},\gamma)}{\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)} \\
-	\kappa_2(\Cset) & := \kappa_1(\Cset) \cdot \sqrt{\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)},
-	\end{align*}
-	we call $\Cset$ a \textrm{$(\kappa_1, \kappa_2)$-well-conditioned density cluster (with respect to $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$).}
-\end{definition}
-
-As the notation suggests, $\Phibf$ and $\Psibf$ are related to the graph connectivity criteria. In fact, as we will see in the next section, for well-conditioned density clusters they are exactly (up to constants) the bounds we derive.
-
-\subsection{Algorithm under consideration.}
-
-Algorithm \ref{alg: ppr} will be the simple variant of PPR we analyze. It will take as input the data $\Xbf$ along with user-specified parameters $r, \alpha$, $\vol_0$, and $v \in \Xbf$.
-
-\begin{algorithm}
-	\caption{PPR on a neighborhood graph}
-	\label{alg: ppr}	
-	{\bfseries Input:} data $\Xbf$, radius $r$, teleportation parameter $\alpha \in [0,1]$, seed node $v \in \Xbf$, target volume $\vol_0$. \\
-	{\bfseries Output:} $\widehat{C} \subset V$.
-	\begin{algorithmic}[1]
-		\STATE Form the neighborhood graph $G_{n,r}$ as given in (\ref{eqn: neighborhood_graph})
-		\STATE Compute PPR vector $\pbf(v, \alpha; G_{n,r})$  as defined by (\ref{eqn: ppr_vector}).
-		\STATE For $\beta \in [\frac{1}{8}, \frac{1}{2}]$ compute sweep cuts $S_{\beta}$ as defined by (\ref{eqn: sweep_cuts}).
-		\STATE Return
-		\begin{equation*}
-		\label{eqn: sweep_cuts_min_conductance}
-		\widehat{C} = \argmin_{\beta \in [\frac{1}{8}, \frac{1}{2}]} \Phi(S_{\beta}; G_{n,r})
-		\end{equation*}
-	\end{algorithmic}
-\end{algorithm}
-
-As is typical in the local clustering literature, our results will be stated with respect to specific choices or ranges of each of the user-specified parameters, which in this case may depend on the underlying (unknown) density. 
-
-In particular, for a well conditioned density cluster $\Cset$ (with respect to some $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$), we require
-\begin{align}
-\label{eqn: initialization}
-\textcolor{red}{\alpha \in [1/2, 9/10] \cdot \mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)}, & ~r \in [1/2,1]\cdot\sigma  \nonumber \\
-\vol_0 \in [1/2,1]\cdot\vol(\Csig[\Xbf]), & ~v \in \Csig[\Xbf]^g
-\end{align}
-where $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ is some 'good' subset of $\Csig[\Xbf]$ which, as we will see, satisfies $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$. (Intuitively one can think of $\Csig[\Xbf]^g$ as being the nodes sufficiently close to the center of $\Csig[\Xbf]$, although we provide no formal justification to this effect.) We call a PPR algorithm run with hyperparameters satisfying (\ref{eqn: initialization}) \emph{well-initialized}.
-
-\section{Local Clustering on Density Level Sets}
-\label{sec: local_clustering_on_density_level_set}
-
-In this section we provide bounds for the normalized cut and inverse mixing time of an empirical density cluster $\Cset[\Xbf]$. As a result we can lower bound $\Phi(\widehat{C}; G_{n,r})$ for $\widehat{C}$ the output of a well-initialized \textcolor{red}{PPR algorithm}, and upper bound the symmetric set difference between $\widehat{C}$ and $\Cset[\Xbf]$. 
-
-For notational simplicity, hereafter for $S \subseteq \Xbf$ we will refer to $\Phi(S; G_{n,r})$ as $\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$. We will also use $\nu(\cdot)$ to denote the uniform measure over $\Rd$, and $\nu_d = \nu\bigl(B(0,d)\bigr)$ as the measure of the unit ball.
-
-We begin with a lower bound on the normalized cut in Theorem \ref{thm: conductance_upper_bound}. We will require Assumptions \ref{asmp: bounded_density}-\ref{asmp: cluster_separation} to hold; however, the upper bound on density in (\ref{eqn: bounded_density}) will not be needed and so we omit the parameter $\Lambda_{\sigma}$ from the statement of the theorem.
+We begin with an upper bound on the normalized cut in Theorem \ref{thm: conductance_upper_bound}. We will require Assumptions \ref{asmp: cluster_separation}, \ref{asmp: bounded_density} and \ref{asmp: low_noise_density} to hold; however, the upper bound on density in (\ref{eqn: bounded_density}) will not be needed and so we omit the parameter $\Lambda_{\sigma}$ from the statement of the theorem.
 \begin{theorem}
 	\label{thm: conductance_upper_bound}
-	For some $\lambda > 0$, let $\Cset \in \mathbb{C}_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density}-\ref{asmp: cluster_separation} for some $\sigma, \lambda_{\sigma}, c_1, \gamma > 0$ . Then, for any $r < \sigma$ and $\delta \in (0,1]$, the following statements hold with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then, for
+	For some $\lambda > 0$, let $\Cset \in \mathbb{C}_f(\lambda)$ satisfy Assumptions \ref{asmp: cluster_separation}, \ref{asmp: bounded_density} and \ref{asmp: low_noise_density} for some $\sigma, \lambda_{\sigma}, c_1, \gamma > 0$ . Then, for any $r < \sigma/4d$ and $\delta \in (0,1]$, the following statements hold with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then, for
 		\begin{equation}
 		\label{eqn: conductance_sample_complexity}
 		n \geq \frac{9\log(2/\delta)}{\epsilon^2}\left(\frac{1}{ \lambda_{\sigma}^2 \nu(\Csig) \nu_d r^d}\right)^2 
@@ -410,76 +392,167 @@ We begin with a lower bound on the normalized cut in Theorem \ref{thm: conductan
 		we have
 		\begin{equation}
 		\label{eqn: conductance_additive_error_bound}
-		\frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq c_{\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon
+		\frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq 4 c_{\sigma} d \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon
 		\end{equation}
-	where $c_0 = 4d$ and $c_{\sigma} = c_0 / \sigma$. 
+	where $c_{\sigma} = 1 / \sigma$. 
 \end{theorem}
 
-The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other proofs, can be found in the supplementary document. A few remarks are in order. 
 \begin{remark}
-	\label{rem: exp_in_d}
-	Note that the bound of (\ref{eqn: conductance_additive_error_bound}) depends exponentially on $d$; precisely, on $C_0 = d2^{2d +1}$. It is possible to improve this dependency to the order of $(1 + \frac{r}{\sigma})^{2d}$. However, as indicated by (\ref{eqn: initialization}), we will think of $r$ as being a constant radius of order $\sigma$ (rather than $r = r_n \to 0$ as $n \to \infty$) and therefore even this improvement still retains an exponential dependency on the dimension $d$.
+	The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other proofs, can be found in the supplementary document. The key point is to note that for any $x \in \Cset$, the simple, (possibly loose) $B(x,\sigma) \subset \Csig$ translates to the upper bound $\nu(\Cset_{\sigma + r}) \leq (1 + 2d r /\sigma)\nu(\Csig)$. We leverage \ref{asmp: low_noise_density} to find a corresponding bound on the weighted volume, before applying standard concentration inequalities to convert from population to sample based results.
 \end{remark}
 \begin{remark}
-	Aside from the looseness implied by Remark \ref{rem: exp_in_d}, the error bound of (\ref{eqn: conductance_additive_error_bound}) is almost tight. Specifically, choosing
+	(\ref{eqn: conductance_additive_error_bound}) is almost tight. Specifically, choosing
 	\begin{align*}
 	\Asig & = B(0,\sigma), \\
 	 f(x) & = 
 	 \begin{cases}
 	 \lambda \text{ for $x \in \Asig$}, \\
-	 \lambda - \rho(x,\Asig)^{\gamma} \text{ for $0 < \rho(x,\Asig) < r$}
+	 \lambda - \dist(x,\Asig)^{\gamma} \text{ for $0 < \dist(x,\Asig) < r$}
 	 \end{cases}
 	\end{align*}
 	we have that for $n$ within constant order of the lower bound in (\ref{eqn: conductance_sample_complexity}), with probability at least $1 - \delta$
 	\begin{equation*}
 	\frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \geq c \frac{(\lambda - \frac{r^{\epsilon+1}}{\epsilon+1})}{\lambda} - \epsilon
 	\end{equation*}
-	for some constant $c$ which depends only on dimension. (Note that a factor of $1 / \sigma$ in $c_{\sigma}$ is not replicated in this lower bound.) For justification see the supplementary materials.
+	for some constant $c$. (Note that a factor of $1 / \sigma$ in $c_{\sigma}$ is not replicated in this lower bound.)
 \end{remark}
 
-We now provide a lower bound for $\Psi_{n,r}(\Cset[\Xbf])$.
+We now provide a lower bound on $\Psi_{n,r}(\Cset[\Xbf])$.
 
 \begin{theorem}
 	\label{thm: inverse_mixing_time_lower_bound_nonconvex}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$, the following statement holds with probability at least $1 - \delta$: Fix $\epsilon > 0$. Then, for 
-	\begin{equation*}
-	n \geq ??
-	\end{equation*}
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$, the following statement holds with probability at least $1 - \delta$: Fix $0 < \epsilon > 1$. Then, for $n$ satisfying:
+	\begin{align*}
+	\sqrt{3^{d+1}\frac{(\log n + d\log \mu + \log(4/\delta))}{n \nu_d r^d \lambda_{\sigma}}} \leq \epsilon
+	\end{align*}
 	we have
 	\begin{align}
 	\label{eqn: inverse_mixing_time_lower_bound_nonconvex}
 	1 / \Psi_{n,r}(\Csig[\Xbf]) & \leq \left(d \log \mu + c_{\lambda} \right) \cdot \nonumber \\ 
 	& \left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d \log \mu + c_{\lambda}\right)\right)
 	\end{align}
-	where $\mu = \log(\frac{2D}{r})$, $c_1 = 19264000/3$, $c_2 = 331776$, and $c_3 = 128 9^d c_1/5 \cdot (1 + \epsilon)^4/(1 - \epsilon)^4$ are constants which depend only on dimension, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$. 
+	where $\mu = \log(\frac{2D}{r})$; $c_1$, $c_2$, and $c_3$ are constants which depend only on dimension; and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$. 
 \end{theorem}
 
+\begin{remark}
+	The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} relies on upper bounding the mixing time using the \emph{conductance} of $G_{n,r}[\Csig[X]]$,
+	\begin{equation*}
+	\widetilde{\Phi} = \min_{S \subset \Csig[\Xbf]} \Phi(S; G_{n,r}[\Csig[X]])
+	\end{equation*}
+	
+	The factor of $\frac{1}{r^{2d}}$ present in the bound of \eqref{eqn: inverse_mixing_time_lower_bound_nonconvex} is suboptimal. This exponential dependence on $d$ stems from a loose bound on the aforementioned conductance in the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}.In particular, we assert only that any set $S \subset \Csig[X]$ must have $\cut(S; \Csig[\Xbf])$ on the order of $n^2 r^{2d}$, while upper bounding $\vol(S; \Csig[\Xbf])$ by roughly $n^2 r^d$, for a bound on the conductance of order $r^d$. The presence of $r^{2d}$ comes from upper bounding the mixing time by about $1/\widetilde{\Phi}^2$, this latter bound being a variant of classic results on rapid mixing \cite{jerrum89}.
+\end{remark}
 
-
-
-
-
+It is possible to sharpen the dependency on $d$, but at the cost of an additional assumption:
+\begin{enumerate}[label=(A\arabic*)]
+	\setcounter{enumi}{4}
+	\item 
+	\label{asmp: convex}
+	$\Cset$ is convex.
+\end{enumerate}
+Additionally, the resulting bound holds only asymptotically. 
 
 \begin{theorem}
 	\label{thm: inverse_mixing_time_lower_bound}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$, the following statement holds: with probability one
+	Fix $\lambda > 0$, and let the conditions of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} hold with respect to $\Cset \in \Cbb_f(\lambda)$. Additionally, let $\Cset$ satisfy \ref{asmp: convex}. Then, for any $r < \sigma/4d$, the following statement holds: with probability one
 	\begin{align}
 	\label{eqn: inverse_mixing_time_lower_bound}
-	\liminf_{n \to \infty} & \Psi_{n,r}(\Csig[\Xbf]) \geq \nonumber \\ & c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu + c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) + \nonumber \\
-	& \frac{d^2D^2}{r^2} \bigl( \log d + c_2 \frac{d^2D^2}{r^2} \frac{\Lambda_{\sigma}^{2}}{\lambda_{\sigma}^{2}}c_{\lambda} + \nonumber \\
-	& c_3  + \log \log \mu \bigr) \biggr),
+	\liminf_{n \to \infty} & \frac{1}{\Psi_{n,r}(\Csig[\Xbf])} \geq \nonumber \\ & c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu + c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) + \nonumber \\
+	& \frac{d^2D^2}{r^2} \bigl( \log d + c_2 \frac{\Lambda_{\sigma}^{2}}{\lambda_{\sigma}^{2}}c_{\lambda} + \nonumber \\
+	& c_3  + \log \log \mu \bigr) \biggr) + c_d \frac{o_r(1)}{r^2},
 	\end{align}
-	where $\mu = \log(\frac{2D}{r})$, $c_1 = 3852800/3$, $c_2 = 331776$, and $c_3 = \log 2$ are all dimension free, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$. 
+	where $\mu = \log(\frac{2D}{r})$, $c_1,c_2$ and $c_3$ are all global constants, $c_d$ is constant in $r$ but may depend on other quantities,  and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$.  Additionally, $\lim_{r \to 0} o_r(1) = 0$. 
 \end{theorem}
 
-\paragraph{Approximate density cluster recovery with PPR.}
+We achieve superior rates in Theorem \ref{thm: inverse_mixing_time_lower_bound} to those of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} in part by working with a generalization of the conductance, the \emph{conductance function}
+\begin{equation*}
+\widetilde{\Phi}_n(t) = \min_{\substack{S \subset \Csig[\Xbf] \\ \pi(S) \leq t}} \Phi(S; G_{n,r}[\Csig[X]])
+\end{equation*}
+where $\pi(S)$ is the stationary distribution over $G_{n,r}[\Csig[\Xbf]]$. 
+The utility of the conductance function comes from the known upper bound of mixing time by 
+\begin{equation}
+\label{eqn: average_conductance}
+\int \frac{1}{t \widetilde{\Phi}_n(t)^2} dt
+\end{equation}
+ which results in a tighter bound than merely using the conductance when $\widetilde{\Phi}_n(t)$ is large for small values of $t$.
+ 
+\begin{remark}
+	The only potentially exponential dependence on dimension comes from the factor of $c_d$. However, for sufficiently small values of $r$ this will be dominated by the preceding factors, due to the presence of the $o_r(1)$ term.
+\end{remark}
+ 
+\begin{remark}
+ The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} relies on a to the best of our knowledge novel uniform lower bound on this conductance function over $G_{n,r}$ in terms of a population-level analogue, which we term $\widetilde{\Phi}_{\Pbb,r}$. Plugging $\widetilde{\Phi}_{\Pbb,r}$ into \eqref{eqn: average_conductance} yields a bound on mixing time (with respect to total variation distance) of order $d D^2/r^2 + d^2\log(D/r)$ over convex sets. By contrast, \eqref{eqn: inverse_mixing_time_lower_bound} is of order $d^2 D^2/r^2 + d^3\log(D/r)$ (ignoring the $o_r(1)$ term) but handles mixing time with respect to relative pointwise distance (which is known to be a stricter metric.)
+\end{remark}
 
-In \cite{zhu2013}, building on the work of \cite{anderson2006} and others, theory is developed which links algorithmic performance of PPR to the normalized cut and mixing time parameters. We collect some of the main results of \cite{zhu2013} in Lemma \ref{lem: ppr_cluster}.
+\begin{remark}
+	The convexity requirement is necessary only to lower bound the $\widetilde{\Phi}_{\Pbb,r}$; any bound on $\widetilde{\Phi}_{\Pbb,r}$ which does not require convexity could immediately be plugged into the machinery of the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} to achieve a corresponding result. Recent work \cite{abbasi17} has developed such population-level bounds on the conductance function, however the Markov chain dealt with there is somewhat different than the one we consider. 
+\end{remark}
+
+\section{Consistent cluster estimation with PPR.}
+\label{sec: consistent_cluster_estimation_with_ppr}
+
+For \pprspace to successfully recover density clusters, the ratio $\Phi_{n,r}(\Csig[\Xbf])/\Psi_{n,r}(\Csig[\Xbf])$ must be small. 
+
+We introduce
+\begin{align*}
+\mathbf{\Phi}(\sigma, \lambda,\lambda_{\sigma},\gamma) & := \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{\sigma^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} \\
+1 / \mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D) & := \left(d \log \mu + c_{\lambda} \right) \cdot \nonumber \\ 
+& \left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d \log \mu + c_{\lambda}\right)\right)
+\end{align*}
+
+Well-conditioned density clusters satisfy all of the given assumptions, for parameters which results in `good' values of $\Phibf$ and $\Psibf$.
+\begin{definition}[Well-conditioned density clusters]
+	For $\lambda > 0$ and $\Cset \in \Cbb_f(\lambda)$, let $\Cset$ satisfy \ref{asmp: cluster_separation} - \ref{asmp: low_noise_density} with respect to parameters $\sigma, \lambda_{\sigma}, \gamma > 0$ and $\Lambda_{\sigma}, D < \infty.$ Letting $\kappa_1(\Cset)$ and $\kappa_2(\Cset)$ be given by
+	\begin{align*}
+	\kappa_1(\Cset) & := \frac{\mathbf{\Phi}(\sigma, \lambda,\lambda_{\sigma},\gamma)}{\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)} \\
+	\kappa_2(\Cset) & := \kappa_1(\Cset) \cdot \sqrt{\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)},
+	\end{align*}
+	we call $\Cset$ a \textrm{$(\kappa_1, \kappa_2)$-well-conditioned density cluster (with respect to $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$).}
+\end{definition}
+
+$\Phibf$ and $\Psibf$ are familiar; they are exactly the upper and lower bounds on $\Phi_{n,r}(\Csig[\Xbf])$ and $\Psi_{n,r}(\Csig[\Xbf])$ derived in Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, respectively.
+
+\begin{remark}
+	For convenience and maximum generality, we define $\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)$ to correspond with the bound given by \eqref{eqn: inverse_mixing_time_lower_bound_nonconvex}, and assume only \ref{asmp: cluster_separation} - \ref{asmp: low_noise_density}. However, if we additionally have \ref{asmp: convex}, then we could sharpen $\mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D)$ to the tighter rate of \eqref{eqn: inverse_mixing_time_lower_bound}, with nothing changing hereafter. 
+\end{remark}
+
+As is typical in the local clustering literature, our results will be stated with respect to specific choices or ranges of each of the user-specified parameters, which in this case may depend on the underlying (unknown) density. 
+
+In particular, for a well conditioned density cluster $\Cset$ (with respect to some $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$), we require
+\begin{align}
+\label{eqn: initialization}
+\alpha \in [1/10, 1/9] \cdot \mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D), & ~r \leq \sigma/4d  \nonumber \\
+\pi_0 \in [2/3, 6/5] \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}, & ~v \in \Csig[\Xbf]^g
+\end{align}
+where $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ is some 'good' subset of $\Csig[\Xbf]$ which, as we will see, satisfies $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$. (Intuitively one can think of $\Csig[\Xbf]^g$ as being the nodes sufficiently close to the center of $\Csig[\Xbf]$, although we provide no formal justification to this effect.)
+
+\begin{definition}
+	If the input parameters to Algorithm \ref{alg: ppr} satisfy \ref{eqn: initialization} with respect to some $\Csig[\Xbf]$, we say the algorithm is  \emph{well-initialized}.
+\end{definition}
+
+\begin{theorem}
+	\label{thm: consistent_recovery_of_density_clusters}
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $(\kappa_1,\kappa_2)$-well conditioned cluster (with respect to some $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$). If
+	\begin{equation}
+	\label{eqn: kappa2_ub}
+	\kappa_2 \leq \frac{1}{40 \cdot 36} \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d \nu_d}{\nu(\Csig)}.
+	\end{equation}
+	and Algorithm \ref{alg: ppr} is well-initialized, the output set $\widehat{C} \subset \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
+\end{theorem}
+
+\begin{remark}
+	We note that larger constants than $40 \cdot 36$ allow for wider range of the parameters in $\eqref{eqn: initialization}$. 
+\end{remark}
+\paragraph{Approximate cluster recovery via PPR.}
+
+In \cite{zhu2013}, building on the work of \cite{anderson2006} and others, theory is developed which links algorithmic performance of PPR to the normalized cut and mixing time parameters. Although not the primary focus of our work, it is perhaps worth noting that these results, coupled with Theorems \ref{thm: conductance_upper_bound}-\ref{thm: inverse_mixing_time_lower_bound}, translate immediately into bounds on the normalized cut and symmetric set difference of $\widehat{C}$.  
+
+We collect some of the main results of \cite{zhu2013} in Lemma \ref{lem: ppr_cluster}.
 
 For $G = (V,E)$ consider some $A \subseteq V$, and let $\Phi(A; G)$ and $\Psi(A; G)$ be defined as in (\ref{eqn: norm_cut}) and (\ref{eqn: inv_mixing_time}), respectively.
 \begin{lemma}[PPR clustering]
 	\label{lem: ppr_cluster}
-	There exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \vol(A;G)/2$ such that the following statement holds: Choose any $v \in A^g$, fix \textcolor{red}{$\alpha = 9 / 10 \Psi(A; G)$}, and compute the page rank vector $\pbf(v,\alpha; G)$. Letting 
+	There exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \vol(A;G)/2$ such that the following statement holds: Choose any $v \in A^g$, fix $\alpha = 9 / 10 \Psi(A; G)$, and compute the page rank vector $\pbf(v,\alpha; G)$. Letting 
 	\begin{equation*}
 	\widehat{C} = \argmin_{\beta \in [\frac{1}{8}, \frac{1}{2}]} \Phi(S_{\beta}; G)
 	\end{equation*}
@@ -487,7 +560,7 @@ For $G = (V,E)$ consider some $A \subseteq V$, and let $\Phi(A; G)$ and $\Psi(A;
 	\begin{align*}
 	\vol(\widehat{C} \setminus A) & \leq \frac{24 \Phi(A; G)}{\Psi(A; G)} \vol(A) \\
 	\vol(A \setminus \widehat{C})  & \leq \frac{30 \Phi(A; G)}{\Psi(A; G)} \vol(A) \\
-	\Phi(\widehat{C}; G) & = \textcolor{red}{O\left(\frac{\Phi(A; G)}{\sqrt{\Psi(A; G)}}\right)}
+	\Phi(\widehat{C}; G) & = O\left(\frac{\Phi(A; G)}{\sqrt{\Psi(A; G)}}\right)
 	\end{align*}
 \end{lemma}
 
@@ -497,30 +570,10 @@ Corollary \ref{cor: ppr_cluster} immediately follows.
 	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $(\kappa_1,\kappa_2)$-well conditioned cluster (with respect to some $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$). Then, if Algorithm \ref{alg: ppr} is well-initialized (in the sense that the choices of input parameters satisfy (\ref{eqn: initialization})), the following guarantees hold for output set $\widehat{C} \subset \Xbf$:
 	\begin{align*}
 	\vol(\widehat{C} \setminus \Csig[\Xbf]), \vol(\Csig[\Xbf] \setminus \widehat{C})  & \leq 30 \kappa_1(\Cset) \vol(\Csig[X]) \\
-	\Phi_{n,r}(\widehat{C}) & = \textcolor{red}{O\left(\kappa_2(\Cset)\right)}
+	\Phi_{n,r}(\widehat{C}) & = O\left(\kappa_2(\Cset)\right)
 	\end{align*}
-\end{corollary}
+\end{corollary} 
 
-\section{Consistent cluster estimation with PPR.}
-\label{sec: consistent_cluster_estimation_with_ppr}
-While Corollary \ref{cor: ppr_cluster} is nice, it does not imply consistency of the type laid out in Definition \ref{def: consistent_density_cluster_estimation}.
-
-However, a slightly more subtle argument regarding the way a random walk on $G_{n,r}$ distributes mass over $\Cset[\Xbf]$ and $\Cset'[\Xbf]$ will do the trick, yielding Theorem \ref{thm: consistent_recovery_of_density_clusters}. 
-\begin{theorem}
-\label{thm: consistent_recovery_of_density_clusters}
-Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $(\kappa_1,\kappa_2)$-well conditioned cluster (with respect to some $\sigma, \lambda_{\sigma}, \gamma, \Lambda_{\sigma}$ and $D$), with
-\begin{equation}
-\label{eqn: kappa2_ub}
-\kappa_2 \leq \left(\frac{1}{5} - \frac{\epsilon}{4}\right) \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{\sigma^d \nu_d}{\nu(\Csig)}
-\end{equation}
-for some $\epsilon > 0$.
-
-Then, if Algorithm \ref{alg: ppr} is well-initialized (in the sense that the choices of input parameters satisfy (\ref{eqn: initialization})), the output set $\widehat{C} \subset \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
-\end{theorem}
-
-\begin{remark}
-	When $\lambda_{\sigma} = \Lambda_{\sigma}$ and $\nu(\Csig) = \sigma^d \nu_d$ -- in some sense, the `best' case given our assumptions -- the upper bound of (\ref{eqn: kappa2_ub}) reduces to $\kappa_2 \leq 1/5 - \epsilon/4$. That $\kappa_2 = O(1)$ is a minimal requirement for the bounds of Corollary \ref{cor: ppr_cluster} not to be facile; therefore, in this case the assumed upper bound of (\ref{eqn: kappa2_ub}) is not really a stricter requirement.
-\end{remark}
 \section{Examples}
 \label{section: examples}
 
@@ -558,6 +611,7 @@ Examples 1 and 2 should be thought of as shedding light on the population perfor
 \end{enumerate}
 
 \section{Discussion}
+\label{sec: discussion}
 For a clustering algorithm and a given object (such as a graph or set of points), there are an almost limitless number of ways to define what the 'right' clustering is. We have considered a few such ways -- density level sets, and the bicriteria of normalized cut, inverse mixing time -- and shown that under the right conditions, the latter agree with the former, with resulting algorithmic consequences.
 
 There are still many directions worth pursuing in this area. Concretely, we might wish to generalize our results to hold over a wider range of kernel functions, and hyperparameter inputs to the \pprspace algorithm. More broadly, we do not provide any sort of theoretical lower bound, although we give empirical evidence in Example 2 that poorly conditioned density clusters are not consistently estimated by \pprspace. Example 2 also hints at a way of understanding local spectral algorithms -- or, at least, \ppr-- as interpolating between normalized and density cut. Exploring this connection is an avenue for future work.
