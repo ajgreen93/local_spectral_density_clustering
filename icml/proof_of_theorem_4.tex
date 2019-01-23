@@ -97,6 +97,7 @@
 \newcommand{\wu}{\widetilde{u}}
 \newcommand{\wPbb}{\widetilde{\Pbb}}
 \newcommand{\wf}{\widetilde{f}}
+\newcommand{\wDbf}{\widetilde{\Dbf}}
 
 
 \newtheoremstyle{aldenthm}
@@ -123,6 +124,7 @@
 \begin{document}
 	
 Let $\pbf = (p_u)_{u \in \Xbf}$ denote the \pprspace vector computed over $G_{n,r}$ (where for ease of reading we suppress dependence on the hyperparameter $\alpha$ and seed node $v$.) 
+Recalling that $\widetilde{\pi}_{n,r}$ is the stationary distribution over $\widetilde{G}_{n,r}$, we write $\widetilde{\pi}_{n,r}(u)$ to denote the stationary distribution evaluated at $u \in \Csig[X]$. 
 	
 \begin{lemma} 
 	\label{lem: setup}
@@ -136,88 +138,100 @@ Let $\pbf = (p_u)_{u \in \Xbf}$ denote the \pprspace vector computed over $G_{n,
 	There exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$ such that the following statements hold for all $v \in \Csig[\Xbf]^g$:
 	\begin{itemize}
 		\item For all $u \in \Cset[\Xbf]$,
-		\begin{equation*}
+		\begin{equation}
+		\label{eqn: lower_bound_PPR_in_cluster}
 		p_u \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
-		\end{equation*}
+		\end{equation}
 		\item For all $u' \in \Csig'[\Xbf]$,
-		\begin{equation*}
+		\begin{equation}
+		\label{eqn: upper_bound_PPR_in_other_cluster}
 		p_{u'} \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
-		\end{equation*}
+		\end{equation}
 	\end{itemize}
 \end{lemma}
 
 \begin{proof}
+	We will write $\Wbf_n = \Dbf_n \Abf_n^{-1}$ for the transition probability matrix over $G_{n,r}$, and let $\widetilde{\Dbf}_n$ and $\widetilde{\Wbf}_n$ be the degree and random walk matrices for the subgraph $\widetilde{G}_{n,r}$.
 	
-	For $S \subseteq X_1^n$, let $I_{S}$ be a diagonal matrix where $I_{jj} = 1$ if $X_j \in S$ and 0 otherwise. Let $D_S$ be the corresponding degree matrix for the subgraph induced by $S$. $D_S$ is a diagonal matrix where for $X_j \in S$, $(D_S)_{jj} = \sum_{i: X_i \in S} A_{ij}$, and if $X_j \not \in S$ then $(D_S)_{jj} = 0$. Then, define \textit{leakage} and \textit{soakage} vectors
-	
+	We introduce \emph{leakage} and \emph{soakage} vectors, defined by
 	\begin{align*}
-	\ell_t & := e_v  (W I_{\Csig[\Xbf]})^t (I - D^{-1} D_{\Csig[\Xbf]}) \\
+	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}) \\
 	\ell & := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t \\
-	s_t & := e_v (W I_{\Csig[\Xbf]})^t (W I_{G / \Csig[\Xbf]}) \\
+	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c) \\
 	s & := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t
 	\end{align*}
+	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is a diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$. 
 	
 	Roughly, the proof will unfold in four steps. The first two will result in the lower bound of (\ref{eqn: lower_bound_PPR_in_cluster}), while the latter two will imply the upper bound in (\ref{eqn: upper_bound_PPR_in_other_cluster}).
 	
 	\begin{enumerate}
-		\item For $u \in \Cset'[\Xbf]$, use the results of \cite{zhu2013} to lower bound $p_v(u) \geq 4/5 \widetilde{\pi}(u) - \widetilde{p}_{\ell}(u)$, where $\widetilde{p}$ is the PPR random walk over the subgraph induced by $\Csig[\Xbf]$, and $\ell$ has bounded norm $||\ell||_1 \leq 2\frac{\Phi^{btw}(\Csig[\Xbf])}{\alpha}$.
-		\item Since $r < \sigma$, there are no edges between $u$ and $G / \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{p}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
-		\item For vertices $u' \in G / \Csig[\Xbf]$, we can upper bound $p_v(u) \leq p_s(u')$. In particular, this hold for all $u' \in \Cset'[\Xbf]pr$.
-		\item Since $r < \sigma$, there are no edges between $u'$ and $G / \Cset'[\Xbf]prthick$. Therefore, the page-rank vector $p_{s}$ will assign no more than $||s||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. Additionally, $s$ has bounded norm $||s||_1 \leq ||\ell||_1$. This will conclude our proof of (\ref{eqn: upper_bound_PPR_in_other_cluster}), and hence Proposition \ref{thm: setup}.
+		\item For $u \in \Cset'[\Xbf]$, use the results of \cite{zhu2013} to produce the lower bound 
+		\begin{equation*}
+		\pbf(u) \geq 4/5 \widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u)
+		\end{equation*}
+		where 
+		\begin{equation*}
+		\widetilde{\pbf}_{\ell} = \alpha \ell + (1 - \alpha) \widetilde{\pbf}_{\ell} \widetilde{\Wbf}_n
+		\end{equation*}
+		is the \pprspace random walk over $\widetilde{G}_{n,r}$, and $\ell$ has bounded norm $||\ell||_1 \leq 2\frac{\Phi_{n,r}(\Csig[\Xbf])}{\alpha}$.
+		
+		\item Since $r < \sigma$, for any $u \in \Cset[\Xbf]$ there are no edges between $u$ and $G_{n,r} / \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{\pbf}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This observation will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
+		\item For vertices $u' \in G_{n,r} / \Csig[\Xbf]$, we can upper bound $p_v(u) \leq p_s(u')$. In particular, this hold for all $u' \in \Cset'[\Xbf]$.
+		\item Since $r < \sigma$, there are no edges between $u'$ and $G / \Cset'[\Xbf]$. Therefore, the page-rank vector $p_{s}$ will assign no more than $||s||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. Additionally, $s$ has bounded norm $||s||_1 \leq ||\ell||_1$. This will conclude our proof of (\ref{eqn: upper_bound_PPR_in_other_cluster}), and hence Lemma \ref{lem: setup}.
 	\end{enumerate}
 	
 	\paragraph{Step 1}
-	We will begin by restating the results of \cite{zhu2013}.
+	We will begin by restating some results of \cite{zhu2013}.
 	
-	Denote by $\widetilde{p}$ the PageRank vector computed only over the subgraph induced by $\Csig[\Xbf]$.
-	
+	For seed node $v$, we write
 	\begin{align} \label{eqn: page_rank_body}
-	\widetilde{p}_v & = \alpha e_v + (1 - \alpha) \widetilde{p}_v \widetilde{W} \\
-	& = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(e_v \widetilde{W}^t \right)
+	\widetilde{\pbf}_v & = \alpha e_v + (1 - \alpha) \widetilde{\pbf}_v \widetilde{\Wbf}_n \\
+	& = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(e_v \widetilde{\Wbf}_n^t \right)
 	\end{align}
-	
-	and correspondingly for the leakage vector
-	
-	\begin{equation*}
-	\widetilde{p}_{\ell} = \alpha \ell + (1 - \alpha) \widetilde{p}_{\ell} \widetilde{W}.
-	\end{equation*}
 	
 	From Lemma 3.1 of \cite{zhu2013} we have for all $u \in \Csig[\Xbf]$
 	
-	\begin{equation*} \label{eqn: zhu_body}
-	p_v(u) \geq \widetilde{p}_v(u) - \widetilde{p}_{\ell}(u).
-	\end{equation*}
+	\begin{align} \label{eqn: zhu_body}
+	p_u & \geq \widetilde{\pbf}_v(u) - \widetilde{\pbf}_{\ell}(u) \nonumber \\
+	||\ell||_1 & \leq \frac{2 \widetilde{\Phi}_{n,r}}{\alpha}
+	\end{align}
+	where $\widetilde{\pbf}_v = (\widetilde{\pbf}_v(u))$ and likewise for $\widetilde{\pbf}_{\ell} = (\widetilde{\pbf}_{\ell}(u))$.
 	
-	with $||\ell||_1 \leq \frac{2 \Phi^{btw}(\Csig[\Xbf])}{\alpha}$. Moreover if, as we have specified, $\alpha \leq \frac{1}{9 T_{\infty}(\Csig[\Xbf])}$, Lemma 3.2 of \cite{zhu2013} yields a lower bound on $\widetilde{p}$
-	
+	Moreover if, as we have specified, $\alpha \leq \widetilde{\Psi}_{n,r}/9$, Lemma 3.2 of \cite{zhu2013} yields a lower bound on $\widetilde{p}$
 	\begin{equation} \label{eqn: page_rank_mixes}
-	\widetilde{p}_v(u) \geq \frac{4}{5} \widetilde{\pi}(u).
+	\widetilde{\pbf}_v(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u).
 	\end{equation}
 	
 	\paragraph{Step 2}
 	
-	We turn to upper bounding $\widetilde{p}_{\ell}(u)$. We have
+	We turn to upper bounding $\widetilde{\pbf}_{\ell}(u)$. For any $u \in \Cset[\Xbf]$, we have
 	
 	\begin{align} \label{eqn: leakage_page_rank_body}
-	\widetilde{p}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{W}^t \right)[u]  \nonumber \\
-	& = \|\ell\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
-	& \overset{\text{(i)}}{=} \|\ell\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
-	& \overset{\text{(ii)}}{\leq} \|\ell\|_1 \frac{1}{d_{\min}(\Csig[\Xbf])} 
+	\widetilde{\pbf}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{\Wbf}_n^t \right)(u)  \nonumber \\
+	& = \|\ell\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	& \overset{\text{(i)}}{=} \|\ell\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	& \overset{\text{(ii)}}{\leq} \|\ell\|_1 \frac{1}{\widetilde{D}_{\min}} 
 	\end{align}
 	
-	where $\text{(i)}$ follows from the fact that since $r < \sigma$, $E(\Cset'[\Xbf], G / \Csig[\Xbf]) = 0$ and therefore $\ell(u) = 0$. To see $\text{(ii)}$, let $q = \frac{\ell}{\|\ell\|_1}  \widetilde{W}^{t-1}$, and then 
+	where we use $\left(\ell \widetilde{\Wbf}_n^t \right)(u)$ to denote $\ell \widetilde{\Wbf}_n^te_u$.
+	
+	$\text{(i)}$ follows from the fact that since $r < \sigma$, $\cut(\Cset'[\Xbf], G_{n,r} / \Csig[\Xbf]; G_{n,r}) = 0$. Therefore $(\Dbf_n^{-1})_{uu} (\widetilde{\Dbf}_n)_{uu} = 1$, and as a result
+	\begin{equation*}
+	(\ell \widetilde{\Wbf}_n^0)(u) = \ell(u) = 0.
+	\end{equation*}
+	To see $\text{(ii)}$, let $q = \frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^{t-1}$. Then 
 	
 	\begin{align*}
-	\left(\frac{\ell}{\|\ell\|_1}  \widetilde{W}^t \right)[u] & = \left(q W \right)[u] \\
-	& \leq \|q\|_1 \|W(\cdot, u)\|_{\infty} \\
-	& \overset{\text{(iii)}}{\leq} \frac{1}{d_{\min}(C^{\sigma}_n)}.
+	\left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u) & = \left(q \widetilde{\Wbf}_n \right)(u) \\
+	& \leq \|q\|_1 \|\widetilde{\Wbf}_{\cdot u}\|_{\infty} \\
+	& \overset{\text{(iii)}}{\leq} \frac{1}{\widetilde{D}_{\min}}.
 	\end{align*}
+	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}_n$. $\text{(iii)}$ then follows from the fact that any vertex in $\Cset[\Xbf]$ is connected only to vertices in $\Csig[\Xbf]$, and therefore every entry of $\widetilde{\Wbf}_{\cdot u}$ is either $0$ or at most $1 / \widetilde{D}_{\min}$.
 	
-	where $\text{(iii)}$ comes from the fact that $\|u-v\| \leq r$ means $v \in \Csig[\Xbf]$.
-	Combining (\ref{eqn: leakage_page_rank_body}) with (\ref{eqn: page_rank_mixes}), and since $||\ell||_1 \leq 2 \frac{\Phi^{btw}(\Csig[\Xbf])}{\alpha}$, we have
 	
+	Combined, (\ref{eqn: leakage_page_rank_body}), (\ref{eqn: page_rank_mixes}), and \eqref{eqn: zhu_body} imply
 	\begin{equation*}
-	p_v(u) \geq \frac{4}{5} \widetilde{\pi}(u) - 2\frac{9 \Phi^{btw}(\Csig[\Xbf])}{d_{\min}(\Csig[\Xbf]) \alpha}.
+	p_v(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - 18\frac{ \widetilde{\Phi}_{n,r}}{\widetilde{D}_{\min} \alpha}.
 	\end{equation*}
 	
 	\paragraph{Step 3}
@@ -226,33 +240,90 @@ Let $\pbf = (p_u)_{u \in \Xbf}$ denote the \pprspace vector computed over $G_{n,
 	\begin{lemma} \label{lem: gained mass is soaked_body}
 		For all $u' \notin \Csig[\Xbf]$,
 		\begin{equation}
-		p_v(u') \leq p_{s}(u').
+		\pbf_v(u') \leq \pbf_{s}(u').
 		\end{equation}
 	\end{lemma}
 	
-	The proof of Lemma \ref{lem: gained mass is soaked_body} is left to the supplement. It follows largely the same steps as Lemma 3.1 of \cite{zhu2013}, except over $G / \Csig[\Xbf]$ rather than $\Csig[\Xbf]$. 
+	\begin{proof}
+		
+	We have
+	\begin{align*}
+	\pbf_v(u') & = \alpha \sum_{T=0}^{\infty} (1 - \alpha)^T (e_v \Wbf_n^T)(u)\\
+	& \overset{(i)}{=} \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T (e_v \Wbf_n^T)(u')
+	\end{align*}
+	
+	where $(i)$ follows from $v \in \Csig$ , $u \not\in \Csig$ and therefore $e_v(u) = 0$. 
+	
+	Lemma \ref{lem: sum_of_soakages} allows us to make the transition to sums of soakage vectors. 
+	\begin{lemma}
+		\label{lem: sum_of_soakages}
+		
+		Let $G = (V,E)$ be a graph, with associated random walk matrix $W$.
+		
+		For any $T \geq 1$, $q$ vector, $S \subset V$, and $s_t = s_t(S^c,q)$
+		\begin{equation}
+		qW^T = \sum_{t = 0}^{T - 1} s_t W^{T - t - 1} + q(W I_S)^T
+		\end{equation}
+	\end{lemma}
+	We prove Lemma \ref{lem: sum_of_soakages} after completing the proof of Lemma \ref{lem: gained mass is soaked_body}.
+	
+	Now, along with the fact $u \not\in \Csig$, we have
+	
+	\begin{equation*}
+	\left(e_v \Wbf_n^T \right)(u') = \sum_{t = 0}^{T - 1} \left(s_t \Wbf_n^{T - t - 1} \right)(u')
+	\end{equation*}
+	
+	and so
+	
+	\begin{align*}
+	\pbf_v(u) & = \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} \right)(u') \\
+	& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf^{T - t - 1} \right)(u')\\
+	& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf_n^{\Delta} \right)(u') \\
+	& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf_n^{\Delta} \right)(u') \\
+	& = \alpha \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta} \left(s \Wbf_n^{\Delta}\right)(u') \\
+	& = \pbf_s(u')
+	\end{align*}
+	\end{proof}
+	
+	\begin{proof}[Proof of Lemma \ref{lem: sum_of_soakages}]
+	Proceed by induction. When $T = 1$,
+	
+	\begin{align*}
+	qW & = q(WI_S) + q(WI_{S^c}) \\
+	& = q(W I_S)^T + s_0 
+	\end{align*}
+	
+	Assume true for $T_0$. For $T = T_0 + 1$,
+	
+	\begin{align*}
+	qW^T & = qW^{T_0}W \\
+	& = \left\{ \sum_{t = 0}^{T_0 - 1} s_t W^{T_0 - 1 - t} + q(WI_S)^{T_0} \right\} W \\
+	& =  \sum_{t = 0}^{T_0 - 1} s_t W^{T - 1 - t} + q(WI_S)^{T_0}(WI_S + WI_{S^c}) \\
+	& =  \sum_{t = 0}^{T - 1} s_t W^{T - 1 - t} + q(WI_S)^{T}
+	\end{align*}
+	\end{proof}
 	
 	\paragraph{Step 4}
 	
-	Just as we upper bounded the probability mass $\widetilde{p}_{\ell}$ could assign to any one vertex, we can upper bound 
+	Just as we upper bounded the probability mass $\widetilde{\pbf}_{\ell}$ could assign to any one vertex, we can upper bound 
 	
 	\begin{align} \label{eqn: soakage_page_rank_body}
-	\widetilde{p}_{s}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \widetilde{W}^t \right)[u]  \nonumber \\
-	& = \|s\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
-	& = \|s\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  \widetilde{W}^t \right)[u]\nonumber \\
-	& \leq \|s\|_1 \frac{1}{d_{\min}(\Csig[\Xbf])}.
+	\pbf_{s}(u') & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \Wbf_n^t \right)(u') \nonumber \\
+	& = \|s\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1} {\Wbf}_n^t \right)(u')\nonumber \\
+	& = \|s\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  {\Wbf}_n^t \right)(u')\nonumber \\
+	& \leq \|s\|_1 \frac{1}{\widetilde{D}_{\min}}.
 	\end{align}
 	
-	Finally, by the definition of $s_t = e_v (W I_{\Csig[\Xbf]})^t (W I_{G / \Csig[\Xbf]})$, letting $q_t = e_v (W I_{\Csig[\Xbf]})^t$ for ease of notation, we have
+	Finally, letting $q_t = e_v (\Wbf_n \widetilde{\mathbf{I}}_n)^t$ for ease of notation, and writi we have
 	\begin{align*}
-	\|s_t\|_1 & = \|q_t (W I_{G / \Csig[\Xbf]})\|_1 \\
-	& = \sum_{u' \in G} \sum_{u \in G} q_t(u) (W I_{G / \Csig[\Xbf]})[u, u'] \\
-	& = \sum_{u' \in G / \Csig[\Xbf]} \sum_{u \in \Csig[\Xbf]} \frac{q(u)}{d(u)} I(e_{u,u'} \in G) \\
-	& = \sum_{u \in \Csig[\Xbf]} \frac{q(u) (d(u) - d_{\Csig[\Xbf]}(u) )}{d(u)} \\
-	& = \|q_t (I - D^{-1} D_{\Csig[\Xbf]})\|_1 = \|\ell_t\|_1.
+	\|s_t\|_1 & = \|q_t (\Wbf_n \widetilde{\mathbf{I}}_n)\|_1 \\
+	& = \sum_{u' \in \Xbf} \sum_{u \in \Xbf} q_t(u) (\Wbf_n \widetilde{\mathbf{I}}_n)(u, u')\\
+	& = \sum_{u' \in \Xbf / \Csig[\Xbf]} \sum_{u \in \Csig[\Xbf]} \frac{q_t(u)}{(\Dbf_n)_{uu}} \1(e_{u,u'} \in G_{n,r}) \\
+	& = \sum_{u \in \Csig[\Xbf]} \frac{q(u) \left((\Dbf_n)_{uu} - (\widetilde{\Dbf}_n)_{uu} \right)}{(\Dbf_n)_{uu}} \\
+	& = \|q_t (I - \Dbf_n^{-1} \widetilde{\Dbf}_n)\|_1 = \|\ell_t\|_1.
 	\end{align*}
 	
-	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\Phi^{btw}(\Csig[\Xbf])}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
+	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\widetilde{\Phi}_{n,r}}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
 	
 \end{proof}
 

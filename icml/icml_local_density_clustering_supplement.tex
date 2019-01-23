@@ -12,7 +12,6 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{booktabs}
-%\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amsfonts, amsthm, amssymb}
 \usepackage{graphicx}
@@ -20,6 +19,7 @@
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
 \usepackage{xr-hyper}
+% \usepackage{hyperref}
 \usepackage{bm}
 \usepackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
 \usepackage{natbib}
@@ -99,6 +99,7 @@
 \newcommand{\wu}{\widetilde{u}}
 \newcommand{\wPbb}{\widetilde{\Pbb}}
 \newcommand{\wf}{\widetilde{f}}
+\newcommand{\wDbf}{\widetilde{\Dbf}}
 
 
 \newtheoremstyle{aldenthm}
@@ -148,7 +149,7 @@
 
 \section{Proofs}
 
-In this supplement, we present proofs for ``Local Clustering of Density Upper Level Sets''. Sections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. \ref{sec: mixing_time_on_graphs} develops a bound of the form of \eqref{eqn: average_conductance}, which we recall links the conductance function to mixing time; this will be necessary for both Theorems \ref{thm: inverse_mixing_time_lower_bound_nonconvex} and \ref{thm: inverse_mixing_time_lower_bound}. \ref{sec: non_convex_conductance_function_and_local_spread} and \ref{sec: inverse_mixing_time_lower_bound_nonconvex} give the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, while \ref{sec: convex_population_conductance_function}- \ref{sec: inverse_mixing_time_lower_bound} give the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}.
+In this supplement, we present proofs for ``Local Clustering of Density Upper Level Sets''. Sections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. \ref{sec: mixing_time_on_graphs} develops a bound of the form of \eqref{eqn: average_conductance}, which we recall links the conductance function to mixing time; this will be necessary for both Theorems \ref{thm: inverse_mixing_time_lower_bound_nonconvex} and \ref{thm: inverse_mixing_time_lower_bound}. \ref{sec: non_convex_conductance_function_and_local_spread} and \ref{sec: inverse_mixing_time_lower_bound_nonconvex} give the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, while \ref{sec: convex_population_conductance_function}- \ref{sec: inverse_mixing_time_lower_bound} give the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}. \ref{sec: concentration} gives some general concentration results used throughout, before we finish with the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters} in \ref{sec: proof_of_consistent_cluster_recovery}.
 
 \subsection{Volume estimates}
 \label{sec: volume_estimates}
@@ -164,7 +165,7 @@ For notational ease, we write
 \cut_{n,r} = \cut(\Csig[\Xbf]; G_{n,r}), ~ \mu_K = \mathbb{E}(\cut_{n,r}), ~ p_K = \frac{\mu_K}{{n \choose 2}} \\
 \vol_{n,r} = \vol(\Csig[\Xbf]; G_{n,r}), ~ \mu_V = \mathbb{E}(\vol_{n,r}), ~ p_V = \frac{\mu_V}{{n \choose 2}}
 \end{align*}
-for the random variable, mean, and probability of cut size and volume, respectively.
+for the random variable, mean, and probability of cut size and volume, respectively. 
 
 We state Lemma \ref{lem: expansion_sets} without proof, as it is trivial. We formally include it mainly to comment on its (potential) suboptimality; for sets $\Aset$ with diameter much larger than $\sigma$, the volume estimate of Lemma \ref{lem: expansion_sets} will be quite poor. 
 
@@ -377,7 +378,7 @@ We now convert from bounds on $p_K$ and $p_V$ to probabilistic bounds on $\cut_{
 
 The proof of Theorem \ref{thm: conductance_upper_bound} is more or less given by Lemmas \ref{lem: expected_density_cut}, \ref{lem: expected_density_volume}, \ref{lem: prob_bound_cut}, and \ref{lem: prob_bound_vol}. All that remains is some algebra, which we take care of below.
 
-Fix $\delta \in (0,1]$ and let $\delta' = \delta/2$. Noting that $\Phi_{n,r}(\Csig[\Xbf]) = \frac{\cut_{n,r}}{\vol_{n,r}}$, some trivial algebra gives us the expression
+Fix $\delta \in (0,1]$ and let $\delta' = \delta/2$. For sufficiently large $n$, note that by \eqref{eqn: weighted_cluster_volume}, $\vol_{n,r} \leq 1 - \vol_{n,r}$ with probability at least $1 - \delta$, and therefore $\Phi_{n,r}(\Csig[\Xbf]) = \frac{\cut_{n,r}}{\vol_{n,r}}$. Some trivial algebra gives us the expression
 \begin{equation}
 \label{eqn: conductance_representation_1}
 \Phi_{n,r}(\Csig[\Xbf]) = \frac{p_K + \left(\frac{\cut_{n,r}}{{n \choose 2}} - p_K\right)}{p_V + \left(\frac{\vol_{n,r}}{{n \choose 2}} - p_V\right)}
@@ -414,8 +415,9 @@ q_{vu}^{(m)} = e_v\Wbf^m e_u, ~~ \qbf_{v}^{(m)} = \left(q_{vu}^{(m)}\right)_{u \
 \end{equation}
 denote respectively the $m$-step transition probability, distribution, and sequence distributions of the random walk over $G$ originating at $v$. Letting $\qbf = (\qbf_v)_{v \in V}$, the relative pointwise mixing time is thus
 \begin{equation*}
-\tau_{\infty}(\qbf; G) = \min\set{m: \forall u,v \in V, \frac{\abs{q_{vu}^{(m)} - \pibf_u}}{\pibf_u} \leq 1/4} 
+\tau_{\infty}(\qbf; G) := \tau_{\infty}(\qbf; G) = \min\set{m: \forall u,v \in V, \frac{\abs{q_{vu}^{(m)} - \pibf_u}}{\pibf_u} \leq 1/4} 
 \end{equation*}
+where we include the extra dependency on $\qbf$ as we will need to consider mixing of various random walks. 
 
 Two key quantities relate the mixing time to the expansion of subsets $S$ of $V$. The \emph{local spread} is defined to be
 \begin{equation*}
@@ -883,7 +885,7 @@ We use $\omega_r(1)$ to denote a term which goes to infinity as $r \to 0$, and l
 	As a consequence, for $M$ and $(t_i)_{i=0}^{M-1}$ defined as in Lemma \ref{lem: continuous_conductance_lower_bound}, we have that
 	\begin{equation}
 	\label{eqn: consistency_of_stepapprox_conductance_function}
-	\liminf_{n \to \infty} \overline{\Phi}_{n,r} \geq \min\left\{\overline{\Phi}_{\Pbb,r}(t), c_d r \omega_r(1)\right\}
+	\liminf_{n \to \infty} \overline{\Phi}_{n,r}(t) \geq \min\left\{\overline{\Phi}_{\Pbb,r}(t), c_d r \omega_r(1)\right\}
 	\end{equation}
 \end{lemma}
 We defer the proof of pointwise consistency to Section \ref{sec: pointwise_consistency_of_conductance_function}. For now, we show that \eqref{eqn: consistency_of_stepapprox_conductance_function} is immediately implied by \eqref{eqn: pointwise_consistency_of_conductance_function}.
@@ -1112,7 +1114,7 @@ where $(iii)$ uses the upper bound $\frac{1}{\log(1 + x)} \leq \frac{1}{x}$.
 Plugging these bounds in to \eqref{eqn: mixing_time_bound_on_neighborhood_graph} gives the desired upper bound on $\tau_{\infty}(\widetilde{q}_n, \widetilde{G}_{n,r})$, which translates to the lower bound of \eqref{eqn: inverse_mixing_time_lower_bound}.
 
 \subsection{Concentration inequalities}
-
+\label{sec: concentration}
 Given a symmetric kernel function $k: \mathcal{X}^m \to \Reals$, and data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$m$ $U$ statistic} to be 
 \begin{equation*}
 U := \frac{1}{ {n \choose m} } \sum_{1 \leq i_1 < \ldots < i_m \leq n} k(x_{i_1},\ldots,x_{i_m})
@@ -1143,6 +1145,265 @@ We will employ a sharper concentration inequality for $\sum_{i = 1}^{n} X_i$.
 	\Pbb\left(\sum_{i=1}^{n}X_i < (1 - \epsilon) \mu \right) \leq \exp \left(\frac{-\delta^2 \mu}{2}\right)
 	\end{align*}
 \end{lemma}
+
+Let $\pbf = (p_u)_{u \in \Xbf}$ denote the \pprspace vector computed over $G_{n,r}$ (where for ease of reading we suppress dependence on the hyperparameter $\alpha$ and seed node $v$.) 
+Recalling that $\widetilde{\pi}_{n,r}$ is the stationary distribution over $\widetilde{G}_{n,r}$, we write $\widetilde{\pi}_{n,r}(u)$ to denote the stationary distribution evaluated at $u \in \Csig[X]$. 
+
+\subsection{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
+\label{sec: proof_of_consistent_cluster_recovery}
+
+Lemma \ref{lem: setup} formalizes the intuitively sensible statement that \pprspace, can be uniformly lower bounded over clusters with small mixing time relative to their normalized cut. Importantly, it adds a corresponding upper bound for \pprspace outside of these clusters.
+\begin{lemma} 
+	\label{lem: setup}
+	Consider running Algorithm \ref{alg: ppr} with any $r < \sigma$ and
+	
+	\begin{equation} 
+	\label{eqn: upper_bound_alpha}
+	\frac{\Psi_{n,r}(\Csig[\Xbf])}{10} \leq \alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}.
+	\end{equation}
+	
+	There exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$ such that the following statements hold for all $v \in \Csig[\Xbf]^g$:
+	\begin{itemize}
+		\item For all $u \in \Cset[\Xbf]$,
+		\begin{equation}
+		\label{eqn: lower_bound_PPR_in_cluster}
+		p_u \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\end{equation}
+		\item For all $u' \in \Csig'[\Xbf]$,
+		\begin{equation}
+		\label{eqn: upper_bound_PPR_in_other_cluster}
+		p_{u'} \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\end{equation}
+	\end{itemize}
+\end{lemma}
+
+\begin{proof}
+	We will write $\Wbf_n = \Dbf_n \Abf_n^{-1}$ for the transition probability matrix over $G_{n,r}$, and let $\widetilde{\Dbf}_n$ and $\widetilde{\Wbf}_n$ be the degree and random walk matrices for the subgraph $\widetilde{G}_{n,r}$.
+	
+	We introduce \emph{leakage} and \emph{soakage} vectors, defined by
+	\begin{align*}
+	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}) \\
+	\ell & := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t \\
+	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c) \\
+	s & := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t
+	\end{align*}
+	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is a diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$. 
+	
+	Roughly, the proof will unfold in four steps. The first two will result in the lower bound of (\ref{eqn: lower_bound_PPR_in_cluster}), while the latter two will imply the upper bound in (\ref{eqn: upper_bound_PPR_in_other_cluster}).
+	
+	\begin{enumerate}
+		\item For $u \in \Cset'[\Xbf]$, use the results of \cite{zhu2013} to produce the lower bound 
+		\begin{equation*}
+		\pbf(u) \geq 4/5 \widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u)
+		\end{equation*}
+		where 
+		\begin{equation*}
+		\widetilde{\pbf}_{\ell} = \alpha \ell + (1 - \alpha) \widetilde{\pbf}_{\ell} \widetilde{\Wbf}_n
+		\end{equation*}
+		is the \pprspace random walk over $\widetilde{G}_{n,r}$, and $\ell$ has bounded norm $||\ell||_1 \leq 2\frac{\Phi_{n,r}(\Csig[\Xbf])}{\alpha}$.
+		
+		\item Since $r < \sigma$, for any $u \in \Cset[\Xbf]$ there are no edges between $u$ and $G_{n,r} / \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{\pbf}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This observation will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
+		\item For vertices $u' \in G_{n,r} / \Csig[\Xbf]$, we can upper bound $p_v(u) \leq p_s(u')$. In particular, this hold for all $u' \in \Cset'[\Xbf]$.
+		\item Since $r < \sigma$, there are no edges between $u'$ and $G / \Cset'[\Xbf]$. Therefore, the page-rank vector $p_{s}$ will assign no more than $||s||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. Additionally, $s$ has bounded norm $||s||_1 \leq ||\ell||_1$. This will conclude our proof of (\ref{eqn: upper_bound_PPR_in_other_cluster}), and hence Lemma \ref{lem: setup}.
+	\end{enumerate}
+	
+	\paragraph{Step 1}
+	We will begin by restating some results of \cite{zhu2013}.
+	
+	For seed node $v$, we write
+	\begin{align} \label{eqn: page_rank_body}
+	\widetilde{\pbf}_v & = \alpha e_v + (1 - \alpha) \widetilde{\pbf}_v \widetilde{\Wbf}_n \\
+	& = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(e_v \widetilde{\Wbf}_n^t \right)
+	\end{align}
+	
+	From Lemma 3.1 of \cite{zhu2013} we have that there exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$ for all $v \in \Csig[\Xbf]^g$, $u \in \Csig[\Xbf]$
+	
+	\begin{align} \label{eqn: zhu_body}
+	p_u & \geq \widetilde{\pbf}_v(u) - \widetilde{\pbf}_{\ell}(u) \nonumber \\
+	||\ell||_1 & \leq \frac{2 \widetilde{\Phi}_{n,r}}{\alpha}
+	\end{align}
+	where $\widetilde{\pbf}_v = (\widetilde{\pbf}_v(u))$ and likewise for $\widetilde{\pbf}_{\ell} = (\widetilde{\pbf}_{\ell}(u))$. (This will be the only time we need to restrict ourselves to this 'good set'.)
+	
+	Moreover if, as we have specified, $\alpha \leq \widetilde{\Psi}_{n,r}/9$, Lemma 3.2 of \cite{zhu2013} yields a lower bound on $\widetilde{p}$
+	\begin{equation} \label{eqn: page_rank_mixes}
+	\widetilde{\pbf}_v(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u).
+	\end{equation}
+	
+	\paragraph{Step 2}
+	
+	We turn to upper bounding $\widetilde{\pbf}_{\ell}(u)$. For any $u \in \Cset[\Xbf]$, we have
+	
+	\begin{align} \label{eqn: leakage_page_rank_body}
+	\widetilde{\pbf}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{\Wbf}_n^t \right)(u)  \nonumber \\
+	& = \|\ell\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	& \overset{\text{(i)}}{=} \|\ell\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	& \overset{\text{(ii)}}{\leq} \|\ell\|_1 \frac{1}{\widetilde{D}_{\min}} 
+	\end{align}
+	
+	where we use $\left(\ell \widetilde{\Wbf}_n^t \right)(u)$ to denote $\ell \widetilde{\Wbf}_n^te_u$.
+	
+	$\text{(i)}$ follows from the fact that since $r < \sigma$, $\cut(\Cset[\Xbf], G_{n,r} / \Csig[\Xbf]; G_{n,r}) = 0$. Therefore $(\Dbf_n^{-1})_{uu} (\widetilde{\Dbf}_n)_{uu} = 1$, and as a result
+	\begin{equation*}
+	(\ell \widetilde{\Wbf}_n^0)(u) = \ell(u) = 0.
+	\end{equation*}
+	To see $\text{(ii)}$, let $q = \frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^{t-1}$. Then 
+	
+	\begin{align*}
+	\left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u) & = \left(q \widetilde{\Wbf}_n \right)(u) \\
+	& \leq \|q\|_1 \|\widetilde{\Wbf}_{\cdot u}\|_{\infty} \\
+	& \overset{\text{(iii)}}{\leq} \frac{1}{\widetilde{D}_{\min}}.
+	\end{align*}
+	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}_n$. $\text{(iii)}$ then follows from the fact that any vertex in $\Cset[\Xbf]$ is connected only to vertices in $\Csig[\Xbf]$, and therefore every entry of $\widetilde{\Wbf}_{\cdot u}$ is either $0$ or at most $1 / \widetilde{D}_{\min}$.
+	
+	
+	Combined, (\ref{eqn: leakage_page_rank_body}), (\ref{eqn: page_rank_mixes}), and \eqref{eqn: zhu_body} imply
+	\begin{equation*}
+	p_v(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - 18\frac{ \Phi_{n,r}(\Csig[\Xbf])}{\widetilde{D}_{\min} \alpha}.
+	\end{equation*}
+	for any $v \in \Csig[\Xbf]$. 
+	
+	\paragraph{Step 3}
+	To get the corresponding upper bound on $p_v(u')$, we will use the soakage vectors $s$ and $s_t$. We will first argue that $s$ is a worse starting distribution -- meaning it puts uniformly more mass outside the cluster -- than simply starting at $v$.
+	
+	\begin{lemma} \label{lem: gained mass is soaked_body}
+		For all $u' \notin \Csig[\Xbf]$,
+		\begin{equation}
+		\pbf_v(u') \leq \pbf_{s}(u').
+		\end{equation}
+	\end{lemma}
+	
+	\begin{proof}
+		
+		We have
+		\begin{align*}
+		\pbf_v(u') & = \alpha \sum_{T=0}^{\infty} (1 - \alpha)^T (e_v \Wbf_n^T)(u)\\
+		& \overset{(i)}{=} \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T (e_v \Wbf_n^T)(u')
+		\end{align*}
+		
+		where $(i)$ follows from $v \in \Csig$ , $u \not\in \Csig$ and therefore $e_v(u) = 0$. 
+		
+		Lemma \ref{lem: sum_of_soakages} allows us to make the transition to sums of soakage vectors. 
+		\begin{lemma}
+			\label{lem: sum_of_soakages}
+			
+			Let $G = (V,E)$ be a graph, with associated random walk matrix $W$.
+			
+			For any $T \geq 1$, $q$ vector, $S \subset V$, and $s_t = s_t(S^c,q)$
+			\begin{equation}
+			qW^T = \sum_{t = 0}^{T - 1} s_t W^{T - t - 1} + q(W I_S)^T
+			\end{equation}
+		\end{lemma}
+		We prove Lemma \ref{lem: sum_of_soakages} after completing the proof of Lemma \ref{lem: gained mass is soaked_body}.
+		
+		Now, along with the fact $u \not\in \Csig$, we have
+		
+		\begin{equation*}
+		\left(e_v \Wbf_n^T \right)(u') = \sum_{t = 0}^{T - 1} \left(s_t \Wbf_n^{T - t - 1} \right)(u')
+		\end{equation*}
+		
+		and so
+		
+		\begin{align*}
+		\pbf_v(u) & = \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} \right)(u') \\
+		& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf^{T - t - 1} \right)(u')\\
+		& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf_n^{\Delta} \right)(u') \\
+		& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf_n^{\Delta} \right)(u') \\
+		& = \alpha \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta} \left(s \Wbf_n^{\Delta}\right)(u') \\
+		& = \pbf_s(u')
+		\end{align*}
+	\end{proof}
+	
+	\begin{proof}[Proof of Lemma \ref{lem: sum_of_soakages}]
+		Proceed by induction. When $T = 1$,
+		
+		\begin{align*}
+		qW & = q(WI_S) + q(WI_{S^c}) \\
+		& = q(W I_S)^T + s_0 
+		\end{align*}
+		
+		Assume true for $T_0$. For $T = T_0 + 1$,
+		
+		\begin{align*}
+		qW^T & = qW^{T_0}W \\
+		& = \left\{ \sum_{t = 0}^{T_0 - 1} s_t W^{T_0 - 1 - t} + q(WI_S)^{T_0} \right\} W \\
+		& =  \sum_{t = 0}^{T_0 - 1} s_t W^{T - 1 - t} + q(WI_S)^{T_0}(WI_S + WI_{S^c}) \\
+		& =  \sum_{t = 0}^{T - 1} s_t W^{T - 1 - t} + q(WI_S)^{T}
+		\end{align*}
+	\end{proof}
+	
+	\paragraph{Step 4}
+	
+	Just as we upper bounded the probability mass $\widetilde{\pbf}_{\ell}$ could assign to any one vertex, we can upper bound 
+	
+	\begin{align} \label{eqn: soakage_page_rank_body}
+	\pbf_{s}(u') & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \Wbf_n^t \right)(u') \nonumber \\
+	& = \|s\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1} {\Wbf}_n^t \right)(u')\nonumber \\
+	& = \|s\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  {\Wbf}_n^t \right)(u')\nonumber \\
+	& \leq \|s\|_1 \frac{1}{\widetilde{D}_{\min}}.
+	\end{align}
+	
+	Finally, letting $q_t = e_v (\Wbf_n \widetilde{\mathbf{I}}_n)^t$ for ease of notation, we have
+	\begin{align*}
+	\|s_t\|_1 & = \|q_t (\Wbf_n \widetilde{\mathbf{I}}_n)\|_1 \\
+	& = \sum_{u' \in \Xbf} \sum_{u \in \Xbf} q_t(u) (\Wbf_n \widetilde{\mathbf{I}}_n)(u, u')\\
+	& = \sum_{u' \in \Xbf / \Csig[\Xbf]} \sum_{u \in \Csig[\Xbf]} \frac{q_t(u)}{(\Dbf_n)_{uu}} \1(e_{u,u'} \in G_{n,r}) \\
+	& = \sum_{u \in \Csig[\Xbf]} \frac{q(u) \left((\Dbf_n)_{uu} - (\widetilde{\Dbf}_n)_{uu} \right)}{(\Dbf_n)_{uu}} \\
+	& = \|q_t (I - \Dbf_n^{-1} \widetilde{\Dbf}_n)\|_1 = \|\ell_t\|_1.
+	\end{align*}
+	
+	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\widetilde{\Phi}_{n,r}}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
+	
+\end{proof}
+
+\begin{lemma}
+	\label{lem: ball_bounds_in_probability}
+	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
+	\begin{align*}
+	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
+	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
+	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
+	\end{align*}
+	where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
+\end{lemma}
+
+The statement follows immediately from Lemma \ref{lem: ball_bounds}.
+
+\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
+
+We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
+\begin{equation*}
+\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
+\end{equation*}
+As a result Lemma \ref{lem: setup} implies
+\begin{align}
+\label{eqn: theorem_4_1}
+p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
+p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
+\end{align}
+
+We turn to bounding $\widetilde{\pi}_{n,r}(u)$. Clearly,
+\begin{align*}
+\widetilde{\pi}_{n,r}(u) & \geq \frac{\widetilde{D}_{\min}}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
+& \geq \frac{\widetilde{D}_{\min}}{\wn \widetilde{D}_{\max}}.
+\end{align*}
+Application of Lemma \ref{lem: ball_bounds_in_probability} then yields
+\begin{equation}
+\label{eqn: theorem_4_2}
+\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{equation}
+as well as
+\begin{equation}
+\label{eqn: theorem_4_3}
+\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
+\end{equation}
+with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$ (indeed, all $u \in \Csig[\Xbf]$.)
+
+Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
+\begin{align*}
+p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
+p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{align*}
+for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
 
 \clearpage
 \bibliographystyle{plain}
