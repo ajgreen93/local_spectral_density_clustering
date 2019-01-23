@@ -124,15 +124,15 @@
 Spectral clustering methods are a family of popular nonparametric clustering
 tools.  Recent works have proposed and analyzed \emph{local} spectral methods,
 which extract clusters using locally-biased random walks around a user-specified
-seed node.  Several local methods, such as the personalized PageRank (PPR)
-algorithm, have been shown to have worst-case guarantees for certain graph-based
-measures of cluster quality.  In contrast to existing works, we analyze PPR in a
-traditional statistical learning setup, where we obtain samples from an unknown
+seed node.  Several authors have shown that local methods, such as personalized
+PageRank (PPR), have worst-case guarantees for certain graph-based measures of
+cluster quality.  In contrast to existing works, we analyze PPR in a traditional
+statistical learning setup, where we obtain samples from an unknown
 distribution, and aim to identify connected regions of high-density (density
 clusters).  We introduce two natural criteria for cluster quality, and derive
 bounds for these criteria when evaluated on empirical analogues of density
 clusters. Moreover, we prove that PPR, run on a neighborhood graph, extracts
-sufficiently salient density clusters.   
+sufficiently salient density clusters.
 \end{abstract}
 
 \section{Introduction}
@@ -176,22 +176,22 @@ local spectral algorithms, which leverage locally-biased spectra computed using
 random walks around a user-specified seed node.  A popular local clustering
 algorithm is Personalized PageRank (PPR), first introduced by
 \citet{haveliwala2003}, and further developed by
-\citet{spielman2011,spielman2014,anderson2006,mahoney2012,zhu2013}, among 
-others.  
+\citet{spielman2011,spielman2014,andersen2006,mahoney2012,zhu2013},
+among others.  
 
 Local spectral clustering techinques have been practically very successful
-\citep{leskovec2010,mahoney2012,REFS}, which
-has led many authors to develop theory that explains their success 
-\citep{zhu2013,REFS},
-from the perspective of worst-case guarantees on traditional graph-theoretic
-notions of cluster quality (like conductance).  In this paper, we adopt a more
-traditional statistical viewpoint, and examine what the output of a local
-clustering algorithm on $\Xbf$ reveals about the unknown density $f$.  
-In particular, we examine the ability of the PPR algorithm to recover
-\emph{density clusters} of $f$, which are defined as the connected components of
-the upper level set $\{x : f(x) \geq \lambda\}$ for some threshold $\lambda >
-0$ (a central object of central interest in the classical statistical literature
-on clustering, dating back to \citealt{hartigan1981}). 
+\citep{leskovec2010,andersen2012,gleich2012,mahoney2012,wu2012}, which has led
+many authors to develop supporting theory
+\citep{spielman2013,andersen2009,gharan2012,zhu2013} that gives worst-case
+guarantees on traditional graph-theoretic notions of cluster quality (like
+conductance).  In this paper, we adopt a more traditional statistical viewpoint,
+and examine what the output of a local clustering algorithm on $\Xbf$ reveals
+about the unknown density $f$.  In particular, we examine the ability of the PPR
+algorithm to recover \emph{density clusters} of $f$, which are defined as the
+connected components of the upper level set $\{x \in \Rd : f(x) \geq \lambda\}$
+for some threshold $\lambda > 0$ (a central object of central interest in the
+classical statistical literature on clustering, dating back to
+\citealt{hartigan1981}).
 
 \subsection{Graph Connectivity Criteria}
 
@@ -258,10 +258,10 @@ connectivity parameter is simply the inverse mixing time,
 
 If $S$ has normalized cut no greater than $\Phi$, and inverse mixing time no
 less than $\Psi$, we call it as a \emph{$(\Phi,\Psi)$-cluster}. Both
-local \cite{zhu2013} and global \cite{kannan04} spectral algorithms have been
+local \citep{zhu2013} and global \citep{kannan04} spectral algorithms have been
 shown to output clusters (or partitions) which approximate the optimal $(\Phi,
 \Psi)$-cluster (or partition) for a given graph $G$.\footnote{In the case of
-  \cite{kannan04}, the internal connectivity parameter $\phi$ is actually the
+  \citet{kannan04}, the internal connectivity parameter $\phi$ is actually the
   conductance, i.e., the minimum normalized cut within the subgraph $G[S]$. See
   Theorem 3.1 in their paper for details; however, note that $\phi^2 /
   \log(\vol(S)) \leq O(\Psi)$, and so the lower bound on $\phi$ translates to a
@@ -299,7 +299,7 @@ S_\beta = \{u \in V: p_u > \beta \pi_{0}\}.
 \end{equation}
 Having computed sweep cuts over a range \smash{$\beta \in  
 (\frac{3}{10},\frac{1}{2})$},\footnote{The choice of a specific range such as 
-\smash{$(\frac{3}{10}, \frac{1}{2})$} is standard in the analysis of \pprspace
+\smash{$(\frac{3}{10}, \frac{1}{2})$} is standard in the analysis of PPR
 algorithms, see, e.g., \citet{zhu2013}.}
 we output a cluster \smash{$\widehat{C} = S_{\beta^*}$}, based on the sweep cut
 $S_{\beta^*}$ that minimizes the normalized cut \smash{$\Phi(S_{\beta^*};
@@ -319,7 +319,7 @@ parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, target volume $\pi_0 >
     ppr_vector}. 
   \STATE For $\beta \in (\frac{3}{10}, \frac{1}{2})$ compute sweep cuts
   $S_{\beta}$ as in \eqref{eqn: sweep_cuts}.
-  \STATE Return $\widehat{C} = S_{\beta^*}$, where 
+  \STATE Return \smash{$\widehat{C} = S_{\beta^*}$}, where 
   $$
   \beta^* = \argmin_{\beta \in (\frac{3}{10}, \frac{1}{2})} \Phi(S_{\beta}; G_{n,r}).
   $$
@@ -356,10 +356,10 @@ parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, target volume $\pi_0 >
 %minima of these continuous analogues has been shown \cite{vonluxburg2008,
 %garciatrillos18}. 
 
-%%% RJT: This was already commented out before
+%% RJT: This was already commented out before
 
 Let $\Cbb_f(\lambda)$ denote the connected components of the density upper level
-set $\{x : f(x) > \lambda\}$.  For a given density cluster $\Cset \in
+set $\{x \in \Rd: f(x) > \lambda\}$.  For a given density cluster $\Cset \in
 \Cbb_f(\lambda)$, we call $\Cset[\Xbf] = \Cset \cap \Xbf$ the \emph{empirical
   density cluster}. Below we define a notion of consistency in density cluster
 estimation.     
@@ -383,15 +383,15 @@ follows.
 
 \begin{enumerate}
 \item In Section \ref{sec: PhiPsi}, we derive in Theorem \ref{thm:
-    conductance_upper_bound} an upper bound on the normalized cut of an
-  empirical density cluster $\Cset[\Xbf]$, under a natural set of    
-  geometric conditions (precluding clusters which are too thin and long).
+    conductance_upper_bound} an upper bound on the normalized cut of a
+  (thickened) empirical density cluster $\Csig[\Xbf]$, under natural geometric 
+  conditions (precluding clusters that are too thin and long).  
 
 \item Under largely the same set of geometric conditions, we derive in Theorem
   \ref{thm: inverse_mixing_time_lower_bound_nonconvex} a lower bound on the
-  inverse mixing time of a random walk over $\Cset[\Xbf]$.  We also provide in
+  inverse mixing time of a random walk over $\Csig[\Xbf]$.  We also provide in 
   Theorem \ref{thm: inverse_mixing_time_lower_bound} a tighter lower bound, but
-  under more restrictive assumptions (convexity of $\Cset[\Xbf]$).
+  under more restrictive assumptions (convexity of $\Csig$).
 	
 \item In Section \ref{sec: consistent_cluster_estimation_with_ppr}, we show in
   Theorem \ref{thm: consistent_recovery_of_density_clusters} that these bounds
@@ -449,169 +449,297 @@ algorithms, and as such impose global rather than local conditions on the nature
 of the density. Moreover, they do not in general ensure recovery of density
 clusters, which is the focus in our work. 
 
-\section{Cluster Quality Criteria on Empirical Density Clusters} 
+\section{Cluster Quality Critera Bounds for Density Clusters}  
 \label{sec: PhiPsi}
 
-In order to provide meaningful bounds on the normalized cut and inverse mixing time of an empirical density cluster $\Cset[\Xbf]$, we must introduce some assumptions on the density $f$. 
+\subsection{Assumptions}
 
-Let $B(x,r) = \set{y \in \Rd: \norm{y - x} \leq r}$ be a closed ball of radius $r$ around the point $x$.  Given a set $\Aset \subseteq \Rd$, and a number $\sigma > 0$, define the $\sigma$-expansion of $\Aset$ to be $\Asig = \Aset + B(0,\sigma) = \set{y \in \Rd: \inf_{x \in \Aset} \norm{y - x} \leq \sigma}$. We are now ready to give the assumptions, which we state with respect to a density cluster $\Cset \in \Cbb_f(\lambda)$ for some $\lambda > 0$, and expansion parameter $\sigma > 0$:
+In order to provide meaningful bounds on the normalized cut and inverse mixing
+time of an empirical density cluster, we must introduce conditions on the
+density $f$. Let $B(x,r) = \{y \in \Rd: \norm{y - x} \leq r\}$ be the ball of
+radius $r$ centered at $x$.  Given a set $\Aset \subseteq \Rd$ and $\sigma > 0$,
+define $\Asig = \Aset + B(0,\sigma) = \{y \in \Rd: \inf_{x \in \Aset} \norm{y - 
+    x} \leq \sigma\}$, which we call the $\sigma$-expansion of $\Aset$. 
+
+We are now ready to give the conditions, stated with respect to a density
+cluster $\Cset \in \Cbb_f(\lambda)$, for some $\lambda > 0$, and an expansion 
+parameter $\sigma > 0$. 
+
 \begin{enumerate}[label=(A\arabic*)]
-	\item
-	\label{asmp: cluster_separation}
-	\textit{Cluster separation:}
-	For all $\Cset' \in \Cbb_f(\lambda)$,
-	\begin{equation*}
-	\dist(\Csig,\Csig') > \sigma,
-	\end{equation*}
-	where $\dist(\Aset,\Aset') = \min_{x \in \Aset} \dist(x,\Aset')$ for $\Aset' \subseteq \Rd$. 
+\item
+\label{asmp: bounded_density}
+\emph{Bounded density within cluster:} There are $0 < \lambda_{\sigma} <
+\Lambda_{\sigma} < \infty$ such that
+$$
+\lambda_{\sigma} = \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x) \leq
+\Lambda_{\sigma}.
+$$
+% and 
+% \begin{equation*}
+% \frac{\diam \Asig}{\sigma} \leq \mu
+% \end{equation*}
+% where $\diam \Asig = \sup \set{d(x,y) : x,y \in \Asig}$
 	
-	\item
-	\label{asmp: cluster_diameter}
-	\textit{Cluster diameter:}
-	There exists $D < \infty$ such that for all $x, x' \in \Csig$:
-	\begin{equation*}
-	\norm{x - x'} \leq D.
-	\end{equation*}
+\item 
+\label{asmp: low_noise_density}
+\emph{Low noise density:} There exist $\gamma, c_1 > 0$ such that for all $x
+\in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,   
+$$
+  \inf_{x' \in \Csig} f(x') - f(x) \geq c_1 \dist(x, \Csig)^{\gamma},
+$$
+where \smash{$\dist(x,\Aset) = \inf_{x_0 \in \Aset} \norm{x - x_0}$}.
+% RJT: should we change this to c_0?  c_1 seems to be used below and throughout
+% for other constants, and c_0 is not used
+
+\item
+\label{asmp: cluster_separation}
+\emph{Cluster separation:}
+For all $\Cset' \in \Cbb_f(\lambda)$,
+$$
+\dist(\Csig,\Csig') > \sigma,
+$$
+where \smash{$\dist(\Aset,\Aset') = \inf_{x \in \Aset} \dist(x,\Aset')$}.  
 	
-	\item
-	\label{asmp: bounded_density}
-	\textit{Bounded density within cluster:} There exist numbers $0 < \lambda_{\sigma} <  \Lambda_{\sigma} < \infty$ such that:
-	\begin{equation}
-	\label{eqn: bounded_density}
-	\lambda_{\sigma} = \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x) \leq \Lambda_{\sigma} 
-	\end{equation} 
-	%and 
-	%\begin{equation*}
-	%\frac{\diam \Asig}{\sigma} \leq \mu
-	%\end{equation*}
-	%where $\diam \Asig = \sup \set{d(x,y) : x,y \in \Asig}$
-	
-	\item 
-	\label{asmp: low_noise_density}
-	\textit{Low noise density:} For some $\gamma > 0 $, there exists a constant $c_1 > 0$ such that for all $x \in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,
-	\begin{equation*}
-	\inf_{x' \in \Csig} f(x') - f(x) \geq c_1 \dist(x, \Csig)^{\gamma},
-	\end{equation*}
-	where $\dist(x,\Aset) = \min_{x_0 \in \Aset} \norm{x - x_0}$ for $\Aset \subseteq \Rd$.
+\item
+\label{asmp: cluster_diameter}
+\emph{Cluster diameter:}
+There exists $D < \infty$ such that for all $x, x' \in \Csig$,
+$$
+\norm{x - x'} \leq D.
+$$
 \end{enumerate}
 
-We note that $\sigma$ plays several roles here, precluding arbitrarily narrow clusters and long clusters in \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density}, flat densities around the level set in \ref{asmp: low_noise_density}, and poorly separated clusters in \ref{asmp: cluster_separation}.
+Note that $\sigma$ plays several roles here, precluding arbitrarily narrow
+clusters and long clusters in \ref{asmp: bounded_density} and \ref{asmp:
+  cluster_diameter}, flat densities around the level set in \ref{asmp: 
+  low_noise_density}, and poorly separated clusters in \ref{asmp:
+  cluster_separation}. 
 
-Assumptions \ref{asmp: cluster_separation}, \ref{asmp: bounded_density} and \ref{asmp: low_noise_density} are used to upper bound $\Phi(\Cset[\Xbf]; G_{n,r})$, whereas \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density} are necessary to lower bound $\Psi(\Cset[\Xbf]; G_{n,r})$. We note that the lower bound on minimum density in (\ref{eqn: bounded_density}) and \ref{asmp: cluster_separation} combined are similar to the $(\sigma,\epsilon)$-saliency of \cite{chaudhuri2010}, a standard density clustering assumption, while \ref{asmp: low_noise_density} is seen in, for instance, \cite{singh2009}, (as well as many other works on density clustering and level set estimation.) It is worth highlighting that these assumptions are all local in nature, a benefit of studying a local algorithm such as PPR.
+Assumptions \ref{asmp: bounded_density}, \ref{asmp: low_noise_density}, and
+\ref{asmp: cluster_separation} are used to upper bound $\Phi(\Cset[\Xbf];
+G_{n,r})$, whereas \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} 
+are required to lower bound $\Psi(\Cset[\Xbf]; G_{n,r})$. We note that the
+lower bound on minimum density in \ref{asmp: bounded_density} and \ref{asmp:  
+cluster_separation} combined are similar to the $(\sigma,\epsilon)$-saliency of
+\citet{chaudhuri2010}, a standard density clustering assumption, while
+\ref{asmp: low_noise_density} is seen in, e.g., \citet{singh2009} (as well as
+many other works on density clustering and level set estimation.) It is worth
+highlighting that these assumptions are all local in nature, a benefit of
+studying a local algorithm such as PPR.
 
-We are ready to provide bounds on the graph quality bicriteria. For notational simplicity, hereafter for $S \subseteq \Xbf$ we will refer to $\Phi(S; G_{n,r})$ as $\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$. We will also use $\nu(\cdot)$ to denote the uniform measure over $\Rd$, and $\nu_d = \nu\bigl(B(0,d)\bigr)$ as the measure of the unit ball.
+In the next several subsections, we will derive bounds on the cluster quality
+criteria evaluated on (thickened) density clusters. For notational simplicity,
+hereafter for $S \subseteq V$, we will denote $\Phi(S; G_{n,r})$ by
+$\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$. We
+will also use $\nu$ for Lebesgue measure on $\Rd$, and $\nu_d = \nu(B)$ for 
+the measure of the unit ball $B=B(0,1)$. 
+% RJT: you had B(0,d) before ... just check this should have been B(0,1) 
 
-We begin with an upper bound on the normalized cut in Theorem \ref{thm: conductance_upper_bound}. We will require Assumptions \ref{asmp: cluster_separation}, \ref{asmp: bounded_density} and \ref{asmp: low_noise_density} to hold; however, the upper bound on density in (\ref{eqn: bounded_density}) will not be needed and so we omit the parameter $\Lambda_{\sigma}$ from the statement of the theorem.
+\subsection{Upper Bound on Normalized Cut}
+
+We begin by upper bounding the normalized cut of $\Cset_\sigma[\Xbf]$.  (In the
+theorem, the upper bound on the density in Assumption \ref{asmp: 
+  bounded_density} will not actually be needed, so we omit the parameter
+$\Lambda_\sigma>0$ from the theorem statement.) 
+
 \begin{theorem}
-	\label{thm: conductance_upper_bound}
-	For some $\lambda > 0$, let $\Cset \in \mathbb{C}_f(\lambda)$ satisfy Assumptions \ref{asmp: cluster_separation}, \ref{asmp: bounded_density} and \ref{asmp: low_noise_density} for some $\sigma, \lambda_{\sigma}, c_1, \gamma > 0$ . Then, for any $r < \sigma/4d$ and $\delta \in (0,1]$, the following statements hold with probability at least $1 - \delta$:  Fix $\epsilon > 0$. Then, for
-		\begin{equation}
-		\label{eqn: conductance_sample_complexity}
-		n \geq \frac{9\log(2/\delta)}{\epsilon^2}\left(\frac{1}{ \lambda_{\sigma}^2 \nu(\Csig) \nu_d r^d}\right)^2 
-		\end{equation}
-		we have
-		\begin{equation}
-		\label{eqn: conductance_additive_error_bound}
-		\frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq 4 c_{\sigma} d \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon
-		\end{equation}
-	where $c_{\sigma} = 1 / \sigma$. 
+\label{thm: conductance_upper_bound}
+Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy
+Assumptions \ref{asmp: bounded_density}, \ref{asmp: low_noise_density}, and
+\ref{asmp: cluster_separation}, for some 
+$\sigma, \lambda_{\sigma}, c_1, \gamma > 0$. Then for any $0 < r <
+\sigma/(4d)$, $0 < \delta < 1$, $\epsilon > 0$, and
+\begin{equation}
+\label{eqn: conductance_sample_complexity}
+n \geq \frac{9\log(2/\delta)}{\epsilon^2}\left(\frac{1}
+  { \lambda_{\sigma}^2\nu(\Csig) \nu_d r^d}\right)^2,
+\end{equation}
+we have
+\begin{equation}
+  \label{eqn: conductance_additive_error_bound}
+  \frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq 4 c_{\sigma} d
+  \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
+    \frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
+\end{equation}
+with probability at least $1-\delta$, where $c_{\sigma} = 1 / \sigma$. 
 \end{theorem}
 
 \begin{remark}
-	The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other proofs, can be found in the supplementary document. The key point is to note that for any $x \in \Cset$, the simple, (possibly loose) $B(x,\sigma) \subseteq \Csig$ translates to the upper bound $\nu(\Cset_{\sigma + r}) \leq (1 + 2d r /\sigma)\nu(\Csig)$. We leverage \ref{asmp: low_noise_density} to find a corresponding bound on the weighted volume, before applying standard concentration inequalities to convert from population to sample based results.
+The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other
+proofs in this paper, can be found in the supplementary document. The key 
+idea is that for any $x \in \Cset$, the simple (possibly loose) fact
+$B(x,\sigma) \subseteq \Csig$ translates into the upper bound $\nu(\Cset_{\sigma
+  + r}) \leq (1 + 2d r /\sigma)\nu(\Csig)$. We leverage \ref{asmp:
+  low_noise_density} to find a corresponding bound on the weighted volume,
+then apply standard concentration inequalities to convert from population-
+to sample-based results.  
 \end{remark}
-\begin{remark}
-	(\ref{eqn: conductance_additive_error_bound}) is almost tight. Specifically, choosing
-	\begin{align*}
-	\Asig & = B(0,\sigma), \\
-	 f(x) & = 
-	 \begin{cases}
-	 \lambda \text{ for $x \in \Asig$}, \\
-	 \lambda - \dist(x,\Asig)^{\gamma} \text{ for $0 < \dist(x,\Asig) < r$}
-	 \end{cases}
-	\end{align*}
-	we have that for $n$ within constant order of the lower bound in (\ref{eqn: conductance_sample_complexity}), with probability at least $1 - \delta$
-	\begin{equation*}
-	\frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \geq c \frac{(\lambda - \frac{r^{\epsilon+1}}{\epsilon+1})}{\lambda} - \epsilon
-	\end{equation*}
-	for some constant $c$. (Note that a factor of $1 / \sigma$ in $c_{\sigma}$ is not replicated in this lower bound.)
-\end{remark}
-
-We now provide a lower bound on $\Psi_{n,r}(\Cset[\Xbf])$.
-
-\begin{theorem}
-	\label{thm: inverse_mixing_time_lower_bound_nonconvex}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then, for any $r < \sigma/4d$, the following statement holds with probability at least $1 - \delta$: Fix $0 < \epsilon > 1$. Then, for $n$ satisfying:
-	\begin{align*}
-	\sqrt{3^{d+1}\frac{(\log n + d\log \mu + \log(4/\delta))}{n \nu_d r^d \lambda_{\sigma}}} \leq \epsilon
-	\end{align*}
-	we have
-	\begin{align}
-	\label{eqn: inverse_mixing_time_lower_bound_nonconvex}
-	1 / \Psi_{n,r}(\Csig[\Xbf]) & \leq \left(d \log \mu + c_{\lambda} \right) \cdot \nonumber \\ 
-	& \left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d \log \mu + c_{\lambda}\right)\right)
-	\end{align}
-	where $\mu = \log(\frac{2D}{r})$; $c_1$, $c_2$, and $c_3$ are constants which depend only on dimension; and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$. 
-\end{theorem}
 
 \begin{remark}
-	The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} relies on upper bounding the mixing time using the \emph{conductance} of $G_{n,r}[\Csig[X]]$,
-	\begin{equation*}
-	\widetilde{\Phi} = \min_{S \subseteq \Csig[\Xbf]} \Phi(S; G_{n,r}[\Csig[X]])
-	\end{equation*}
-	
-	The factor of $\frac{1}{r^{2d}}$ present in the bound of \eqref{eqn: inverse_mixing_time_lower_bound_nonconvex} is suboptimal. This exponential dependence on $d$ stems from a loose bound on the aforementioned conductance in the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}.In particular, we assert only that any set $S \subseteq \Csig[X]$ must have $\cut(S; \Csig[\Xbf])$ on the order of $n^2 r^{2d}$, while upper bounding $\vol(S; \Csig[\Xbf])$ by roughly $n^2 r^d$, for a bound on the conductance of order $r^d$. The presence of $r^{2d}$ comes from upper bounding the mixing time by about $1/\widetilde{\Phi}^2$, this latter bound being a variant of classic results on rapid mixing \cite{jerrum89}.
-\end{remark}
-
-It is possible to sharpen the dependency on $d$, but at the cost of an additional assumption:
-\begin{enumerate}[label=(A\arabic*)]
-	\setcounter{enumi}{4}
-	\item 
-	\label{asmp: convex}
-	$\Cset$ is convex.
-\end{enumerate}
-Additionally, the resulting bound holds only asymptotically. 
-
-\begin{theorem}
-	\label{thm: inverse_mixing_time_lower_bound}
-	Fix $\lambda > 0$, and let the conditions of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} hold with respect to $\Cset \in \Cbb_f(\lambda)$. Additionally, let $\Cset$ satisfy \ref{asmp: convex}. Then, for any $r < \sigma/4d$, the following statement holds: with probability one
-	\begin{align}
-	\label{eqn: inverse_mixing_time_lower_bound}
-	\liminf_{n \to \infty} & \frac{1}{\Psi_{n,r}(\Csig[\Xbf])} \geq \nonumber \\ & c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu + c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) + \nonumber \\
-	& \frac{d^2D^2}{r^2} \bigl( \log d + c_2 \frac{\Lambda_{\sigma}^{2}}{\lambda_{\sigma}^{2}}c_{\lambda} + \nonumber \\
-	& c_3  + \log \log \mu \bigr) \biggr) + c_d \frac{o_r(1)}{r^2},
-	\end{align}
-	where $\mu = \log(\frac{2D}{r})$, $c_1,c_2$ and $c_3$ are all global constants, $c_d$ is constant in $r$ but may depend on other quantities,  and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$.  Additionally, $\lim_{r \to 0} o_r(1) = 0$. 
-\end{theorem}
-
-We achieve superior rates in Theorem \ref{thm: inverse_mixing_time_lower_bound} to those of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} in part by working with a generalization of the conductance, the \emph{conductance function}
+The inequality in \eqref{eqn: conductance_additive_error_bound} is almost
+tight. Specifically, choosing $\Asig = B(0,\sigma)$ and
+$$
+f(x) = \lambda - \dist(x,\Asig)^{\gamma},
+$$
+% RJT: is this correct (is this what you meant)?  Original formula is below
+% $$
+% f(x)  = \begin{cases}
+%   \lambda &\text{for $x \in \Asig$}, \\
+%   \lambda - \dist(x,\Asig)^{\gamma} & \text{ for $0 < \dist(x,\Asig) < r$}, 
+% \end{cases}
+% $$
+we have that for $n$ on the order of the lower bound in \eqref{eqn: 
+  conductance_sample_complexity}, 
 \begin{equation*}
-\widetilde{\Phi}_n(t) = \min_{\substack{S \subseteq \Csig[\Xbf] \\ \pi(S) \leq t}} \Phi(S; G_{n,r}[\Csig[X]])
+  \frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \geq c \frac{(\lambda -
+    \frac{r^{\epsilon+1}}{\epsilon+1})}{\lambda} - \epsilon,
 \end{equation*}
-where $\pi(S)$ is the stationary distribution over $G_{n,r}[\Csig[\Xbf]]$. 
-The utility of the conductance function comes from the known upper bound of mixing time by 
+with probability at least $1 - \delta$, for some constant $c$. (Note that the
+factor of $1 / \sigma$ in $c_{\sigma}$ is not replicated above.)
+\end{remark}
+
+\subsection{Lower Bound on Inverse Mixing Time}
+
+We lower bound the inverse mixing time of $\Csig[\Xbf]$.
+
+\begin{theorem}
+\label{thm: inverse_mixing_time_lower_bound_nonconvex}
+Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy
+Assumptions \ref{asmp: bounded_density} and \ref{asmp: cluster_diameter} 
+for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D > 0$. Then for any $0 <
+r < \sigma/(4d)$, $0 < \delta < 1$, $\epsilon > 0$, and $n$ satisfying 
+$$
+\sqrt{3^{d+1}\frac{(\log n + d\log \mu + \log(4/\delta))}{n \nu_d r^d
+    \lambda_{\sigma}}} \leq \epsilon, 
+$$
+where \smash{$\mu = \log(\frac{2D}{r})$}, we have
+\begin{multline}
+\label{eqn: inverse_mixing_time_lower_bound_nonconvex}
+\Psi_{n,r}(\Csig[\Xbf]) \geq \left(d \log \mu + c_{\lambda} \right)^{-1} \cdot \\
+\left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d
+    \log \mu + c_{\lambda}\right)\right)^{-1},
+\end{multline}
+% RJT: confused ... is this correct?
+with probability at least $1 - \delta$, where $c_1,c_2,c_3>0$ are constants
+depending only on the dimension $d$, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/
+\lambda_{\sigma}^2)$.   
+\end{theorem}
+% RJT: saying that c_1,c_2,c_3 depend on the dimension is a little odd/weak.
+% c_2 multiplyies, e.g., a factor of d \log \mu.  So if it's d^{10}, then this
+% will swamp the linear factor of ....
+
+\begin{remark}
+The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} relies
+on upper bounding the mixing time using the \emph{conductance} of $G_{n,r}[\Csig[X]]$, 
+$$
+\widetilde{\Phi} = \min_{S \subseteq \Csig[\Xbf]} \Phi(S; G_{n,r}[\Csig[X]]).
+$$
+The factor $1/r^{2d}$ in the lower bound in \eqref{eqn:
+  inverse_mixing_time_lower_bound_nonconvex} is suboptimal. This exponential
+dependence on $d$ stems from a loose bound on the aforementioned
+conductance. In particular, we assert only that any set $S \subseteq \Csig[X]$
+must have $\cut(S; \Csig[\Xbf])$ on the order of $n^2 r^{2d}$, while upper bounding
+$\vol(S; \Csig[\Xbf])$ by roughly $n^2 r^d$, for a bound on the conductance of
+order $r^d$. The presence of $r^{2d}$ comes from upper bounding the mixing time
+by about \smash{$1/\widetilde{\Phi}^2$}, this being a variant of classic results
+on rapid mixing \citep{jerrum89}.  
+\end{remark}
+
+\subsection{Tigher Lower Bound Under Convexity}
+
+It is possible to sharpen the dependency on $d$ in 
+\label{eqn: inverse_mixing_time_lower_bound_nonconvex}, but at the cost of an 
+additional assumption: 
+\begin{enumerate}[label=(A\arabic*)]
+  \setcounter{enumi}{4}
+\item 
+  \label{asmp: convex}
+  $\Cset$ is convex.
+\end{enumerate}
+% RJT: do we need C to satisfy this, or Csig?  Not sure I know why the former
+% matters ... 
+
+With \ref{asmp: convex} in place, we now give a tighter lower bound on the
+inverse mixing time of $C_\sigma[\Xbf]$ (albeit one that holds only
+asymptotically).  
+
+\begin{theorem}
+\label{thm: inverse_mixing_time_lower_bound}
+Assume the conditions of Theorem \ref{thm:
+  inverse_mixing_time_lower_bound_nonconvex}, and additionally, let $\Cset$
+satisfy \ref{asmp: convex}. Then, 
+for any $r < \sigma/4d$, the following statement holds with probability 1: 
+\begin{align}
+\label{eqn: inverse_mixing_time_lower_bound}
+  \liminf_{n \to \infty} \, &\Psi_{n,r}(\Csig[\Xbf]) \geq \nonumber \\ 
+&\quad c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu +
+  c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) +{} \nonumber \\  
+&\quad \frac{d^2D^2}{r^2} \bigl( \log d + c_2
+  \frac{\Lambda_{\sigma}^{2}}{\lambda_{\sigma}^{2}}c_{\lambda} +{} \nonumber \\  
+&\quad c_3  + \log \log \mu \bigr) \biggr) + c_d \frac{o_r(1)}{r^2},
+\end{align}
+% RJT: confused ... is this correct?
+where \smash{$\mu = \log(\frac{2D}{r})$}, $c_1,c_2,c_3>0$ are universal
+constants, $c_d$ is constant in $r$ but depends on dimension $d$, and
+$c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$.  
+% Additionally, $\lim_{r \to 0} o_r(1) = 0$.  
+\end{theorem}
+% RJT: this was a lower bound on 1/\Psi and I changed it to \Psi ... just
+% checking 
+
+\begin{remark}
+The only potentially exponential dependence on dimension comes from the
+factor of $c_d$. However, for sufficiently small values of $r$ this will
+be dominated by the preceding factors, due to the presence of the
+$o_r(1)$ term. 
+\end{remark}
+% RJT: Don't get this comment.  You have o_r(1) / r^2, so this might still blow
+% up as r -> 0, right?
+ 
+\begin{remark}
+We achieve superior rates in Theorem \ref{thm: inverse_mixing_time_lower_bound}
+to those in Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} in part
+by working with a generalization of the conductance, the \emph{conductance
+  function},
+\begin{equation*}
+\widetilde{\Phi}_n(t) = 
+\min_{\substack{S \subseteq \Csig[\Xbf] \\ \tilde\pi(S) \leq t}} \Phi(S; G_{n,r}[\Csig[X]]) 
+\end{equation*}
+where \smash{$\tilde\pi$} is the stationary distribution over
+$G_{n,r}[\Csig[\Xbf]]$. The utility of the conductance function comes from the
+known upper bound of mixing time by  
 \begin{equation}
 \label{eqn: average_conductance}
-\int \frac{1}{t \widetilde{\Phi}_n(t)^2} dt
+\int \frac{1}{t \widetilde{\Phi}_n(t)^2} dt,
 \end{equation}
- which results in a tighter bound than merely using the conductance when $\widetilde{\Phi}_n(t)$ is large for small values of $t$.
+which results in a tighter bound than merely using the conductance when
+\smash{$\widetilde{\Phi}_n(t)$} is large for small values of $t$. 
  
-\begin{remark}
-	The only potentially exponential dependence on dimension comes from the factor of $c_d$. However, for sufficiently small values of $r$ this will be dominated by the preceding factors, due to the presence of the $o_r(1)$ term.
-\end{remark}
- 
-\begin{remark}
- The proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} relies on a to the best of our knowledge novel uniform lower bound on this conductance function over $G_{n,r}$ in terms of a population-level analogue, which we term $\widetilde{\Phi}_{\Pbb,r}$. Plugging $\widetilde{\Phi}_{\Pbb,r}$ into \eqref{eqn: average_conductance} yields a bound on mixing time (with respect to total variation distance) of order $d D^2/r^2 + d^2\log(D/r)$ over convex sets. By contrast, \eqref{eqn: inverse_mixing_time_lower_bound} is of order $d^2 D^2/r^2 + d^3\log(D/r)$ (ignoring the $o_r(1)$ term) but handles mixing time with respect to relative pointwise distance (which is known to be a stricter metric.)
+Our proof relies on a novel (to the best of our knowledge) uniform lower bound
+on this conductance function over $G_{n,r}$ in terms of a population-level
+analogue, which we term \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Plugging
+\smash{$\widetilde{\Phi}_{\Pbb,r}$} into \eqref{eqn: average_conductance} yields
+a bound on mixing time (with respect to total variation distance) of order $d
+D^2/r^2 + d^2\log(D/r)$ over convex sets. By contrast, \eqref{eqn:
+  inverse_mixing_time_lower_bound} is of order $d^2 D^2/r^2 + d^3\log(D/r)$ 
+(ignoring the $o_r(1)$ term) but handles mixing time with respect to relative
+pointwise distance (which is known to be a stricter metric). 
 \end{remark}
 
 \begin{remark}
-	The convexity requirement is necessary only to lower bound the $\widetilde{\Phi}_{\Pbb,r}$; any bound on $\widetilde{\Phi}_{\Pbb,r}$ which does not require convexity could immediately be plugged into the machinery of the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound} to achieve a corresponding result. Recent work \cite{abbasi17} has developed such population-level bounds on the conductance function, however the Markov chain dealt with there is somewhat different than the one we consider. 
+  The convexity requirement is necessary only to lower bound the
+  \smash{$\widetilde{\Phi}_{\Pbb,r}$}; any bound on $\widetilde{\Phi}_{\Pbb,r}$
+  which   does not require convexity could immediately be plugged into the
+  machinery of   the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}
+  to achieve a corresponding result. Recent work \citep{abbasi17} has developed
+  such population-level bounds on the conductance function, however the Markov
+  chain dealt with there is somewhat different than the one we consider.  
 \end{remark}
 
-\section{Consistent cluster estimation with PPR.}
+\section{Consistent Cluster Estimation}
 \label{sec: consistent_cluster_estimation_with_ppr}
 
-For \pprspace to successfully recover density clusters, the ratio $\Phi_{n,r}(\Csig[\Xbf])/\Psi_{n,r}(\Csig[\Xbf])$ must be small. 
+For PPR to successfully recover density clusters, the ratio $\Phi_{n,r}(\Csig[\Xbf])/\Psi_{n,r}(\Csig[\Xbf])$ must be small. 
 
 We introduce
 \begin{align*}
@@ -665,7 +793,7 @@ where $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ is some 'good' subset of $\Csig[\Xbf
 \end{remark}
 \paragraph{Approximate cluster recovery via PPR.}
 
-In \cite{zhu2013}, building on the work of \cite{anderson2006} and others, theory is developed which links algorithmic performance of PPR to the normalized cut and mixing time parameters. Although not the primary focus of our work, it is perhaps worth noting that these results, coupled with Theorems \ref{thm: conductance_upper_bound}-\ref{thm: inverse_mixing_time_lower_bound}, translate immediately into bounds on the normalized cut and symmetric set difference of $\widehat{C}$.  
+In \cite{zhu2013}, building on the work of \cite{andersen2006} and others, theory is developed which links algorithmic performance of PPR to the normalized cut and mixing time parameters. Although not the primary focus of our work, it is perhaps worth noting that these results, coupled with Theorems \ref{thm: conductance_upper_bound}-\ref{thm: inverse_mixing_time_lower_bound}, translate immediately into bounds on the normalized cut and symmetric set difference of $\widehat{C}$.  
 
 We collect some of the main results of \cite{zhu2013} in Lemma \ref{lem: ppr_cluster}.
 
