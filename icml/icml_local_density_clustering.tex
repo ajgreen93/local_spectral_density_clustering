@@ -615,11 +615,10 @@ $$
 where \smash{$\mu = \log(\frac{2D}{r})$}, we have
 \begin{multline}
 \label{eqn: inverse_mixing_time_lower_bound_nonconvex}
-\Psi_{n,r}(\Csig[\Xbf]) \geq \left(d \log \mu + c_{\lambda} \right)^{-1} \cdot \\
+\Psi_{n,r}(\Csig[\Xbf])^{-1} \leq (d \log \mu + c_{\lambda}) \cdot \\  
 \left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d
-    \log \mu + c_{\lambda}\right)\right)^{-1},
+    \log \mu + c_{\lambda}\right)\right),
 \end{multline}
-% RJT: confused ... is this correct?
 with probability at least $1 - \delta$, where $c_1,c_2,c_3>0$ are constants
 depending only on the dimension $d$, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/
 \lambda_{\sigma}^2)$.   
@@ -634,8 +633,8 @@ on upper bounding the mixing time using the \emph{conductance} of $G_{n,r}[\Csig
 $$
 \widetilde{\Phi} = \min_{S \subseteq \Csig[\Xbf]} \Phi(S; G_{n,r}[\Csig[X]]).
 $$
-The factor $1/r^{2d}$ in the lower bound in \eqref{eqn:
-  inverse_mixing_time_lower_bound_nonconvex} is suboptimal. This exponential
+The factor of $1/r^{2d}$ in the bound in \eqref{eqn:
+  inverse_mixing_time_lower_bound_nonconvex} is suboptimal. This exponential 
 dependence on $d$ stems from a loose bound on the aforementioned
 conductance. In particular, we assert only that any set $S \subseteq \Csig[X]$
 must have $\cut(S; \Csig[\Xbf])$ on the order of $n^2 r^{2d}$, while upper bounding
@@ -648,37 +647,34 @@ on rapid mixing \citep{jerrum89}.
 \subsection{Tigher Lower Bound Under Convexity}
 
 It is possible to sharpen the dependency on $d$ in 
-\label{eqn: inverse_mixing_time_lower_bound_nonconvex}, but at the cost of an 
-additional assumption: 
+\eqref{eqn: inverse_mixing_time_lower_bound_nonconvex}, but at the cost of an  
+additional assumption.
 \begin{enumerate}[label=(A\arabic*)]
-  \setcounter{enumi}{4}
+\setcounter{enumi}{4}
 \item 
-  \label{asmp: convex}
-  $\Cset$ is convex.
+\label{asmp: convex}
+\emph{Convexity:} The set $\Cset_\sigma$ is convex. 
 \end{enumerate}
 % RJT: do we need C to satisfy this, or Csig?  Not sure I know why the former
 % matters ... 
 
-With \ref{asmp: convex} in place, we now give a tighter lower bound on the
-inverse mixing time of $C_\sigma[\Xbf]$ (albeit one that holds only
-asymptotically).  
+With \ref{asmp: convex} in place, we give a tighter bound on the
+mixing time (albeit one that holds only asymptotically).   
 
 \begin{theorem}
 \label{thm: inverse_mixing_time_lower_bound}
 Assume the conditions of Theorem \ref{thm:
-  inverse_mixing_time_lower_bound_nonconvex}, and additionally, let $\Cset$
-satisfy \ref{asmp: convex}. Then, 
-for any $r < \sigma/4d$, the following statement holds with probability 1: 
+  inverse_mixing_time_lower_bound_nonconvex}, and additionally, \ref{asmp:
+  convex}. Then for any $r < \sigma/4d$, the following holds with probability 1:  
 \begin{align}
 \label{eqn: inverse_mixing_time_lower_bound}
-  \liminf_{n \to \infty} \, &\Psi_{n,r}(\Csig[\Xbf]) \geq \nonumber \\ 
+  \limsup_{n \to \infty} \, &\Psi_{n,r}(\Csig[\Xbf])^{-1} \leq \nonumber \\ 
 &\quad c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu +
   c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) +{} \nonumber \\  
 &\quad \frac{d^2D^2}{r^2} \bigl( \log d + c_2
   \frac{\Lambda_{\sigma}^{2}}{\lambda_{\sigma}^{2}}c_{\lambda} +{} \nonumber \\  
 &\quad c_3  + \log \log \mu \bigr) \biggr) + c_d \frac{o_r(1)}{r^2},
 \end{align}
-% RJT: confused ... is this correct?
 where \smash{$\mu = \log(\frac{2D}{r})$}, $c_1,c_2,c_3>0$ are universal
 constants, $c_d$ is constant in $r$ but depends on dimension $d$, and
 $c_{\lambda} = \log(\Lambda_{\sigma}^2/ \lambda_{\sigma}^2)$.  
@@ -717,9 +713,9 @@ which results in a tighter bound than merely using the conductance when
  
 Our proof relies on a novel (to the best of our knowledge) uniform lower bound
 on this conductance function over $G_{n,r}$ in terms of a population-level
-analogue, which we term \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Plugging
+analogue, which we denote \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Plugging
 \smash{$\widetilde{\Phi}_{\Pbb,r}$} into \eqref{eqn: average_conductance} yields
-a bound on mixing time (with respect to total variation distance) of order $d
+a mixing time bound (with respect to total variation distance) of order $d
 D^2/r^2 + d^2\log(D/r)$ over convex sets. By contrast, \eqref{eqn:
   inverse_mixing_time_lower_bound} is of order $d^2 D^2/r^2 + d^3\log(D/r)$ 
 (ignoring the $o_r(1)$ term) but handles mixing time with respect to relative
@@ -728,12 +724,13 @@ pointwise distance (which is known to be a stricter metric).
 
 \begin{remark}
   The convexity requirement is necessary only to lower bound the
-  \smash{$\widetilde{\Phi}_{\Pbb,r}$}; any bound on $\widetilde{\Phi}_{\Pbb,r}$
-  which   does not require convexity could immediately be plugged into the
-  machinery of   the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}
-  to achieve a corresponding result. Recent work \citep{abbasi17} has developed
-  such population-level bounds on the conductance function, however the Markov
-  chain dealt with there is somewhat different than the one we consider.  
+  \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Any bound on
+  \smash{$\widetilde{\Phi}_{\Pbb,r}$} which does not require convexity could
+  immediately be plugged into the machinery of the proof of Theorem \ref{thm:
+    inverse_mixing_time_lower_bound} to achieve a corresponding result. Recent
+  work \citep{abbasi17} has developed such population-level bounds on the
+  conductance function, however the Markov chain dealt with there is somewhat
+  different than the one we consider.   
 \end{remark}
 
 \section{Consistent Cluster Estimation}
