@@ -204,7 +204,7 @@ of the PPR algorithm.  Our two critera capture the \emph{external} and
 \emph{internal} connectivity of a subset $S \subseteq V$, denoted $\Phi(S; G)$
 and $\Psi(S; G)$, respectively, and defined below in turn.  
 
-\paragraph{External Connectivity: Normalized Cut.}
+\paragraph{External Connectivity: Normalized Cut}
 
 Define the cut between subsets $S,S' \subseteq V$ to be
 $$
@@ -220,40 +220,42 @@ of $S$, defined as
 \end{equation} 
 where we abbreviate $\cut(S; G) = \cut(S; S^c; G)$.
 
-\paragraph{Internal Connectivity: Inverse Mixing Time.}
+\paragraph{Internal Connectivity: Inverse Mixing Time}
 
 For $S \subseteq V$, denote by $G[S] = (S, E_S, w_S)$ the subgraph induced by 
 $S$ (where the edges are $E_S = E \cap (S \times S)$). Let $\Abf_S,\Dbf_S$
 be the adjacency matrix and degree matrix, respectively, of $G[S]$.  Define the
 random walk matrix as usual, $\Wbf = \Dbf_S^{-1} \Abf_S$, and for $v \in V$,
 write 
-\begin{equation}
-\label{eqn: random_walk}
+$$
 q_{vu}^{(t)} = e_v\Wbf_S^t e_u
-\end{equation}
+$$
 for the $t$-step transition probability of a random walk over $G[S]$
 originating at $v$.\footnote{Given a starting node $v$ and and a random walk
   defined by transition probability matrix $\mathbf{P}$, the rotation $e_v
   \mathbf{P}^t$ is used to denote the distribution of the random walk after $t$
-  steps.}   Also write \smash{$\tilde\pibf = (\tilde\pi_{u})_{u \in S}$} for the 
-  stationary distribution of this random walk.  (Given the definition of
-  $\Wbf_S$, it is well-known that the stationariy distribution is given by
-  \smash{$\tilde\pi_{u} = (\Dbf_{S})_{uu} / \vol(S; G[S])$}.) 
+  steps.}   Also write \smash{$\widetilde\pibf = (\widetilde\pi_{u})_{u \in S}$}
+for the stationary distribution of this random walk.  (Given the definition of 
+$\Wbf_S$, it is well-known that the stationariy distribution is given by
+\smash{$\widetilde\pi_{u} = (\Dbf_{S})_{uu} / \vol(S; G[S])$}.) 
 
 Our internal connectivity parameter will capture the time it takes for the
 random walk over $G[S]$ to mix (approach the stationary distribution)
 uniformly over $S$.  For this, we first define \emph{relative pointwise mixing
   time} of $G[S]$ as 
-\begin{equation*}
-\tau_{\infty}(\qbf; G[S]) = \min\set{ t: \frac{|q_{vu}^{(m)} -
-      \tilde\pi_u|}{\tilde\pi_u} \leq \frac{1}{4}, \; \text{for $u,v \in V$}}, 
-\end{equation*}
-where \smash{$\qbf = (\qbf_v^{(1)}, \qbf_v^{(2)}, ...)_{v \in V}$}, and
-\smash{$\qbf_v^{(m)} = (q_{vu}^{(m)})_{u \in V}$}. Now our internal 
-connectivity parameter is simply the inverse mixing time,
+$$
+\tau_{\infty}(G[S]) = \min\set{ t: \frac{|q_{vu}^{(m)} - 
+      \widetilde\pi_u|}{\widetilde\pi_u} \leq \frac{1}{4}, 
+    \; \text{for $u,v \in V$}},  
+$$
+%where \smash{$\qbf = (\qbf_v^{(1)}, \qbf_v^{(2)}, ...)_{v \in V}$}, and
+%\smash{$\qbf_v^{(m)} = (q_{vu}^{(m)})_{u \in V}$}. 
+% RJT: I got rid of the notational dependence on \qbf, because these quantities
+% are in turn just defined in terms of the induced subgraph G[S]
+Now our internal connectivity parameter is simply the inverse mixing time, 
 \begin{equation}
 \label{eqn: inv_mixing_time}
-\Psi(S; G) = \frac{1}{\tau_{\infty}(\qbf; G[S])}.
+\Psi(S; G) = \frac{1}{\tau_{\infty}(G[S])}.
 \end{equation}
 
 If $S$ has normalized cut no greater than $\Phi$, and inverse mixing time no
@@ -382,8 +384,8 @@ A summary of our main results (and outline for the rest of this paper) is as
 follows.  
 
 \begin{enumerate}
-\item In Section \ref{sec: PhiPsi}, we derive in Theorem \ref{thm:
-    conductance_upper_bound} an upper bound on the normalized cut of a
+\item In Section \ref{sec: cluster_quality_bounds}, we derive in Theorem
+  \ref{thm: conductance_upper_bound} an upper bound on the normalized cut of a  
   (thickened) empirical density cluster $\Csig[\Xbf]$, under natural geometric 
   conditions (precluding clusters that are too thin and long).  
 
@@ -450,20 +452,21 @@ of the density. Moreover, they do not in general ensure recovery of density
 clusters, which is the focus in our work. 
 
 \section{Cluster Quality Critera Bounds for Density Clusters}  
-\label{sec: PhiPsi}
+\label{sec: cluster_quality_bounds}
 
-\subsection{Assumptions}
+\subsection{Geometric Conditions on Density Clusters}
 
 In order to provide meaningful bounds on the normalized cut and inverse mixing
 time of an empirical density cluster, we must introduce conditions on the
-density $f$. Let $B(x,r) = \{y \in \Rd: \norm{y - x} \leq r\}$ be the ball of
-radius $r$ centered at $x$.  Given a set $\Aset \subseteq \Rd$ and $\sigma > 0$,
-define $\Asig = \Aset + B(0,\sigma) = \{y \in \Rd: \inf_{x \in \Aset} \norm{y - 
-    x} \leq \sigma\}$, which we call the $\sigma$-expansion of $\Aset$. 
+density $f$. Let $B(x,r) = \{y \in \Rd: \norm{y - x} \leq r\}$ be the closed
+ball of radius $r \geq 0$, centered at $x \in \Rd$.  Given a set $\Aset
+\subseteq \Rd$ and $\sigma > 0$, define $\Asig = \Aset + B(0,\sigma) = \{y \in
+\Rd: \inf_{x \in \Aset} \norm{y - x} \leq \sigma\}$, which we call the
+$\sigma$-expansion of $\Aset$.   
 
 We are now ready to give the conditions, stated with respect to a density
-cluster $\Cset \in \Cbb_f(\lambda)$, for some $\lambda > 0$, and an expansion 
-parameter $\sigma > 0$. 
+cluster $\Cset \in \Cbb_f(\lambda)$, for some threshold $\lambda > 0$, and an
+expansion parameter $\sigma > 0$. 
 
 \begin{enumerate}[label=(A\arabic*)]
 \item
@@ -529,18 +532,19 @@ studying a local algorithm such as PPR.
 
 In the next several subsections, we will derive bounds on the cluster quality
 criteria evaluated on (thickened) density clusters. For notational simplicity,
-hereafter for $S \subseteq V$, we will denote $\Phi(S; G_{n,r})$ by
-$\Phi_{n,r}(S)$, and likewise with $\Psi(S; G_{n,r})$ and $\Psi_{n,r}(S)$. We
-will also use $\nu$ for Lebesgue measure on $\Rd$, and $\nu_d = \nu(B)$ for 
-the measure of the unit ball $B=B(0,1)$. 
+hereafter for $S \subseteq V$, we will abbreviate $\Phi(S; G_{n,r})$ by
+$\Phi_{n,r}(S)$, and similarly, $\Psi(S; G_{n,r})$ by $\Psi_{n,r}(S)$, and
+$\tau_{\infty}(G_{n,r}[S])$ by $\tau_{n,r}(S)$. We will also use $\nu$ for
+Lebesgue measure on $\Rd$, and $\nu_d = \nu(B)$ for the measure of the unit ball
+$B=B(0,1)$.  
 % RJT: you had B(0,d) before ... just check this should have been B(0,1) 
 
 \subsection{Upper Bound on Normalized Cut}
 
-We begin by upper bounding the normalized cut of $\Cset_\sigma[\Xbf]$.  (In the
-theorem, the upper bound on the density in Assumption \ref{asmp: 
-  bounded_density} will not actually be needed, so we omit the parameter
-$\Lambda_\sigma>0$ from the theorem statement.) 
+We start with an upper bound on the normalized cut \eqref{eqn: norm_cut} of 
+$\Cset_\sigma[\Xbf]$. (In the theorem, the upper bound on the density in
+Assumption \ref{asmp: bounded_density} will not actually be needed, so we omit
+the parameter $\Lambda_\sigma>0$ from the theorem statement.)   
 
 \begin{theorem}
 \label{thm: conductance_upper_bound}
@@ -590,17 +594,22 @@ $$
 % $$
 we have that for $n$ on the order of the lower bound in \eqref{eqn: 
   conductance_sample_complexity}, 
-\begin{equation*}
+$$
   \frac{\Phi_{n,r}(\Asig[\mathbf{X}])}{r} \geq c \frac{(\lambda -
     \frac{r^{\epsilon+1}}{\epsilon+1})}{\lambda} - \epsilon,
-\end{equation*}
+$$
 with probability at least $1 - \delta$, for some constant $c$. (Note that the
 factor of $1 / \sigma$ in $c_{\sigma}$ is not replicated above.)
 \end{remark}
 
 \subsection{Lower Bound on Inverse Mixing Time}
 
-We lower bound the inverse mixing time of $\Csig[\Xbf]$.
+Next we lower bound the inverse mixing time \eqref{eqn: inv_mixing_time} of 
+$\Csig[\Xbf]$, or equivalently, as $\Psi_{n,r}(\Csig[\Xbf]) =
+1/\tau_{n,r}(\Csig[\Xbf])$, we upper bound the mixing time. 
+% RJT: note I changed the next two theorems to be upper bounds on the mixing
+% time.  Upper bounds on the inverse inverse mixing time, which was a bit
+% superfluous.  Just make sure that the supplement is in sync with this
 
 \begin{theorem}
 \label{thm: inverse_mixing_time_lower_bound_nonconvex}
@@ -615,15 +624,15 @@ $$
 where \smash{$\mu = \log(\frac{2D}{r})$}, we have
 \begin{multline}
 \label{eqn: inverse_mixing_time_lower_bound_nonconvex}
-\Psi_{n,r}(\Csig[\Xbf])^{-1} \leq (d \log \mu + c_{\lambda}) \cdot \\  
+\tau_{n,r}(\Csig[\Xbf]) \leq (d \log \mu + c_{\lambda}) \cdot \\  
 \left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d
     \log \mu + c_{\lambda}\right)\right),
 \end{multline}
-with probability at least $1 - \delta$, where $c_1,c_2,c_3>0$ are constants
-depending only on the dimension $d$, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/
+with probability at least $1 - \delta$, where $c_1,c_2>0$ are constants
+depending only on the dimension $d$, and $c_{\lambda} = \log(\Lambda_{\sigma}^2/ 
 \lambda_{\sigma}^2)$.   
 \end{theorem}
-% RJT: saying that c_1,c_2,c_3 depend on the dimension is a little odd/weak.
+% RJT: saying that c_1,c_2 depend on the dimension is a little odd/weak.
 % c_2 multiplyies, e.g., a factor of d \log \mu.  So if it's d^{10}, then this
 % will swamp the linear factor of ....
 
@@ -644,7 +653,7 @@ by about \smash{$1/\widetilde{\Phi}^2$}, this being a variant of classic results
 on rapid mixing \citep{jerrum89}.  
 \end{remark}
 
-\subsection{Tigher Lower Bound Under Convexity}
+\subsection{Tighter Lower Bound Under Convexity}
 
 It is possible to sharpen the dependency on $d$ in 
 \eqref{eqn: inverse_mixing_time_lower_bound_nonconvex}, but at the cost of an  
@@ -663,10 +672,11 @@ mixing time (albeit one that holds only asymptotically).
 \label{thm: inverse_mixing_time_lower_bound}
 Assume the conditions of Theorem \ref{thm:
   inverse_mixing_time_lower_bound_nonconvex}, and additionally, \ref{asmp:
-  convex}. Then for any $r < \sigma/4d$, the following holds with probability 1:  
+  convex}. Then for any $0 < r < \sigma/4d$, the following holds with
+probability 1:   
 \begin{align}
 \label{eqn: inverse_mixing_time_lower_bound}
-  \limsup_{n \to \infty} \, &\Psi_{n,r}(\Csig[\Xbf])^{-1} \leq \nonumber \\ 
+  \limsup_{n \to \infty} \, &\tau_{n,r}(\Csig[\Xbf]) \leq \nonumber \\ 
 &\quad c_1 \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} (\log \mu +
   c_{\lambda}) \biggl( c_{\lambda}(d^3 \log\mu + c_2) +{} \nonumber \\  
 &\quad \frac{d^2D^2}{r^2} \bigl( \log d + c_2
@@ -690,14 +700,15 @@ $o_r(1)$ term.
  
 \begin{remark}
 We achieve superior rates in Theorem \ref{thm: inverse_mixing_time_lower_bound}
-to those in Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} in part
+to those in Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} in part 
 by working with a generalization of the conductance, the \emph{conductance
   function},
-\begin{equation*}
+$$
 \widetilde{\Phi}_n(t) = 
-\min_{\substack{S \subseteq \Csig[\Xbf] \\ \tilde\pi(S) \leq t}} \Phi(S; G_{n,r}[\Csig[X]]) 
-\end{equation*}
-where \smash{$\tilde\pi$} is the stationary distribution over
+\min_{\substack{S \subseteq \Csig[\Xbf] \\ \widetilde\pi(S) \leq t}} 
+\Phi(S; G_{n,r}[\Csig[X]]),
+$$
+where \smash{$\widetilde\pi$} is the stationary distribution over
 $G_{n,r}[\Csig[\Xbf]]$. The utility of the conductance function comes from the
 known upper bound of mixing time by  
 \begin{equation}
@@ -711,7 +722,7 @@ Our proof relies on a novel (to the best of our knowledge) uniform lower bound
 on this conductance function over $G_{n,r}$ in terms of a population-level
 analogue, which we denote \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Plugging
 \smash{$\widetilde{\Phi}_{\Pbb,r}$} into \eqref{eqn: average_conductance} yields
-a mixing time bound (with respect to total variation distance) of order $d
+a mixing time bound (with respect to total variation distance) on the order $d 
 D^2/r^2 + d^2\log(D/r)$ over convex sets. By contrast, \eqref{eqn:
   inverse_mixing_time_lower_bound} is of order $d^2 D^2/r^2 + d^3\log(D/r)$ 
 (ignoring the $o_r(1)$ term) but handles mixing time with respect to relative
@@ -719,27 +730,38 @@ pointwise distance (which is known to be a stricter metric).
 \end{remark}
 
 \begin{remark}
-  The convexity requirement is necessary only to lower bound the
-  \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Any bound on
-  \smash{$\widetilde{\Phi}_{\Pbb,r}$} which does not require convexity could
-  immediately be plugged into the machinery of the proof of Theorem \ref{thm:
-    inverse_mixing_time_lower_bound} to achieve a corresponding result. Recent
-  work \citep{abbasi17} has developed such population-level bounds on the
-  conductance function, however the Markov chain dealt with there is somewhat
-  different than the one we consider.   
+  The convexity condition is only needed to lower bound 
+  \smash{$\widetilde{\Phi}_{\Pbb,r}$}. Any lower bound on
+  \smash{$\widetilde{\Phi}_{\Pbb,r}$} could be directly plugged into the 
+  machinery of the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}
+  to yield an alternative result. In recent work, \citet{abbasi17} developed new
+  population-level bounds on the conductance function (without requiring
+  convexity), however the Markov chain dealt with there is somewhat different 
+  than the one we consider.    
 \end{remark}
 
 \section{Consistent Cluster Estimation}
 \label{sec: consistent_cluster_estimation_with_ppr}
 
-For PPR to successfully recover density clusters, the ratio $\Phi_{n,r}(\Csig[\Xbf])/\Psi_{n,r}(\Csig[\Xbf])$ must be small. 
+\subsection{Well-Conditioned Density Clusters}
 
-We introduce
+For PPR to successfully recover density clusters, the ratio
+$\Phi_{n,r}(\Csig[\Xbf])/\Psi_{n,r}(\Csig[\Xbf])$ must be small.  Let us
+introduce the following notation for the upper bounds in Theorems 
+\ref{thm: conductance_upper_bound} and \ref{thm:
+  inverse_mixing_time_lower_bound_nonconvex}:
 \begin{align*}
-\mathbf{\Phi}(\sigma, \lambda,\lambda_{\sigma},\gamma) & := \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} - \frac{\sigma^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} \\
-1 / \mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D) & := \left(d \log \mu + c_{\lambda} \right) \cdot \nonumber \\ 
-& \left(c_1 + c_2 \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d \log \mu + c_{\lambda}\right)\right)
+\mathbf{\Phi}(\sigma, \lambda,\lambda_{\sigma},\gamma) 
+&= \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
+  \frac{\sigma^{\gamma}}{\gamma+1})}{\lambda_{\sigma}}, \\
+1 / \mathbf{\Psi}(\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D) 
+&= \left(d \log \mu + c_{\lambda} \right) \cdot \\ 
+& \left(c_1 + c_2
+  \frac{\Lambda_{\sigma}^4D^{2d}}{\lambda_{\sigma}^4r^{2d}}\left(d \log \mu + 
+  c_{\lambda}\right)\right)
 \end{align*}
+(where all constants $\lambda_\sigma,c_1,c_2, c_\lambda>0$ are as in these 
+theorems).
 
 Well-conditioned density clusters satisfy all of the given assumptions, for parameters which results in `good' values of $\Phibf$ and $\Psibf$.
 \begin{definition}[Well-conditioned density clusters]
@@ -784,13 +806,13 @@ where $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ is some 'good' subset of $\Csig[\Xbf
 \begin{remark}
 	We note that larger constants than $40 \cdot 36$ allow for wider range of the parameters in $\eqref{eqn: initialization}$. 
 \end{remark}
-\paragraph{Approximate cluster recovery via PPR.}
+\paragraph{Approximate cluster recovery via PPR}
 
 In \cite{zhu2013}, building on the work of \cite{andersen2006} and others, theory is developed which links algorithmic performance of PPR to the normalized cut and mixing time parameters. Although not the primary focus of our work, it is perhaps worth noting that these results, coupled with Theorems \ref{thm: conductance_upper_bound}-\ref{thm: inverse_mixing_time_lower_bound}, translate immediately into bounds on the normalized cut and symmetric set difference of $\widehat{C}$.  
 
 We collect some of the main results of \cite{zhu2013} in Lemma \ref{lem: ppr_cluster}.
 
-For $G = (V,E)$ consider some $A \subseteq V$, and let $\Phi(A; G)$ and $\Psi(A; G)$ be defined as in (\ref{eqn: norm_cut}) and (\ref{eqn: inv_mixing_time}), respectively.
+For $G = (V,E)$ consider some $A \subseteq V$, and let $\Phi(A; G)$ and $\Psi(A; G)$ be defined as in (\ref{eqn: norm_cut}) and (\ref{eqn: inv_mixing_time}), respectively.r
 \begin{lemma}[PPR clustering]
 	\label{lem: ppr_cluster}
 	There exists a set $A^g \subseteq A$ with $\vol(A^g;G) \geq \vol(A;G)/2$ such that the following statement holds: Choose any $v \in A^g$, fix $\alpha = 9 / 10 \Psi(A; G)$, and compute the page rank vector $\pbf(v,\alpha; G)$. Letting 
