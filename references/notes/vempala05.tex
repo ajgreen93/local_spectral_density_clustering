@@ -1,0 +1,245 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes on ``Geometric Random Walks: A Survey''}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $K \subset \Rd$ be a (convex) set and $\set{P_u: u \in K}$ be the transition probability density functions for a Markov chain with stationary distribution $Q$.
+
+\begin{definition}[Conductance]
+	\label{def: conductance}
+	Let $\phi(A)$, given by
+	\begin{equation*}
+	\Phi(A) = \int_A P_u(K \setminus A) dQ(u),~ \phi(A) = \frac{\Phi(A)}{\min\{Q(A), Q(K \setminus A)\}}
+	\end{equation*}
+	be the normalized cut of $A$, and $\phi_s$ and $\phi$, given by
+	\begin{equation*}
+	\phi_s = \min_{A: s < Q(A) \leq \frac{1}{2}} \frac{\Phi(A)}{Q(A) - s},~ \phi = \min_{A: 0 < Q(A) \leq 1/2} \frac{\Phi(A)}{Q(A)}
+	\end{equation*}
+	be the conductance profile and conductance, respectively.
+	
+	Let $\ell(u) = 1 - P_{u}(\set{u})$ be the local conductance.
+\end{definition}
+
+\begin{lemma}[One-step distributions of nearby points]
+	\label{lem: one_step}
+	Let $u,v$ be such that $\abs{u - v} \leq \frac{t \delta}{\sqrt{d}}$ and $\ell(u), \ell(v) \geq \ell$. Then,
+	\begin{equation*}
+	\norm{P_u - P_v}_{TV} \leq 1 + t - \ell
+	\end{equation*}
+\end{lemma}
+
+\begin{theorem}[Conductance of Ball Walk]
+	\label{thm: ball_walk_conductance}
+	Let $K \subset \Rd$ be a convex body of diameter $D$ such that, for every point $u \in K$, the local conductance of the ball walk with $\delta$-steps is at least $\ell$. Then,
+	\begin{equation*}
+	\phi \geq \frac{\ell^2 \delta}{16 \sqrt{d} D}
+	\end{equation*}
+\end{theorem}
+\begin{proof}
+	We will show that for $S_1 \cup S_2 = K$ a partition into measurable sets,
+	\begin{equation*}
+	\int_{S_1} P_x(S_2) dx \geq \frac{\ell^2 \delta}{16 \sqrt{d} D} \min \{ \vol(S_1), \vol(S_2) \}
+	\end{equation*}
+	
+	Note that
+	\begin{align}
+	\label{eqn: ergodic_flow}
+	\int_{S_1}P_x(S_2) dx & = \int_{S_1} \left( \frac{\int_{S_2} \1(\abs{x - x'} \leq \delta)}{\int_{K} \1(\abs{x - x'} \leq \delta)} dx' dx \right) \nonumber \\
+	& = \frac{1}{\int_{K} \1(\abs{x - x'} \leq \delta)} \int_{S_2} \int_{S_1} \1(\abs{x - x'} \leq \delta) dx dx' \nonumber \\
+	& = \int_{S_2}P_{x'}(S_1) dx'
+	\end{align}
+	
+	Now, write
+	\begin{equation*}
+	S_1' = \set{x \in S_1: P_x(S_2) \leq \frac{\ell}{4}},~ S_2' = \set{x \in S_2: P_x(S_1) \leq \frac{\ell}{4}}.
+	\end{equation*}
+	and note that 
+	\begin{equation*}
+	\int_{S_1} P_x(S_2) \geq \vol(S_1') \frac{\ell}{4},~ \int_{S_2} P_x(S_1) \geq \vol(S_2') \frac{\ell}{4}
+	\end{equation*}
+	
+	Therefore, if $\vol(S_1') \geq \frac{\vol(S_1)}{2}$, we have $\int_{S_1} P_x(S_2) \geq \vol(S_1) \frac{\ell}{8}$; moreover, by \eqref{eqn: ergodic_flow}, if $\vol(S_2') \geq \frac{\vol(S_2)}{2}$ then $\int_{S_1} P_x(S_2) \geq \vol(S_2) \frac{\ell}{8}$, and under either case the desired result holds.
+	
+	We proceed under the conditions $\vol(S_1') \leq \frac{\vol(S_1)}{2}, \vol(S_2') \leq \frac{\vol(S_2)}{2}$. Letting $S_3' = K \setminus (S_1' \cup S_2')$, we recall that for any such tripartition $R_1 \cup R_2 \cup R_3 = K$, we have (\textcolor{red}{see Dyer and Frieze})
+	\begin{equation*}
+	\vol(R_3) \geq \frac{2 d(R_1,R_2)}{D} \min\set{\vol(R_1), \vol(R_2)}.
+	\end{equation*}
+	and therefore, given our choice of $S_1', S_2', S_3'$,
+	\begin{equation*}
+	\vol(S_3') \geq \frac{d(S_1,S_2)}{D} \min\set{\vol(S_1), \vol(S_2)}.
+	\end{equation*}
+	
+	We upper bound $d(S_1, S_2)$ using Lemma \ref{lem: one_step}. Pick arbitrary $u \in S_1', v \in S_2'$. Noting that, 
+	\begin{equation*}
+	\norm{P_u - P_v}_{TV} \geq 1 - P_u(S_2) - P_v(S_1) \geq 1 - \frac{\ell}{2}
+	\end{equation*}
+	by Lemma \ref{lem: one_step}
+	\begin{equation*}
+	\abs{u - v} \geq \frac{\ell \delta}{2 \sqrt{d}}.
+	\end{equation*}
+	Since $u \in S_1', v \in S_2'$ were arbitrary, we have $d(S_1',S_2') \geq \ell \delta / 2 \sqrt{d}$, and therefore
+	\begin{equation}
+	\label{eqn: ball_walk_conductance_1}
+	\vol(S_3') \geq \frac{\ell \delta}{2 \sqrt{d} D} \min\set{\vol(S_1), \vol(S_2)}
+	\end{equation}
+	
+	Finally, if $x \in S_1 \cup S_3'$ then $P_x(S_2) \geq \ell/4$, and conversely if $x \in S_2 \cup S_3'$ then $P_x(S_1) \geq \ell/4$. As a result, we have
+	\begin{align*}
+	2 \int_{S_1} P_x(S_2) dx & = \int_{S_2} P_x(S_1) dx + \int_{S_1} P_x(S_2) dx \\
+	& \geq \frac{\ell \vol(S_3')}{4}
+	\end{align*}
+	and combining this with \eqref{eqn: ball_walk_conductance_1} gives the desired result.
+\end{proof}
+
+\end{document}

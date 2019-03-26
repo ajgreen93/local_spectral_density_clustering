@@ -1,0 +1,482 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+\newcommand{\dist}{\mathrm{dist}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\Sset}{\mathcal{S}}
+
+\newcommand{\Csig}{\Cset_{\sigma}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for the week of 3/13/19 - 3/17/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+For a given $\sigma > 0$ and some $\Cset \subset \Rd$, let $\Csig = \Cset + B(0,\sigma)$ be the $\sigma$-expansion of $\Cset$. Fix $r > 0$. Let $\nu$ be the Lebesgue measure over Euclidean space $\Rd$, and $B(x,r)$ be a ball of radius $r$ centered at $x$. Consider the \emph{speedy r-ball walk}\footnote{We call it 'speedy' because it only considers moves within $\Csig$.} over $\Csig \subset \Rd$, defined by the following transition probability density function 
+\begin{equation*}
+\widetilde{P}_{\nu,r}(x; \Sset) := \frac{\nu(\Sset \cap B(x,r))}{\nu(\Csig \cap B(x,r))} \tag{$x \in \Csig, \Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+where $\mathfrak{B}(\Csig)$ is the Borel $\sigma$-algebra of $\Csig$. 
+
+Denote the stationary distribution for this Markov chain by $\pi_{\nu,r}$, which satisfies the relation \footnote{As we will see, in this case the existence of a stationary distribution for the ball walk will be easily verifiable. In order to ensure uniqueness, we could consider only the \emph{lazy} version of the ball walk. For the moment we ignore this technicality.}
+\begin{equation*}
+\int_{\Omega} \widetilde{P}_{\nu,r}(x; \Sset) d\pi_{\nu,r}(x) = \pi_{\nu,r}(\Sset).  \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+Letting the \emph{local conductance} be given by
+\begin{equation*}
+\ell_{\nu,r}(x) := \frac{\nu(\Csig \cap B(x,r))}{\nu(B(x,r))} \tag{$x \in \Csig$}
+\end{equation*}
+a bit of algebra verifies that
+\begin{equation*}
+\pi_{\nu,r}(\Sset) = \frac{\int_{\Sset} \ell_{\nu,r}(x)}{\int_{\Csig} \ell_{\nu,r}(x)}. \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+
+We next introduce the \emph{ergodic flow}, $\widetilde{Q}_{\nu,r}$, defined by
+\begin{equation*}
+\widetilde{Q}_{\nu,r}(\Sset, \Sset') := \int_{\Sset} \widetilde{P}_{\nu,r}(x; \Sset) d\pi_{\nu,r}(x) \tag{$\Sset, \Sset' \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+and the \emph{(continuous) conductance function}
+\begin{equation*}
+\widetilde{\Phi}_{\nu,r}(t) := \min_{\substack{\Sset \in \mathfrak{B}(\Csig) \\ 0 < \pi_{\nu,r}(\Sset) \leq t} } \frac{\widetilde{Q}_{\nu,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\nu,r}(\Sset)} \tag{$0 < t \leq 1/2 $}
+\end{equation*}
+
+\section{Conductance over $\Csig$}
+An essential step in upper bounding the mixing time over $G_{n,r}[\Csig(\Xbf)]$ is lower bounding the conductance function $\widetilde{\Phi}_{\nu,r}(t)$. 
+
+ 
+To do so, our main assumption will relate $\Csig$ to a convex set via a Lipschitz transformation $g$.
+
+\begin{assumption}[Embedding]
+	\label{asmp: embedding}
+	 Assume there exists $K \subset \Rd$ convex space, and biLipschitz measure preserving mapping $g: \Rd \to \Rd$:
+	\begin{equation*}
+	\exists L_{\Omega},L_K > 0: \forall x,y \in K,  \frac{1}{L_K} \abs{x - y}\leq \abs{g(x) - g(y)} \leq L_{\Csig} \abs{x - y}, \det(D_x g) = 1
+	\end{equation*}
+	such that
+	\begin{equation*}
+	\Csig = g(K).
+	\end{equation*}
+\end{assumption}
+
+\begin{theorem}[\textcolor{red}{Uniform continuous conductance function}]
+	Assume $\Csig \subset \Rd$ satisfies Assumption \ref{asmp: embedding} with respect to some convex set $K \subset \Rd$ and biLipschitz function $g$ with Lipschitz constants $L_{\Csig}, L_K <  \infty$. Then, for any $0 < r < 2 \sigma / \sqrt{d}$, the continuous conductance function of the speedy $r$-ball walk satisfies
+	\begin{equation*}
+	\widetilde{\Phi}_{\nu,r}(t) \geq \frac{r}{2^{10} D_K L \sqrt{d}}.
+	\end{equation*}
+\end{theorem}
+
+\section{Supporting theory.}
+Begin by recalling the isoperimetric inequality of \textcolor{red}{Dyer and Frieze 1991}. 
+
+\begin{theorem}[Isoperimetry of convex sets]
+	\label{thm: dyer}
+	Let $(R_1, R_2, R_3)$ be a partition of a convex set $\Omega \subset \Rd$. Then,
+	\begin{equation*}
+	\vol(R_3) \geq 2\frac{d(R_1, R_2)}{D_{K}} \min(\vol(R_1), \vol(R_2))
+	\end{equation*}
+\end{theorem}
+
+The following result is from \textcolor{red}{AbbasiYadkori18}. It is an adaptation of Theorem \ref{thm: dyer} to hold in the case where $\Omega \subset \Rd$ is not convex, but is a Lipschitz embedding of a convex set in the sense of Assumption \ref{asmp: embedding}.
+
+\begin{lemma}[Isoperimetry of Lipschitz embeddings of convex sets.]
+	Let $\Omega \subset \Rd$ satisfy Assumption \ref{asmp: embedding} with respect to some convex set $K \subset \Rd$ and Lipschitz function $g$ with Lipschitz constant $L <  \infty$. Then, for any partition $(\Omega_1,\Omega_2,\Omega_3)$ of $\Omega$, 
+	\begin{equation*}
+	\vol(\Omega_3) \geq 2\frac{\dist(\Omega_1, \Omega_2)}{L D_{K}} \min(\vol(\Omega_1), \vol(\Omega_2))
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	For $\Omega_i, i = 1,2,3$, denote the preimage
+	\begin{equation*}
+	R_i = \set{x \in K: g(x) \in \Omega_i}
+	\end{equation*}
+	For any $x \in R_1, y \in R_2$, 
+	\begin{equation*}
+	\abs{x - y} \geq \frac{1}{L}\abs{g(x) - g(y)} \geq \frac{1}{L} \dist(\Omega_1, \Omega_2). 
+	\end{equation*}
+	Since $x \in \Omega_1$ and $y \in \Omega_2$ were arbitrary, we have
+	\begin{equation*}
+	\dist(R_1, R_2) \geq \frac{1}{L} d(\Omega_1, \Omega_2).
+	\end{equation*}
+	By Theorem \ref{thm: dyer}, therefore
+	\begin{align*}
+	\vol(R_3) & \geq 2\frac{\dist(R_1, R_2)}{D_{K}} \min(\vol(R_1), \vol(R_2)) \\
+	& \geq \frac{2}{D_{K} L} d(\Omega_1, \Omega_2) \min(\vol(R_1), \vol(R_2))
+	\end{align*}
+	and by the measure-preserving property of $g$, this implies
+	\begin{equation*}
+	\vol(\Omega_3) \geq\frac{2}{D_{K} L} d(\Omega_1, \Omega_2) \min(\vol(\Omega_1), \vol(\Omega_2)).
+	\end{equation*}
+\end{proof}
+
+\begin{lemma}[One-step distributions]
+	\label{lem: one_step_distributions}
+	Let $u,v \in \Csig$ be such that 
+	\begin{equation*}
+	\abs{u - v} \leq \frac{\sqrt{t} r}{L_{K} L_{\Csig} \sqrt{d}}
+	\end{equation*}
+	for some $0 < t < 4/9$. Then,
+	\begin{equation*}
+	\norm{\widetilde{P}_{\nu,r}(u; \cdot) - \widetilde{P}_{\nu,r}(v; \cdot)}_{TV} \leq 1 - \frac{1}{300(9 + 8t)L_{C_{\sigma}}^d L_{K}^d}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}[\textcolor{red}{Proof of Lemma \ref{lem: one_step_distributions}}]
+	Let $S_1 \cup S_2 = \Csig$ be an arbitrary partition of $\Csig$. We will show that 
+	\begin{equation*}
+	\widetilde{P}_{\nu,r}(u; S_1) - \widetilde{P}_{\nu,r}(v; S_1) \leq 1 - \frac{1}{300(9 + 8t)L_{C_{\sigma}}^d L_{K}^d}
+	\end{equation*}
+	The following manipulations reduce the problem to that of lower bounding the volume of the intersection of the balls $B(u,r)$ and $B(v,r)$ within $\Csig$. They come directly from the proof of Lemma 3.6 in \textcolor{red}{Kannan 97}. 
+	\begin{align*}
+	\widetilde{P}_{\nu,r}(u; S_1) - \widetilde{P}_{\nu,r}(v; S_1) & = 1 - \widetilde{P}_{\nu,r}(u; S_2) - \widetilde{P}_{\nu,r}(v; S_1)
+	\end{align*}
+	Denote the intersection $I := B(u,r) \cap B(u,r)$. Then we have
+	\begin{equation*}
+	\widetilde{P}_{\nu,r}(u; S_2) \geq \frac{1}{\nu(B(u,r))} \nu(S_2 \cap (B(u,r)) \geq \frac{1}{\nu(B(u,r))} \nu(S_2 \cap I)
+	\end{equation*}
+	with a symmetric inequality holding for $\widetilde{P}_{\nu,r}(v; S_1)$. As a result,
+	\begin{equation}
+	1 - \widetilde{P}_{\nu,r}(u; S_2) - \widetilde{P}_{\nu,r}(v; S_1) \geq \frac{1}{\nu_d r^d} \nu(\Csig \cap I) \label{eqn: one_step_1}
+	\end{equation}
+	
+	For shorthand, let $\widetilde{\nu}(\Sset) = \nu(\Sset \cap \Csig)$. We proceed, making repeated use of Assumption \ref{asmp: embedding} along with Lemma \ref{lem: lipschitz_balls_local_conductance},
+	\begin{align}
+	\widetilde{\nu} \biggl( B(u,r) \cap B(v,r) \biggr) & \geq \nu \Biggl(  g\biggl(B(x, \frac{r}{L_{\Csig}}) \cap B(y, \frac{r}{L_{\Csig}}) \cap K  \biggr) \Biggr) \nonumber \\
+	& = \nu \biggl(B(x, \frac{r}{L_{\Csig}}) \cap B(y, \frac{r}{L_{\Csig}}) \cap K  \biggr) \nonumber \\
+	& \geq \min \left\{ \nu\biggl( B(x, \frac{r}{L_{\Csig}}) \cap K \biggr), \nu\biggl( B(y, \frac{r}{L_{\Csig}}) \cap K \biggr)  \right\} \cdot \frac{3}{9 + 8t} \label{eqn: one_step}\\
+	& \geq \min \left\{ \widetilde{\nu} \biggl( B(u, \frac{r}{L_{\Csig} L_K}) \biggr), \widetilde{\nu} \biggl( B(v, \frac{r}{L_{\Csig} L_K}) \biggr)  \right\} \cdot \frac{3}{9 + 8t} \nonumber \\
+	& \geq \min \left\{ \nu \biggl( B(u, \frac{r}{L_{\Csig} L_K}) \biggr), \nu \biggl( B(v, \frac{r}{L_{\Csig} L_K}) \biggr)  \right\} \cdot \frac{1}{10(9 + 8t)} \label{eqn: one_step_2}
+	\end{align}
+	where \eqref{eqn: one_step} follows from Lemma \ref{lem: overlap_3} and \eqref{eqn: one_step_2} from Lemma \ref{lem: local_conductance}. Plugging \eqref{eqn: one_step_2} back into \eqref{eqn: one_step_1} -- and noting that Lemma \ref{lem: local_conductance} implies $\ell \geq \frac{1}{30}$ -- we have
+	\begin{equation*}
+	\widetilde{P}_{\nu,r}(u,A) - \widetilde{P}_{\nu,r}(v,A) \leq 1 - \frac{1}{300(9 + 8t)L_{C_{\sigma}}^d L_{K}^d}.
+	\end{equation*}
+	Since this holds for any $A \subset \Csig$, it holds over the supremum over all such $A$, therefore the desired statement is shown.
+\end{proof}
+
+\begin{lemma}[Lipschitz balls and local conductance.]
+	\label{lem: lipschitz_balls_local_conductance}
+	Under the assumption(s) of Theorem \ref{thm: dyer}, for $x,y \in K$ and $u = g(x), v = g(y)$ such that $\abs{u -v} \leq \frac{rt}{\sqrt{d}}$
+	\begin{itemize}
+		\item $B(u,r) \cap B(v,r) \cap \Csig \supseteq g\biggl(B(x, \frac{r}{L_{\Csig}}) \cap B(y, \frac{r}{L_{\Csig}}) \cap K  \biggr)$
+		\item $\abs{x - y} \leq \frac{tr}{L_{K} \sqrt{d}}$.
+		\item $\nu\biggl( B(x, \frac{r}{L_{\Csig}}) \cap K \biggr) \geq \widetilde{\nu} \biggl( B(u, \frac{r}{L_{\Csig} L_K}) \biggr)$ and similarly $\nu\biggl( B(y, \frac{r}{L_{\Csig}}) \cap K \biggr) \geq \widetilde{\nu} \biggl( B(v, \frac{r}{L_{\Csig} L_K}) \biggr)$.
+	\end{itemize}
+\end{lemma}
+\begin{proof}
+	\textcolor{red}{See page 18 of handwritten notes.}
+\end{proof}
+
+\begin{lemma}[One-step distributions over convex sets.]
+	\label{lem: one_step_distributions_convex}
+	Let $K \subset \Rd$ be a convex set, and $u,v \in K$, be such that $\abs{u - v} \leq \frac{t r}{\sqrt{d}}$ and $\ell(u), \ell(v) \leq \ell$. Then,
+	\begin{equation*}
+	\norm{P_{\nu,r}(x; \cdot) - P_{\nu,r}(y; \cdot)}_{TV} \leq 1 + t - \ell
+	\end{equation*}
+	where $P_{\nu,r}(x; A) = \frac{\nu(B(x,r) \cap A)}{\nu(B(x,r) \cap K)}$. 
+\end{lemma}
+
+\section{Proof of \eqref{eqn: one_step}}
+\label{sec: proof_of_eqn_onestep}
+This section is closely related to the results of \textcolor{red}{Kannan 97.}
+We will build, through several lemmas, to \eqref{eqn: one_step}. 
+Some preliminary notation: Fix $x,y \in K$, and denote $r' = r/ L_K$. Define
+\begin{equation*}
+C = B(x,r') \cap B(y,r')
+\end{equation*}
+the 'moons'
+\begin{equation*}
+M_x = B(x, r') \setminus B(y, r'),~ M_y = B(y,r') \setminus B(x,y')
+\end{equation*}
+and set
+\begin{equation*}
+R_x = M_x \cap (x - y + C),~ R_y = M_y \cap (y - x \cap C).
+\end{equation*}
+\begin{lemma}
+	\label{lem: overlap_1}
+	Let $x,y$ be two points in $K$ such that $\abs{x - y} < \sqrt{t}r'/\sqrt{d}$. Let $C'$ be the blowup of $C$ around its center $\frac{1}{2}(x + y)$ by $\alpha^{-1} := \frac{4d + 3t}{4d - t}$. Then
+	\begin{equation*}
+	M_x \setminus R_x \subseteq C'
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Assume without loss of generality that $x = -y$, and let $z \in M_x \setminus R_x$. Write $z = \mu x + w$ where $w \perp x$. Then,
+	\begin{itemize}
+		\item $\abs{z - x} \leq r'$, since $z \in B(x,r')$.
+		\item $\abs{z - y} > r'$, since $z \in B(y,r')$.
+		\item $\abs{z - 3x} > r'$, since $z \not\in R_x$ means that either $\abs{z - 3x} > r'$ or $\abs{z - x} > r'$, and we know that second inequality will never hold.
+	\end{itemize}
+	As a result, we have that $\mu \in (0,2)$.
+	
+	Now, if $\abs{\alpha z - y} \leq \delta$, this would imply $\alpha z \in C$, and therefore $z \in C'$. We do some straightforward, if tedious, algebra to obtain the desired result:
+	\begin{align*}
+	\abs{\alpha z - y}^2 & = \abs{\alpha \mu x + \alpha w + x}^2 \\
+	& = (\alpha \mu + 1)^2\abs{x}^2 + \alpha^2 \abs{w}^2 \\
+	& \leq (\alpha \mu + 1)^2\abs{x}^2 + \alpha^2 ((r')^2 - (\mu - 1)^2 \abs{x}^2) \\
+	& = (\alpha \mu + 1)^2 \frac{t(r'^2)}{d} + \alpha^2(\mu - 1)^2 \frac{t(r'^2)}{d} + \alpha^2 (r')^2 \\
+	& = (r')^2 \frac{t}{d}\left((4\frac{d}{t} + 3)\alpha^2 + 4 \alpha + 1 \right) \\
+	& = (r')^2
+	\end{align*}
+	where the last line follows from our choice of $\alpha$. 
+\end{proof}
+
+\begin{lemma}
+	\label{lem: overlap_2}
+	Under the notation and conditions of Lemma \ref{lem: overlap_1}, we have
+	\begin{equation*}
+	\vol(K \cap (M_x \setminus R_x)) \leq (1 + \frac{8t}{3}) \vol(K \cap C)
+	\end{equation*}
+	whenever $0 < t < 4/9$.
+\end{lemma}
+\begin{proof}
+	From Lemma \ref{lem: overlap_1}, we have
+	\begin{align*}
+	\vol(K \cap (M_x \setminus R_x)) & \leq \vol(K \cap C') \\
+	& \leq \vol((\alpha^{-1})(K \cap C)) \\
+	& = (1 + \frac{4t}{4d - t})^d \vol(K \cap C) \\
+	& \overset{(i)}{\leq} \left(1 + \frac{8td}{4d - t} \right) \vol(K \cap C) \\
+	& \leq (1 + \frac{8t}{3}) \vol(K \cap C)
+	\end{align*}
+	where $(i)$ follows from a first order Taylor expansion of $(1 + x)^d$ about $x = 0$. 
+\end{proof}
+
+The following lemma is taken directly from \textcolor{red}{Kannan 97.}
+
+\begin{lemma}
+	\label{lem: volume_log_concave}
+	For every convex body $K$,
+	\begin{equation*}
+	\vol(K \cap C)^2 \geq \vol(K \cap R_x) \vol(K \cap R_y)
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem: overlap_3}
+	Under the notation and conditions of Lemma \ref{lem: overlap_1}
+	\begin{equation*}
+	\vol(K \cap C) \geq \frac{3}{9 + 8t}\min \set{\vol(B(x,r') \cap K), \vol(B(y,r'))}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	From Lemma \ref{lem: overlap_2}, we have
+	\begin{equation*}
+	\vol(K \cap R_x) \geq \vol(K \cap M_x) - (1 + \frac{8t}{3}) \vol(K \cap C)
+	\end{equation*}
+	which, by the identity $B(x,r') = C \cup M_x$, further implies
+	\begin{equation*}
+	\vol(K \cap R_x) \geq \vol(K \cap B(x,r')) - (2 + \frac{8t}{3}) \vol(K \cap C)
+	\end{equation*}
+	with a symmetric inequality holding fro $K \cap R_y$. Applying Lemma \ref{lem: volume_log_concave} we obtain
+	\begin{equation*}
+	\vol(K \cap C) \geq \min \set{\vol(K \cap B(x,r')), \vol(K \cap B(y,r'))} - (2 + \frac{8t}{3}) \vol(K \cap C)
+	\end{equation*}
+	and the desired result follows after some rearrangement.
+\end{proof}
+
+\section{Proof of \eqref{eqn: one_step_2}}
+\begin{lemma}
+	\label{lem: local_conductance}
+	Let $u \in \Csig = \Cset + \sigma B$ for some $\Cset \subseteq \Reals^d$. Then, for any $r' < \frac{\sigma}{4d}$,
+	\begin{equation*}
+	\nu(B(u,r') \cap \Csig) \geq \nu(B(u,r'))\frac{1}{30}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Since $u \in \Csig$ there exists $v \in \Cset$ such that $u \in B(v, \sigma)$. Writing $r' := \frac{r}{L_{\Csig} L_K}$, we have that
+	\begin{equation*}
+	\widetilde{\nu}\bigl(B(u, r')\bigr) \geq \nu\bigl(B(u, r') \cap B(v, \sigma)\bigr)
+	\end{equation*}
+	\textcolor{red}{The volume of such an intersection is clearly minimized when $\abs{u - v} = \sigma$; in this case the intersection is formed by the union of two spherical caps. We will examine the larger of these two spherical caps, the cap of radius $r$ and height}
+	\begin{equation*}
+	h = r' - (r')^2/2\sigma = r' \left( 1 - \frac{r'}{2 \sigma} \right)
+	\end{equation*}	
+	Then, the volume of the cap $\nu_{cap}$ is known to be
+	\begin{equation*}
+	\nu_{cap} = \frac{1}{2} \nu_d r^d I_{1 - \alpha}(\frac{d + 1}{2}; \frac{1}{2})
+	\end{equation*}
+	where
+	\begin{equation*}
+	\alpha := 1 - \frac{2 r' h - h^2}{(r')^2} \leq \frac{r'}{2 \sigma}
+	\end{equation*}
+	and $I(\cdot; \cdot)$ represents the incomplete beta function:
+	\begin{equation*}
+	I_{\alpha}(z,w) = \frac{\Gamma(z + w)}{\Gamma(z) \Gamma(w)} \int_{0}^{\alpha} u^{z - 1} (1 - u)^{w - 1} du.
+	\end{equation*}
+	Therefore,
+	\begin{align*}
+	\nu_{cap} & = \frac{1}{2} \nu_d (r')^d \frac{\Gamma(d/2 + 1)}{\Gamma((d+1)/2) \Gamma(1/2)} \int_{0}^{\alpha} u^{(d - 1)/2} (1 - u)^{-1/2} du \\
+	& \geq \nu_d (r')^d \frac{1}{2 \sqrt{\pi} }  \frac{\Gamma(d/2 + 1)}{\Gamma((d+1)/2) } \int_{0}^{\alpha} u^{(d - 1)/2} (1 - u)^{-1/2} du \tag{$\Gamma(1/2) = \sqrt{\pi}$} \\ 
+	& \geq \nu_d (r')^d \frac{1}{2 \sqrt{\pi} } \sqrt{\frac{d}{2}} \int_{0}^{\alpha} u^{(d - 1)/2} (1 - u)^{-1/2} du.\tag{Gautschi's inequality}
+	\end{align*}
+	Turning our attention to the relevant integral, letting $v = 1 - u$ and $\beta = 1/4d$ we obtain
+	\begin{align*}
+	\int_{0}^{\alpha} u^{(d - 1)/2} (1 - u)^{-1/2} du & = \int_{\alpha}^{1 } (1 - v)^{(d - 1)/2} v^{-1/2} dv \\
+	& \geq \int_{\beta}^{2 \beta} (1 - v)^{(d - 1)/2} v^{-1/2} dv \tag{$\alpha \leq \beta \leq 2\beta \leq 1$} \\
+	& \geq 2 (1 - 2 \beta)^{(d - 1)/2} \sqrt{\beta} (\sqrt{2} - 1) \\
+	& \geq \frac{1}{2}\sqrt{\frac{1}{d}} (\sqrt{2} - 1). \tag{\textcolor{red}{Lemma 2}}
+	\end{align*}
+	Combining the pieces, we have
+	\begin{equation*}
+	\nu_{cap} \geq \nu_d (r')^d \frac{(\sqrt{2} - 1)}{2} \cdot \frac{1}{2 \sqrt{2 \pi}} \geq \frac{1}{30} \nu_d (r')^d.
+	\end{equation*}
+	
+\end{proof}
+
+\section{Notation}
+\begin{itemize}
+	\item For a set $K \subset \Rd$, $D_K = \max_{x,y \in K} \abs{x - y}$, where $\abs{x - y}$ is the Euclidean norm between of $x - y \in \Rd$. 
+	\item $\nu_d$ is the volume of the unit ball $B(0,1)$ in $\Rd$. 
+	\item $D_x g = (D_{x_i} {g_j})_{i,j = 1}^{d}$ is the Jacobian matrix of $g$ evaluated at $x$.
+	\item $g(K) = \set{y \in \Rd: g(x) = y ~\text{for some}~ x \in K}$ is the image of $K$ under $g$.
+	\item For measures $P,Q$ over $(\Sigma, \mathcal{F})$, $\norm{P - Q}_{TV} = \sup_{A \in \mathcal{F}} \abs{P(A) - Q(A)}$.  
+\end{itemize}
+
+
+
+\end{document}

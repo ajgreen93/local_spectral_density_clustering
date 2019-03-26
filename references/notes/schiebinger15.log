@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6600 64-bit) (preloaded format=pdflatex 2018.3.7)  5 JAN 2019 11:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6600 64-bit) (preloaded format=pdflatex 2018.3.7)  25 MAR 2019 17:11
 entering extended mode
 **./schiebinger15.tex
 (schiebinger15.tex
@@ -435,23 +435,31 @@ Overfull \hbox (4.53665pt too wide) in paragraph at lines 135--137
 [1
 
 {C:/Users/alden/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
- [2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 156.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 169.
 
-(schiebinger15.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
+
+("C:\Users\alden\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 169.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 194.
+
+[2]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 194.
+ (schiebinger15.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 194.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 194.
 Package rerunfilecheck Info: File `schiebinger15.out' has not changed.
-(rerunfilecheck)             Checksum: 624B75E6606777249A05508CB1578F7A;79.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
+(rerunfilecheck)             Checksum: 55606EA9AA700393AA75DA6359653C0B;210.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 194.
  ) 
 Here is how much of TeX's memory you used:
- 7153 strings out of 493303
- 103202 string characters out of 3129785
+ 7176 strings out of 493303
+ 103656 string characters out of 3129785
  189281 words of memory out of 3000000
- 10604 multiletter control sequences out of 15000+200000
- 16414 words of font info for 61 fonts, out of 3000000 for 9000
+ 10621 multiletter control sequences out of 15000+200000
+ 16760 words of font info for 62 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  28i,6n,28p,284b,321s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts
@@ -470,11 +478,13 @@ al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/alden/
 AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 /Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
 msy7.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/a
-msfonts/symbols/msbm10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on schiebinger15.pdf (2 pages, 146755 bytes).
+msfonts/cm/cmti10.pfb><C:/Users/alden/AppData/Local/Programs/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/symbols/msam10.pfb><C:/Users/alden/AppData/Local/Programs/
+MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/alden/AppDa
+ta/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
+Output written on schiebinger15.pdf (2 pages, 181793 bytes).
 PDF statistics:
- 81 PDF objects out of 1000 (max. 8388607)
- 5 named destinations out of 1000 (max. 500000)
- 9 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 99 PDF objects out of 1000 (max. 8388607)
+ 7 named destinations out of 1000 (max. 500000)
+ 25 words of extra memory for PDF output out of 10000 (max. 10000000)
 
