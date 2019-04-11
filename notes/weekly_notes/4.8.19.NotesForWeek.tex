@@ -1,0 +1,454 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+\newcommand{\dist}{\mathrm{dist}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\Sset}{\mathcal{S}}
+
+\newcommand{\Csig}{\Cset_{\sigma}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+%%% Functions over graphs
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\vol}{\mathrm{vol}}
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for the week of 4/8/19 - 4/12/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $\set{x_1, x_2, \ldots}$ be an infinite sequence of points sampled independently from probability measure $\Pbb$ with density function $f$. For each $n$, write $\Xbf_n = \set{x_1, \ldots, x_n} \subseteq \Reals^d$ . Given some $\lambda, \sigma > 0$, let
+\begin{equation*}
+\mathcal{U} = \set{x: f(x) \geq \lambda},~ \mathcal{C} = \textrm{one connected component of}~ \mathcal{U}, ~\textrm{and}~ \Csig = \Cset + B(0,\sigma)
+\end{equation*}
+
+We will be concerned with the \emph{normalized cut} over the subgraph induced by $\Csig$. For convenience, denote $\widetilde{\Xbf}_n = \Csig[\Xbf_n]$, $\widetilde{n} = \abs{\widetilde{\Xbf}_n}$, and let
+\begin{equation*}
+\widetilde{E}_n = \set{(i,j): x_i, x_j \in \widetilde{\Xbf}_n, \norm{x_i - x_j}_2 \leq r}, \widetilde{G}_{n,r} = \bigl(\widetilde{\Xbf}_n, \widetilde{E}_n \bigr).
+\end{equation*}
+For a set $S \subseteq \widetilde{\Xbf}_n$, the normalized cut of $S$ within $\widetilde{G}_{n,r}$ can be defined as
+\begin{equation*}
+\widetilde{\Phi}_{n,r}(S) := \frac{\widetilde{\cut}(S)}{\min \set{\widetilde{\vol}(S), \widetilde{\vol}(S^c)}},~ \widetilde{\cut}(S) = \abs{ \set{(i,j) \in \widetilde{E}_n: x_i \in S, x_j \not\in S}},~ \widetilde{\vol}(S) = \abs{ \set{(i,j) \in \widetilde{E}_n: x_i \in S} }
+\end{equation*}
+where in this context $S^c = \widetilde{\Xbf}_n \setminus S$ denotes the complement of $S$ within $\widetilde{G}_{n,r}$. 
+
+\paragraph{Convergence under the $TL^1$ metric}
+
+Let
+\begin{equation*}
+\widetilde{\Pbb}(\Sset) = \frac{\Pbb(\Sset)}{\Pbb(\Csig)}, ~ \widetilde{\Pbb}_{n}(\Sset) := \frac{1}{\widetilde{n}} \sum_{x_i \in \widetilde{\Xbf}_n} \1(x_i \in \Sset) \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*} 
+be the (empirical) probability measures, conditional on $x \sim \Pbb$ lying within $\Csig$ (Here $\mathfrak{B}(\Csig)$ is the Borel $\sigma$-algebra of $\Csig$). A Borel map $T: \Csig \to \widetilde{\Xbf}_n$ is said to be a \emph{transportation map} between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ if for arbitrary $\Sset \in \mathfrak{B}(\Csig)$,  
+\begin{equation*}
+\widetilde{\Pbb}(\Sset) = \widetilde{\Pbb}_n(T(\Sset)).
+\end{equation*}
+The following lemma shows that, under suitable conditions, transportation maps convergence to the identity mapping at rate $\left(\frac{\log n}{n}\right)^{1/d}$. 
+
+\begin{lemma}[Adaptation of Proposition 5 of \textcolor{red}{Garcia Trillos 2016}]
+	\label{lem: stagnating_transportation_maps}
+	With probability one, there exists a sequence of transportation maps $\seq{T_n}$, $T_n: \Csig \to \widetilde{\Xbf}_n$ such that the following statement holds:
+	\begin{equation*}
+	\limsup_{n \to \infty} \frac{\widetilde{n}^{1/d} \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}}{(\log \widetilde{n})^{p_d}} \leq C
+	\end{equation*}
+	where $Id(x) = x$ is the identity mapping over $\Csig$, $C$ is a universal constant and $p_d = 3/4$ for $d = 2$ and $1/d$ for $d \geq 3$.
+\end{lemma}
+If a sequence of transportation maps $\seq{T_n}$ satisfies $\norm{\mathrm{Id} - T_n}_{L^{1}(\widetilde{\Pbb})} = o_P(1)$, we refer to it as a sequence of \emph{stagnating transportation maps}. Lemma \ref{lem: stagnating_transportation_maps} establishes that with probability one, such a sequence of stagnating transportation maps will exist.
+
+\begin{definition}
+	For a sequence $\seq{u_n} \subseteq L^1(\widetilde{\Pbb}_n)$ and $u \in L^1(\widetilde{\Pbb})$, we say that $\seq{u_n}$ converges $TL^1$ to $u$ if there exists a sequence of stagnating transportation maps $\seq{T_n}$ such that
+	\begin{equation}
+	\label{eqn: transportation_distance_1}
+	d^{TL^1}(u,u_n) := \int_{\Csig} \abs{u(x) - u_n \circ T_n(x)} d \widetilde{\Pbb}(x) \overset{n}{\to} 0 
+	\end{equation}
+	and denote it $u_n \overset{TL^1}{\to} u$.
+\end{definition}
+
+\begin{remark}
+	\label{rmk: transportation_distance_equivalence}
+	Note that this definition does not make sense on its face, as $u$ and $u_n$ lie in different spaces. Technically, we can resolve this by writing
+	\begin{equation}
+	\label{eqn: transportation_distance_2}
+	d^{TL^1}((\widetilde{\Pbb}, u),(\widetilde{\Pbb}_n,u_n)) = \inf_{\pi \in \Gamma(\widetilde{\Pbb},\widetilde{\Pbb}_n)} \iint_{\Csig \times \Csig} \abs{x - y} + \abs{f(x) - g(y)} d\pi(x,y)
+	\end{equation}
+	where $\gamma$ is the space of couplings over the measures $\widetilde{\Pbb}, \widetilde{\Pbb}_n$. However, it can be shown that \eqref{eqn: transportation_distance_2} converges to zero if and only if \eqref{eqn: transportation_distance_1} is satisfied and 
+	\begin{equation*}
+	\widetilde{\Pbb}_n \overset{w}{\to} \widetilde{\Pbb}.
+	\end{equation*}
+	
+	Since this additional condition will clearly be satisfied with probability one, we simplify things by hereafter referring only to the condition in \eqref{eqn: transportation_distance_1}. See \textcolor{red}{Garcia Trillos 15} for more details.
+\end{remark}
+
+\subsection{Desired result.}
+
+Consider a sequence $S_1,S_2,\ldots,S_n,\ldots$ of sets with $S_n \subseteq \widetilde{\Xbf}_n$ for all $n$, with characteristic functions $u_n: \widetilde{\Xbf}_n \to \set{0,1}, u_n(x_i) = \1(x_i \in S_n)$ for $i \in \set{1, \ldots,n}$. We have already established the behavior of normalized cut when the sequence $\seq{u_n}$ converges $TL^1$ to some $u \in L^1(\widetilde{\Pbb})$. We require a complementary statement, of the form of Lemma \ref{lem: precompactness}.
+
+\begin{lemma}[Precompactness]
+	\label{lem: precompactness}
+	Let $\seq{S_n}$ and $\seq{u_n}$ be as in the preceding paragraph. Suppose $u_n$ does not converge $TL^1$ to any $u \in L^1(\Pbb)$. Then, with probability one:
+	\begin{equation*}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(S_n) \geq c_d r^{1} \textcolor{red}{\omega_r(1)}
+	\end{equation*}
+	where $c_d$ is a constant which does not depend on $r$ but may depend on $d, \lambda$, $\sigma$ and $f$, and $\omega_r(1)$ represents a term which goes to infinity as $r \to 1$.
+\end{lemma}
+However, we wish to replace the asymptotic term $\omega_r(1)$ of Lemma \ref{lem: precompactness} with an explicit function of $r$. 
+
+\section{Supporting Theory.}
+
+\begin{definition}
+	For a sequence $\seq{y_n}$ over a metric space $Y$ equipped with metric $d_Y$, the sequence $\seq{y_n}$ is \emph{precompact} if every subsequence $(y_{n_k})_{k \in \Naturals}$ has an accumulation point in $Y$. 
+\end{definition}
+
+For $u_n \in L^1(\widetilde{\Pbb}_n)$, let the \emph{graph total variation} be given by
+\begin{equation*}
+GTV_{n,r_n}(u_n) = \frac{1}{n^2 r_n^{d + 1}}  \sum_{x_i \in \widetilde{\Xbf}_n} \sum_{x_j \in \widetilde{\Xbf}_n} \1\bigl(\norm{x_i - x_j} \leq r\bigr) \abs{u_n(x_i) - u_n(x_j)}
+\end{equation*}
+
+To see the relation between $GTV$ and $\widetilde{\Phi}$, introduce the balance term
+\begin{equation*}
+B_n(u_n) = \min_{m \in \Reals} \frac{1}{\widetilde{\vol}(\widetilde{\Xbf}_n)} \sum_{x_i \in \widetilde{\Xbf}_n} \widetilde{\deg}(u_n) \abs{u_n(x_i) - m}.
+\end{equation*}
+
+Note that if $u_n(x) = \1(x \in S_n)$ is the characteristic function for some $S_n \subseteq \widetilde{\Xbf}_n$, then (assuming $S_n$ is not the empty set)
+\begin{equation*}
+B_n(u_n) = \frac{\min \set{ \widetilde{\vol}(S_n) , \widetilde{\vol}(S_n^c) }}{\widetilde{\vol}(\widetilde{\Xbf}_n)}, ~\text{and}~ GTV_{n,r_n}\left(\frac{u_n}{B_n(u_n)}\right) = \frac{\vol(\widetilde{\Xbf}_n)}{n^2 r^{d+1}}\widetilde{\Phi}_{n,r_n}(S_n).
+\end{equation*}
+
+We introduce an energy functional $E_n$ as shorthand for $GTV_{n,r_n}\left(\frac{u_n}{B_n(u_n)}\right)$:
+\begin{equation*}
+E_n(v_n) := 
+\begin{cases}
+GTV_{n,r_n}(v_n),~ & \text{if there is}~ S_n \subseteq \widetilde{X}_n, u_n(x) = 1(x \in S_n) ~\text{with}~ B_n(u_n) > 0 ~\text{such that}~ v_n = \frac{u_n}{B_n(u_n)} \\
+\infty,~ & \text{otherwise}
+\end{cases}
+\end{equation*}
+
+\begin{lemma}[Lemma 23 of \textcolor{red}{Garcia Trillos 16}]
+	\label{lem: gt_precompactness}
+	Let $\seq{r_n}$ be a sequence of positive numbers converging to $0$ and satisfying
+	\begin{equation*}
+	\lim_{n \to \infty} \frac{(\log n)^{p_d}}{n^{1/d}} \frac{1}{r_n} = 0
+	\end{equation*}
+	where $p_d = 3/4$ if $d = 2$ and $1/d$ for $d \geq 3$.
+	
+	With probability one the following statement holds: for any sequence $\seq{v_n}$ with $v_n \in L^1(\widetilde{\Pbb}_n)$, if
+	\begin{equation*}
+	\limsup_{n \to \infty} E_n(v_n)  < \infty
+	\end{equation*}
+	then $v_n$ is precompact in $TL^1$. 
+\end{lemma}
+
+\begin{remark}
+	As outlined in Remark \ref{rmk: transportation_distance_equivalence}, to be technically precise about $TL^1$ convergence we need to work with distances between $(\widetilde{\Pbb}, v)$ and $(\widetilde{\Pbb}_n, v_n)$. Here, when we say ``$v_n$ is precompact in $TL^1$'' we mean that for every subsequence $(v_{n_k})_{k \in \Naturals}$ there exists some $v \in L^1(\Pbb)$ such that $(\widetilde{\Pbb}, v)$ is an accumulation point of $\bigl( (\widetilde{\Pbb}_{n_k},v_{n_k})_{k \in \Naturals} \bigr)$ with respect to $TL^1$ distance. 
+\end{remark}
+
+Lemma \ref{lem: gt_precompactness} builds straightforwardly from Lemma \ref{lem: gt_precompactness_2}. Lemma \ref{lem: gt_precompactness_2} makes a similar statement to Lemma \ref{lem: gt_precompactness} but with respect to the graph total variation functional, meaning it does not take into account the balance term.
+
+\begin{lemma}[Theorem 1.2 of \textcolor{red}{Garcia Trillos 16b}]
+	\label{lem: gt_precompactness_2}
+	Let $\seq{r_n}$ be a sequence of positive numbers converging to $0$ and satisfying
+	\begin{equation}
+	\label{eqn: r_conv_rate}
+	\lim_{n \to \infty} \frac{(\log n)^{p_d}}{n^{1/d}} \frac{1}{r_n} = 0
+	\end{equation}
+	where $p_d = 3/4$ if $d = 2$ and $1/d$ for $d \geq 3$. Consider a sequence of functions $u_n \in L^1(\widetilde{\Pbb}_n)$. If
+	\begin{equation}
+	\label{eqn: bounded_norm}
+	\sup_{n \in \Naturals} \norm{u_n}_{L^1(\widetilde{\Pbb}_n)} < \infty
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn: bounded_GTV}
+	\sup_{n \in \Naturals} GTV_{n,r_n}(u_n) < \infty
+	\end{equation}
+	then $\seq{u_n}$ is precompact in $TL^1$.
+\end{lemma}
+
+We will apply Lemma \ref{lem: gt_precompactness_2} to the sequence $\seq{v_n}$ specified in the setup of Lemma \ref{lem: gt_precompactness}. To do so, we will need to show $\sup_{n \in \Naturals} \norm{v_n}_{L^1(\widetilde{\Pbb}_n)} < \infty$ is implied by $\limsup_{n \to \infty} E_n(v_n)  < \infty$. This holds thanks to the gamma convergence of the functionals $E_n$ to a continuous analogue. For $u \in L^1(\widetilde{\Pbb})$, recall that the total variation of $u$ is given by
+\begin{equation*}
+TV(u) := \sup \set{\int_{\Csig} u(x) \dive(\Psi(x)) dx: \Psi \in C_c^1(\Csig: \Reals^d), \abs{\Psi(x)} \leq f^2(x)}
+\end{equation*}
+where $C_c^1(\Csig: \Reals^d)$ represents the set of $C^1$-functions from $\Csig$ to $\Reals^d$ whose support is compactly contained in $\Csig$. 
+
+For $u \in L^1(\widetilde{\Pbb})$, let $B(u)$ be a balance term
+\begin{equation*}
+B(u) := \min_{m \in \Reals} \frac{\int_{\Csig} \abs{u(x) - m} f^2(x) dx}{\int_{\Csig} f^2(x) dx}.
+\end{equation*}
+Then, analogously to the discrete case, let the continuous energy functional $E(v)$ be given by
+\begin{equation*}
+E(v) := 
+\begin{cases}
+TV(v),~ & \text{if there exists}~  \Sset \subseteq \Csig, u(x) = \1(x \in \Sset) ~\text{with}~ B(u) > 0 ~\text{such that}~ v = \frac{u}{B(u)} \\
+\infty, & \text{otherwise}.
+\end{cases}
+\end{equation*}
+
+\begin{lemma}[Proposition 21 of \textcolor{red}{Garcia Trillos 16b}]
+	\label{lem: liminf_E}
+	For any $v \in L^1(\widetilde{\Pbb})$ and any sequence $\seq{v_n}$ with $v_n \in L^1(\widetilde{\Pbb}_n)$ that converges to $v$ in $TL^1$,
+	\begin{equation*}
+	c_1 E(v)  \leq \liminf_{n \to \infty} E_n(v_n)
+	\end{equation*}
+	where $c_1$ is a universal constant. 
+\end{lemma}
+\section{Proofs}
+
+\subsection{Proof of Lemma \ref{lem: gt_precompactness}}
+
+By Lemma \ref{lem: gt_precompactness_2}, it is sufficient to show that \eqref{eqn: bounded_norm} and \eqref{eqn: bounded_GTV} are satisfied for $v_n = \frac{1}{B_n(u_n)}u_n$, where $u_n(x) = \1(x \in S_n)$ is the characteristic function for $S_n$. Of course, as we have noted
+\begin{equation*}
+GTV_{n,r_n}\left(\frac{u_n}{B_n(u_n)}\right) = \frac{\vol(\widetilde{\Xbf}_n)}{n^2 r^{d+1}}\widetilde{\Phi}_{n,r_n}(S_n)
+\end{equation*}
+and therefore by hypothesis \eqref{eqn: bounded_GTV} holds for $v_n$. We turn now to showing \eqref{eqn: bounded_norm}. 
+
+To begin, let
+\begin{equation*}
+w_n := 
+\begin{cases}
+v_n,~ & \text{if}~ \vol(S_n) \leq \vol(S_n^c)  \\
+(1 - u_n)/B_n(u_n),~ & \text{if}~ \vol(S_n) > \vol(S_n^c).
+\end{cases}
+\end{equation*}
+Note that 
+\begin{equation*}
+\norm{u_n}_{L^1(\Pbb_n)} = \frac{\abs{S_n}}{\widetilde{n}} \leq \frac{\widetilde{\vol}(S_n)}{\widetilde{d}_{\min} \widetilde{n}}
+\end{equation*}
+and similarly $\norm{1 - u_n}_{L^1(\Pbb_n)} \leq \frac{\widetilde{\vol}(S_n^c)}{\widetilde{d}_{\min} \widetilde{n}}$. Therefore
+\begin{equation*}
+\norm{w_n}_{L^1(\Pbb_n)} \leq \frac{\min \set{\widetilde{\vol}(S_n),\widetilde{\vol}(S_n^c)}}{\widetilde{d}_{\min} \widetilde{n} B_n(u_n)} \leq \frac{\widetilde{\vol}(\widetilde{\Xbf}_n)}{\widetilde{n} \widetilde{d}_{\min}} \leq \frac{\widetilde{d}_{\max}}{\widetilde{d}_{\min}}
+\end{equation*}
+There exists constant $c_{\sigma}$ which depends only on $\sigma$ such that
+\begin{equation*}
+\limsup_{n \to \infty} \frac{\widetilde{d}_{\max}}{\widetilde{d}_{\min}} \leq c_{\sigma}\frac{\Lambda_{\sigma}}{\lambda_{\sigma}} < \infty.
+\end{equation*}
+Moreover, $GTV_{n,r_n}(w_n) = GTV_{n,r_n}(v_n)$. Therefore, by Lemma \ref{lem: gt_precompactness_2}, $w_n$ is precompact in $TL^1$, meaning any subsequence of $w_n$ has a further convert subsequence; let $w_{n_k} \overset{TL^1}{\to} w$ denote this convergent subsequence. 
+
+Therefore by Lemma \ref{lem: liminf_E}, 
+\begin{equation*}
+\infty > \liminf_{n \to \infty} E_n(w_{n_k}) \geq c_1 E(w)
+\end{equation*}
+which in turn implies that $B(w) > 0$. But then
+\begin{align*}
+\norm{v_{n_k}}_{L^1(\widetilde{\Pbb})}  & = \frac{1}{B_n(u_{n_k})} \norm{u_{n_k}}_{L^1(\widetilde{\Pbb})} \\
+& \leq \frac{1}{B_n(u_{n_k})} \\
+& = \frac{1}{B_n(w_{n_k})} \to \frac{1}{B(w)} < \infty
+\end{align*}
+where the proof of convergence $B_n(w_{n_k}) \to B(w)$ is omitted but is straightforward. So every subsequence of $\seq{v_n}$ has a further subsequence $(v_{n_k})_{k \in \Naturals}$ which satisfies \eqref{eqn: bounded_norm} and \eqref{eqn: bounded_GTV} and therefore is precompact in $TL^1$. 
+
+\subsection{Proof of Lemma \ref{lem: gt_precompactness_2}}
+By Lemma \ref{lem: stagnating_transportation_maps}, there exists a sequence of transportation maps $\seq{T_n}$ such that for a.e. $z,y \in \Csig$ with $\norm{T_n(z) - T_n(x)} > r_n$,
+\begin{equation*}
+\norm{z - y} > r_n - 2 \norm{\mathrm{Id} - T_n}_{\infty} =: \widetilde{r}_n.
+\end{equation*}
+and as an immediate implication for a.e. $z,y \in \Csig$,
+\begin{equation*}
+\norm{z - y} \leq \widetilde{r}_n \Longrightarrow \norm{T_n(z) - T_n(y)} \leq r_n
+\end{equation*}
+
+Note that by the lower bound on $r_n$ implied by \eqref{eqn: r_conv_rate}, $\frac{r_n}{\widetilde{r}_n} \to 1$; in particular, $\widetilde{r}_n$ will be positive for sufficiently large $n$ with probability $1$. Therefore for $n$ sufficiently large,
+\begin{align*}
+\frac{1}{r_n^{d+1}} \iint_{\Csig \times \Csig} & \1(\norm{z - y} \leq \widetilde{r}_n) \abs{u_n \circ T_n(z) - u_n \circ T_n(y)} f(z) f(y) dz dy \\
+& \leq \frac{1}{r_n^{d+1}} \iint_{\Csig \times \Csig} \1(\norm{T_n(z) - T_n(y)} \leq r_n) \abs{u_n \circ T_n(z) - u_n \circ T_n(y)} f(z) f(y) dz dy \\
+& = GTV_{n,r_n}(u_n)
+\end{align*} 
+and by hypothesis $\limsup_{n \to \infty} GTV_{n,r_n}(u_n) < \infty$.  But as $\frac{r_n}{\widetilde{r}_n} \to 1$, this implies
+\begin{equation*}
+\limsup_{n \to \infty} \frac{1}{\widetilde{r}_n} \iint_{\Csig \times \Csig} \frac{\1(\norm{z - y} \leq \widetilde{r}_n)}{\widetilde{r}_n^d} \abs{u_n \circ T_n(z) - u_n \circ T_n(y)} f(z) f(y) dz dy < \infty
+\end{equation*}
+and so by \textcolor{red}{Proposition 1} $\seq{u_n \circ T_n}$ is precompact in $L^1(\widetilde{\Pbb})$, which is equivalent to $\seq{u_n}$ being precompact in $TL^1$. 
+
+Proposition \ref{prop: compactness_nonlocal_TV} -- which we prove in Section \ref{sub: proof_of_prop_compactness_nonlocal_TV} --  is stated with respect to a nonlocal functional $TV_r(u)$, given by
+\begin{equation*}
+TV_r(u) := \frac{1}{r} \iint_{\Csig \times \Csig} \frac{\1(\norm{x - y} \leq r)}{r^d} \abs{u(x) - u(y)} f(x) f(y) dx dy
+\end{equation*}
+
+\begin{proposition}
+	\label{prop: compactness_nonlocal_TV}
+	Let $\seq{v_{r_n}}$ be a sequence in $L^1(\widetilde{\Pbb})$ such that
+	\begin{equation*}
+	\sup_{n \in \Naturals} \norm{v_{r_n}}_{L^1(\widetilde{\Pbb})} < \infty 
+	\end{equation*}
+	and
+	\begin{equation*}
+	\sup_{n \in \Naturals} TV_{r_n}(v_{r_n}) < \infty.
+	\end{equation*}
+	Then, $\seq{v_{r_n}}$ is precompact in $L^1(\widetilde{\Pbb})$. 
+\end{proposition}
+
+\subsection{Proof of Proposition \ref{prop: compactness_nonlocal_TV}}
+\label{sub: proof_of_prop_compactness_nonlocal_TV}
+
+Without loss of generality, let $f \equiv 1$ (since otherwise it is bounded above and below by positive constants over its support). We begin by extending each function $v_{r_n}$ to $\Reals^d$. By assumption, $\forall x \in C^{2\sigma}$ there exists a unique closest point on $\partial C^{\sigma}$; let $Px$ denote this point, and define the local reflection mapping
+\begin{equation*}
+\widehat{x} = 2Px - x.
+\end{equation*}
+Letting $\xi(s)$ be a smooth function satisfying
+\begin{equation*}
+\xi(s) = 1, s \leq \frac{\sigma}{8},~ \text{and}~ \xi(s) = 0, s \geq \frac{\sigma}{4}
+\end{equation*}
+we define an auxiliary function
+\begin{equation*}
+\widetilde{v}_{r_n}(x) = \xi(\abs{x - Px}) v_{r_n}(\widehat{x})
+\end{equation*}
+and \textcolor{red}{claim that} for some constant $C$,
+\begin{align*}
+\sup_{n \in \Naturals} & \frac{1}{r_n} \iint_{\Reals^d \times \Reals^d} \frac{\1(\norm{x - y} \leq r)}{r^d} \abs{\widetilde{v}_{r_n}(x) - \widetilde{v}_{r_n}(y)} dy dx < \\
+& \leq C \sup_{n \in \Naturals} \left(\frac{1}{r_n} \iint_{\Reals^d \times \Reals^d} \frac{\1(\norm{x - y} \leq r)}{r^d} \abs{v_{r_n}(x) - v_{r_n}(y)} dy dx +  \norm{v_{r_n}}_{L^1(\widetilde{\Pbb})}\right)
+\end{align*}
+which by hypothesis is less than $\infty$. 
+
+\section{Additional Notation}
+\begin{itemize}
+	\item $c_1 = \int_{B(0,1)} \abs{\dotp{x}{e_1}} dx$ where $B(0,1)$ is a $d$-dimensional unit ball centered at the origin.
+\end{itemize}
+
+
+
+
+
+\end{document}
