@@ -1,0 +1,672 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+\newcommand{\dist}{\mathrm{dist}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\Sset}{\mathcal{S}}
+
+\newcommand{\Csig}{\Cset_{\sigma}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ebb}{\mathbb{E}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+%%% Functionals over graphs
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\vol}{\mathrm{vol}}
+% \newcommand{\deg}{\mathrm{deg}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for the week of 4/8/19 - 4/12/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $\set{x_1, x_2, \ldots}$ be a sequence of points sampled independently from probability measure $\Pbb$ with density function $f$. For each $n$, write $\Xbf_n = \set{x_1, \ldots, x_n} \subseteq \Reals^d$ . Given some $\lambda, \sigma > 0$, let
+\begin{equation*}
+\mathcal{U} = \set{x: f(x) \geq \lambda},~ \mathcal{C} = \textrm{one connected component of}~ \mathcal{U}, ~\textrm{and}~ \Csig = \Cset + B(0,\sigma)
+\end{equation*}
+
+Write $\widetilde{\Xbf}_n = \Csig[\Xbf_n]$, $\widetilde{E}_n = \set{(i,j): x_i, x_j \in \widetilde{\Xbf}_n, \norm{x_i - x_j}_2 \leq r}$ and let $\widetilde{G}_{n,r} = \bigl(\widetilde{\Xbf}_n, \widetilde{E}_n \bigr)$.
+For a set $S \subseteq \widetilde{\Xbf}_n$, the normalized cut of $S$ within $\widetilde{G}_{n,r}$ can be defined as
+\begin{equation*}
+\widetilde{\Phi}_{n,r}(S) := \frac{\widetilde{\cut}(S)}{\min \set{\widetilde{\vol}(S), \widetilde{\vol}(S^c)}},~ \textrm{where}~ \widetilde{\cut}(S) := \cut(S;\widetilde{G}_{n,r}),~ \widetilde{\vol}(S) := \vol(S;\widetilde{G}_{n,r})
+\end{equation*}
+and in this context $S^c = \widetilde{\Xbf}_n \setminus S$ denotes the complement of $S$ within $\widetilde{G}_{n,r}$. Then, the \emph{graph conductance profile} over $\widetilde{G}_{n,r}$ is
+\begin{equation*}
+\widetilde{\Phi}_{n,r}(t) := \min_{\substack{S \subseteq \widetilde{\Xbf}_n: \\ 0 < \widetilde{\pi}_n(S) < t} } \widetilde{\Phi}_{n,r}(S)
+\end{equation*}
+where $\widetilde{\pi}_{n,r}(S) = \frac{\widetilde{\vol}(S)}{\widetilde{\vol}(\widetilde{\Xbf}_n)}$. We will prove a lower bound on the graph conductance profile by a continuous analogue. 
+
+\subsection{Continuous conductance}
+
+Let $\nu$ be the Lebesgue measure over Euclidean space $\Rd$, and $B(x,r)$ be a ball of radius $r$ centered at $x$. For $\Sset \subset \Rd$ a Borel set,
+\begin{equation*}
+\nu_{\Pbb}(\Sset) := \int_{\Sset} f(x) dx
+\end{equation*}
+is the weighted volume.
+
+The $r$-ball walk over $\Csig$ is a Markov chain, with transition probability given by 
+\begin{equation*}
+\widetilde{P}_{\Pbb,r}(x; \Sset) := \frac{\nu_{\Pbb}(\Sset \cap B(x,r))}{\nu_{\Pbb}(\Csig \cap B(x,r))} \tag{$x \in \Csig, \Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+where $\mathfrak{B}(\Csig)$ is the Borel $\sigma$-algebra of $\Csig$. 
+
+Denote the stationary distribution for this Markov chain by $\pi_{\Pbb,r}$, which is defined by the relation
+\begin{equation*}
+\int_{\Csig} \widetilde{P}_{\Pbb,r}(x; \Sset) d\pi_{\Pbb,r}(x) = \pi_{\Pbb,r}(\Sset).  \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+Letting the \emph{local conductance} be given by
+\begin{equation*}
+\ell_{\Pbb,r}(x) := \nu_{\Pbb}(\Csig \cap B(x,r)) \tag{$x \in \Csig$}
+\end{equation*}
+a bit of algebra verifies that
+\begin{equation*}
+\pi_{\Pbb,r}(\Sset) = \frac{\int_{\Sset} \ell_{\Pbb,r}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r}(x) f(x) dx}. \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+
+We next introduce the \emph{ergodic flow}, $\widetilde{Q}_{\Pbb,r}$. Let $\Sset_1 \cap \Sset_2 = \Csig$ be a partition of $\Csig$. Then the ergodic flow between $\Sset_1$ and $\Sset_2$ is given by 
+\begin{equation*}
+\widetilde{Q}_{\Pbb,r}(\Sset_1, \Sset_2) := \int_{\Sset_1} \widetilde{P}_{\Pbb,r}(x; \Sset_2) d\pi_{\Pbb,r}(x), \tag{$\Sset_1, \Sset_2 \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+the \emph{(continuous) normalized cut} by
+\begin{equation*}
+\widetilde{\Phi}_{\Pbb,r}(\Sset) := \frac{\widetilde{Q}_{\Pbb,r}(\Sset_1, \Sset_2)}{\min \set{\pi_{\Pbb,r}(\Sset),\pi_{\Pbb,r}(\Sset^c)}}, \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+and the \emph{(continuous) conductance profile} by
+\begin{equation*}
+\widetilde{\Phi}_{\nu,r}(t) := \min_{\substack{\Sset \in \mathfrak{B}(\Csig) \\ 0 < \pi_{\Pbb,r}(\Sset) \leq t} } \widetilde{\Phi}_{\Pbb,r}(\Sset) \tag{$0 < t \leq 1/2 $}
+\end{equation*}
+where $\Sset^c = \Csig \setminus \Sset$. 
+
+To relate the graph and continuous conductance profiles, we introduce mappings between the data $\widetilde{\Xbf}_n$ and the space $\Csig$. 
+
+\subsection{Transportation maps and $TL^1$ distance. }
+Let
+\begin{equation*}
+\widetilde{\Pbb}(\Sset) = \frac{\Pbb(\Sset)}{\Pbb(\Csig)}, ~ \widetilde{\Pbb}_{n}(\Sset) := \frac{1}{\widetilde{n}} \sum_{x_i \in \widetilde{\Xbf}_n} \1(x_i \in \Sset) \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*} 
+be the (empirical) probability measures, conditional on $x \sim \Pbb$ lying within $\Csig$ (Here $\mathfrak{B}(\Csig)$ is the Borel $\sigma$-algebra of $\Csig$). A Borel map $T: \Csig \to \widetilde{\Xbf}_n$ is said to be a \emph{transportation map} between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ if for arbitrary $\Sset \in \mathfrak{B}(\Csig)$,  
+\begin{equation*}
+\widetilde{\Pbb}(\Sset) = \widetilde{\Pbb}_n(T(\Sset)).
+\end{equation*}
+
+If a sequence of transportation maps $\seq{T_n}$ satisfies $\norm{\mathrm{Id} - T_n}_{L^{1}(\widetilde{\Pbb})} = o_P(1)$, we refer to it as a sequence of \emph{stagnating transportation maps}. Lemma \ref{lem: stagnating_transportation_maps} establishes that with probability one, such a sequence of stagnating transportation maps will exist.
+In fact, under suitable conditions, the convergence happens at rate $\left(\frac{\log n}{n}\right)^{1/d}$. 
+
+\begin{lemma}[Adaptation of Proposition 5 of \textcolor{red}{Garcia Trillos 2016}]
+	\label{lem: stagnating_transportation_maps}
+	With probability one, there exists a sequence of transportation maps $\seq{T_n}$, $T_n: \Csig \to \widetilde{\Xbf}_n$ such that the following statement holds:
+	\begin{equation*}
+	\limsup_{n \to \infty} \frac{\widetilde{n}^{1/d} \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}}{(\log \widetilde{n})^{p_d}} \leq C
+	\end{equation*}
+	where $\mathrm{Id}(x) = x$ is the identity mapping over $\Csig$, $C$ is a universal constant and $p_d = 3/4$ for $d = 2$ and $1/d$ for $d \geq 3$.
+\end{lemma}
+
+\begin{definition}
+	For a sequence $\seq{u_n} \subseteq L^1(\widetilde{\Pbb}_n)$ and $u \in L^1(\widetilde{\Pbb})$, we say that $\seq{u_n}$ converges $TL^1$ to $u$ if there exists a sequence of stagnating transportation maps $\seq{T_n}$ such that
+	\begin{equation}
+	\label{eqn: transportation_distance_1}
+	d^{TL^1}(u,u_n) := \int_{\Csig} \abs{u(x) - u_n \circ T_n(x)} d \widetilde{\Pbb}(x) \overset{n}{\to} 0 
+	\end{equation}
+	and denote it $u_n \overset{TL^1}{\to} u$.
+\end{definition}
+
+\begin{remark}
+	\label{rmk: transportation_distance_equivalence}
+	Note that as written this is not a metric, as $u$ and $u_n$ lie in different spaces. Technically, we can resolve this by writing
+	\begin{equation}
+	\label{eqn: transportation_distance_2}
+	d^{TL^1}((\widetilde{\Pbb}, u),(\widetilde{\Pbb}_n,u_n)) = \inf_{\pi \in \Gamma(\widetilde{\Pbb},\widetilde{\Pbb}_n)} \iint_{\Csig \times \Csig} \abs{x - y} + \abs{f(x) - g(y)} d\pi(x,y)
+	\end{equation}
+	where $\gamma$ is the space of couplings over the measures $\widetilde{\Pbb}, \widetilde{\Pbb}_n$. However, it can be shown that \eqref{eqn: transportation_distance_2} converges to zero if and only if \eqref{eqn: transportation_distance_1} is satisfied and 
+	\begin{equation*}
+	\widetilde{\Pbb}_n \overset{w}{\to} \widetilde{\Pbb}.
+	\end{equation*}
+	
+	Since this additional condition will be satisfied with probability one, we simplify things by hereafter referring only to the condition in \eqref{eqn: transportation_distance_1}. See \textcolor{red}{Garcia Trillos 15} for more details.
+\end{remark}
+
+\section{Lower bound graph conductance profile}
+
+In order to lower bound the graph conductance profile $\widetilde{\Phi}_{n,r}(\cdot)$, we will need to split the analysis into two cases based on the size of $S \subseteq \widetilde{\Xbf}_n$. Define the \emph{graph local spread} to be
+\begin{equation*}
+s(G) := \frac{9}{10} \min_{u \in V} \set{\mathrm{deg}(u;G)} \cdot \min_{u \in V} \set{\pi(u;G)}.  \tag{$G = (V,E)$}
+\end{equation*} 
+
+Theorem \ref{thm: graph_conductance_profile_lb_1} states that for subsets of $\widetilde{\Xbf}_n$ with volume at least $s(G)$, the graph normalized cut can be uniformly lower bounded by the continuous normalized cut. Sections \ref{sec: proof_and_supporting_theory} and \ref{sec: other_results} contains the proof of Theorem \ref{thm: graph_conductance_profile_lb_1} along with other relevant results.
+
+\begin{theorem}
+	\label{thm: graph_conductance_profile_lb_1}
+	Let $\Csig$ satisfy Assumption \ref{asmp: embedding} with respect to Lipschitz constant $L$ and convex set $K$ with diameter $D_K$. Then,
+	\begin{equation*}
+	\liminf_{n \to \infty} \Bigl\{ \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) \Bigr\} \geq \frac{\lambda_{\sigma}^4 r}{\Lambda_{\sigma}^4 2^{12} D_K L \sqrt{d}}
+	\end{equation*}
+	where $\mathcal{L}(\widetilde{G}_{n,r}) = \set{S \subseteq \widetilde{\Xbf}_n: \widetilde{\pi}_{n,r}(S) \geq s(\widetilde{G}_{n,r})}$
+\end{theorem}
+
+Lemma \ref{lem: graph_conductance_profile_lb_1} shows that for the remaining small sets, the graph normalized cut is of constant order. 
+\begin{lemma}
+	\label{lem: graph_conductance_profile_lb_1}
+	Let $G = (V,E)$ be an undirected graph, and $\mathcal{L}(G) = \set{S \subseteq V: \pi(S; G) \geq s(G)}$. Then,
+	\begin{equation*}
+	\min_{S \not\in \mathcal{L}(G)}\Phi(S; G) \geq \frac{1}{10}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Clearly, for any $u \in S$
+	\begin{equation}
+	\label{eqn: graph_conductance_profile_lb_1}
+	\cut(\set{u}, S^c; G) \geq \deg(u;G) - \abs{S}
+	\end{equation}
+	
+	Then, since $\pi(S;G) \leq s(G)$,
+	\begin{equation*}
+	\abs{S} \leq \pi(S;G) \cdot \frac{\vol(V;G)}{\min_{u \in V} \set{\mathrm{deg}(u;G)}} = \frac{\pi(S;G)}{\min_{u \in V} \set{\pi(u;G)}} \leq \frac{9}{10} \min_{u \in V} \set{\mathrm{deg}(u;G)},
+	\end{equation*}
+	and therefore by \eqref{eqn: graph_conductance_profile_lb_1}, for any $u \in S$
+	\begin{equation*}
+	\cut(\set{u}, S^c; G) \geq \deg(u;G) - \frac{9}{10} \min_{u \in V} \set{\mathrm{deg}(u;G)} \geq \frac{1}{10}\deg(u;G)
+	\end{equation*}
+	and the statement follows by summing over all $u \in S$. 
+\end{proof}
+
+Theorem \ref{thm: graph_conductance_profile_lb_1} and Lemma \ref{lem: graph_conductance_profile_lb_1} together yield Corollary \ref{cor: graph_conductance_profile_lb}, the main result of these notes.
+
+\begin{corollary}[Lower bound on graph conductance profile]
+	\label{cor: graph_conductance_profile_lb}
+	Let $\Csig$ satisfy Assumption \ref{asmp: embedding} with respect to Lipschitz constant $L$ and convex set $K$ with diameter $D_K$. Then, with probability one the following asymptotic lower bound holds on the graph conductance function
+	\begin{equation*}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \min\set{\frac{\lambda_{\sigma}^4 r}{\Lambda_{\sigma}^4 2^{12} D_K L \sqrt{d}}, \frac{1}{10}} \tag{$0 \leq t \leq \frac{1}{2}$}
+	\end{equation*}
+\end{corollary}
+
+
+
+\section{Proofs and Supporting Theory}
+\label{sec: proof_and_supporting_theory}
+
+\subsection{Proof of Theorem \ref{thm: graph_conductance_profile_lb_1}.}
+
+By Lemma \ref{lem: stagnating_transportation_maps}, with probability one there exists a sequence of stagnating transportation maps from $\widetilde{\Pbb}$ to $\widetilde{\Pbb}_n$, which we will denote $\seq{T_n}$. 
+
+For $S \subseteq \widetilde{\Xbf}_n$, let $T_n^{-1}(S) = \set{x \in \Csig: T_n(x) \in S}$ be the preimage of $T_n$, and note that $T_n^{-1}(S^c) = \Csig \setminus T_n^{-1}(S)$. 
+
+Letting
+\begin{equation*}
+\xi_n := \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx},~ \gamma_n(S) := \frac{\min \set{\pi_{\Pbb,r_n^-}(T_n^{-1}(S^c)), \pi_{\Pbb,r_n^-}(T_n^{-1}(S^c))} }{\min \set{\pi_{\Pbb,r_n^+}(T_n^{-1}(S^c)), \pi_{\Pbb,r_n^+}(T_n^{-1}(S^c))} } 
+\end{equation*}
+where $r_n^{\pm} := r \pm \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$, by Lemma \ref{lem: graph_to_continuous_conductance} and Corollary \ref{cor: nonuniform_continuous_conductance} we have that for all $S \subseteq \widetilde{\Xbf}_n$,
+\begin{align}
+\widetilde{\Phi}_{n,r}(S) & \geq \xi_n \gamma_n(S) \widetilde{\Phi}_{\Pbb,r_n^{-}}(T_n^{-1}(S)) \nonumber \\
+& \geq  \xi_n \gamma_n(S) \frac{\lambda_{\sigma}^4r_n^{-}}{2^{12} \Lambda_{\sigma}^4 D_K L \sqrt{d}}. \label{eqn: graph_ncut_lb_1}
+\end{align}
+
+By Lemma \ref{lem: cont_local_conductance}, with probability one
+\begin{equation*}
+\liminf_{n \to \infty} \xi_n = 1.
+\end{equation*}
+
+By Lemma \ref{lem: stationary_dist_lb}, letting $c$ be any constant satisfying $c > \frac{9\lambda_{\sigma}^4 \nu_d r^d}{50\Lambda_{\sigma}^2}$, there exists some $n \in \Naturals$ such that for all $S \in \mathcal{L}(\widetilde{G}_{n,r})$,
+\begin{equation*}
+\pi_{\Pbb,r}(T_n^{-1}(S)) \geq c > 0
+\end{equation*}
+and therefore by Lemma \ref{lem: cont_stationary_dist}
+\begin{equation*}
+\liminf_{n \to \infty} \biggl\{ \inf_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \gamma_n(S)\biggr\} = 1.
+\end{equation*}
+
+As Lemma \ref{lem: stagnating_transportation_maps} implies $r_n^{-} \to r$ with probability one, an application of Slutsky's Theorem to \eqref{eqn: graph_ncut_lb_1} completes the proof.
+
+\subsection{Graph functionals to continuous functionals.}
+
+Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound} provide the necessary bounds for the $\cut$ and $\vol$ functionals in terms of continuous analogues.
+
+\begin{lemma}
+	\label{lem: volume_bound}
+	Let $S \subseteq \widetilde{\Xbf}_n$, and let $T_n$ be a transportation map between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$. Then, letting $\Sset = \set{x \in \Csig: T_n(x) \in S}$
+	\begin{equation*}
+	\frac{1}{\widetilde{n}^2}\widetilde{\vol}(S) \leq \frac{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx}{\Pbb(\Csig)^2} \pi_{\Pbb,r_n^+}(\Sset)
+	\end{equation*}
+	where $r_n^+ = r + \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$. 
+\end{lemma}
+\begin{proof}
+	Let $u: \widetilde{\Xbf}_n \to \set{0,1}$ be the characteristic function for $S$, meaning
+	\begin{equation*}
+	u(x) = 
+	\begin{cases}
+	1,~ x \in S \\
+	0,~ \text{otherwise}
+	\end{cases}
+	\end{equation*}
+	
+	Now, we proceed
+	\begin{align}
+	\frac{1}{\widetilde{n}^2} \widetilde{\vol}(S_n) & = \frac{1}{\widetilde{n}^2} \sum_{x_i, x_j \in \widetilde{\Xbf}_n} \1(\norm{x_i - x_j} \leq r) \abs{u(x_i)} \nonumber \\
+	& = \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r) \abs{u(x)} d\widetilde{\Pbb}_n(x) d\widetilde{\Pbb}_n(y) \nonumber \\
+	& =  \iint_{\Csig \times \Csig} \1(\norm{T_n(x) - T_n(y)} \leq r) \abs{u \circ T_n(x)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \nonumber \\
+	& \leq \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r_n^+) \abs{u \circ T_n(x)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \label{eqn: vol_ub}\\
+	& = \int_{\Sset} \int_{\Csig \cap B(x,r_n^+)} 1 d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x) \nonumber
+	\end{align}
+	
+	By definition we have $\frac{d\widetilde{\Pbb}(x)}{d\Pbb(x)} = \Pbb(\Csig)$. Therefore,
+	\begin{align*}
+	\int_{\Sset} \int_{\Csig \cap B(x,r_n^+)} 1 d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x) & = \frac{1}{\Pbb(\Csig)^2}\int_{\Sset} \int_{\Csig \cap B(x,r_n^+)} 1 d\Pbb(y) d\Pbb(x) \\
+	& = \frac{1}{\Pbb(\Csig)^2}\int_{\Sset} \ell_{\Pbb,r_n^+}(x) f(x) dx \\
+	& = \frac{\int_{\Csig} \ell_{\Pbb,r}(x) f(x) dx}{\Pbb(\Csig)^2} \pi_{\Pbb,r_n^+}(\Sset)
+	\end{align*}
+	which is the desired upper bound. The lower bound follows a similar proof, with the only change being \eqref{eqn: vol_ub}, where $r_n^+$ is replaced by $r_n^-$ and the inequality is reversed.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: cut_bound}
+	Let $S \subseteq \widetilde{\Xbf}_n$, and let $T_n$ be a transportation map between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$. Then, letting $\Sset = \set{x \in \Csig: T_n(x) \in S}$,
+	\begin{equation*}
+	\frac{1}{\widetilde{n}^2} \widetilde{\cut}(S) \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}f(x) dx}{\Pbb(\Csig)^2} \widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c) 
+	\end{equation*}
+	where $r_n^- = r - \norm{\mathrm{Id} - T_n}_{L^\infty(\widetilde{\Pbb})}$
+\end{lemma}
+\begin{proof}
+	Let $u: \widetilde{\Xbf}_n \to \set{0,1}$ be the characteristic function for $S$, meaning
+	\begin{equation*}
+	u(x) = 
+	\begin{cases}
+	1,~ x \in S \\
+	0,~ \text{otherwise}
+	\end{cases}
+	\end{equation*}
+	
+	We proceed according to a very similar set of steps as Lemma \ref{lem: volume_bound}:
+	\begin{align*}
+	\frac{1}{\widetilde{n}^2} \widetilde{\cut}(S) & = \frac{1}{\widetilde{n}^2} \sum_{x_i, x_j \in \widetilde{\Xbf}_n} \1(\norm{x_i - x_j} \leq r) \abs{u(x_i) - u(x_j)} \\
+	& = \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r) \abs{u(x) - u(y)} d\widetilde{\Pbb}_n(x) d\widetilde{\Pbb}_n(y) \\
+	& =  \iint_{\Csig \times \Csig} \1(\norm{T_n(x) - T_n(y)} \leq r) \abs{u \circ T_n(x) - u \circ T_n(y)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \\
+	& \geq \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r_n^-) \abs{u \circ T_n(x) - u \circ T_n(y)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \\
+	& = \int_{\Sset} \int_{\Sset^c \cap B(x,r_n^-)} d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x)
+	\end{align*}
+	We conclude similarly to the proof of Lemma \ref{lem: volume_bound},
+	\begin{align*}
+	\int_{\Sset} \int_{\Sset^c \cap B(x,r_n^-)} d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x) & = \frac{1}{\Pbb(\Csig)^2} \int_{\Sset} \int_{\Sset^c \cap B(x,r_n^-)} d\Pbb(y) d\Pbb(x) \\
+	& = \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}f(x) dx}{\Pbb(\Csig)^2} \widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c).
+	\end{align*}	
+\end{proof}
+
+\begin{lemma}
+	\label{lem: graph_to_continuous_conductance}
+	Let $\seq{T_n}$ be a sequence of transportation maps from $\widetilde{\Pbb}$ to $\widetilde{\Pbb}_n$, and let
+	\begin{equation*}
+	r_n^- = r - \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})},~ r_n^+ = r + \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}.
+	\end{equation*}
+	
+	Fix $S \subseteq \widetilde{\Xbf}_n$. Then, letting $\Sset = \set{x \in \Csig: T_n(x) \in S}$,
+	\begin{equation}
+	\label{eqn: graph_to_continuous_conductance}
+	\widetilde{\Phi}_{n,r}(S) \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx}  \frac{\min \set{\pi_{\Pbb,r_n^-}(\Sset), \pi_{\Pbb,r_n^-}(\Sset^c)} }{\min \set{\pi_{\Pbb,r_n^+}(\Sset), \pi_{\Pbb,r_n^+}(\Sset^c)} } \widetilde{\Phi}_{\Pbb,r_n^{-}}(\Sset)
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	
+	By Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound},
+	\begin{equation*}
+	\frac{\widetilde{\cut}(S)}{\widetilde{\vol}(S)} \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx} \frac{\widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c)}{\pi_{\Pbb,r_n^+}(\Sset)}
+	\end{equation*}
+	
+	But, noting that $\Sset^c = \set{x \in \Csig: T_n(x) \in S^c}$, Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound} also imply
+	\begin{equation*}
+	\frac{\widetilde{\cut}(S^c)}{\widetilde{\vol}(S^c)} \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx} \frac{\widetilde{Q}_{\Pbb,r_n^-}(\Sset^c, \Sset)}{\pi_{\Pbb,r_n^+}(\Sset^c)}
+	\end{equation*}
+	and as $\widetilde{Q}_{\Pbb,r_n^-}(\cdot, \cdot)$ is symmetric in its arguments we obtain
+	\begin{equation*}
+	\frac{\widetilde{\cut}(S)}{\min\set{\widetilde{\vol}(S), \widetilde{\vol}(S^c)}} \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx} \frac{\widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c)}{\min \set{\pi_{\Pbb,r_n^+}(\Sset), \pi_{\Pbb,r_n^+}(\Sset^c)} },
+	\end{equation*}
+	and the proof is complete.
+\end{proof}
+
+\subsection{Perturbation asymptotics.}
+
+In light of Lemma \ref{lem: stagnating_transportation_maps}, the error incurred in \eqref{eqn: graph_to_continuous_conductance} by the use of $r_n^{+}$ and $r_n^{-}$ as opposed to $r$ is asymptotically negligible.
+
+\begin{lemma}[Continuity of local conductance]
+	\label{lem: cont_local_conductance}
+	Letting $\seq{T_n}$ be a sequence of stagnating transportation maps, and $r_n^{\pm} = r \pm \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$, with probability one the following holds:
+	\begin{equation*}
+	\limsup_{n \to \infty} \frac{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx} = 1
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $\mathcal{R}_n(x) := \set{x' \in \Csig: x' \in B(x,r_n^+), x' \not\in B(x,r_n^-)}$, we have
+	\begin{equation*}
+	\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx = \int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx + \int_{\Csig} \int_{\mathcal{R}_n} f(y) f(x) dy dx.
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	\frac{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx} = 1 + \frac{\int_{\Csig} \int_{\mathcal{R}_n} f(y) f(x) dy dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx}. 
+	\end{equation*}
+	We upper bound the remainder term
+	\begin{equation*}
+	\int_{\Csig} \int_{\mathcal{R}_n} f(y) f(x) dy dx \leq P(\Csig) \Lambda_{\sigma} \bigl((r_n^+)^d - r^d)\nu^d
+	\end{equation*}
+	and taking limits as $n \to \infty$ we obtain with probability one
+	\begin{equation*}
+	\limsup_{n \to \infty} \int_{\Csig} \int_{\mathcal{R}_n} f(y) f(x) dy dx \leq \limsup_{n \to \infty} P(\Csig) \Lambda_{\sigma} \bigl((r_n^+)^d - r^d)\nu^d = 0
+	\end{equation*}
+	by the stagnating property of $\seq{T_n}$. 
+	
+	We apply a similar analysis to the denominator.
+	\begin{equation*}
+	\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx = \int_{\Csig} \int_{B(x,r_n^-)} f(y) f(x) dy dx \geq \frac{6}{25} \Pbb(\Csig) \lambda_{\sigma} (r_n^{-})^d \nu_d
+	\end{equation*}
+	and therefore by the stagnating property of $\seq{T_n}$ and Lemma \ref{lem: local_conductance},
+	\begin{equation*}
+	\liminf_{n \to \infty} \int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) dx  = \frac{6}{25} \Pbb(\Csig) \lambda_{\sigma}^2 r^d \nu_d > 0
+	\end{equation*}
+	again with probability one.
+	
+	The desired result then follows from an application of Slutsky's Theorem.
+\end{proof}
+
+\begin{lemma}[Continuity of stationary distribution]
+	\label{lem: cont_stationary_dist}
+	Let $c > 0$ be a fixed constant, $\seq{T_n}$ be a sequence of stagnating transportation maps, and $r_n^{\pm} = r \pm \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$.  With probability one the following statement holds:
+	\begin{equation*}
+	\liminf_{n \to \infty} \frac{\min \set{\pi_{\Pbb,r_n^-}(\Sset), \pi_{\Pbb,r_n^-}(\Sset^c)} }{\min \set{\pi_{\Pbb,r_n^+}(\Sset), \pi_{\Pbb,r_n^+}(\Sset^c)} } = 1
+	\end{equation*}
+	uniformly over all sets $\Sset \subseteq \mathfrak{B}(\Csig)$ satisfying $\min \set{\pi_{\Pbb,r}(\Sset), \pi_{\Pbb,r}(\Sset^c)}> c$. 
+\end{lemma}
+\begin{proof}
+	It will be sufficient to show that
+	\begin{equation*}
+	\liminf_{n \to \infty} \frac{\pi_{\Pbb,r_n^-}(\Sset)}{\pi_{\Pbb,r_n^+}(\Sset)} ~ \text{and} \liminf_{n \to \infty} \frac{\pi_{\Pbb,r_n^-}(\Sset^c)}{\pi_{\Pbb,r_n^+}(\Sset^c)} = 1.
+	\end{equation*}
+	and we will show only that $\liminf_{n \to \infty} \frac{\pi_{\Pbb,r_n^-}(\Sset)}{\pi_{\Pbb,r_n^+}(\Sset)} = 1$. The result for $\Sset^c$ is identical. 
+	
+	The proof proceeds similarly to Lemma \ref{lem: cont_local_conductance}. Letting 
+	\begin{equation*}
+	\mathcal{R}_n(x) := \set{x' \in \Sset: x' \in B(x,r_n^+), x' \not\in B(x,r_n^-}
+	\end{equation*}
+	Rewriting
+	\begin{equation*}
+	 \frac{\pi_{\Pbb,r_n^-}(\Sset)}{\pi_{\Pbb,r_n^+}(\Sset)} = 1 - \frac{\int_{\Sset} \int_{\mathcal{R}_n} f(y) f(x) dy dx}{\pi_{\Pbb,r_n^+}(\Sset)}
+	\end{equation*}
+	we have that
+	\begin{equation*}
+	\liminf_{n \to \infty} \int_{\Sset} \int_{\mathcal{R}_n} f(y) f(x) dy dx \leq \Pbb(\Sset) \Lambda_{\sigma} \liminf_{n \to \infty}\bigl( (r_n^+)^d - (r_n^-)^d\bigr) \nu^d = 0
+	\end{equation*}
+	where the equality occurs with probability one. On the other hand by hypothesis
+	\begin{equation*}
+	\limsup_{n \to \infty} \pi_{\Pbb,r_n^+}(\Sset) \geq c > 0.
+	\end{equation*}
+	and the result follows by Slutsky's Theorem. 
+\end{proof}
+
+\begin{lemma}[Stationary distribution lower bound]
+	\label{lem: stationary_dist_lb}
+	With probability one, the following statement holds: let $\seq{T_n}$ be a sequence of stagnating transportation maps from $\Pbb$ to $\Pbb_n$. Then, for any $\epsilon > 0$, there exists some $m \in \Naturals$ such that for all $n \geq m$,
+	\begin{equation*}
+	\min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \pi_{\Pbb,r}(T_n^{-1}(S)) \geq \frac{9\lambda_{\sigma}^4 \nu_d r^d}{50\Lambda_{\sigma}^2}  - \epsilon
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Fix $\epsilon > 0$, and let $S \in \mathcal{L}(\widetilde{G}_{n,r})$ be arbitrary. Write $\Sset := T_n^{-1}(S)$. 
+	
+	We can upper bound $\widetilde{\pi}_{n,r}(S)$ by $\pi_{\Pbb,r}(\Sset)$ plus a remainder term.
+	\begin{align}
+	\widetilde{\pi}_{n,r}(S) & \leq \frac{\int_\Sset \int_{\Csig} \1(\norm{x - x'} \leq r_n^+) f(x') f(x) dx' dx}{\int_{\Csig} \int_{\Csig} \1(\norm{x - x'} \leq r_n^+) f(x') f(x) dx' dx} \nonumber \\
+	& = \pi_{\Pbb,r_n^-}(\Sset) + \frac{\int_\Sset \int_{\Csig} \1(r_n^- \leq \norm{x - x'} \leq r_n^+) f(x') f(x) dx' dx}{\int_{\Csig} \int_{\Csig} \1(\norm{x- x'} \leq r_n^+) f(x') f(x) dx' dx} \label{eqn: stationary_dist_lb_1}
+	\end{align}
+	Clearly $\pi_{\Pbb,r_n^-}(\Sset) \leq \pi_{\Pbb,r}(\Sset)$. Moreover
+	\begin{equation*}
+	\frac{\int_\Sset \int_{\Csig} \1(r_n^- \leq \norm{x - x'} \leq r_n^+) f(x') f(x) dx' dx}{\int_{\Csig} \int_{\Csig} \1(\norm{x - x'} \leq r_n^+) f(x') f(x) dx' dx} \leq \frac{\Lambda_{\sigma}}{\lambda_{\sigma}} \left(\frac{r_n^+ - r_n^-}{r_n^-}\right)^d
+	\end{equation*}
+	and by \eqref{eqn: stationary_dist_lb_1}, we have
+	\begin{equation*}
+	s(\widetilde{G}_{n,r}) \leq \widetilde{\pi}_{n,r}(S) \leq \pi_{\Pbb,r}(\Sset) + \frac{\Lambda_{\sigma}}{\lambda_{\sigma}} \left(\frac{r_n^+ - r_n^-}{r_n^-}\right)^d
+	\end{equation*}
+	The remainder term $\frac{\Lambda_{\sigma}}{\lambda_{\sigma}} \left(\frac{r_n^+ - r_n^-}{r_n^-}\right)^d$ is independent of $S$ and asymptotically $o_p(1)$ by Lemma \ref{lem: stagnating_transportation_maps}.
+	An application of Lemma \ref{lem: local_spread_lb} completes the proof.
+\end{proof}
+
+\subsection{Continuous conductance function.}
+
+In Theorem \ref{thm: continuous_conductance_function}, we restate a necessary result from the 3/20 weekly notes. 
+
+\begin{assumption}[Embedding]
+	\label{asmp: embedding}
+	Assume there exists $K \subset \Rd$ convex space, mapping $g: K \to \Csig$, and constant $L < \infty$ such that
+	\begin{equation*}
+	\forall x,y \in K,  \abs{g(x) - g(y)} \leq L \abs{x - y},~\text{and}~ \det(D_x g) = 1.
+	\end{equation*}
+	In other words, $g$ is measure-preserving and $L$-Lipschitz.
+\end{assumption}
+
+\begin{theorem}
+	\label{thm: continuous_conductance_function}
+	Assume $\Csig \subset \Rd$ satisfies Assumption \ref{asmp: embedding} with respect to some convex set $K \subset \Rd$ and Lipschitz function $g$ with Lipschitz constant $L <  \infty$. Then, for any $0 < r < \sigma / 2 \sqrt{d}$, the continuous conductance function of the speedy $r$-ball walk satisfies
+	\begin{equation*}
+	\widetilde{\Phi}_{\nu,r}(t) \geq \frac{r}{2^{12} D_K L \sqrt{d}}.
+	\end{equation*}
+\end{theorem}
+
+Corollary \ref{cor: nonuniform_continuous_conductance} follows \textcolor{red}{almost immediately} for Theorem \ref{thm: continuous_conductance_function}.
+
+\begin{corollary}
+	\label{cor: nonuniform_continuous_conductance}
+	Assume $\Csig \subset \Rd$ satisfies Assumption \ref{asmp: embedding} with respect to some convex set $K \subset \Rd$ and Lipschitz function $g$ with Lipschitz constant $L <  \infty$. Then, for any $0 < r < \sigma / 2 \sqrt{d}$, the continuous conductance function of the speedy $r$-ball walk satisfies
+	\begin{equation*}
+	\widetilde{\Phi}_{\Pbb,r}(t) \geq \frac{\lambda_{\sigma}^4 r}{2^{12} \Lambda_{\sigma}^4 D_K L \sqrt{d}}.
+	\end{equation*}
+	where we recall $\lambda_{\sigma} = \inf_{x \in \Csig} f(x)$ and $\Lambda_{\sigma} = \sup_{x \in \Csig} f(x)$. 
+\end{corollary}
+
+
+\section{Other results}
+\label{sec: other_results}
+
+We state Lemma \ref{lem: local_conductance} without proof. The proof in the uniform case can be found in the 3/20 notes.
+
+\begin{lemma}
+	\label{lem: local_conductance}
+	Let $x \in \Csig$. Then, for any $r < \frac{\sigma}{2\sqrt{d}}$,
+	\begin{equation*}
+	\ell_{\Pbb,r}(x) \geq \frac{6\lambda_{\sigma}^2}{25} r^d \nu_d
+	\end{equation*}
+	and for any $r > 0$,
+	\begin{equation*}
+	\ell_{\Pbb,r}(x) \leq \Lambda_{\sigma}^2 r^d \nu_d
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem: max_degree} 
+	Let 
+	\begin{equation*}
+	\mu' = \frac{6(n - 1)\lambda_{\sigma}^2}{25} r^d \nu_d,~ \mu = (n-1) \Lambda_{\sigma}^2 r^d \nu_d.
+	\end{equation*}
+	Then for any $\delta \in [0,1]$,
+	\begin{align*}
+	\Pr \biggl(\min_{x_i \in \widetilde{\Xbf}_n} \deg(x_i; \widetilde{G}_{n,r}) & \leq (1 - \delta) \mu' \biggr) \leq (n - 1)\exp\{-\delta^2 \mu' / 2\} \\
+	\Pr \biggl(\max_{x_i \in \widetilde{\Xbf}_n} \deg(x_i; \widetilde{G}_{n,r}) & \geq (1 + \delta) \mu \biggr) \leq (n - 1)\exp\{-\delta^2 \mu / 3\}
+	\end{align*}
+\end{lemma}
+\begin{proof}
+	For each $x_i \in \widetilde{\Xbf}_n$, letting $Y_{ij} =  \1(x_j \in \Csig, \norm{x_i - x_j} \leq r)$ we can write $\deg(x_i; \widetilde{G}_{n,r}) = \sum_{i \neq j} Y_{ij}$. Note that $\Ebb(Y_{ij} | x_i) = \ell_{\Pbb,r}(x_i)$, and $Y_ij$ and $Y_{ij'}$ are independent for all $j \neq j'$. Therefore the desired result follows from Lemmas \ref{lem: local_conductance} and \ref{lem: multiplicative_chernoff_bound} along with a union bound. 
+\end{proof}
+
+\begin{lemma}
+	\label{lem: local_spread_lb}
+	With probability one, the following statement holds:
+	\begin{equation*}
+	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{9\lambda_{\sigma}^4 \nu_d r^d}{50\Lambda_{\sigma}^2} 
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We rewrite
+	\begin{align*}
+	s(\widetilde{G}_{n,r}) & = \frac{9 \left[\min_{x \in \widetilde{\Xbf}_n}\set{\widetilde{\deg}_{n,r}(x)}\right]^2}{\widetilde{\vol}_{n,r}(\widetilde{\Xbf}_n)} \\
+	& \geq \frac{9 \left[\min_{x \in \widetilde{\Xbf}_n}\set{\widetilde{\deg}_{n,r}(x)}\right]^2}{n \max_{x \in \widetilde{\Xbf}_n}\set{\widetilde{\deg}_{n,r}(x)}}
+	\end{align*}
+	The statement follows by Lemma \ref{lem: max_degree} and the Borel-Cantelli Lemma.
+\end{proof}
+
+\begin{lemma}[Multiplicative Chernoff Bound]
+	\label{lem: multiplicative_chernoff_bound}
+	Let $p', p \in [0,1]$, and let $Y_1, \ldots, Y_n$ be independent $\{0,1\}$-valued random variables with $p' \leq E(Y_i) \leq p$ for all $i = 1,\ldots,n$. Then, letting $\mu = pn$ and $\mu' = p'n$,
+	\begin{align*}
+	\Pr \biggl(\sum_{i = 1}^{n} {Y_i} \leq (1 - \delta)\mu' \biggr) \leq \exp\{-\delta^2 \mu' / 2\} \\
+	\Pr \biggl(\sum_{i = 1}^{n} {Y_i} \geq (1 + \delta)\mu \biggr) \leq \exp\{-\delta^2 \mu / 3\}
+	\end{align*}
+	for any $\delta \in [0,1]$.
+\end{lemma}
+
+
+
+
+
+
+
+
+
+
+\end{document}
