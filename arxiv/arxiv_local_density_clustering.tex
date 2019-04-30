@@ -3,15 +3,17 @@
 \documentclass{article}
 \usepackage{microtype}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage{float}
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
 \usepackage{booktabs}
+\usepackage{xcolor}
 \usepackage{xr-hyper}
 \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amsfonts, amsthm, amssymb}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{graphicx}
 \usepackage[parfill]{parskip}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
@@ -446,7 +448,7 @@ algorithms, and as such impose global rather than local conditions on the nature
 of the density. Moreover, they do not in general ensure recovery of density
 clusters, which is the focus in our work. 
 
-\section{Cluster Quality Critera Bounds for Density Clusters}  
+\section{Cluster Quality Criteria Bounds for Density Clusters}  
 \label{sec: cluster_quality_bounds}
 
 \subsection{Geometric Conditions on Density Clusters}
@@ -853,6 +855,140 @@ Corollary \ref{cor: ppr_cluster} -- an analogous statement to Theorem \ref{thm: 
 
 \section{Experiments}
 \label{sec: experiments}
+
+\subsection{Validating Theoretical Bounds}
+
+\begin{figure}
+	\centering
+	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
+	\begin{subfigure}{.33\linewidth}
+		\includegraphics[width=\linewidth]{example1plots/sample2}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.33\linewidth}
+		\includegraphics[width=\linewidth]{example1plots/sample1}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.33\linewidth}
+		\includegraphics[width=\linewidth]{example1plots/sigma_normalized_cut_plot}
+		\caption{}
+	\end{subfigure}
+
+	
+	\begin{subfigure}{.33\linewidth}
+		\includegraphics[width=\linewidth]{example1plots/sigma_mixing_time_plot}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.33\linewidth}
+		\includegraphics[width=\linewidth]{example1plots/diameter_normalized_cut_plot}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.33\linewidth}
+		\includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
+		\caption{}
+	\end{subfigure}
+	\end{adjustbox}
+\end{figure}
+
+\subsection{Empirical PPR, normalized cut, and density clustering comparison}
+
+\begin{figure}
+	\centering
+	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth,scale = .5]{example2plots/row1_true_density_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row1_ppr_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row1_conductance_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row1_density_cluster}
+		\caption{}
+	\end{subfigure}
+	
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row2_true_density_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row2_ppr_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row2_conductance_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row2_density_cluster}
+		\caption{}
+	\end{subfigure}
+	
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row3_true_density_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row3_ppr_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row3_conductance_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row3_density_cluster}
+		\caption{}
+	\end{subfigure}
+	
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row4_true_density_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row4_ppr_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row4_conductance_cluster}
+		\caption{}
+	\end{subfigure}
+	\begin{subfigure}{.24\linewidth}
+		\includegraphics[width=\linewidth]{example2plots/row4_density_cluster}
+		\caption{}
+	\end{subfigure}
+	\caption{True density (column 1), \pprspace (column 2), normalized cut (column 3) and estimated density (column 4) clusters for 4 different simulated data sets. Seed node for \pprspace denoted by a black cross.}
+	\label{fig:fig2}
+	\end{adjustbox}
+\end{figure}
+
+To form each of the four rows in Figure \ref{fig:fig2}, 800 points are independently sampled following a 'two moons plus Gaussian noise model'. Formally, the (respective) generative models for the data are
+\begin{align}
+Z & \sim \textrm{Bern}(1/2), \theta \sim \textrm{Unif}(0, \pi) \\
+X(Z,\theta) & = 
+\begin{cases}
+\mu_1 + (r \cos(\theta), r \sin(\theta)) + \sigma \epsilon,~ & \text{if}~ Z = 1 \\
+\mu_2 + (r \cos(\theta), - r \sin(\theta)) + \sigma \epsilon,~ & \text{if}~ Z = 0
+\end{cases}
+\end{align}
+
+where 
+\begin{align*}
+\mu_1 & = (-.5, 0),~ \mu_2 = (0,0),~ \epsilon \sim N(0, I_2) \tag{row 1} \\
+\mu_1 & = (-.5, -.07),~ \mu_2 = (0,.07),~ \epsilon \sim N(0, I_2) \tag{row 2} \\
+\mu_1 & = (-.5, -.125),~ \mu_2 = (0,.125),~ \epsilon \sim N(0, I_2) \tag{row 3} \\
+\mu_1 & = (-.5, -.025),~ \mu_2 = (0,.025),~ \epsilon \sim N(0, I_{10}) \tag{row 4}
+\end{align*}
+for $I_d$ the $d \times d$ identity matrix. The first column consists of the empirical density clusters $C_n$ and $C_n'$ for a particular threshold $\lambda$ of the density function; the second column shows the ~\pprspace plus minimum normalized sweep cut cluster, with hyperparameter $\alpha$ and all sweep cuts considered; the third column shows the global minimum normalized cut, computed according to the algorithm of \textcolor{red}{Bressson et al. 2012}; and the last column shows a cut of the cluster tree estimator of \textcolor{red}{Chaudhuri Dasgupta}
+
+Rows 1-3 show the degrading ability of \pprspace to recover density clusters as the two moons become less salient. In the first row, the normalized cut conforms to the density cluster, and \pprspace recovers both. In the second row, the normalized cut still conforms to the density cluster, but because the internal connectivity of the lower moon is low, \pprspace fails to recover the normalized cut. In the third row, the moons have such low saliency that even the normalized cut fails to recover the lower moon; we also see from $(k)$ that \pprspace does not somehow save us in this situation. Note that this is not a function of the finite sample: the 4th column shows us that the Chaudhuri Dasgupta cluster tree estimator can be recover the true density cluster.
+
+The fourth row illustrates the effect of dimension. The gray dots in $(m)$ (as in $(a), (e)$ and $(i)$ are observations in low-density regions. While the \pprspace sweep cut $(n)$ has relatively high symmetric set difference with the chosen density cut, it still recovers $C_n$ in the sense of Definition \textcolor{red}{1}.
 
 
 \section{Discussion}

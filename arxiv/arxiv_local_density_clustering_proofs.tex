@@ -6,11 +6,11 @@
 
 \usepackage{microtype}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{amsfonts, amsthm, amssymb}
-\usepackage{graphicx}
 \usepackage[parfill]{parskip}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
@@ -249,9 +249,10 @@ We will need to carefully control the volume of expansion sets using the estimat
 \begin{lemma}
 	\label{lem: Taylor_series}
 	For any $0 \leq x \leq 1/2d$,
-	\begin{equation*}
-	(1 + x)^d \leq 1 + 2dx.
-	\end{equation*}
+	\begin{align*}
+	(1 + x)^d & \leq 1 + 2dx \\
+	(1 - x)^d & \geq 1 - 2dx.
+	\end{align*}
 \end{lemma}
 \begin{proof}
 	We take the binomial expansion of $(1 + x)^d$:
@@ -261,6 +262,8 @@ We will need to carefully control the volume of expansion sets using the estimat
 	& \leq 1 + dx + dx\left(\sum_{k = 2}^d \frac{{d \choose k}}{(2d)^{k-1}d}\right) \tag{since $x \leq \frac{1}{2d}$} \\
 	& \leq 1 + dx + dx\left(\sum_{k = 2}^d \frac{1}{2^{k - 1}}\right) \leq 1 + 2dx.
 	\end{align*}
+	
+	The proof for the corresponding lower bound on $(1 - x)^d$ is symmetric.
 \end{proof}
 
 Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem \ref{thm: conductance_upper_bound}. Lemma \ref{lem: expected_number_boundary_points} involves the bulk of the technical effort required to prove Theorem \ref{thm: conductance_upper_bound}; it will be necessary to bound the expected cut size of $\Csig[\Xbf]$ in $G_{n,r}$. 
@@ -300,10 +303,11 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\end{align}
 	where the second equality comes from rearranging terms in the sum.
 	
-	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by \ref{asmp: cluster_diameter}, moreover $\Cset$ is closed, due to the continuity of $f$. We may therefore apply Lemma \ref{lem: expansion_volume} to $\Csig$ and obtain
-	\begin{equation*}
+	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by \ref{asmp: cluster_diameter}. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
+	\begin{equation}
+	\label{eqn: slice_volume_bound}
 	\nu_{i,k} = \nu(\Csig + rt_{i,k}B) \leq \nu(\Csig)\left(1 + \frac{rt_{i,k}}{\sigma}\right)^d
-	\end{equation*}
+	\end{equation}
 	which in turn gives
 	\begin{align}
 	\Sigma_k & \leq c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
@@ -322,7 +326,7 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\xi & \overset{(ii)}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
 	& \overset{(iii)}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{2d r}{\sigma}\right)(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{2dr}{\sigma}(\lambda_{\sigma} - c_0r^{\gamma}) - c_0 r^{\gamma} \biggr\}. \label{eqn: xi_ub}
 	\end{align}
-	where $(ii)$ follows application of Lemma \ref{lem: expansion_volume} to bound $\nu_{k,k}$ and $(iii)$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
+	where $(ii)$ follows from \eqref{eqn: slice_volume_bound}, and $(iii)$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
 \end{proof}
 
 Lemma \ref{lem: local_conductance} will be necessary to lower bound the expected volume of $\Csig[\Xbf]$ in $G_{n,r}$. Define the \emph{local conductance} $\ell_{\nu,r}(u)$ to be
@@ -1552,6 +1556,31 @@ p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
 p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
 \end{align*}
 for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
+
+\section{Additional Experiments}
+
+\begin{figure}
+	\centering
+	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/density_cluster}
+			\caption{}
+		\end{subfigure}
+	\caption{}
+	\end{adjustbox}
+\end{figure}
 
 
 \section{\textcolor{red}{OLD STUFF}}
