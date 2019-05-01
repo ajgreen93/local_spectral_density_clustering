@@ -1298,55 +1298,222 @@ We will employ a sharper concentration inequality for $\sum_{i = 1}^{n} X_i$.
 	\end{align*}
 \end{lemma}
 
-Let $\pbf = (p_u)_{u \in \Xbf}$ denote the \pprspace vector computed over $G_{n,r}$ (where for ease of reading we suppress dependence on the hyperparameter $\alpha$ and seed node $v$.) 
-Recalling that $\widetilde{\pi}_{n,r}$ is the stationary distribution over $\widetilde{G}_{n,r}$, we write $\widetilde{\pi}_{n,r}(u)$ to denote the stationary distribution evaluated at $u \in \Csig[X]$. 
-
 \subsection{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
 
-Lemma \ref{lem: setup} formalizes the intuitively sensible statement that \pprspace, can be uniformly lower bounded over clusters with small mixing time relative to their normalized cut. Importantly, it adds a corresponding upper bound for \pprspace outside of these clusters.
+Recall that for teleportation parameter $\alpha  \in (0,1]$ and seed node $v \in \Xbf$, we write $\pbf(v, \alpha; G_{n,r})$ for the \pprspace vector computed over neighborhood graph $G_{n,r}$; let $\pbf(u)$ denote the entry of $\pbf(v, \alpha; G_{n,r})$ at vertex $u \in \Xbf$. 
+Recalling that we write $\widetilde{\pibf}_{n,r}$ for the stationary distribution over $\widetilde{G}_{n,r}$, write $\widetilde{\pibf}_{n,r}(u)$ denote the stationary distribution at vertex $u \in \Csig[\Xbf]$. 
+
+
+Lemma \ref{lem: setup} states the key results needed to link Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound} with Theorem \ref{thm: consistent_recovery_of_density_clusters}.  
 \begin{lemma} 
 	\label{lem: setup}
-	Consider running Algorithm \ref{alg: ppr} with any $r < \sigma$ and
-	
+	Let $0 < r < \sigma$ and
 	\begin{equation} 
 	\label{eqn: upper_bound_alpha}
 	\frac{\Psi_{n,r}(\Csig[\Xbf])}{10} \leq \alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}.
 	\end{equation}
 	
-	There exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$ such that the following statements hold for all $v \in \Csig[\Xbf]^g$:
+	There exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \vol(\Csig[\Xbf]; G_{n,r})/2$ such that the following statements hold with respect to $\pbf(v,\alpha;G_{n,r})$ for any $v \in \Csig[\Xbf]^g$:
 	\begin{itemize}
-		\item For all $u \in \Cset[\Xbf]$,
+		\item For each $u \in \Cset[\Xbf]$,
 		\begin{equation}
 		\label{eqn: lower_bound_PPR_in_cluster}
-		p_u \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\pbf(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
 		\end{equation}
-		\item For all $u' \in \Csig'[\Xbf]$,
+		\item For any $\Cset' \in \Cbb_f(\lambda)$ such that $\Cset' \neq \Cset$, and for each $u' \in \Csig'[\Xbf]$,
 		\begin{equation}
 		\label{eqn: upper_bound_PPR_in_other_cluster}
-		p_{u'} \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\pbf(u') \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
 		\end{equation}
 	\end{itemize}
 \end{lemma}
+
+\begin{proof}
+	The proof of Lemma \ref{lem: setup} is lengthy, but not difficult. We begin with some notation. Recall that $\Wbf_n = \Dbf_n \Abf_n^{-1}$ is the transition probability matrix over $G_{n,r}$. Let $\widetilde{\Dbf}_n$ and $\widetilde{\Wbf}_n$ be the degree and random walk matrices for the subgraph $\widetilde{G}_{n,r}$. Then, given $q \in \Reals^{\Csig[\Xbf]}$ we let
+	\begin{equation}
+	\widetilde{\pbf}_q = \alpha q + (1 - \alpha) \widetilde{\pbf}_{q} \widetilde{\Wbf}_n 
+	\end{equation}
+	be the \pprspace vector originating from $q$ over $\widetilde{G}_{n,r}$. (When the starting distribution $q = e_v$ is a point mass at a seed node $v \in \Csig[\Xbf]$, we write $\widetilde{\pbf}_v$ for $\widetilde{\pbf}_{e_v}$ in a slight abuse of notation).
+	
+	Our analysis will involve \emph{leakage} and \emph{soakage} vectors, defined by
+	\begin{align*}
+	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}),~ \ell := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t, \\
+	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c),~ s := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t.
+	\end{align*}
+	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is an $n \times n$ diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $0$ otherwise, and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$.
+	
+	In words, for $u \in \Csig[\Xbf]$, $\ell_t(u)$ is the probability that a random walk originating from $v$ stays within $\Csig[\Xbf]$ for $t$ steps, arriving at the $t$th step at $u$, and then leaks out of $\Csig[\Xbf]$ on the $t + 1$th step. For $w \not\in \Csig[\Xbf]$, $s_t(w) = 0$. By contrast, $s_t(w)$ is the probability that a random walk originating from $v$ stays within $\Csig[\Xbf]$ for $t$ steps, and then moves to $w$ on the $t + 1$ step, while $s_t(u) = 0$ for all $u \in \Csig[\Xbf]$. The vectors $\ell$ and $s$ then clearly have the same interpretation, but with respect to the total mass leaked and soaked by the \pprspace vector. 
+	
+	We first prove \eqref{eqn: lower_bound_PPR_in_cluster}, and begin by restating some results of \citep{zhu2013}, adapted to our notation. By Lemma 3.1 of \citep{zhu2013}, there exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \vol(\Csig[\Xbf]; G_{n,r})/2$ such that for every $v \in \Csig[\Xbf]^g$
+	\begin{equation}
+	\label{eqn: zhulemma3.1}
+	\pbf(u) \geq \widetilde{\pbf}_v(u) - \widetilde{\pbf}_{\ell}(u),~ \textrm{and}~ \norm{\ell}_1 \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\alpha}.
+	\end{equation}
+	
+	If moreover $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$, then additionally by Corollary 3.3 of \citep{zhu2013}, for every $u \in \Csig[\Xbf]$
+	\begin{equation*}
+	\widetilde{\pbf}(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u)
+	\end{equation*}
+	and along with \eqref{eqn: zhulemma3.1}, we obtain
+	\begin{equation*}
+	\pbf(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u).
+	\end{equation*}
+	
+	We proceed to upper bound $\widetilde{\pbf}_{\ell}(u) \leq \norm{\ell}_1 / \widetilde{D}_{\min}$, whence \eqref{eqn: lower_bound_PPR_in_cluster} follows by \eqref{eqn: zhulemma3.1}. We observe two facts regarding $\widetilde{\pbf}_{\ell}(u)$. First, for any $u \in \Cset$, since $r < \sigma$, $(u,w) \not\in G_{n,r}$ for any $w \not\in \Csig$. As a result, for all $t \geq 1$, $\ell_t(u) = 0$ and by extension, $\ell(u) = 0$ as well.
+	
+	Second, for any $q \in \Reals^{\Csig[\Xbf]}$ with $\sum_{w \in \Csig[\Xbf]} q(w) = 1$, and any $t \geq 1$,
+	\begin{align*}
+	q \widetilde{\Wbf}_n^t (u) & \leq \norm{q}_1 ||\widetilde{\Wbf}_{\cdot u}||_{\infty} \\
+	& \leq \frac{1}{\widetilde{D}_{\min}}
+	\end{align*}
+	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}$, and the last inequality follows from the fact $(u,w) \in \widetilde{G}_{n,r}$ implies $w \in \Csig$, and therefore
+	\begin{equation*}
+	\deg(w; \widetilde{G}_{n,r}) \geq \widetilde{D}_{\min}.
+	\end{equation*}
+	
+	These facts, along with some basic algebra, lead to the desired lower bound on $\widetilde{\pbf}_{\ell}(u)$ for every $u \in \Cset[\Xbf]$:
+	\begin{align*}
+	\widetilde{\pbf}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{\Wbf}_n^t \right)(u)  \nonumber \\
+	& = \norm{\ell}_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\norm{\ell}_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	& = \norm{\ell}_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\norm{\ell}_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	& \leq \norm{\ell}_1 \frac{1}{\widetilde{D}_{\min}}.
+	\end{align*}
+	and \eqref{eqn: lower_bound_PPR_in_cluster} is proved.
+	
+	
+\end{proof}
+
+
+
+\begin{lemma}
+	\label{lem: ball_bounds_in_probability}
+	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
+	\begin{align*}
+	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
+	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
+	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
+	\end{align*}
+	where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
+\end{lemma}
+
+The statement follows immediately from Lemma \ref{lem: ball_bounds}.
+
+\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
+
+We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
+\begin{equation*}
+\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
+\end{equation*}
+As a result Lemma \ref{lem: setup} implies
+\begin{align}
+\label{eqn: theorem_4_1}
+p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
+p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
+\end{align}
+
+We turn to bounding $\widetilde{\pi}_{n,r}(u)$. Clearly,
+\begin{align*}
+\widetilde{\pi}_{n,r}(u) & \geq \frac{\widetilde{D}_{\min}}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
+& \geq \frac{\widetilde{D}_{\min}}{\wn \widetilde{D}_{\max}}.
+\end{align*}
+Application of Lemma \ref{lem: ball_bounds_in_probability} then yields
+\begin{equation}
+\label{eqn: theorem_4_2}
+\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{equation}
+as well as
+\begin{equation}
+\label{eqn: theorem_4_3}
+\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
+\end{equation}
+with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$ (indeed, all $u \in \Csig[\Xbf]$.)
+
+Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
+\begin{align*}
+p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
+p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{align*}
+for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
+
+\section{Additional Experiments}
+
+\begin{figure}
+	\centering
+	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example3plots/density_cluster}
+			\caption{}
+		\end{subfigure}
+	\caption{}
+	\end{adjustbox}
+\end{figure}
+
+
+\section{\textcolor{red}{OLD STUFF}}
+
+\subsection{Volume estimates}
+We will fix $\Aset \subset \Rd$ to be an arbitrary set. To simplify expressions, for the $\sigma$-expansion $\Asig$, we will write the set difference between $\Asig$ and the $(\sigma + r)$-expansion $\Aset_{\sigma + r}$ as 
+\begin{equation*}
+\Asigr := \set{x: 0 < \dist(x, \Asig) \leq r},
+\end{equation*}
+where as a reminder $\dist(x, \Aset) = \min_{x' \in \Aset} \norm{x - x'}$.
+
+\paragraph{Lemma \ref{lem: interior_of_expansion_sets}.}
+
+We will repeatedly employ Lemma \ref{lem: expansion_sets} and Lemma \ref{lem: Taylor_series} in tandem. As a first example, in Lemma \ref{lem: interior_of_expansion_sets}, we bound the ratio of $\nu(\Aset)$ to $\nu(\Aset_{-\delta})$, where we write $\partial \Aset$ for the boundary of $\Aset$, and for $\delta > 0$ we let
+\begin{equation*}
+\Aset_{-\delta} : = \set{x \in \Aset: \dist(x, \partial \Aset) > \delta}.
+\end{equation*}
+
+This will be useful when we bound $\vol(\Csig)$.
+
+\begin{lemma}
+	\label{lem: interior_of_expansion_sets}
+	For $\sigma$, $\Asig$ as in Lemma \ref{lem: expansion_sets}, let $r > 0$ satisfy $r \leq \sigma/4d$. Then,
+	\begin{equation*}
+	\frac{\nu(\Asig)}{\nu(\Aset_{\sigma - r})} \leq 2.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Fix $q = \sigma - r$. Then,
+	\begin{align*}
+	\nu(\Asig) & = \nu(\Aset_{q + \sigma - q}) = \nu(\Aset_q + (\sigma - q)B ) \\
+	& \leq \nu(\Aset_q + \frac{(\sigma - q)}{q} \Aset_q) = \left(1 + \frac{\sigma - q}{q}\right)^d \nu(\Aset_q)
+	\end{align*}
+	where the inequality follows from Lemma \ref{lem: expansion_sets}. Of course, $\sigma - q = r$, and $\frac{r}{q} \leq \frac{1}{2d}$ for $r \leq \frac{1}{4d}$. The claim then follows from Lemma \ref{lem: Taylor_series}.
+\end{proof}
+
+\subsection{Proof of Lemma \ref{lem: setup}}
 
 \begin{proof}
 	We will write $\Wbf_n = \Dbf_n \Abf_n^{-1}$ for the transition probability matrix over $G_{n,r}$, and let $\widetilde{\Dbf}_n$ and $\widetilde{\Wbf}_n$ be the degree and random walk matrices for the subgraph $\widetilde{G}_{n,r}$.
 	
 	We introduce \emph{leakage} and \emph{soakage} vectors, defined by
 	\begin{align*}
-	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}) \\
-	\ell & := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t \\
-	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c) \\
-	s & := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t
+	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}),~ \ell := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t, \\
+	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c),~ s := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t.
 	\end{align*}
-	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is a diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$. 
+	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is an $n \times n$ diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $0$ otherwise, and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$. 
 	
-	Roughly, the proof will unfold in four steps. The first two will result in the lower bound of (\ref{eqn: lower_bound_PPR_in_cluster}), while the latter two will imply the upper bound in (\ref{eqn: upper_bound_PPR_in_other_cluster}).
+	Roughly, the proof of Lemma \ref{lem: setup} will unfold in four steps. The first two will result in the lower bound of (\ref{eqn: lower_bound_PPR_in_cluster}), while the latter two will imply the upper bound in (\ref{eqn: upper_bound_PPR_in_other_cluster}). We briefly summarize the approach before diving into the formal proof:
 	
 	\begin{enumerate}
-		\item For $u \in \Cset'[\Xbf]$, use the results of \cite{zhu2013} to produce the lower bound 
+		\item For $u \in \Cset[\Xbf]$, we use the results of \cite{zhu2013} to produce the lower bound 
 		\begin{equation*}
-		\pbf(u) \geq 4/5 \widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u)
+		\pbf(u) \geq \frac{4}{5}\widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u)
 		\end{equation*}
 		where 
 		\begin{equation*}
@@ -1354,7 +1521,7 @@ Lemma \ref{lem: setup} formalizes the intuitively sensible statement that \pprsp
 		\end{equation*}
 		is the \pprspace random walk over $\widetilde{G}_{n,r}$, and $\ell$ has bounded norm $||\ell||_1 \leq 2\frac{\Phi_{n,r}(\Csig[\Xbf])}{\alpha}$.
 		
-		\item Since $r < \sigma$, for any $u \in \Cset[\Xbf]$ there are no edges between $u$ and $G_{n,r} / \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{\pbf}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This observation will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
+		\item Since $r < \sigma$, for any $u \in \Cset[\Xbf]$ there are no edges between $u$ and $\Xbf \setminus \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{\pbf}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This observation will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
 		\item For vertices $u' \in G_{n,r} / \Csig[\Xbf]$, we can upper bound $p_v(u) \leq p_s(u')$. In particular, this hold for all $u' \in \Cset'[\Xbf]$.
 		\item Since $r < \sigma$, there are no edges between $u'$ and $G / \Cset'[\Xbf]$. Therefore, the page-rank vector $p_{s}$ will assign no more than $||s||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. Additionally, $s$ has bounded norm $||s||_1 \leq ||\ell||_1$. This will conclude our proof of (\ref{eqn: upper_bound_PPR_in_other_cluster}), and hence Lemma \ref{lem: setup}.
 	\end{enumerate}
@@ -1505,116 +1672,6 @@ Lemma \ref{lem: setup} formalizes the intuitively sensible statement that \pprsp
 	
 	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\widetilde{\Phi}_{n,r}}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
 	
-\end{proof}
-
-\begin{lemma}
-	\label{lem: ball_bounds_in_probability}
-	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
-	\begin{align*}
-	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
-	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
-	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
-	\end{align*}
-	where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
-\end{lemma}
-
-The statement follows immediately from Lemma \ref{lem: ball_bounds}.
-
-\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
-
-We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
-\begin{equation*}
-\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
-\end{equation*}
-As a result Lemma \ref{lem: setup} implies
-\begin{align}
-\label{eqn: theorem_4_1}
-p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
-p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
-\end{align}
-
-We turn to bounding $\widetilde{\pi}_{n,r}(u)$. Clearly,
-\begin{align*}
-\widetilde{\pi}_{n,r}(u) & \geq \frac{\widetilde{D}_{\min}}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
-& \geq \frac{\widetilde{D}_{\min}}{\wn \widetilde{D}_{\max}}.
-\end{align*}
-Application of Lemma \ref{lem: ball_bounds_in_probability} then yields
-\begin{equation}
-\label{eqn: theorem_4_2}
-\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
-\end{equation}
-as well as
-\begin{equation}
-\label{eqn: theorem_4_3}
-\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
-\end{equation}
-with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$ (indeed, all $u \in \Csig[\Xbf]$.)
-
-Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
-\begin{align*}
-p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
-p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
-\end{align*}
-for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
-
-\section{Additional Experiments}
-
-\begin{figure}
-	\centering
-	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/true_density_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/ppr_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/conductance_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/density_cluster}
-			\caption{}
-		\end{subfigure}
-	\caption{}
-	\end{adjustbox}
-\end{figure}
-
-
-\section{\textcolor{red}{OLD STUFF}}
-
-\subsection{Volume estimates}
-We will fix $\Aset \subset \Rd$ to be an arbitrary set. To simplify expressions, for the $\sigma$-expansion $\Asig$, we will write the set difference between $\Asig$ and the $(\sigma + r)$-expansion $\Aset_{\sigma + r}$ as 
-\begin{equation*}
-\Asigr := \set{x: 0 < \dist(x, \Asig) \leq r},
-\end{equation*}
-where as a reminder $\dist(x, \Aset) = \min_{x' \in \Aset} \norm{x - x'}$.
-
-\paragraph{Lemma \ref{lem: interior_of_expansion_sets}.}
-
-We will repeatedly employ Lemma \ref{lem: expansion_sets} and Lemma \ref{lem: Taylor_series} in tandem. As a first example, in Lemma \ref{lem: interior_of_expansion_sets}, we bound the ratio of $\nu(\Aset)$ to $\nu(\Aset_{-\delta})$, where we write $\partial \Aset$ for the boundary of $\Aset$, and for $\delta > 0$ we let
-\begin{equation*}
-\Aset_{-\delta} : = \set{x \in \Aset: \dist(x, \partial \Aset) > \delta}.
-\end{equation*}
-
-This will be useful when we bound $\vol(\Csig)$.
-
-\begin{lemma}
-	\label{lem: interior_of_expansion_sets}
-	For $\sigma$, $\Asig$ as in Lemma \ref{lem: expansion_sets}, let $r > 0$ satisfy $r \leq \sigma/4d$. Then,
-	\begin{equation*}
-	\frac{\nu(\Asig)}{\nu(\Aset_{\sigma - r})} \leq 2.
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	Fix $q = \sigma - r$. Then,
-	\begin{align*}
-	\nu(\Asig) & = \nu(\Aset_{q + \sigma - q}) = \nu(\Aset_q + (\sigma - q)B ) \\
-	& \leq \nu(\Aset_q + \frac{(\sigma - q)}{q} \Aset_q) = \left(1 + \frac{\sigma - q}{q}\right)^d \nu(\Aset_q)
-	\end{align*}
-	where the inequality follows from Lemma \ref{lem: expansion_sets}. Of course, $\sigma - q = r$, and $\frac{r}{q} \leq \frac{1}{2d}$ for $r \leq \frac{1}{4d}$. The claim then follows from Lemma \ref{lem: Taylor_series}.
 \end{proof}
 
 \clearpage

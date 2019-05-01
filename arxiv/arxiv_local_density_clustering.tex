@@ -887,8 +887,30 @@ Corollary \ref{cor: ppr_cluster} -- an analogous statement to Theorem \ref{thm: 
 		\includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
 		\caption{}
 	\end{subfigure}
+	\caption{}
+	\label{fig:fig1}
 	\end{adjustbox}
 \end{figure}
+
+As we do not provide any theoretical lower bounds, we validate the tightness of Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound} via simulation.  We sample points according to the density function $q$, where for $x \in \Rd$
+\begin{equation}
+q(x) :=
+\begin{cases}
+\lambda,~ & x \in [0,\sigma] \times D^{d-1} =: \Cset, \\
+\lambda - \dist(x,\Cset)\eta,~ & x \in \Csig \setminus \Cset, \\
+(\lambda - \sigma \eta) - \dist(x,\Csig)^{\gamma}, & x \in (\Csig + \sigma B), \setminus \Csig \\
+0,~ & \textrm{otherwise},
+\end{cases}
+\end{equation}
+where $\lambda = \frac{150}{81} \sigma^{\gamma}$ and $\eta = \frac{15}{81} \sigma^{\gamma - 1}$. Panels $(a)$ and $(b)$ in Figure \ref{fig:fig1} show $20,000$ samples from two parameterizations of $q$. In $(a)$, $\sigma = D = 3.2$, while in $(b)$ $\sigma = .1$ and $D = 3.2$. (For both, $d = 2$).
+
+Panels $(c) - (f)$ in Figure \ref{fig:fig1} show the change in normalized cut and mixing time, respectively, as the parameters $\sigma$ ($(c)$ and $(d)$) and $D$ ($(e)$ and $(f)$) are varied. In panels $(c)$ and $(d)$ $\sigma = .1 \cdot \sqrt{2}^j, j = 1,\ldots,10$, and $D$ is fixed at $3.2$. In panels $(e)$ and $(f)$, $D = .1 \cdot \sqrt{2}^j, j = 1,\ldots,10$ and $\sigma$ is fixed at $.1$.
+For each panel, the solid lines show, up to constants \footnote{Note that we have rescaled all values of theoretical upper bounds by a constant, in order to mask the effect of large universal constants in these bounds. Therefore only comparison of slopes, rather than intercepts, is meaningful.}, the theoretical upper bound, given by Theorem \ref{thm: conductance_upper_bound} for panels $(c)$ and $(e)$ and Theorem \ref{thm: inverse_mixing_time_lower_bound} for panels $(d)$ and $(f)$. The dashed lines show the computed empirical value, averaged over $m$ trials ($m = 100$ for the normalized cut, dashed lines in panels $(c)$ and $(e)$, and $m = 20$ for the mixing time, dashed lines in panel $(d)$ and $(f)$). For each trial across all parameters, $r$, the neighborhood graph radius, is set throughout to be as small as possible such that the resulting graph is connected, for computational efficiency. Green lines correspond to dimension $d = 2$, whereas purple/pink lines correspond to $d = 3$. 
+
+Panels $(d)$ and $(f)$ show the solid lines tracking closely to the dashed lines, in both 2 and 3 dimensions. This provides empirical evidence that the upper bound on mixing time given by Theorem \ref{thm: inverse_mixing_time_lower_bound} has the right dependency on both thickness parameter  $\sigma$ and diameter $D$.
+
+\textcolor{red}{The story in panels $(c)$ and $(e)$ is more subtle. We note that while, broadly speaking, the trends do not appear to match, this gap between theory and empirical results is mostly due to the relationship when $\sigma \approx D$; this is the right hand side on panel $(c)$ and the left hand side on panel $(e)$. It is in these regions that the slopes of the dashed and solid lines appear most distinct. As the ratio $D/\sigma$ grows, we see the slopes of the empirical curves converging towards those predicted by theory. The takeaway message is that while the dependency in \eqref{eqn: conductance_additive_error_bound} on $\sigma$ and $D$ is loose for clusters with diameter close to thickness, it becomes tighter and tigher as $D/\sigma$ grows.}
+
 
 \subsection{Empirical PPR, normalized cut, and density clustering comparison}
 
@@ -967,7 +989,7 @@ Corollary \ref{cor: ppr_cluster} -- an analogous statement to Theorem \ref{thm: 
 	\end{adjustbox}
 \end{figure}
 
-To form each of the four rows in Figure \ref{fig:fig2}, 800 points are independently sampled following a 'two moons plus Gaussian noise model'. Formally, the (respective) generative models for the data are
+To drive home the main implications of Theorem \ref{thm: ppr_cluster}, we show the behavior of \pprspace, normalized cut, and the density clustering algorithm of \citep{chaudhuri2010} on (a variant of) the famous 'two moons' dataset, considered a prototypical success story for spectral clustering algorithms. To form each of the four rows in Figure \ref{fig:fig2}, 800 points are independently sampled following a 'two moons plus Gaussian noise model'. Formally, the (respective) generative models for the data are
 \begin{align}
 Z & \sim \textrm{Bern}(1/2), \theta \sim \textrm{Unif}(0, \pi) \\
 X(Z,\theta) & = 
