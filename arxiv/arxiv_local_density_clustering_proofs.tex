@@ -1,4 +1,4 @@
-%%%%%%%% ICML 2019 submission %%%%%%%%%%%%%%%%%
+%%%%%%%% Proofs of Local Spectral Clustering of Density Upper Level Sets %%%%%%%%%%%%%%%%%
 
 \documentclass{article}
 \renewcommand{\thesection}{\Alph{section}}
@@ -43,6 +43,8 @@
 
 %%% Graph terms
 \newcommand{\cut}{\mathrm{cut}}
+\newcommand{\degminpr}{\deg_{\min}'}
+\newcommand{\piminwt}{\widetilde{\pibf}_{\min}}
 
 %%% Vectors
 \newcommand{\pbf}{\mathbf{p}}
@@ -1298,6 +1300,19 @@ We will employ a sharper concentration inequality for $\sum_{i = 1}^{n} X_i$.
 	\end{align*}
 \end{lemma}
 
+\begin{lemma}
+	\label{lem: ball_bounds_in_probability}
+	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
+	\begin{align*}
+	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
+	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
+	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
+	\end{align*}
+	where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
+\end{lemma}
+
+The statement follows immediately from Lemma \ref{lem: ball_bounds}.
+
 \subsection{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
 
@@ -1321,11 +1336,12 @@ Lemma \ref{lem: setup} states the key results needed to link Theorems \ref{thm: 
 		\label{eqn: lower_bound_PPR_in_cluster}
 		\pbf(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
 		\end{equation}
-		\item For any $\Cset' \in \Cbb_f(\lambda)$ such that $\Cset' \neq \Cset$, and for each $u' \in \Csig'[\Xbf]$,
+		\item Let $\Cset' \neq \Cset \in \Cbb_f(\lambda)$ satisfy \ref{asmp: cluster_separation} with respect to $\Cset$. Then for each $u' \in \Csig'[\Xbf]$,
 		\begin{equation}
 		\label{eqn: upper_bound_PPR_in_other_cluster}
-		\pbf(u') \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}
+		\pbf(u') \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr}
 		\end{equation}
+		where $ \deg_{\min}' := \min_{u \in \Cset'[\Xbf]} \deg(u; G_{n,r})$. 
 	\end{itemize}
 \end{lemma}
 
@@ -1334,24 +1350,26 @@ Lemma \ref{lem: setup} states the key results needed to link Theorems \ref{thm: 
 	\begin{equation}
 	\widetilde{\pbf}_q = \alpha q + (1 - \alpha) \widetilde{\pbf}_{q} \widetilde{\Wbf}_n 
 	\end{equation}
-	be the \pprspace vector originating from $q$ over $\widetilde{G}_{n,r}$. (When the starting distribution $q = e_v$ is a point mass at a seed node $v \in \Csig[\Xbf]$, we write $\widetilde{\pbf}_v$ for $\widetilde{\pbf}_{e_v}$ in a slight abuse of notation).
+	be the \pprspace vector originating from $q$ over $\widetilde{G}_{n,r}$. (When the starting distribution $q = e_v$ is a point mass at a seed node $v \in \Csig[\Xbf]$, we write $\widetilde{\pbf}_v := \widetilde{\pbf}_{e_v}$ in a slight abuse of notation).
 	
 	Our analysis will involve \emph{leakage} and \emph{soakage} vectors, defined by
-	\begin{align*}
-	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}),~ \ell := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t, \\
+	\begin{align}
+	\label{eqn: leakage_soakage}
+	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}),~ \ell := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t, \nonumber \\
 	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c),~ s := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t.
-	\end{align*}
+	\end{align}
 	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is an $n \times n$ diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $0$ otherwise, and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$.
 	
-	In words, for $u \in \Csig[\Xbf]$, $\ell_t(u)$ is the probability that a random walk originating from $v$ stays within $\Csig[\Xbf]$ for $t$ steps, arriving at the $t$th step at $u$, and then leaks out of $\Csig[\Xbf]$ on the $t + 1$th step. For $w \not\in \Csig[\Xbf]$, $s_t(w) = 0$. By contrast, $s_t(w)$ is the probability that a random walk originating from $v$ stays within $\Csig[\Xbf]$ for $t$ steps, and then moves to $w$ on the $t + 1$ step, while $s_t(u) = 0$ for all $u \in \Csig[\Xbf]$. The vectors $\ell$ and $s$ then clearly have the same interpretation, but with respect to the total mass leaked and soaked by the \pprspace vector. 
+	In words, for $u \in \Csig[\Xbf]$, $\ell_t(u)$ is the probability that a random walk originating from $v$ stays within $\Csig[\Xbf]$ for $t$ steps, arriving at $u$ on the $t$th step, and then leaks out of $\Csig[\Xbf]$ on the $t + 1$th step. For $w \not\in \Csig[\Xbf]$, $s_t(w) = 0$. By contrast, $s_t(w)$ is the probability that a random walk originating from $v$ stays within $\Csig[\Xbf]$ for $t$ steps, and then moves to $w$ on the $t + 1$ step, while $s_t(u) = 0$ for all $u \in \Csig[\Xbf]$. The vectors $\ell$ and $s$ then give the total mass leaked and soaked, respectively, by the \pprspace vector. 
 	
 	We first prove \eqref{eqn: lower_bound_PPR_in_cluster}, and begin by restating some results of \citep{zhu2013}, adapted to our notation. By Lemma 3.1 of \citep{zhu2013}, there exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \vol(\Csig[\Xbf]; G_{n,r})/2$ such that for every $v \in \Csig[\Xbf]^g$
 	\begin{equation}
 	\label{eqn: zhulemma3.1}
 	\pbf(u) \geq \widetilde{\pbf}_v(u) - \widetilde{\pbf}_{\ell}(u),~ \textrm{and}~ \norm{\ell}_1 \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\alpha}.
 	\end{equation}
+	(The result $\norm{\ell}_1 \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\alpha}$ is the only result in the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters} which relies on the restriction $v \in \Csig[\Xbf]^g$.)
 	
-	If moreover $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$, then additionally by Corollary 3.3 of \citep{zhu2013}, for every $u \in \Csig[\Xbf]$
+	If additionally $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$, then by Corollary 3.3 of \citep{zhu2013}, for every $u \in \Csig[\Xbf]$
 	\begin{equation*}
 	\widetilde{\pbf}(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u)
 	\end{equation*}
@@ -1360,17 +1378,13 @@ Lemma \ref{lem: setup} states the key results needed to link Theorems \ref{thm: 
 	\pbf(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u).
 	\end{equation*}
 	
-	We proceed to upper bound $\widetilde{\pbf}_{\ell}(u) \leq \norm{\ell}_1 / \widetilde{D}_{\min}$, whence \eqref{eqn: lower_bound_PPR_in_cluster} follows by \eqref{eqn: zhulemma3.1}. We observe two facts regarding $\widetilde{\pbf}_{\ell}(u)$. First, for any $u \in \Cset$, since $r < \sigma$, $(u,w) \not\in G_{n,r}$ for any $w \not\in \Csig$. As a result, for all $t \geq 1$, $\ell_t(u) = 0$ and by extension, $\ell(u) = 0$ as well.
-	
-	Second, for any $q \in \Reals^{\Csig[\Xbf]}$ with $\sum_{w \in \Csig[\Xbf]} q(w) = 1$, and any $t \geq 1$,
-	\begin{align*}
-	q \widetilde{\Wbf}_n^t (u) & \leq \norm{q}_1 ||\widetilde{\Wbf}_{\cdot u}||_{\infty} \\
-	& \leq \frac{1}{\widetilde{D}_{\min}}
-	\end{align*}
-	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}$, and the last inequality follows from the fact $(u,w) \in \widetilde{G}_{n,r}$ implies $w \in \Csig$, and therefore
-	\begin{equation*}
-	\deg(w; \widetilde{G}_{n,r}) \geq \widetilde{D}_{\min}.
-	\end{equation*}
+	We proceed to upper bound $\widetilde{\pbf}_{\ell}(u) \leq \norm{\ell}_1 / \widetilde{D}_{\min}$, whence \eqref{eqn: lower_bound_PPR_in_cluster} follows by \eqref{eqn: zhulemma3.1}. We observe two facts regarding $\widetilde{\pbf}_{\ell}(u)$. First, for any $u \in \Cset$, since $r < \sigma$, $(u,w) \not\in G_{n,r}$ for any $w \not\in \Csig$. As a result, for all $t \geq 1$, $\ell_t(u) = 0$ and by extension, $\ell(u) = 0$ as well. Second, for any $q \in \Reals^{\Csig[\Xbf]}$ with $\sum_{w \in \Csig[\Xbf]} q(w) = 1$, and any $t \geq 1$,
+	\begin{align}
+	\label{eqn: one_step_bound}
+	q \widetilde{\Wbf}_n^t (u) & \leq \norm{q}_1 ||\widetilde{\Wbf}_{\cdot u}||_{\infty} \nonumber \\
+	& \leq \frac{1}{\widetilde{D}_{\min}} 
+	\end{align}
+	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}$, and the last inequality follows from the fact $(u,w) \in \widetilde{G}_{n,r}$ implies $w \in \Csig$, and therefore $\deg(w; \widetilde{G}_{n,r}) \geq \widetilde{D}_{\min}$.
 	
 	These facts, along with some basic algebra, lead to the desired lower bound on $\widetilde{\pbf}_{\ell}(u)$ for every $u \in \Cset[\Xbf]$:
 	\begin{align*}
@@ -1381,60 +1395,133 @@ Lemma \ref{lem: setup} states the key results needed to link Theorems \ref{thm: 
 	\end{align*}
 	and \eqref{eqn: lower_bound_PPR_in_cluster} is proved.
 	
+	We turn to showing \eqref{eqn: upper_bound_PPR_in_other_cluster}. By Lemma \ref{lem: soakage_ppr_lb}, for all $u' \not\in \Csig[\Xbf]$,
+	\begin{equation*}
+	\pbf_v(u') \leq \pbf_s(u').
+	\end{equation*}
 	
+	Note that by \ref{asmp: cluster_separation}, for every $u \in \Csig[\Xbf], (u',u) \not\in E$ and therefore $s(u') = 0$. Some manipulations, similar to those in the preceding part of the proof, yield a lower bound on $\pbf_v(u')$ in terms of $\norm{s}_1$:
+	\begin{align*}
+	\pbf_s(u') & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \Wbf_n^t\right)(u') \\
+	& = \norm{s}_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\norm{s}_1} \Wbf_n^t\right)(u') \\
+	& = \norm{s}_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\norm{s}_1} \Wbf_n^t\right)(u') \\
+	& \leq \frac{\norm{s}_1}{\degminpr}
+	\end{align*}
+	where the last inequality follows from precisely the same reasoning as \eqref{eqn: one_step_bound}. The claim follows in light of Lemma \ref{lem: total_leakage_equal_total_soakage}, along with \eqref{eqn: zhulemma3.1}.
 \end{proof}
 
 
+We turn now to the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}. Let $\piminwt := \min_{u \in \Cset[\Xbf]} \widetilde{\pibf}_{n,r}(u)$.
+\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.}
+~
+
+Observe that the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters} subsume the requirement of Lemma \ref{lem: setup}, and therefore by that lemma we have the following bounds:
+\begin{align*}
+\pbf(u) & \geq \frac{4}{5} \widetilde{\pibf}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}} \tag{for each $u \in \Cset[\Xbf]$} \\
+\pbf(u') & \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr} \tag{for each $u' \in \Cset'[\Xbf]$}
+\end{align*}
+
+We will further show that under the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}, the following bound holds with probability tending to one as $n \to \infty$:
+\begin{equation}
+\label{eqn: gap_bounds}
+\frac{\widetilde{\Phi}_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}, \frac{\widetilde{\Phi}_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr} \leq \frac{1}{5} \piminwt,
+\end{equation}
+\textcolor{red}{which will prove the claim.}
+
+By Lemma \ref{lem: ball_bounds_in_probability}, $\degminpr\cdot \widetilde{D}_{\min}$ is upper bounded,
+\begin{equation}
+\label{eqn: pimin_Dmin_lb}
+\piminwt \cdot \widetilde{D}_{\min} = \frac{\widetilde{D}_{\min}^2}{\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})} \leq \frac{36}{625} \frac{\lambda^2 \nu_d r^d}{\Lambda_{\sigma} \nu_d \Pbb(\Csig)}  
+\end{equation}
+where the bound holds with probability tending to one as $n \to \infty$. 
+
+By Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, with probability one as $n \to \infty$,
+\begin{equation}
+\label{eqn: difficulty_bound}
+\frac{2\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])} \leq \kappa_1(\Cset).
+\end{equation}
+\eqref{eqn: difficulty_bound}, \eqref{eqn: pimin_Dmin_lb} and \eqref{eqn: kappa2_ub} together show \eqref{eqn: gap_bounds}.
+
+
+
+\subsection{Linear Algebra Facts}
+\label{sec: linalg}
+
+We state here a number of basic facts which follow from matrix manipulations. These will be used in the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}. 
 
 \begin{lemma}
-	\label{lem: ball_bounds_in_probability}
-	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
-	\begin{align*}
-	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
-	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
-	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
-	\end{align*}
-	where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
+	\label{lem: soakage_ppr_lb}
+	For any $v \in \Csig[\Xbf]$ and $u \not\in \Csig[\Xbf]$,
+	\begin{equation*}
+	\pbf_{v}(u) \leq \pbf_{s}(u)
+	\end{equation*}
+	where $s$ is defined as in \eqref{eqn: leakage_soakage} and depends implicitly upon $v$.
 \end{lemma}
+\begin{proof}
+	The statement follows from Lemma \ref{lem: sum_of_soakages} along with a series of algebraic manipulations,
+	\begin{align*}
+	\pbf_v(u) & = \alpha\sum_{T = 0}^{\infty} (1 - \alpha)^t \left(e_v \Wbf_n^T\right)(u) \\
+	& = \alpha\sum_{T = 1}^{\infty} (1 - \alpha)^t \left(e_v \Wbf_n^T\right)(u) \\
+	& \leq \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf_n^{T - t - 1} \right)(u) \tag{Lemma \ref{lem: sum_of_soakages}}\\
+	& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf_n^{T - t - 1} \right)(u)\\
+	& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf_n^{\Delta} \right)(u) \\
+	& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf_n^{\Delta} \right)(u) \\
+	& = \alpha \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta} \left(s \Wbf_n^{\Delta}\right)(u) \\
+	& = \pbf_s(u)
+	\end{align*}
+\end{proof}
 
-The statement follows immediately from Lemma \ref{lem: ball_bounds}.
+Let $s_t := q(\Wbf \Ibf{S})^t(\Wbf(\Ibf{S^c}))$ be the soakage vector out of $S \subseteq V$, where $\Ibf{S}$ is a $\abs{V} \times \abs{V}$ diagonal matrix with $(\Ibf{S})_{uu} = 1$ if $u \in S$ and 0 otherwise, and $\Ibf{S^c} := \Ibf{} - \Ibf{S}$. 
+\begin{lemma}
+	\label{lem: sum_of_soakages}
+	Let $G = (V,E)$ be an unweighted, undirected graph with associated random walk matrix $\Wbf$. For any $T \in \mathbb{N}, T \geq 1$, $q \in \Reals^{\abs{V}}$, and $S \subseteq V$
+	\begin{equation}
+	\label{eqn: sum_of_soakages}
+	q\Wbf^T = \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} + q(\Wbf \Ibf{S})^T
+	\end{equation}
+	In particular, if $u \in V\setminus S$, then
+	\begin{equation}
+	\label{eqn: sum_of_soakages_2}
+	q\Wbf^T(u) = \sum_{t = 0}^{T - 1} \left(s_t \Wbf^{T - t - 1}\right)(u)
+	\end{equation}
+\end{lemma}
+\begin{proof}	
+	We show \eqref{eqn: sum_of_soakages}, from which \eqref{eqn: sum_of_soakages_2} is an immediate consequence.
+	
+	
+	To show \eqref{eqn: sum_of_soakages}, we proceed by induction on $T$. When $T = 1$,
+	\begin{equation*}
+	q\Wbf = q\Wbf\Ibf{S} + q\Wbf\Ibf{S^c} =  q\Wbf\Ibf{S} + s_0. 
+	\end{equation*}
+	
+	Then, for $T \in \mathbb{N},~ T \geq 2$,
+	\begin{align*}
+	q\Wbf^{T} & = q\Wbf^{T - 1}{\Wbf} \\
+	& = \left\{\sum_{t = 0}^{T - 2} s_t \Wbf^{T - 2 - t} + q(\Wbf \Ibf{S})^{T - 1} \right\} \Wbf \tag{by the inductive hypothesis}\\
+	& = \sum_{t = 0}^{T - 2} s_t \Wbf^{T - 1 - t} + q(\Wbf \Ibf{S})^{T - 1} (\Wbf \Ibf{S} + \Wbf \Ibf{S^c}) \\
+	& = \sum_{t = 0}^{T - 1} s_t \Wbf^{T - 1 - t} + q(\Wbf \Ibf{S})^{T - 1} (\Wbf \Ibf{S})
+	\end{align*}
+	and the proof is complete.
+\end{proof}
 
-\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
-
-We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
-\begin{equation*}
-\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
-\end{equation*}
-As a result Lemma \ref{lem: setup} implies
-\begin{align}
-\label{eqn: theorem_4_1}
-p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
-p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
-\end{align}
-
-We turn to bounding $\widetilde{\pi}_{n,r}(u)$. Clearly,
-\begin{align*}
-\widetilde{\pi}_{n,r}(u) & \geq \frac{\widetilde{D}_{\min}}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
-& \geq \frac{\widetilde{D}_{\min}}{\wn \widetilde{D}_{\max}}.
-\end{align*}
-Application of Lemma \ref{lem: ball_bounds_in_probability} then yields
-\begin{equation}
-\label{eqn: theorem_4_2}
-\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
-\end{equation}
-as well as
-\begin{equation}
-\label{eqn: theorem_4_3}
-\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
-\end{equation}
-with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$ (indeed, all $u \in \Csig[\Xbf]$.)
-
-Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
-\begin{align*}
-p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
-p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
-\end{align*}
-for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
+\begin{lemma}
+	\label{lem: total_leakage_equal_total_soakage}
+	Letting $s_t$, $\ell_t$ $s$ and $\ell$ be as in \eqref{eqn: leakage_soakage},
+	\begin{equation*}
+	\norm{s_t}_1 = \norm{\ell_t}_1,~ \textrm{for each $t \geq 0$}
+	\end{equation*}
+	and therefore $\norm{s}_1 = \norm{\ell}_1$. 
+\end{lemma}
+\begin{proof}
+	By the definition of $s_t$ and $\ell_t$, we have
+	\begin{align*}
+	\norm{s_t}_1 & = \norm{q_t (\Wbf_n \widetilde{\mathbf{I}}_n^c)}_1 \\
+	& = \sum_{u \in \Xbf} \sum_{u' \in \Xbf} q_t(u) (\Wbf_n \widetilde{\mathbf{I}}_n^c)(u, u') \\
+	& = \sum_{u \in\Csig[\Xbf]} \sum_{u' \in \Csig[\Xbf]^c} \frac{q_t(u)}{(\Dbf_n)_{uu}} \1((u,u') \in G_{n,r}) \\
+	& = \sum_{u \in \Csig[\Xbf]} \frac{q_t(u) \left((\Dbf_n)_{uu} - (\widetilde{\Dbf}_n)_{uu} \right)}{(\Dbf_n)_{uu}} \\
+	& = \norm{q_t (\Ibf{n} - \Dbf_n^{-1} \widetilde{\Dbf}_n)}_1 = \norm{\ell_t}_1.
+	\end{align*}
+\end{proof}
 
 \section{Additional Experiments}
 
@@ -1603,7 +1690,6 @@ This will be useful when we bound $\vol(\Csig)$.
 		
 		Lemma \ref{lem: sum_of_soakages} allows us to make the transition to sums of soakage vectors. 
 		\begin{lemma}
-			\label{lem: sum_of_soakages}
 			
 			Let $G = (V,E)$ be a graph, with associated random walk matrix $W$.
 			
@@ -1671,8 +1757,44 @@ This will be useful when we bound $\vol(\Csig)$.
 	\end{align*}
 	
 	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\widetilde{\Phi}_{n,r}}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
-	
 \end{proof}
+
+\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.}
+
+We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
+\begin{equation*}
+\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
+\end{equation*}
+As a result Lemma \ref{lem: setup} implies
+\begin{align}
+\label{eqn: theorem_4_1}
+p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
+p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
+\end{align}
+
+We turn to bounding $\widetilde{\pi}_{n,r}(u)$. Clearly,
+\begin{align*}
+\widetilde{\pi}_{n,r}(u) & \geq \frac{\widetilde{D}_{\min}}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
+& \geq \frac{\widetilde{D}_{\min}}{\wn \widetilde{D}_{\max}}.
+\end{align*}
+Application of Lemma \ref{lem: ball_bounds_in_probability} then yields
+\begin{equation}
+\label{eqn: theorem_4_2}
+\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{equation}
+as well as
+\begin{equation}
+\label{eqn: theorem_4_3}
+\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
+\end{equation}
+with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$ (indeed, all $u \in \Csig[\Xbf]$.)
+
+Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
+\begin{align*}
+p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
+p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
+\end{align*}
+for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
 
 \clearpage
 \bibliographystyle{plain}
