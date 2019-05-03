@@ -44,7 +44,11 @@
 %%% Graph terms
 \newcommand{\cut}{\mathrm{cut}}
 \newcommand{\degminpr}{\deg_{\min}'}
+\newcommand{\degminwt}{\widetilde{\deg}_{\min}}
+\newcommand{\degmaxwt}{\widetilde{\deg}_{\max}}
+\newcommand{\degmax}{\deg_{\max}}
 \newcommand{\piminwt}{\widetilde{\pibf}_{\min}}
+\newcommand{\piminpr}{\pibf_{\min}'}
 
 %%% Vectors
 \newcommand{\pbf}{\mathbf{p}}
@@ -1295,23 +1299,42 @@ We will employ a sharper concentration inequality for $\sum_{i = 1}^{n} X_i$.
 	\label{lem: multiplicative_Hoeffding}
 	Let $X_i \in \set{0,1}$ for $i = 1, \ldots, n$ and let $\mu = \Ebb(\sum_{i = 1}^n X_i)$. Then,
 	\begin{align*}
-	\Pbb\left(\sum_{i=1}^{n}X_i > (1 + \epsilon) \mu \right) \leq \exp \left(\frac{-\delta^2 \mu}{3}\right) \\
-	\Pbb\left(\sum_{i=1}^{n}X_i < (1 - \epsilon) \mu \right) \leq \exp \left(\frac{-\delta^2 \mu}{2}\right)
+	\Pbb\left(\sum_{i=1}^{n}X_i > (1 + \epsilon) \mu \right) \leq \exp \left(\frac{-\epsilon^2 \mu}{3}\right) \\
+	\Pbb\left(\sum_{i=1}^{n}X_i < (1 - \epsilon) \mu \right) \leq \exp \left(\frac{-\epsilon^2 \mu}{2}\right)
 	\end{align*}
 \end{lemma}
+
+We will require asymptotic bounds on several different degree and volume functionals, which follow from Lemma \ref{lem: multiplicative_Hoeffding}. Let
+\begin{align*}
+\degminwt & := \min_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}\left[\Csig[\Xbf]\right]),~ \degmaxwt := \max_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}\left[\Csig[\Xbf]\right]) \\ 
+& \degminpr := \min_{u \in \Csig'[\Xbf]} \deg(u; G_{n,r}),~ \degmax := \max_{u \in \Csig[\Xbf]} \deg(u; G_{n,r})
+\end{align*}
 
 \begin{lemma}
 	\label{lem: ball_bounds_in_probability}
-	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}. For $r < \sigma$, the following statements hold with probability tending to one as $n \to \infty$:
-	\begin{align*}
-	D_{\min}(\Csig[X]; \widetilde{G}_{n,r}) & \geq \frac{1}{2} \nu_d r^d \lambda_{\sigma} \\
-	D_{\max}(\Csig[X]; \widetilde{G}_{n,r}) & \leq 2 \nu_d r^d \Lambda_{\sigma} \\
-	\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) & \leq 2 \nu(\Csig) \Lambda_{\sigma}
-	\end{align*}
-	where $D_{\min}(\Csig[X]; \widetilde{G}_{n,r})$ is the minimum degree of any vertex $v \in \Csig[X]$ in the subgraph $\widetilde{G}_{n,r}$, and analogously for $D_{\max}(\Csig[X]; \widetilde{G}_{n,r})$.
+	Under the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}, for any $\epsilon > 0$, the following bounds hold with probability tending to $1$ as $n \to \infty$:
+	\begin{align}
+	\frac{\degminwt}{n}, \frac{\degminpr}{n} & \geq (1 - \epsilon)\frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_degree_bound}\\
+	\frac{\degmax}{n} & \leq (1 + \epsilon) \Lambda_{\sigma} r^d \nu_d \label{eqn: max_degree_bound}\\
+	\frac{\abs{\Csig[\Xbf]}}{n} & \leq \Pbb(\Csig)(1 + \epsilon) \label{eqn: Csig_cardinality_bound}\\
+	\frac{6}{25}(1 - \epsilon)^2 \Pbb(\Csig) \lambda_{\sigma} \nu_d r^d \leq \frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n^2} & \leq \Pbb(\Csig) \Lambda_{\sigma} r^d \nu_d (1 + \epsilon)^2 \label{eqn: volume_bounds}
+	\end{align}
 \end{lemma}
-
-The statement follows immediately from Lemma \ref{lem: ball_bounds}.
+\begin{proof}
+	We note that for any $x \in \Csig \cup \Csig'$, by \textcolor{red}{\ref{asmp: bounded_density}} along with Lemma \ref{lem: local_conductance},
+	\begin{equation*}
+	\frac{6}{25} \lambda_{\sigma} r^d \nu_d \leq \Pbb(B(x,r)) \leq \Lambda_{\sigma} r^d \nu_d.
+	\end{equation*}
+	Then, by Lemma \ref{lem: multiplicative_Hoeffding} along with a union bound
+	\begin{equation*}
+	\Pbb \left(\degminwt \leq n (1 - \epsilon) \frac{6}{25}  \lambda_{\sigma} r^d \nu_d \right) \leq n \exp\set{- \frac{6 n \epsilon^2  \lambda_{\sigma} r^d \nu_d}{50} } \overset{n \to \infty}{\longrightarrow} 0.
+	\end{equation*}
+	As the same bound holds for $\degminpr$, \eqref{eqn: min_degree_bound} is shown, and \eqref{eqn: max_degree_bound} follows from similar reasoning.
+	
+	\eqref{eqn: Csig_cardinality_bound} follows directly from the law of large numbers, and \eqref{eqn: volume_bounds} from \eqref{eqn: min_degree_bound}, \eqref{eqn: max_degree_bound}, and \eqref{eqn: Csig_cardinality_bound}. 
+	
+	
+\end{proof}
 
 \subsection{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
@@ -1411,31 +1434,41 @@ Lemma \ref{lem: setup} states the key results needed to link Theorems \ref{thm: 
 \end{proof}
 
 
-We turn now to the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}. Let $\piminwt := \min_{u \in \Cset[\Xbf]} \widetilde{\pibf}_{n,r}(u)$.
+We turn now to the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}. Let $\piminwt := \min_{u \in \Cset[\Xbf]} \widetilde{\pibf}_{n,r}(u)$, and similarly $\piminpr := \min_{u \in \Cset'[\Xbf]} {\pibf}'_{n,r}(u)$.
 \paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.}
 ~
 
-Observe that the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters} subsume the requirement of Lemma \ref{lem: setup}, and therefore by that lemma we have the following bounds:
-\begin{align*}
-\pbf(u) & \geq \frac{4}{5} \widetilde{\pibf}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}} \tag{for each $u \in \Cset[\Xbf]$} \\
-\pbf(u') & \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr} \tag{for each $u' \in \Cset'[\Xbf]$}
-\end{align*}
+Observe that the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters} subsume the requirements of Lemma \ref{lem: setup}, and therefore by that lemma the following inequalities hold for each $u \in \Cset[\Xbf]$, $u' \in \Cset'[\Xbf]$:
+\begin{align}
+\pbf(u) & \geq \frac{4}{5} \widetilde{\pibf}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degmaxwt} \nonumber \\
+\pbf(u') & \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr} \label{eqn: setup_redux}
+\end{align}
 
 We will further show that under the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}, the following bound holds with probability tending to one as $n \to \infty$:
 \begin{equation}
 \label{eqn: gap_bounds}
-\frac{\widetilde{\Phi}_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}}, \frac{\widetilde{\Phi}_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr} \leq \frac{1}{5} \piminwt,
+\frac{2\widetilde{\Phi}_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \widetilde{D}_{\min}},\frac{2\widetilde{\Phi}_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf]) \degminpr} \leq \frac{\min \set{\degmaxwt, \degminpr}}{125 \widetilde{\vol}_{n,r}(\Csig[\Xbf])}
 \end{equation}
-\textcolor{red}{which will prove the claim.}
+By \eqref{eqn: setup_redux} and \eqref{eqn: gap_bounds}, for each $u \in \Cset[\Xbf]$,
+\begin{align*}
+\frac{\pbf(u)}{\deg_{n,r}(u)} & \geq \frac{4}{5} \frac{\widetilde{\deg}_{n,r}(u)}{\deg_{n,r}(u) \widetilde{\vol}_{n,r}(\Csig[\Xbf])} - \frac{\degminwt}{125 \deg_{n,r}(u) \widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
+& \geq \frac{22}{125 \widetilde{\vol}_{n,r}(\Csig[\Xbf])} \tag{by Lemma \ref{lem: ball_bounds_in_probability}, applied with $\epsilon = \frac{1}{47}$}
+\end{align*}
+and by similar reasoning, for each $u' \in \Cset'[\Xbf]$,
+\begin{equation*}
+\frac{\pbf(u')}{\deg_{n,r}(u')} \leq \frac{\degminpr}{\deg_{n,r}(u') 125 \widetilde{\vol}_{n,r}(\Csig[\Xbf])} \leq \frac{1}{125 \widetilde{\vol}_{n,r}(\Csig[\Xbf])}.
+\end{equation*}
 
-By Lemma \ref{lem: ball_bounds_in_probability}, $\degminpr\cdot \widetilde{D}_{\min}$ is upper bounded,
+\textcolor{red}{Complete the proof.}
+
+It remains to prove \eqref{eqn: gap_bounds}. By application of Lemma \ref{lem: ball_bounds_in_probability} with $\epsilon = 1/11$, $\piminwt \cdot \degminwt$ can be lower bounded
 \begin{equation}
 \label{eqn: pimin_Dmin_lb}
-\piminwt \cdot \widetilde{D}_{\min} = \frac{\widetilde{D}_{\min}^2}{\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})} \leq \frac{36}{625} \frac{\lambda^2 \nu_d r^d}{\Lambda_{\sigma} \nu_d \Pbb(\Csig)}  
+\piminwt \cdot \degminwt = \frac{\degminwt^2}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \geq \frac{1}{25} \frac{\lambda_{\sigma}^2 \nu_d r^d}{\Lambda_{\sigma}\Pbb(\Csig)}  
 \end{equation}
 where the bound holds with probability tending to one as $n \to \infty$. 
 
-By Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, with probability one as $n \to \infty$,
+By Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, with probability tending to one as $n \to \infty$,
 \begin{equation}
 \label{eqn: difficulty_bound}
 \frac{2\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])} \leq \kappa_1(\Cset).
