@@ -27,6 +27,7 @@
 
 \newcommand{\diam}{\mathrm{diam}}
 \newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\left\{#1\right\}_{n \in \mathbb{N}}}
 \newcommand{\defeq}{\overset{\mathrm{def}}{=}}
 \newcommand{\vol}{\mathrm{vol}}
 \newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
@@ -48,7 +49,7 @@
 \newcommand{\degminwt}{\widetilde{\deg}_{\min}}
 \newcommand{\degmaxwt}{\widetilde{\deg}_{\max}}
 \newcommand{\degmax}{\deg_{\max}}
-\newcommand{\piminwt}{\widetilde{\pibf}_{\min}}
+\newcommand{\piminwt}{\widetilde{\pi}_{\min}}
 \newcommand{\piminpr}{\pibf_{\min}'}
 \newcommand{\degmin}{\deg_{\min}}
 
@@ -90,6 +91,9 @@
 
 %%% Operators
 \DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dt}{\,dt}
 
 
 %%% Algorithm notation
@@ -106,12 +110,13 @@
 \newcommand{\wPbb}{\widetilde{\Pbb}}
 \newcommand{\wf}{\widetilde{f}}
 \newcommand{\wDbf}{\widetilde{\Dbf}}
+\newcommand{\piwt}{\widetilde{\pi}}
 
 
 \newtheoremstyle{aldenthm}
 {6pt} % Space above
 {6pt} % Space below
-{\itshape} % Body font
+{\itshape} % Bo\dy font
 {} % Indent amount
 {\bfseries} % Theorem head font
 {.} % Punctuation after theorem head
@@ -122,6 +127,7 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
 
 
 %\newcommand{\theHalgorithm}{\arabic{algorithm}}
@@ -258,17 +264,17 @@ We will need to carefully control the volume of expansion sets using the estimat
 	\label{lem: Taylor_series}
 	For any $0 \leq x \leq 1/2d$,
 	\begin{align*}
-	(1 + x)^d & \leq 1 + 2dx \\
-	(1 - x)^d & \geq 1 - 2dx.
+	(1 + x)^d & \leq 1 + 2\dx \\
+	(1 - x)^d & \geq 1 - 2\dx.
 	\end{align*}
 \end{lemma}
 \begin{proof}
 	We take the binomial expansion of $(1 + x)^d$:
 	\begin{align*}
 	(1 + x)^d & = \sum_{k = 0}^{d} {d \choose k} x^k \\
-	& = 1 + dx + dx\left(\sum_{k = 2}^d \frac{{d \choose k} x^{k - 1}}{d}\right)\\
-	& \leq 1 + dx + dx\left(\sum_{k = 2}^d \frac{{d \choose k}}{(2d)^{k-1}d}\right) \tag{since $x \leq \frac{1}{2d}$} \\
-	& \leq 1 + dx + dx\left(\sum_{k = 2}^d \frac{1}{2^{k - 1}}\right) \leq 1 + 2dx.
+	& = 1 + \dx + \dx\left(\sum_{k = 2}^d \frac{{d \choose k} x^{k - 1}}{d}\right)\\
+	& \leq 1 + \dx + \dx\left(\sum_{k = 2}^d \frac{{d \choose k}}{(2d)^{k-1}d}\right) \tag{since $x \leq \frac{1}{2d}$} \\
+	& \leq 1 + \dx + \dx\left(\sum_{k = 2}^d \frac{1}{2^{k - 1}}\right) \leq 1 + 2\dx.
 	\end{align*}
 	
 	The proof for the corresponding lower bound on $(1 - x)^d$ is symmetric.
@@ -291,7 +297,7 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	where $t_i = i/k$ for $i = 0, \ldots, k - 1$. As a result, for any $k \in \mathbb{N}$,
 	\begin{equation}
 	\label{eqn: partition_ub}
-	\Pbb(\Csigr) = \int_{\Csigr} f(x) dx = \sum_{i = 0}^{k-1} \int_{\mathcal{T}_{i,k}} f(x) dx \leq \sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x).
+	\Pbb(\Csigr) = \int_{\Csigr} f(x) \dx = \sum_{i = 0}^{k-1} \int_{\mathcal{T}_{i,k}} f(x) \dx \leq \sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x).
 	\end{equation}
 	
 	\ref{asmp: bounded_density} and \ref{asmp: low_noise_density} imply the upper bound
@@ -337,21 +343,21 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	where $(ii)$ follows from \eqref{eqn: slice_volume_bound}, and $(iii)$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
 \end{proof}
 
-Lemma \ref{lem: local_conductance} will be necessary to lower bound the expected volume of $\Csig[\Xbf]$ in $G_{n,r}$. Define the \emph{local conductance} $\ell_{\nu,r}(u)$ to be
+Lemma \ref{lem: local_conductance} will be necessary to lower bound the expected volume of $\Csig[\Xbf]$ in $G_{n,r}$. Define the \emph{uniform local conductance} $\ell_{\nu,r}(u)$ to be
 \begin{equation*}
-\ell_{\nu,r}(u) = \frac{\nu\left(\Csig \cap B(u,r)\right)}{\nu\left(B(u,r)\right)}.
+\ell_{\nu,r}(u) = \nu\bigl(\Csig \cap B(u,r)\bigr)
 \end{equation*}
 \begin{lemma}
 	\label{lem: local_conductance}
 	Let $u \in \Csig$. Then, for any $0 < r \leq \frac{\sigma}{2\sqrt{d}}$,
 	\begin{equation*}
-	\ell_{\nu,r}(u) \geq \frac{6}{25}. 
+	\ell_{\nu,r}(u) \geq \frac{6}{25} \nu_d r^d.
 	\end{equation*}
 \end{lemma}
 \begin{proof}
 	Since $u \in \Csig$ there exists $x \in \Cset$ such that $u \in B(x, \sigma)$, and as $B(x,\sigma) \subseteq \Csig$,
 	\begin{equation*}
-	\nu\bigl(B(u, r) \cap B(x, \sigma)\bigr) \leq \nu\bigl(B(u, r) \cap \Csig \bigr).
+	\nu\bigl(B(u, r) \cap B(x, \sigma)\bigr) \leq \nu\bigl(B(u, r) \cap \Csig \bigr)
 	\end{equation*}
 	Without loss of generality, let $\norm{u - x} = \sigma$; it is not hard to see that if $\norm{u - x} < \sigma$, the volume of the overlap will only grow. Then, since $\norm{u  - x} = \sigma$, $B(u, r) \cap B(x, \sigma)$ contains a spherical cap of radius $r$ and height
 	\begin{equation*}
@@ -457,9 +463,9 @@ for the random variable, mean, and probability of cut size and volume, respectiv
 	\end{equation*}
 	Writing this with respect to the density function $f$, we have
 	\begin{align*}
-	p_K & = 2 \int_{\Rd \setminus \Csig} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) dx \\
-	& = 2 \int_{\Csigr} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) dx \\
-	& \leq 2 \nu_d r^d \lambda  \int_{\Csigr} f(x) dx = 2 \nu_d r^d \lambda \Pbb(\Csigr).
+	p_K & = 2 \int_{\Rd \setminus \Csig} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
+	& = 2 \int_{\Csigr} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
+	& \leq 2 \nu_d r^d \lambda  \int_{\Csigr} f(x) \dx = 2 \nu_d r^d \lambda \Pbb(\Csigr).
 	\end{align*}
 	where the inequality follows from \ref{asmp: cluster_separation}, which implies $f(x) \leq \lambda$ for $x \in \Csig \setminus \Cset$. Then, upper bounding the integral using Lemma \ref{lem: expected_density_cut} gives the final result.
 \end{proof}
@@ -483,8 +489,8 @@ for the random variable, mean, and probability of cut size and volume, respectiv
 	\end{equation*}
 	Writing this with respect to the density function $f$, we have
 	\begin{align*}
-	p_V & = 2 \int_{\Csig} f(x) \Pbb(B(x,r)) dx \\
-	& \geq 2 \int_{\Csig} f(x) \Pbb(B(x,r) \cap \Csig) dx
+	p_V & = 2 \int_{\Csig} f(x) \Pbb(B(x,r)) \dx \\
+	& \geq 2 \int_{\Csig} f(x) \Pbb(B(x,r) \cap \Csig) \dx
 	\end{align*}
 	whence the claim then follows by Lemma \ref{lem: local_conductance}.
 \end{proof}
@@ -568,111 +574,100 @@ which implies $2 \frac{\Err_n}{p_V - \Err_n} \leq \epsilon$.
 \subsection{Mixing time on graphs}
 \label{sec: mixing_time_on_graphs}
 
-For $N \in \mathbb{N}$ and a set $V$ of $N$ vertices, take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, random walk matrix $\Wbf$, and stationary distribution $\pibf = (\pi_u)_{u \in V}$ where $\pi_v = \frac{\Dbf_{vv}}{\vol(V; G)}$. For $v \in V$, 
-\begin{equation}
-\label{eqn: random_walk}
-q_{vu}^{(m)} = e_v\Wbf^m e_u, ~~ \qbf_{v}^{(m)} = \left(q_{vu}^{(m)}\right)_{u \in V}, ~~ \qbf_v = (\qbf^{(1)}_{v\cdot},\qbf^{(2)}_{v\cdot}, \ldots), 
-\end{equation}
-denote respectively the $m$-step transition probability, distribution, and sequence distributions of the random walk over $G$ originating at $v$. Letting $\qbf = (\qbf_v)_{v \in V}$, the relative pointwise mixing time is thus
+For $N \in \mathbb{N}$ and a collection $V = \set{v_1,\ldots,v_N}$ of $N$ vertices, take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, degree matrix $\Dbf$, and random walk matrix $\Wbf$. We consider the stationary distribution $\pi$ to be a mapping from $V$ to $[0,1]$, with $\pi(u) := \frac{\Dbf_{uu}}{\vol(V; G)}$ for $u \in V$. For $v \in V$, let $q: V \times V \to [0,1]$ represent the $m$-step transition probability of the random walk over $G$ originating from $v$, $q^{(m)}(v,u) = e_v\Wbf^m e_u$. The relative pointwise mixing time over $G$ is then
 \begin{equation*}
-\tau_{\infty}(\qbf; G) := \tau_{\infty}(\qbf; G) = \min\set{m: \forall u,v \in V, \frac{\abs{q_{vu}^{(m)} - \pibf_u}}{\pibf_u} \leq 1/4} 
+\tau_{\infty}(G) = \min\set{m: \forall u,v \in V, \frac{\abs{q^{(m)}(v,u) - \pi(u)}}{\pi(u)} \leq 1/4}. 
 \end{equation*}
-where we include the extra dependency on $\qbf$ as we will need to consider mixing of various random walks. 
 
-Two key quantities relate the mixing time to the expansion of subsets $S$ of $V$. The \emph{local spread} is defined to be
+Two key quantities relate the mixing time to the expansion of subsets $S$ of $V$. The \emph{local spread} is defined as
 \begin{equation*}
-s(G) := \frac{9D_{\min}}{10}\pi_{\min} 
+s(G) := \frac{9}{10} \cdot \min_{v \in V} \set{\deg(v; G)} \cdot \min_{v \in V} \set{\pi(v)}
 \end{equation*}
-for $D_{\min} := \min_{v \in V} \Dbf_{vv}$ and $\pi_{\min} := D_{\min} / \vol(V; G)$.
-
-
-%\inf \set{t: \forall S \subset V ~\text{with}~ \pi(S) = t, \beta(S) \leq 1/10}
-%\end{equation*}
-where $\beta(S) := \inf_{v \in S} \qbf_{v}^{(1)}(S^c)$, and by convention we let $\pbf(S) = \sum_{u \in S} p_u$ for any distribution vector $\pbf = (p_u)_{u \in V}$ over $V$. We collect some necessary facts about the local spread in Lemma \ref{lem: local_spread_G}.
+For $f: V \to \Reals$, and $S \subseteq V$, write $f(S) := \sum_{u \in S} f(u)$. We collect some necessary facts about the local spread in Lemma \ref{lem: local_spread_G}.
 \begin{lemma}
+	~
+	
 	\label{lem: local_spread_G}
 	\begin{itemize}
-		\item If $\pibf(S) \leq s(G)$, then for every $u \in S$, $\qbf_u^{(1)}(S^c) \geq 1/10$.
-		\item For any $v, u \in V$, and $m \in N$ greater than $0$, $q_{vu}^{(m)}/ \pi_{\min} \leq 1/s(G)$.
+		\item If $\pi(S) \leq s(G)$, then for every $u \in S$, $q^{(1)}(u,S^c) \geq \frac{1}{10}$.
+		\item For any $v, u \in V$, and $m \in \mathbb{N}, m \geq 0$,
+		\begin{equation*}
+		q^{(m)}(v,u) \leq \frac{\min_{v \in V} \set{\pi(v)}}{s(G)}.
+		\end{equation*}
 	\end{itemize}
 	
 \end{lemma}
 
 \begin{proof}
-	If $t = \pibf(S) \leq \frac{9 D_{\min}}{10} \pi_{\min}$, divide both sides by $\pi_{\min}$ to obtain
-	\begin{equation*}
-	\abs{S} \leq \frac{9 D_{\min}}{10}
-	\end{equation*}
-	which implies $\qbf_{v}^{(1)}(S^c) \geq 1/10$ for all $v \in S$. This implies the first statement.
+	If $\pi(S) \leq s(G)$, divide both sides by $\min_{v \in V} \set{\pi(v)}$ to obtain $\abs{S} \leq 9\min_{v \in V} \set{\deg(v; G)}/10$,
+	which implies $q^{(1)}(v,S^c) \geq 1/10$ for all $v \in S$. This implies the first statement.
 	
-	The second statement follows from the fact $q_{vu}^{(m)} \leq 1/D_{\min}$ for any $m$.
+	The second statement follows from the fact $q^{(m)}(v,u) \leq 1/\min_{v \in V} \set{\deg(v; G)}$ for any $m$.
 \end{proof}
 
-The local spread facilitates conversion between $\tau_{\infty}(\qbf_v; G)$ and the more easily manageable \emph{total variation} mixing time, given by
+The local spread facilitates conversion between $\tau_{\infty}(G)$ and the more easily manageable \emph{total variation} mixing time, given by
 \begin{equation*}
-\tau_1(\rhobf; G) = \min\biggl\{m: \forall v \in V, \norm{\rhobf_v - \pibf}_{TV} \leq 1/4 \biggr\}
+\tau_1(G) = \min\biggl\{m: \forall v \in V, \norm{\rho^{(m)}(v,\cdot) - \pi}_{TV} \leq 1/4 \biggr\}
 \end{equation*}
-where 
-\begin{equation}
-\label{eqn: uniform_random_walk}
-\rhobf_{v}^{(m)} = \frac{1}{m}\sum_{k = 1}^{m+1} \qbf_{v}^{m}, ~~ \rhobf_v = \left( \rhobf_{v}^{(1)}, \rhobf_{v}^{(2)}, \rhobf_{v}^{(3)} \ldots \right), ~~ \rhobf = \left( \rhobf_v \right)_{v \in V}
-\end{equation}
-and $\norm{\pbf - \pibf}_{TV} = \sum_{v \in V}\abs{p_v - \pi_v}$ is the total variation norm between distributions $\pbf$ and $\pibf$. 
+where $\rho^{(m)}(u,v) = \sum_{l = 1}^{m} p^{(l)}(u,v)$ 
+and $\norm{\rho(v,\cdot) - \pi}_{TV} = \sum_{u \in V}\abs{\rho(u,v) - \pi(v)}$ is the total variation norm between distributions $\rho(v,\cdot)$ and $\pi$. 
 \begin{lemma}
 	\label{lem: tv_mixing_to_pointwise_mixing1}
-	For $\qbf$ as in \eqref{eqn: random_walk} and $\rhobf$ as in \eqref{eqn: uniform_random_walk},
 	\begin{equation*}
-	\tau_{\infty}(\qbf; G) \leq 2752 \tau_1(\rhobf; G) \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\}\right)
+	\tau_{\infty}(G) \leq 2752 \cdot \tau_1(G) \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\}\right)
 	\end{equation*}
 \end{lemma}
 \begin{proof}
 	Masking dependence on the starting vertex $v$ for the moment, let
 	\begin{equation*}
-	\Delta_u^{(m)} = q_{vu}^{(m)} - \pi_u, ~~ \delta_u^{(m)} = \frac{\Delta_u^{(m)}}{\pi_u}
+	\Delta^{(m)}(u) = q^{(m)}(v,u) - \pi(u), ~~ \delta^{(m)}(u) = \frac{\Delta^{(m)}(u)}{\pi(u)}
 	\end{equation*}
-	and $\Deltabf^{(m)} = (\Delta_u^{(m)})_{u \in V}$, $\deltabf^{(m)} = (\delta_u^{(m)})_{u \in V}$. For a vector $\Deltabf = (\Delta_u)_{u \in V}$, the $L^{p}(\pibf)$ norm is given by
+	and denote $\Deltabf^{(m)} = \bigl(\Delta^{(m)}(u)\bigr)_{u \in V}$, $\deltabf^{(m)} = \bigl(\delta^{(m)}(u)\bigr)_{u \in V}$. For a vector $\Deltabf = (\Delta_u)_{u \in V}$, the $L^{p}(\pi)$ norm is given by
 	\begin{equation*}
-	\norm{\Deltabf}_{L^p(\pibf)} = \left(\sum_{u \in V} \left(\Delta_u\right)^{p} \pi_u \right)^{1/p}
+	\norm{\Deltabf}_{L^p(\pi)} = \left(\sum_{u \in V} \left(\Delta_u\right)^{p} \pi(u) \right)^{1/p}
 	\end{equation*}
-	To go between the $L^{\infty}(\pibf)$ and $L^{1}(\pibf)$ norms, we have
-	\begin{align*}
-	\norm{\deltabf^{(2m)}}_{L^{\infty}(\pi)} & \overset{(i)}{\leq} \norm{\deltabf^{(m)}}^2_{L^{2}(\pi)} \\
-	& = \norm{(\deltabf^{(m)})^2}_{L^{1}(\pi)} \\
-	& \overset{(ii)}{\leq}  \norm{(\deltabf^{(m)})}_{L^{1}(\pi)} \norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)}
-	\end{align*}
-	where $(i)$ is a result of \cite{benjamini2003} and $(ii)$ follows from Holder's inequality. Now, we upper bound the second factor on the right hand side by observing
-	\begin{align*}
-	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} & \leq \max\left\{1, \max_{u \in V} \frac{q_{vu}^{(m)}}{\pi_u} \right\} \\
-	& \overset{(iii)}{\leq} \max\left\{1, \frac{1}{s(G)}\right\}
-	\end{align*}
-	where $(iii)$ follows from Lemma \ref{lem: local_spread_G}.
+	To go between the $L^{\infty}(\pi)$ and $L^{1}(\pi)$ norms, we capitalize on a clever argument developed in \cite{morris2005}. For any $v,u \in V$, by the time-reversibility of the graph random walk,
+	\begin{align}
+	\abs{\frac{q^{(2m)}(v,u) - \pi(u)}{\pi(u)}} & = \abs{\sum_{y \in V} \pi(y) \left( \frac{q^{(m)}(v,y) - \pi(y)}{\pi(y)}\right)\left(\frac{q^{(m)}(u,y) - \pi(y)}{\pi(y)} \right)} \nonumber \\
+	& \leq \norm{(\deltabf^{(m)})}_{L^{1}(\pi)} \norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)}, \label{eqn: infty_norm_to_one_norm}
+	\end{align}
+	with the second line following by Holder's inequality.
 	
-	Now, we leverage the following well-known fact \cite{montenegro2002}: for any $\epsilon > 0$, if $m \geq \tau_1(\qbf_v^{(m)}; G) \cdot \log(1/\epsilon)$ then
-	\begin{equation*}
-	\norm{\qbf_v^{(m)} - \pibf}_{TV} \leq \epsilon.
-	\end{equation*}
-	But $\norm{\qbf_v^{(m)} - \pibf}_{TV}$ is exactly $\norm{(\deltabf^{(m)})}_{L^{1}(\pi)}$. Therefore, picking 
-	\begin{equation*}
-	m_0 = \tau_1(\qbf_v^{(m)}; G) \cdot \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\} \right)
-	\end{equation*} implies $\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} \leq 1/4$ for all $m \geq 2 m_0$.  Then, 
-	\begin{equation*}
-	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} = \sup_{u}\left\{ \frac{\abs{q_{vu}^{(m)} - \pibf_u}}{\pibf_u} \right\}.
-	\end{equation*}
-	and since none of the above depended on a specific choice for $v$, the supremum can be taken over all starting vertices $v$ as well. Thus $\tau_{\infty}(\qbf^{(m)}; G) \leq 2m_0$. 
+	Now, we upper bound the second factor on the right hand side by observing
+	\begin{align}
+	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} & \leq \max\left\{1, \max_{u \in V} \frac{q^{(m)}(v,u)}{\pi(u)} \right\} \nonumber \\
+	& \overset{(i)}{\leq} \max\left\{1, \frac{1}{s(G)}\right\} \label{eqn: ub_infinity_norm}
+	\end{align}
+	where $(i)$ follows from Lemma \ref{lem: local_spread_G}.
 	
-	Finally, it is known \cite{montenegro2002} that
+	Set $m_0 = 1376 \tau_1(G) $, which we will show implies $\norm{q^{(m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4}$. Now, we leverage the following well-known fact (see pg. 1 of \cite{montenegro2002}): for any $\epsilon > 0$, if $m \geq m_0 \cdot \log(1/\epsilon)$ then for any $v \in V$,
+	\begin{equation}
+	\label{eqn: rapid_mixing}
+	\norm{q^{(m)}(v,\cdot) - \pi}_{TV} \leq \epsilon.
+	\end{equation}
+	But $\norm{q^{(m)}(v,\cdot) - \pi}_{TV}$ is exactly $\norm{\deltabf^{(m)}}_{L^{1}(\pi)}$. Letting
 	\begin{equation*}
-	\tau_{1}(\qbf^{(m)}; G) \leq 1376 \tau_{1}(\rhobf^{(m)}; G)
+	m_1 = m_0 \cdot \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\} \right)
+	\end{equation*} 
+	by \eqref{eqn: infty_norm_to_one_norm}, \eqref{eqn: ub_infinity_norm}, and \eqref{eqn: rapid_mixing}, $\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} \leq 1/4$ for all $m \geq 2 m_1$.  Recall that
+	\begin{equation*}
+	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} = \sup_{u \in V}\left\{ \frac{\abs{q^{(m)}(v,u) - \pi(u)}}{\pi(u)} \right\}.
 	\end{equation*}
-	and so the desired result holds.	
+	and since none of the above depended on a specific choice of $v$, the supremum can be taken over all starting vertices $v$ as well. Thus for all $m \geq 2m_1$, for any $v,u \in V$, $\abs{q^{m}(v,u) - \pi(u)} \leq \frac{\pi(u)}{4}$. 
+	
+	Finally, it is known (pg.15 of \citep{montenegro2002}) that
+	\begin{equation*}
+	\norm{\rho^{(m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4} \Longrightarrow  \norm{q^{(1376m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4} 
+	\end{equation*}
+	and so $m_0 = 1376 \tau_1(G)$ implies $\norm{q^{(m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4}$, completing the proof.
 \end{proof}
 
-The second key quantity is the \emph{conductance function}
+The second key quantity is the \emph{conductance function}. For $\min_{u \in V}\set{\pi(u)} \leq t \leq 1/2$, the conductance function is defined as
 \begin{equation}
 \label{eqn: conductance_function}
-\Phi(t; G) := \min_{\substack{S \subseteq V, \\ \pibf(S) \leq t} } \Phi(S; G) ~~~~~~~ (\pi_{\min} \leq t < 1)
+\Phi(t; G) := \min_{\substack{S \subseteq V, \\ 0 < \pibf(S) \leq t} } \Phi(S; G)
 \end{equation}
-where $\Phi(S; G)$ is the normalized cut of $S$ in $G$ given by \eqref{eqn: norm_cut}. 
+where $\Phi(S; G)$ is the normalized cut of $S$ in $G$ given by \eqref{eqn: norm_cut}, and in the minimization $S$ may not be the empty set. 
 
 Lemma \ref{lem: expansion_to_tv_distance} leverages the conductance function and local spread to produce an upper bound on the total variation distance between $\rhobf_{v}^{(m)}$ and $\pibf.$
 \begin{lemma}
@@ -752,526 +747,568 @@ Note that in \cite{montenegro2002} this theorem is stated with respect to $h^0$.
 	\end{align*} 
 \end{proof}
 
-\subsection{Conductance function and local spread: non-convex case.}
-\label{sec: non_convex_conductance_function_and_local_spread}
+\subsection{Population-level conductance profile.}
+\label{sec: population_conductance_function}
 
-We begin with some notation. Write $\Csig[\Xbf] = \wX$, and $G_{n,r}[\Csig[\Xbf]]$ as $\widetilde{G}_{n,r}$. For $S \subset \wX$, let $\widetilde{\cut}_{n,r}(S) = \cut(S;\widetilde{G}_{n,r})$ and similarly $\widetilde{\vol}_{n,r}(S) = \vol(S;\widetilde{G}_{n,r})$. 
-
-Consider $\zbf \subset \Csig$ such that  $\mathcal{N}_{\zbf} = \set{B(z,r/3): z \in \zbf}$ is an internal covering of $\Csig$, meaning $\mathcal{N}_{\zbf} \supseteq \Csig$. Then, we write
-\begin{align*}
-\widetilde{B}_{\min} = \min_{z \in \zbf} \abs{B(z,r/3) \cap \wX}, ~~
-\widetilde{D}_{\min} = \min_{\wx \in \wX} \abs{\widetilde{\cut}_{n,r}(x)} \\ \widetilde{B}_{\max} = \min_{z \in \zbf} \abs{B(z,r/3) \cap \wX}, ~~
-\widetilde{D}_{\max} = \min_{\wx \in \wX} \abs{\widetilde{\cut}_{n,r}(x)}
-\end{align*}
-Both the conductance function and local spread will depend heavily on these quantities. Lemma \ref{lem: ball_bounds} collects the bounds we will need.
-\begin{lemma}
-	\label{lem: ball_bounds}
-	Let $\Csig$ satisfy the conditions of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}.	For sufficiently large $n$, and $r \leq \sigma/4d$, each of the following bounds hold with probability $1 - \delta$:
-	\begin{align}
-	\label{eqn: ball_bounds}
-	\widetilde{B}_{\max} & \leq \left(1 + \sqrt{3^d\frac{3(\log \abs{\mathcal{N}_{\zbf}} + \log(1/\delta))}{n \nu_d r^d \Lambda_{\sigma}}}\right) n \nu_d \left(\frac{r}{3}\right)^d \Lambda_{\sigma} \nonumber \\
-	\widetilde{B}_{\min} & \geq \left(1 - \sqrt{3^d\frac{2(\log \abs{\mathcal{N}_{\zbf}} + \log(1/\delta))}{n \nu_d r^d \lambda_{\sigma} \beta_d}}\right) n \nu_d \left(\frac{r}{3}\right)^d \lambda_{\sigma} \beta_d \nonumber \\
-	\widetilde{D}_{\max} & \leq \left(1 + \sqrt{\frac{3(\log n + \log(1/\delta))}{n \nu_d r^d \Lambda_{\sigma}}}\right) n \nu_d r^d \Lambda_{\sigma} \nonumber \\
-	\widetilde{D}_{\min} & \geq \left(1 - \sqrt{\frac{2(\log n + \log(1/\delta))}{n \nu_d r^d \lambda_{\sigma} \beta_d}}\right) n \nu_d \left(\frac{r}{3}\right)^d \lambda_{\sigma} \beta_d \nonumber \\
-	\left(1 - \sqrt{\frac{2 \log(1/\delta)}{n \lambda_d \nu_d \sigma^d}}\right) n \lambda_{\sigma} \nu_d \sigma^d & \leq \widetilde{n} \leq \left(1 + \sqrt{\frac{3 \log(1/\delta)}{n \Lambda_{\sigma} \nu_d D^d}}\right) n \Lambda_d \nu_d D^d
-	\end{align}
-	where $\wn = \abs{\wX}$ and $\beta_d \geq 1/2^d$.
-	
-	In particular, fix $\epsilon > 0$. Then, for $n$ as specified in Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, the following event:
-	\begin{align}
-	\label{eqn: ball_bounds_epsilon}
-	\widetilde{B}_{\max} \leq \left(1 + \epsilon \right) n \nu_d \left(\frac{r}{3}\right)^d \Lambda_{\sigma},& ~~ \widetilde{D}_{\max} \leq \left(1 + \epsilon \right) n \nu_d r^d \Lambda_{\sigma} \nonumber \\
-	\widetilde{B}_{\min} \geq \left(1 - \epsilon \right) n \nu_d \left(\frac{r}{3}\right)^d \lambda_{\sigma} \beta_{d},& ~~ \widetilde{D}_{\min} \geq \left(1 - \epsilon \right) n \nu_d r^d \lambda_{\sigma} \beta_{d} \nonumber \\
-	(1 - \epsilon) n \lambda_{\sigma} \nu_d \sigma^d & \leq \widetilde{n} \leq (1 + \epsilon) n \Lambda_{\sigma} \nu_d D^d 
-	\end{align}
-	occurs with probability at least $1 - \delta$.
-\end{lemma}
-\begin{proof}
-	We observe that for any $s \leq \sigma/4d$ and any $x \in \Csig$,
-	\begin{equation*}
-	\nu(B(x,s) \cap \Csig) \geq \left(\frac{s}{2}\right)^d = s^d \beta_d.
-	\end{equation*}
-	(In fact, tighter bounds can be shown to hold, but we will not need them). Therefore, by \ref{asmp: bounded_density}:
-	\begin{equation*}
-	\lambda_{\sigma} \nu_d s^d \beta_d \leq \Pbb\left(B(z,s) \cap \Csig \right) \leq \Lambda_{\sigma} \nu_d s^d \\
-	\end{equation*}
-	In particular, this holds for $s = r$ and $s = r/3$, and for every $z \in \zbf$ as well as every $z \in \widetilde{\Xbf}$. Now, by \ref{asmp: cluster_diameter} and \ref{asmp: bounded_density} we also have
-	\begin{equation*}
-	\Lambda_{\sigma} \nu_d \sigma^d \leq \Pbb(\Csig) \leq \Lambda_{\sigma} \nu_d D^d
-	\end{equation*}
-	
-	The proof of each statement in \eqref{eqn: ball_bounds} then follows from application of Lemma \ref{lem: multiplicative_Hoeffding}. 
-	
-	To show \eqref{eqn: ball_bounds_epsilon}, we note that $\abs{\mathcal{N}_z}$ is less than the covering number of the $D$-ball in $d$ dimensions. Therefore
-	\begin{equation*}
-	\abs{\mathcal{N}_z} \leq \left(\frac{6D}{r} + 1\right)^d.
-	\end{equation*}
-	It is then immediately apparent that $n$ chosen as in Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex} yields \eqref{eqn: ball_bounds_epsilon}.
-\end{proof}
-
-Now, we consider the conductance function and local spread computed over $\widetilde{G}_{n,r}$, which we refer to by
+We introduce the \emph{$r$-ball walk}, a Markov chain over $\Csig$ with transition probability given by 
 \begin{equation*}
-\widetilde{\Phi}_{n,r}(t) = \Phi(t; \widetilde{G}_{n,r}), ~~ \widetilde{s}_{n,r} = s(\widetilde{G}_{n,r}).
+\widetilde{P}_{\Pbb,r}(x; \Sset) := \frac{\Pbb(\Sset \cap B(x,r))}{\Pbb(\Csig \cap B(x,r))} \tag{$x \in \Csig, \Sset \in \mathfrak{B}(\Csig)$}
 \end{equation*}
-where the restriction in the minimization problem of \eqref{eqn: conductance_function} is with respect to $\widetilde{\pi}_{n,r}$ the stationary distribution over $\widetilde{G}_{n,r}$.
+where $\mathfrak{B}(\Csig)$ is the Borel $\sigma$-algebra of $\Csig$. 
 
-We will bound $\widetilde{\Phi}_{n,r}(1/2)$ and $\widetilde{s}_{n,r}$ under the event that \eqref{eqn: ball_bounds_epsilon} holds, noting that this occurs with probability at least $1 - \delta$.
+Denote the stationary distribution for this Markov chain by $\piwt_{\Pbb,r}$, which is defined by the relation
+\begin{equation*}
+\int_{\Csig} \widetilde{P}_{\Pbb,r}(x; \Sset) d\piwt_{\Pbb,r}(x) = \piwt_{\Pbb,r}(\Sset).  \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+Letting the \emph{$\Pbb$-local conductance} be given by
+\begin{equation*}
+\ell_{\Pbb,r}(x) := \Pbb\bigl(\Csig \cap B(x,r)\bigr) \tag{$x \in \Csig$}
+\end{equation*}
+a bit of algebra verifies that
+\begin{equation*}
+\piwt_{\Pbb,r}(\Sset) = \frac{\int_{\Sset} \ell_{\Pbb,r}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r}(x) f(x) \dx}. \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+
+We next introduce the \emph{ergodic flow}, $\widetilde{Q}_{\Pbb,r}$. Let $\Sset_1 \cap \Sset_2 = \Csig$ be a partition of $\Csig$. Then the ergodic flow between $\Sset_1$ and $\Sset_2$ is given by 
+\begin{equation*}
+\widetilde{Q}_{\Pbb,r}(\Sset_1, \Sset_2) := \int_{\Sset_1} \widetilde{P}_{\Pbb,r}(x; \Sset_2) d\piwt_{\Pbb,r}(x), \tag{$\Sset_1, \Sset_2 \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+the \emph{$\Pbb$-(continuous) normalized cut} by
+\begin{equation*}
+\widetilde{\Phi}_{\Pbb,r}(\Sset) := \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c)}{\min \set{\piwt_{\Pbb,r}(\Sset),\piwt_{\Pbb,r}(\Sset^c)}}, \tag{$\Sset \in \mathfrak{B}(\Csig)$}
+\end{equation*}
+and the \emph{$\Pbb$-(continuous) conductance profile} by
+\begin{equation*}
+\widetilde{\Phi}_{\Pbb,r}(t) := \min_{\substack{\Sset \in \mathfrak{B}(\Csig) \\ 0 < \piwt_{\Pbb,r}(\Sset) \leq t} } \widetilde{\Phi}_{\Pbb,r}(\Sset) \tag{$0 < t \leq 1/2 $}
+\end{equation*}
+where $\Sset^c = \Csig \setminus \Sset$. 
+
+\begin{proposition}
+	\label{prop: nonuniform_continuous_conductance}
+	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the continuous conductance function of the $r$-ball walk satisfies
+	\begin{equation*}
+	\widetilde{\Phi}_{\Pbb,r}(t) > \frac{\lambda_{\sigma}^2 r}{2^{12} \Lambda_{\sigma}^2 D L \sqrt{d}}.
+	\end{equation*}
+	for any $0 < t \leq \frac{1}{2}$. 
+\end{proposition}
+
+Similar results are already known (see e.g. \cite{kannan04}) when the density $f$ is uniform (or log-concave) and $\Csig$ is itself a convex set -- indeed, in this case stronger versions of it exist, though we will not require them. We first prove an analogous result for the special case of $f \equiv 1$ everywhere on $\Csig$. For $x \in \Csig, \Sset \in \mathfrak{B}(\Csig)$, let 
+\begin{equation*}
+\widetilde{P}_{\nu,r}(x; \Sset) := \frac{\nu(\Sset \cap B(x,r))}{\nu(\Csig \cap B(x,r))}, \quad \pi_{\nu,r}(\Sset) = \frac{\int_{\Sset} \ell_{\nu,r}(x) \dx}{\int_{\Csig} \ell_{\nu,r}(x) \dx}, \quad  \widetilde{Q}_{\nu,r}(\Sset_1,\Sset_2) := \int_{\Sset_1} \widetilde{P}_{\nu,r}(x;\Sset_2) d\pi_{\nu,r}(x).
+\end{equation*}
+The uniform continuous normalized cut and conductance profile are then defined analogously to the weighted case,
+\begin{equation*}
+\widetilde{\Phi}_{\nu,r}(\Sset) := \frac{\widetilde{Q}_{\nu,r}(\Sset, \Sset^c)}{\min \set{\pi_{\nu,r}(\Sset),\pi_{\nu,r}(\Sset^c)}}, \quad \widetilde{\Phi}_{\nu,r}(t) := \min_{\substack{\Sset \in \mathfrak{B}(\Csig) \\ 0 < \pi_{\nu,r}(\Sset) \leq t} } \widetilde{\Phi}_{\nu,r}(\Sset).
+\end{equation*}
 
 \begin{lemma}
-	\label{lem: local_spread_lower_bound}
-	If the bounds given by \eqref{eqn: ball_bounds_epsilon} hold, then
+	\label{lem: uniform_continuous_conductance}
+	Let $\Cset$ satisfy Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the uniform conductance function of the $r$-ball walk satisfies
 	\begin{equation*}
-	\widetilde{s}_{n,r} \geq \frac{9}{10} \frac{(1 + \epsilon)^2}{(1 - \epsilon)^2}\frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{D^d} \beta_d^2
+	\widetilde{\Phi}_{\nu,r}(t) > \frac{r}{2^{12} D L \sqrt{d}}.
 	\end{equation*}
+	for any $0 < t \leq 1/2$.
 \end{lemma}
 
-\begin{proof}
-	The local spread can be written as
+Most of the technical work needed to show Proposition \ref{prop: nonuniform_continuous_conductance} involves proving Lemma \ref{lem: uniform_continuous_conductance}. We defer this work to the next subsection, and first show that Proposition \ref{prop: nonuniform_continuous_conductance} is a simple consequence of Lemma \ref{lem: uniform_continuous_conductance} along with \ref{asmp: bounded_density}.
+
+\paragraph{Proof of Proposition \ref{prop: nonuniform_continuous_conductance}.}
+
+Assume Lemma \ref{lem: uniform_continuous_conductance} holds. Since $t \leq 1/2$, for any Borel $\Sset \subseteq \Csig$ with $\piwt_{\Pbb,r}(\Sset) \leq t$,
+\begin{equation*}
+\widetilde{\Phi}_{\Pbb,r}(\Sset) = \frac{\widetilde{Q}_{\Pbb,r}(\Sset,\Sset^c)}{\piwt_{\Pbb,r}(\Sset)}
+\end{equation*}
+By \ref{asmp: bounded_density} we obtain
+\begin{align*}
+\frac{\widetilde{Q}_{\Pbb,r}(\Sset,\Sset^c)}{\piwt_{\Pbb,r}(\Sset)} & = \frac{\int_{\Sset} \Pbb(S \cap B(x,r)) f(x) \dx}{\int_{\Sset} \Pbb(\Csig \cap B(x,r)) f(x) \dx} \\
+& \geq \frac{\lambda_{\sigma}^2 \int_{\Sset} \nu(S \cap B(x,r)) \dx}{\Lambda_{\sigma}^2 \int_{\Sset} \nu(\Csig \cap B(x,r)) \dx} \\
+& \geq \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \widetilde{\Phi}_{\nu,r}(\Sset)
+\end{align*}
+Noting that $\widetilde{\Phi}_{\nu,r}(\Sset) = \widetilde{\Phi}_{\nu,r}(\Sset^c)$, and as $0 < \piwt_{\Pbb,r}(\Sset) < 1/2$, one of $0 < \pi_{\nu,r}(\Sset) \leq 1/2$ or $0 < \pi_{\nu,r}(\Sset^c) \leq 1/2$ must hold, the statement follows by Lemma \ref{lem: uniform_continuous_conductance}.
+
+\subsection{Proof of Lemma \ref{lem: uniform_continuous_conductance}.}
+
+As is standard, the proof of a lower bound on the conductance profile relies on an isoperimetric inequality.
+
+\begin{lemma}[Isoperimetry of Lipschitz embeddings of convex sets.]
+	\label{lem: nonconvex_isoperimetry}
+	Let $\Cset$ satisfy Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any partition $(\Omega_1,\Omega_2,\Omega_3)$ of $\Csig$, 
 	\begin{equation*}
-	\widetilde{s}_{n,r} = \frac{9}{10} \frac{\widetilde{D}_{\min}^2}{\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})} \geq  \frac{9}{10} \frac{\widetilde{D}_{\min}^2}{\widetilde{D}_{\max} \wn}.
+	\nu(\Omega_3) \geq 2\frac{\dist(\Omega_1, \Omega_2)}{L D_{K}} \min(\nu(\Omega_1), \nu(\Omega_2))
 	\end{equation*}
-	Then apply the relevant results of Lemma \ref{lem: ball_bounds}.
+\end{lemma}
+The proof of Lemma \ref{lem: nonconvex_isoperimetry} from first principles is non-trivial, even in the convex setting, and is a primary technical contribution of the seminal work \cite{lovasz1990}, extended by \cite{dyer1991} among others. 
+Once the result is shown in the case where $\Omega$ is convex, however, generalizing to the setting implied  Assumption \ref{asmp: embedding} is not difficult.
+
+\begin{proof}[Proof of Lemma \ref{lem: nonconvex_isoperimetry}]
+	For $\Omega_i, i = 1,2,3$, denote the preimage
+	\begin{equation*}
+	R_i = \set{x \in K: g(x) \in \Omega_i}
+	\end{equation*}
+	For any $x \in R_1, y \in R_2$, 
+	\begin{equation*}
+	\abs{x - y} \geq \frac{1}{L}\abs{g(x) - g(y)} \geq \frac{1}{L} \dist(\Omega_1, \Omega_2). 
+	\end{equation*}
+	Since $x \in \Omega_1$ and $y \in \Omega_2$ were arbitrary, we have
+	\begin{equation*}
+	\dist(R_1, R_2) \geq \frac{1}{L} \dist(\Omega_1, \Omega_2).
+	\end{equation*}
+	By Theorem 2.2 of \cite{lovasz1990},
+	\begin{align*}
+	\nu(R_3) & \geq 2\frac{\dist(R_1, R_2)}{D} \min \{\nu(R_1), \nu(R_2)\} \\
+	& \geq \frac{2}{D L} \dist(\Omega_1, \Omega_2) \min\{\nu(R_1), \vol(R_2)\}
+	\end{align*}
+	and by the measure-preserving property of $g$, this implies
+	\begin{equation*}
+	\nu(\Omega_3) \geq\frac{2}{D L} \dist(\Omega_1, \Omega_2) \min\{\nu(\Omega_1), \nu(\Omega_2)\}.
+	\end{equation*}
 \end{proof}
 
-\begin{lemma}
-	\label{lem: non_convex_conductance_lower_bound}
-	If the bounds given by \eqref{eqn: ball_bounds_epsilon} hold, then:
+We will also need an upper bound on the distance between transition probability densities $\widetilde{P}_{\nu,r}(u,\cdot)$ and $\widetilde{P}_{\nu,r}(v,\cdot)$ for $u,v \in \Csig$ close together. 
+\begin{lemma}[One-step distributions]
+	\label{lem: one_step_distributions}
+	Let $u,v \in \Csig$ be such that 
 	\begin{equation*}
-	\widetilde{\Phi}_{n,r}(1/2) \geq \frac{\lambda_{\sigma}(1 - \epsilon)\beta_d}{4\Lambda_{\sigma}(1 + \epsilon)3^d} \left(1 + \frac{(1 - \epsilon)r^d\lambda_{\sigma}}{(1 + \epsilon)D^d\Lambda_{\sigma}}\right)
+	\norm{u - v} \leq \frac{r t}{\sqrt{d}}
 	\end{equation*}
+	for some $0 < t < 1/8$, and further assume there exists $\ell > 0$ such that $\ell_{\nu,r}(u), \ell_{\nu,r}(v) \geq \ell \nu_d r^d$. Then,
+	\begin{equation*}
+	\norm{\widetilde{P}_{\nu,r}(u; \cdot) - \widetilde{P}_{\nu,r}(v; \cdot)}_{TV} \leq 1 + \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} - \ell
+	\end{equation*}
+	where $\norm{P - Q}_{TV}$ is the total variation distance between probabilities $P$ and $Q$. 
 \end{lemma}
 
+The key result needed to show Lemma \ref{lem: one_step_distributions} is regarding the volume of the overlap $B(u,r) \cap B(v,r)$. 
+
+\begin{lemma}
+	\label{lem: overlap_balls_1}
+	Let $u,v \in \Rd$ be points such that $\norm{u - v} \leq t\frac{r}{\sqrt{d}}$ for some $0 < t < 1/8$. Then,
+	\begin{equation*}
+	\nu(B(u,r) \cap B(v,r)) \geq \nu_d r^d \left(1 - \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} \right)
+	\end{equation*}
+\end{lemma}
 \begin{proof}
-	Fix $S \subset \wX$ with $\widetilde{\pi}_{n,r}(S) \leq 1/2$. Partition $\mathcal{N}_{\zbf} = \mathcal{N}_{\zbf}^+ \cup \mathcal{N}_{\zbf}^-$, where
-	\begin{align*}
-	\mathcal{N}_{\zbf}^- & = \set{B(z,r/3): 2 \Bigl\vert B(z,r/3) \cap S\Bigr\vert \leq \abs{B(z,r/3) \cap \wX} } \\
-	\mathcal{N}_{\zbf}^+ & = \mathcal{N}_{\zbf} \setminus \mathcal{N}_{\zbf}^-
-	\end{align*}
-	and correspondingly $S^- = \mathcal{N}_{\zbf}^- \cap S$, $S^+ = \mathcal{N}_{\zbf}^+ \cap S$, so
+	We will treat only the case where $\norm{u - v} = t\frac{r}{\sqrt{d}}$; if they are closer together the overlap of the volume will only increase. Then, it is not hard to see that $I = B(u,r) \cap B(v,r)$ is comprised of the union of two disjoint spherical caps, and thus
 	\begin{equation*}
-	\frac{\widetilde{\cut}_{n,r}(S)}{\widetilde{\vol}_{n,r}(S)} = \frac{\widetilde{\cut}_{n,r}(S^-; \widetilde{G}_{n,r} \setminus S) + \widetilde{\cut}_{n,r}(S^+; \widetilde{G}_{n,r} \setminus S)}{\widetilde{\vol}_{n,r}(S^-) + \widetilde{\vol}_{n,r}(S^+)}.
+	\nu(I) = 2\nu(\mathrm{Cap}_r(r(1 - \frac{t}{2 \sqrt{d}}))).
 	\end{equation*}
-	It is immediately apparent that the following bounds hold for all $S \subset \wX$:
-	\begin{align*}
-	\widetilde{\cut}_{n,r}(S^-; \widetilde{G}_{n,r} \setminus S) & \geq \frac{\abs{S^-} \widetilde{B}_{\min}}{2}\\
-	\widetilde{\vol}_{n,r}(S^-) & \leq \abs{S^-} \widetilde{D}_{\max} \\
-	\widetilde{\vol}_{n,r}(S^+) & \leq \widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) \1(\abs{N_{\zbf}^+} > 0 )
-	\end{align*}
-	If moreover $\abs{N_{\zbf}^+} < \abs{N_{\zbf}}$, then 
+	From Lemma \ref{lem: volume_of_spherical_cap} we therefore obtain
 	\begin{equation*}
-	\widetilde{\cut}_{n,r}(S^+; \widetilde{G}_{n,r} \setminus S) \geq \frac{\widetilde{B}_{\min}^2}{4} \1(\abs{N_{\zbf}^+} > 0)
+	\nu(I) = \nu_d r^d I_{1 - \alpha}(\frac{d + 1}{2}; \frac{1}{2})
 	\end{equation*}
-	follows from the fact that the graph $H_{n,r} = (\zbf, E_H)$, with ($z_i, z_j) \in E_H$ if $\norm{z_i - z_j} \leq r/3$, is connected. As a result, if $\abs{N_{\zbf}^+} < \abs{N_{\zbf}}$ we have
+	where
+	\begin{equation*}
+	\alpha = 1 - \frac{2r^2(1 - \frac{t}{2 \sqrt{d}}) - r^2(1 - \frac{t}{2 \sqrt{d}})^2}{r^2} = \frac{t^2}{4d}.
+	\end{equation*}
+	Expanding the incomplete beta function in integral form, we therefore have
+	\begin{align*}
+	\nu(I) & = \nu_d r^d \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \int_{0}^{1 - \alpha}u^{(d-1)/2}(1 - u)^{-1/2}du \\
+	& \overset{(i)}{\geq} \nu_d r^d \left(1 - \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \frac{3 t}{4\sqrt{d}} \right) \\
+	& \overset{(ii)}{\geq} \nu_d r^d \left(1 -  \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} \right)
+	\end{align*}
+	where $(i)$ follows from Lemma \ref{lem: beta_integral} (which we can validly apply since $\alpha \leq \frac{t^2}{2d}$), and $(ii)$ from Lemma \ref{lem: beta_function}.
+\end{proof}
+
+\begin{proof}[Proof of Lemma \ref{lem: one_step_distributions}]
+	Let $S_1 \cup S_2 = \Csig$ be an arbitrary partition of $\Csig$. We will show that 
+	\begin{equation*}
+	\widetilde{P}_{\nu,r}(u; S_1) - \widetilde{P}_{\nu,r}(v; S_1) \leq 1 + \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} - \ell.
+	\end{equation*}
+	Since this will hold for arbitrary $S_1 \in \mathfrak{B}(\Csig)$, it will hold for the infimum over all such $S_1$ as well, and therefore the same lower bound will hold for $\norm{\widetilde{P}_{\nu,r}(u; \cdot) - \widetilde{P}_{\nu,r}(v; \cdot)}_{TV}$.
+	
+	Now, note that
+	\begin{align*}
+	\widetilde{P}_{\nu,r}(u; S_1) - \widetilde{P}_{\nu,r}(v; S_1) & = 1 - \widetilde{P}_{\nu,r}(u; S_2) - \widetilde{P}_{\nu,r}(v; S_1)
+	\end{align*}
+	Let $I := B(u,r) \cap B(v,r)$. Then we have
+	\begin{equation*}
+	\widetilde{P}_{\nu,r}(u; S_2) \geq \frac{1}{\nu(B(u,r))} \nu(S_2 \cap (B(u,r)) \geq \frac{1}{\nu(B(u,r))} \nu(S_2 \cap I)
+	\end{equation*}
+	with a symmetric inequality holding for $\widetilde{P}_{\nu,r}(v; S_1)$. As a result,
 	\begin{equation}
-	\label{eqn: normalized_cut_1}
-	\frac{\widetilde{\cut}_{n,r}(S)}{\widetilde{\vol}_{n,r}(S)} \geq \frac{ \widetilde{B}_{\min}}{4\widetilde{D}_{\max}} +  \frac{\widetilde{B}_{\min}^2}{8 \widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})}
+	1 - \widetilde{P}_{\nu,r}(u; S_2) - \widetilde{P}_{\nu,r}(v; S_1) \leq 1 - \frac{1}{\nu_d r^d} \nu(\Csig \cap I) \label{eqn: one_step_1}
 	\end{equation}
-	using the inequality $2(A + B)/ (C + D) \geq A/C + B/D$ for $A,B,C,D$ non-negative.
+	As \eqref{eqn: one_step_1} demonstrates, the overlap of the one-step distributions is related to the volume of the intersection between $B(u,r)$ and $B(v,r)$ within $\Csig$.
 	
-	If, on the other hand , $\abs{\mathcal{N}_{\zbf}^+} = \mathcal{N}_{\zbf}$, then \eqref{eqn: normalized_cut_1} holds with respect to $S^c$. Then, because $\widetilde{\pi}_{n,r}(S) \leq 1/2$, 
-	\begin{equation*}
-	\frac{\widetilde{\cut}_{n,r}(S^c)}{\widetilde{\vol}_{n,r}(S^c)} \leq \frac{\widetilde{\cut}_{n,r}(S)}{\widetilde{\vol}_{n,r}(S)}
-	\end{equation*}
-	and so we get the exact statement of \eqref{eqn: normalized_cut_1}. Noting, as in the proof of Lemma \ref{lem: local_spread_lower_bound}, that  $\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r}) \leq \wn \cdot \widetilde{D}_{\max}$, the relevant results of Lemma \ref{lem: ball_bounds} yield the desired inequality. 
+	From here, some simple manipulations yield
+	\begin{align}
+	\nu(\Csig \cap I)  & = \nu(I) - \nu(I \setminus \Csig) \nonumber \\
+	& \geq \nu(I) - \max \set{\nu\bigl(B(u,r) \setminus \Csig\bigr), \nu\bigl(B(v,r) \setminus \Csig\bigr)} \nonumber \\
+	& \geq \nu_d r^d \left(1 - \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} - (1 -\ell) \label{eqn: one_step_2} \right) = \nu_d r^d\left(\ell - \frac{3 \sqrt{3} t}{4\sqrt{2\pi}}\right)
+	\end{align}
+	where the last inequality follows from Lemma \ref{lem: overlap_balls_1}. \eqref{eqn: one_step_2} along with \eqref{eqn: one_step_1} then give the desired result.
 \end{proof}
 
-\subsection{Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}}
-\label{sec: inverse_mixing_time_lower_bound_nonconvex}
-
-Throughout this proof, we will condition on the events of Lemmas \ref{lem: local_spread_lower_bound} and \ref{lem: non_convex_conductance_lower_bound},
-namely
-\begin{align*}
-\widetilde{s}_{n,r} & \geq \frac{9}{10} \frac{(1 + \epsilon)^2}{(1 - \epsilon)^2}\frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{D^d} \beta_d^2 \\
-\widetilde{\Phi}_{n,r}(1/2) & \geq \frac{\lambda_{\sigma}(1 - \epsilon)\beta_d}{4\Lambda_{\sigma}(1 + \epsilon)3^d} \left(1 + \frac{(1 - \epsilon)r^d\lambda_{\sigma}}{(1 + \epsilon)D^d\Lambda_{\sigma}}\right)
-\end{align*}
-noting that for $n$ as chosen in Theorem \ref{thm: inverse_mixing_time_lower_bound}, this will occur with probability at least $1 - \delta$ (by Lemma \ref{lem: ball_bounds}).
-
-As a reminder, we write $\Csig[\Xbf] = \wX$, and $G_{n,r}[\Csig[\Xbf]]$ as $\widetilde{G}_{n,r}$. Fix arbitrary $v \in \wX$, and let
+\paragraph{Proof of Lemma \ref{lem: uniform_continuous_conductance}.}
+	Let $S_1 \cup S_2 = \Csig$, and let $\ell \geq 0$ satisfy $\ell \nu_d r^d  \leq \ell_{\nu,r}(x)$. We will show that 
 \begin{equation*}
-\widetilde{\qbf}_n^{(m)} = e_v \Wbf_{\wX}^t, ~~ \widetilde{\qbf}_n = (\widetilde{q}_n^{(1)}, \widetilde{\qbf}_n^{(2)}, \ldots)
+\int_{S_1} \widetilde{P}_{\nu,r}(x; S_2) d \pi_{\nu,r}(x) \geq \frac{\sqrt{2 \pi} r \ell^4}{24 D L \sqrt{d}} \min\set{\pi_{\nu,r}(S_1), \pi_{\nu,r}(S_2)}
 \end{equation*}
-Our goal is to upper bound $\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$. (As we will see, this bound will hold over all such starting vertices $v \in \wX$.)
+Once we have shown this, Lemma \ref{lem: local_conductance} gives the bound $\ell \geq \frac{6}{25}$. Then, dividing both sides by $\pi_{\nu,r}(S_1)$ yields the desired result.
 
-By Lemma \ref{lem: local_spread_G},
+Now, consider the sets
 \begin{align*}
-\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) & \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, \log\left(\frac{4}{\widetilde{s}_{n,r}}\right) \right\} \nonumber \\
-& \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, d\log\left(\frac{8 D (1 + \epsilon)^2 \Lambda_{\sigma}^2}{r (1 - \epsilon)^2 \lambda_{\sigma}^2}\right) \right\}
-\end{align*} 
+S_1' & = \set{x \in S_1: \widetilde{P}_{\nu,r}(x; S_2) < \frac{\ell}{4}} \\
+S_2' & = \set{x \in S_1: \widetilde{P}_{\nu,r}(x; S_2) < \frac{\ell}{4}}
+\end{align*}
+and $S_3' = \Csig \setminus S_1' \setminus S_2'$. 
 
-We now upper bound $\tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.  From Lemma \ref{lem: expansion_to_tv_distance}, we have that
-\begin{align}
-\label{eqn: mixing_time_bound_on_neighborhood_graph_thm2}
-\tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) & \leq \frac{1400}{3}\left(5 + \int_{\widetilde{s}_{n,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt\right) \nonumber \\
-& \leq \frac{1400}{3}\left(5 + \int_{ s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt \right)
-\end{align}
-where $s_{\Pbb,r} = \frac{9}{10} \frac{(1 + \epsilon)^2}{(1 - \epsilon)^2}\frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \frac{r^d}{D^d} \beta_d^2$.(Since $r$ remains constant, for sufficiently large $n$ the lower bound on $\widetilde{D}_{\min}$ of Lemma \ref{lem: ball_bounds} will be at least $10$, and therefore Lemma \ref{lem: local_spread_blocking_conductance_function} holds.)
+Suppose $\pi_{\nu,r}(S_1') < \pi_{\nu,r}(S_1)/2$. Then,
+\begin{equation*}
+\int_{S_1} \widetilde{P}_{\nu,r}(x; S_2) d \pi_{\nu,r}(x) \geq \frac{\ell  \pi_{\nu,r}(S_1)}{8}
+\end{equation*}
+Similarly, if $\pi_{\nu,r}(S_1') < \pi_{\nu,r}(S_1)/2$, then since
+\begin{equation*}
+\int_{S_1} \widetilde{P}_{\nu,r}(x; S_2) d \pi_{\nu,r}(x) = \int_{S_2} \widetilde{P}_{\nu,r}(x; S_2) d \pi_{\nu,r}(x)
+\end{equation*}
+a symmetric result holds.
 
-Now, we can upper bound the average conductance integral:
+So we can assume $\pi_{\nu,r}(S_1') \geq \pi_{\nu,r}(S_1)/2$, and likewise for $S_2$. Now, for every $u \in S_1', v \in S_2'$, we have that
+\begin{equation*}
+\norm{\widetilde{P}_{\nu,r}(u;\cdot) - \widetilde{P}_{\nu,r}(v;\cdot)}_{TV} \geq 1 - \widetilde{P}_{\nu,r}(u;S_1) - \widetilde{P}_{\nu,r}(v;S_2) > 1 - \frac{\ell}{2}.
+\end{equation*}
+
+By Lemma \ref{lem: one_step_distributions}, we therefore have
+\begin{equation*}
+\norm{u - v} \geq \frac{2 \sqrt{2 \pi } r \ell}{3\sqrt{3 d}}.
+\end{equation*}
+and since $u \in S_1', v \in S_2'$ were arbitrary, the same inequality holds for $\mathrm{dist}(S_1', S_2')$. Therefore by Lemma \ref{lem: nonconvex_isoperimetry}
+\begin{equation*}
+\vol(S_3') \geq  \frac{2 \sqrt{2 \pi} r \ell}{3 D L \sqrt{3 d}} \min \set{\vol(S_1'), \vol(S_2')}
+\end{equation*}
+We now prove the desired result:
 \begin{align*}
-\int_{ s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt & \leq \int_{ s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(1/2)} dt \\
-& \leq 64\frac{9^d\Lambda_{\sigma}^2(1 + \epsilon)^2\beta_d^2}{\lambda_{\sigma}^2(1 - \epsilon)^2} \left(1 + \frac{(1 - \epsilon)r^d\lambda_{\sigma}}{(1 + \epsilon)D^d\Lambda_{\sigma}}\right)^{-2} \log s_{\Pbb,r}.
+\int_{S_1} \widetilde{P}_{\nu,r}(x; S_2) & = \frac{1}{2} \bigl(\int_{S_2} \widetilde{P}_{\nu,r}(x; S_2)  d \pi_{\nu,r}(x) \bigr) \\
+& \geq \frac{\ell}{8} \pi_{\nu,r}(S_3') \\
+& \geq \frac{\ell^2}{8 \nu(\Csig)} \nu(S_3') \\
+& \geq \frac{\sqrt{2} r \ell^3}{12 D L \sqrt{d} \nu(\Csig)} \min \set{\nu(S_1'), \nu(S_2')} \\
+& \geq \frac{\sqrt{2} r \ell^4}{12 D L \sqrt{d}} \min \set {\pi_{\nu,r}(S_1'), \pi_{\nu,r}(S_2')} \\
+& \geq \frac{\sqrt{2} r \ell^4}{24 D L \sqrt{d}} \min \set {\pi_{\nu,r}(S_1), \pi_{\nu,r}(S_2)}.
 \end{align*}
 
-Plugging this in to \eqref{eqn: mixing_time_bound_on_neighborhood_graph_thm2} gives the desired upper bound on $\tau_{\infty}(\widetilde{q}_n, \widetilde{G}_{n,r})$, which translates to the lower bound of \eqref{eqn: inverse_mixing_time_lower_bound}.
+\subsection{Graph conductance profile and local spread.}
 
-\subsection{Population-level conductance function: convex case.}
-\label{sec: convex_population_conductance_function}
+Let $\widetilde{G}_{n,r} := G_{n,r}\bigl[\Csig[\Xbf]\bigr]$ denote the subgraph induced by $\Csig[\Xbf]$.$\widetilde{{\Phi}}_{n,r}(t)$, the graph conductance profile over $\widetilde{G}_{n,r}$ is defined in \eqref{eqn: graph_conductance_profile}. Write $\piminwt := \min_{u \in \Csig[\Xbf]} \piwt_{n,r}(u)$. 
 
-When $\Cset$ is convex, we will make use of the theory developed in \ref{sec: mixing_time_on_graphs} with respect to the conductance function $\Phi(t; G_{n,r}[\Csig(\Xbf)])$. First, however, we introduce a population-level analogue to $\Phi(t; G_{n,r}[\Csig(\Xbf)])$ over the set $\Csig$, which we denote $\widetilde{\Phi}_{\Pbb,r}$. (In general, we will adopt the convention of using $\widetilde{f}$ to denote functionals computed with respect to $\Csig$.)
+\begin{proposition}[Lower bound on graph conductance profile]
+	\label{prop: graph_conductance_profile_lb}
+	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, with probability one the following lower bound holds on the graph conductance function:
+	\begin{equation*}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) > \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}} \tag{$0 < t \leq \frac{1}{2}$}
+	\end{equation*}
+\end{proposition}
 
-For $\Sset \subset \Rd$
+In order to prove Proposition \ref{prop: graph_conductance_profile_lb}, we will need to split the analysis into two cases based on the size of $S \subseteq \Csig[\Xbf]$. For any graph $G = (V,E)$, let $\mathcal{L}(G) = \set{S \subseteq V: \pi(S) \geq s(G)}$ (where as usual $\pi$ denotes the stationary distribution of a random walk over $G$.)
+
+In Lemma \ref{lem: graph_conductance_profile_lb}, we establish a uniform lower bound on the normalized cut of all sets $S \in \mathcal{L}(\widetilde{G}_{n,r})$. 
+
+\begin{lemma}
+	\label{lem: graph_conductance_profile_lb}
+	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$ Then with probability one,
+	\begin{equation*}
+	\liminf_{n \to \infty} \left\{ \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) \right\} \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}}
+	\end{equation*}
+	where $\mathcal{L}(\widetilde{G}_{n,r}) = \set{S \subseteq \Csig[\Xbf]: \widetilde{\pi}_{n,r}(S) \geq s(\widetilde{G}_{n,r})}$.
+\end{lemma}
+
+The proof of Lemma \ref{lem: graph_conductance_profile_lb} is nontrivial, and we devote the following subsection to it. 
+
+Lemma \ref{lem: graph_conductance_profile_lb_1} shows that for the remaining small sets, the graph normalized cut is of constant order. 
+\begin{lemma}
+	\label{lem: graph_conductance_profile_lb_1}
+	Let $G = (V,E)$ be an arbitrary undirected graph. Then, for non-empty subsets $S \subseteq V$, 
+	\begin{equation*}
+	\min_{S \not\in \mathcal{L}(G)}\Phi(S; G) \geq \frac{1}{10}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Observing that
+	\begin{equation*}
+	\Phi(S;G) \geq \sum_{u \in S} q^{(1)}(u,S^c) \frac{\deg(u;G)}{\vol(S)},
+	\end{equation*}
+	the claim follows by Lemma \ref{lem: local_spread_G}.
+\end{proof}
+
+Proposition \ref{prop: graph_conductance_profile_lb} follows in light of the fact $\frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}} < \frac{1}{10}$.
+
+\begin{lemma}
+	\label{lem: local_spread_lb}
+	With probability one, the following bound holds:
+	\begin{equation*}
+	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}} 
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We rewrite $s(\widetilde{G}_{n,r}) = \frac{9 \degminwt^2}{10\widetilde{\vol}_{n,r}(\Csig[\Xbf])}$ Therefore by Lemma \ref{lem: ball_bounds_in_probability}, with probability one
+	\begin{equation*}
+	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{36 \lambda_{\sigma} r^d \nu_d}{625 \Pbb(\Csig) \Lambda_{\sigma}} \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}}.
+	\end{equation*}
+\end{proof}
+
+\subsection{Proof of Lemma \ref{lem: graph_conductance_profile_lb}}
+
+Let $\mathfrak{B}(\Csig)$ be the Borel $\sigma$-algebra of $\Csig$, and define the conditional probability measures
 \begin{equation*}
-\nu_{\Pbb}(\Sset) := \int_{\Sset} f(x) dx
+\widetilde{\Pbb}(\Sset) = \frac{\Pbb(\Sset)}{\Pbb(\Csig)}, ~ \widetilde{\Pbb}_{n}(\Sset) := \frac{1}{\abs{\Csig[\Xbf]}} \sum_{x_i \in \Csig[\Xbf]} \1(x_i \in \Sset) \tag{$\Sset \in \mathfrak{B}(\Csig)$}
 \end{equation*} 
-is the weighted volume.
+A Borel map $T: \Csig \to \Csig[\Xbf]$ is said to be a \emph{transportation map} between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ if for any $S \subseteq \Csig[\Xbf]$
+\begin{equation*}
+\widetilde{\Pbb}(T^{-1}(S)) = \widetilde{\Pbb}_n(S).
+\end{equation*}
+where $T^{-1}(S) = \set{x \in \Csig: T(x) \in S}$ is the preimage of $T$. 
 
-The $r$-ball walk over $\Csig$ is a Markov chain. For $x \in \Csig$ and $\Sset, \Sset' \subset \Csig$, the transition probability is given by
-\begin{equation*}
-\widetilde{P}_{\Pbb, r}(x;\Sset) := \frac{\nu_\Pbb(\Sset \cap B(x,r))}{\nu_\Pbb(\Csig \cap B(x,r))}.
-\end{equation*}
-The stationary distribution $\pi_{\Pbb,r}$ thus satisfies
-\begin{equation*}
-\int_{\Csig}  \widetilde{P}_{\Pbb, r}(x;\Sset) d\pi_{\Pbb,r}(x) = \pi_{\Pbb,r}(\Sset)
-\end{equation*}
-for all $\Sset \in \Csig$. A simple calculation yields 
-\begin{equation*}
-\ell_{\Pbb,r}(x) := \nu_\Pbb(\Csig \cap B(x,r)) ~~~ \pi_{\Pbb,r}(\Sset) := \frac{1}{\int_{\Csig} f(x) \ell_{\Pbb,r}(x) dx} \int_{\Sset} f(x) \ell_{\Pbb,r}(x) dx,
-\end{equation*}
-and therefore the ergodic flow is
-\begin{align*}
-\widetilde{Q}_{\Pbb, r}(\Sset, \Sset') & := \int_{\Sset} d\pi_{\Pbb,r}(x) P_{\Pbb, r}(x;\Sset') dx \\
-& =  \frac{1}{\int_{\Csig} f(x) \ell_{\Pbb,r}(x) dx} \int_{\Sset} f(x) \left(\int_{\Sset' \cap B(x,r)} f(x') dx' \right) dx
-\end{align*}
-The continuous conductance function is then
-\begin{align*}
-\widetilde{\Phi}_{\Pbb,r}(t) & := \min_{\substack{\Sset \subset \Csig, \\ \pi_{\Pbb,r}(\Sset) \leq t} } \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)} \\
-& = \min_{\substack{\Sset \subset \Csig, \\ \pi_{\Pbb,r}(\Sset) \leq t} } \frac{\int_{\Sset} f(x) \left(\int_{(\Csig \setminus \Sset) \cap B(x,r)} f(x') dx' \right) dx}{\int_{\Sset} f(x) \left(\int_{\Csig \cap B(x,r)} f(x') dx' \right) dx}.
-\end{align*}
+If a sequence of transportation maps $\seq{T_n}$ satisfies $\lim_{n \to \infty}\norm{\mathrm{Id} - T_n}_{L^{1}(\widetilde{\Pbb})} = 0$ (where $\mathrm{Id}$ is the identity mapping), we refer to it as a sequence of \emph{stagnating transportation maps}. Proposition 5 of \cite{garciatrillos16} establishes that, for open connected domains with Lipschitz boundaries, such stagnating transportation maps exist. In particular, as $\Csig[\Xbf]$ consists of $\widetilde{n} = \abs{\Csig[\Xbf]}$ points sampled independently from $\widetilde{\Pbb}$, and $\Csig$ is a connected domain with Lipschitz boundary, the following implication is immediate.
 
-For $m > 0$ and $0 < t_0 < t_1 < \ldots < t_m < 1$, denote the \emph{stepwise approximation to $g$} by $\bar{g}$, defined as
-\begin{equation}
-\label{eqn: stepwise_approximation}
-\bar{g}(t) = g(t_i), ~~ \text{ for $t \in [t_{i-1}, t_i]$ }
-\end{equation}
-The stepwise approximation will be important to showing the consistency results of Section \ref{sec: pointwise_consistency_of_conductance_function} can be translated to a uniform bound. Lemma \ref{lem: stepwise_approximation} shows that the approximation will not overly degrade our estimates of the population-level conductance function.
 \begin{lemma}
-	\label{lem: stepwise_approximation}
-	\begin{itemize}
-		\item For any function $f$ monotone decreasing in $t$ on the interval $[t_0,t_m]$, $\bar{f}(t) \leq f(t)$ for all $t \in [t_0,t_m]$.
-		\item Fix
-		\begin{equation*}
-		g(t) = \log\left(\frac{1}{t}\right) \text{ for $x \in [t_0, 1/2]$}
-		\end{equation*}
-		If for all $i$ in $1,\ldots,m$, $(t_i - t_{i - 1}) \leq t_0/2$, then $\bar{g}(t)\geq g(t) / 2$.
-	\end{itemize}
+	\label{lem: stagnating_transportation_maps}
+	With probability one, there exists a sequence of transportation maps $\seq{T_n}$, $T_n: \Csig \to \Csig[\Xbf]$ such that the following statement holds:
+	\begin{equation}
+	\label{eqn: stagnating_transportation_maps}
+	\limsup_{n \to \infty} \frac{\widetilde{n}^{1/d} \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}}{(\log \widetilde{n})^{p_d}} \leq C
+	\end{equation}
+	where $\mathrm{Id}(x) = x$ is the identity mapping over $\Csig$, $C$ is a universal constant and $p_d = 3/4$ for $d = 2$ and $1/d$ for $d \geq 3$.
+\end{lemma}
+
+%%% AJG 5/9/19: Need to strengthen this?
+
+Note that although $\Csig$ is closed not open, as $\nu(\partial \Csig) = 0$ we may apply Proposition 5 of \cite{garciatrillos16} to $\Csig^o$, and \eqref{eqn: stagnating_transportation_maps} will hold for arbitrary extension of $T_n$ to $\Csig$.
+
+\paragraph{Graph cuts to continuous cuts.}
+
+We use stagnating transportation maps to relate the discrete graph normalized cuts to the continuous normalized cuts discussed in Section \ref{sec: population_conductance_function}. We fix some notation, letting $r_n^{\pm} = r \pm \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$ for a transportation map $T_n$.
+
+Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound} provide the necessary bounds for the $\cut$ and $\vol$ functionals in terms of continuous analogues.
+
+\begin{lemma}
+	\label{lem: volume_bound}
+	Let $S \subseteq \Csig[\Xbf]$ and $T_n$ be a transportation map between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$. Then, letting $\Sset := T_n^{-1}(S)$,
+	\begin{equation*}
+	\frac{1}{\widetilde{n}^2}\widetilde{\vol}_{n,r}(S) \leq \frac{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx}{\Pbb(\Csig)^2} \piwt_{\Pbb,r_n^+}(\Sset).
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Let $\varphi: \Csig[\Xbf] \to \set{0,1}$ be the characteristic function for $S$, meaning
+	\begin{equation*}
+	\varphi(x) = 
+	\begin{cases}
+	1,~ x \in S \\
+	0,~ \text{otherwise}
+	\end{cases}
+	\end{equation*}
+	
+	Now, we proceed
+	\begin{align}
+	\frac{1}{\widetilde{n}^2} \widetilde{\vol}_{n,r}(S) & \leq \frac{1}{\widetilde{n}^2} \sum_{x_i, x_j \in \Csig[\Xbf]} \1(\norm{x_i - x_j} \leq r) \abs{\varphi(x_i)} \nonumber \\
+	& = \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r) \abs{\varphi(x)} d\widetilde{\Pbb}_n(x) d\widetilde{\Pbb}_n(y) \nonumber \\
+	& =  \iint_{\Csig \times \Csig} \1(\norm{T_n(x) - T_n(y)} \leq r) \abs{\varphi \circ T_n(x)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \nonumber \\
+	& \leq \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r_n^+) \abs{\varphi \circ T_n(x)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \nonumber \\
+	& = \int_{\Sset} \int_{\Csig \cap B(x,r_n^+)} 1 d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x) \nonumber
+	\end{align}
+	
+	By definition we have $\frac{d\widetilde{\Pbb}(x)}{d\Pbb(x)} = \Pbb(\Csig)$. Therefore,
+	\begin{align*}
+	\int_{\Sset} \int_{\Csig \cap B(x,r_n^+)} 1 d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x) & = \frac{1}{\Pbb(\Csig)^2}\int_{\Sset} \int_{\Csig \cap B(x,r_n^+)} 1 d\Pbb(y) d\Pbb(x) \\
+	& = \frac{1}{\Pbb(\Csig)^2}\int_{\Sset} \ell_{\Pbb,r_n^+}(x) f(x) \dx \\
+	& = \frac{\int_{\Csig} \ell_{\Pbb,r}(x) f(x) \dx}{\Pbb(\Csig)^2} \piwt_{\Pbb,r_n^+}(\Sset)
+	\end{align*}
+	which is the desired upper bound.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: cut_bound}
+	Let $S \subseteq \Csig[\Xbf]$, and let $T_n$ be a transportation map between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$. Then, letting $\Sset = T_n^{-1}(S)$,
+	\begin{equation*}
+	\frac{1}{\widetilde{n}^2} \widetilde{\cut}_{n,r}(S) \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}f(x) \dx}{\Pbb(\Csig)^2} \widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c).
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	As in the proof of Lemma \ref{lem: volume_bound}, let $\varphi: \Csig[\Xbf] \to \set{0,1}$ be the characteristic function for $S$.
+	
+	We proceed according to a very similar set of steps as Lemma \ref{lem: volume_bound}:
+	\begin{align*}
+	\frac{1}{\widetilde{n}^2} \widetilde{\cut}_{n,r}(S) & = \frac{1}{\widetilde{n}^2} \sum_{x_i, x_j \in \Csig[\Xbf]} \1(\norm{x_i - x_j} \leq r) \abs{\varphi(x_i) - \varphi(x_j)} \\
+	& = \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r) \abs{\varphi(x) - \varphi(y)} d\widetilde{\Pbb}_n(x) d\widetilde{\Pbb}_n(y) \\
+	& =  \iint_{\Csig \times \Csig} \1(\norm{T_n(x) - T_n(y)} \leq r) \abs{\varphi \circ T_n(x) - \varphi \circ T_n(y)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \\
+	& \geq \iint_{\Csig \times \Csig} \1(\norm{x - y} \leq r_n^-) \abs{\varphi \circ T_n(x) - \varphi \circ T_n(y)} d\widetilde{\Pbb}(x) d\widetilde{\Pbb}(y) \\
+	& = \int_{\Sset} \int_{\Sset^c \cap B(x,r_n^-)} d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x)
+	\end{align*}
+	We conclude similarly to the proof of Lemma \ref{lem: volume_bound},
+	\begin{align*}
+	\int_{\Sset} \int_{\Sset^c \cap B(x,r_n^-)} d\widetilde{\Pbb}(y) d\widetilde{\Pbb}(x) & = \frac{1}{\Pbb(\Csig)^2} \int_{\Sset} \int_{\Sset^c \cap B(x,r_n^-)} d\Pbb(y) d\Pbb(x) \\
+	& = \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) d\Pbb(x)}{\Pbb(\Csig)^2} \int_{\Sset} \frac{\Pbb\bigl(\Sset^c \cap B(x,r_n^-)\bigr)}{\ell_{\Pbb,r_n^-}(x)} d\piwt_{\Pbb,r}(x) \\
+	& = \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}f(x) \dx}{\Pbb(\Csig)^2} \widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c).
+	\end{align*}	
+\end{proof}
+
+\begin{lemma}
+	\label{lem: graph_to_continuous_conductance}
+	Let $\seq{T_n}$ be a sequence of transportation maps from $\widetilde{\Pbb}$ to $\widetilde{\Pbb}_n$, and fix $S \subseteq \Csig[\Xbf]$. Then, letting $\Sset =T_n^{-1}(S)$,
+	\begin{equation}
+	\label{eqn: graph_to_continuous_conductance}
+	\widetilde{\Phi}_{n,r}(S) \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx}  \frac{\min \set{\piwt_{\Pbb,r_n^-}(\Sset), \piwt_{\Pbb,r_n^-}(\Sset^c)} }{\min \set{\piwt_{\Pbb,r_n^+}(\Sset), \piwt_{\Pbb,r_n^+}(\Sset^c)} } \widetilde{\Phi}_{\Pbb,r_n^{-}}(\Sset)
+	\end{equation}
 \end{lemma}
 
 \begin{proof}
-	The first statement is immediately obvious, and we turn to proving the second. 
 	
-	The upper bound $g(t) \geq \bar{g}(t)$ follows immediately from the fact that $g(t)$ is a decreasing function along with the first statement.
+	By Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound},
+	\begin{equation*}
+	\frac{\widetilde{\cut}_{n,r}(S)}{\widetilde{\vol}_{n,r}(S)} \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx} \frac{\widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c)}{\piwt_{\Pbb,r_n^+}(\Sset)}.
+	\end{equation*}
 	
-	By the concavity of the $\log$ function, 
+	Then, noting that $\Sset^c = T_n^{-1}(S^c)$, Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound} also imply
 	\begin{equation*}
-	\bar{g}(t) = \log\left(\frac{1}{t_i}\right) \geq \log\left(\frac{1}{t}\right) - \frac{(t_i - t)}{t}.
+	\frac{\widetilde{\cut}_{n,r}(S^c)}{\widetilde{\vol}_{n,r}(S^c)} \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx} \frac{\widetilde{Q}_{\Pbb,r_n^-}(\Sset^c, \Sset)}{\piwt_{\Pbb,r_n^+}(\Sset^c)}
 	\end{equation*}
-	As a result,
+	and as $\widetilde{Q}_{\Pbb,r_n^-}(\cdot, \cdot)$ is symmetric in its arguments we obtain
 	\begin{equation*}
-	\bar{g}(t) - \frac{g(t)}{2} \geq \frac{\log\left(\frac{1}{t}\right)}{2} - \frac{(t_i - t)}{t} \geq 1/2 - 1/2 = 0.
+	\frac{\widetilde{\cut}(S)}{\min\set{\widetilde{\vol}(S), \widetilde{\vol}(S^c)}} \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx} \frac{\widetilde{Q}_{\Pbb,r_n^-}(\Sset, \Sset^c)}{\min \set{\piwt_{\Pbb,r_n^+}(\Sset), \piwt_{\Pbb,r_n^+}(\Sset^c)} },
 	\end{equation*}
+	and the proof is complete.
 \end{proof}
 
-The following theorem is found in \cite{kannan04}. It gives a bound population-level conductance function over convex bodies, when the density is uniform.
-\begin{theorem}[Restatement of \cite{kannan04} Theorem 4.6]
-	\label{thm: kannan}
-	Let $K \subset \Rd$ be a convex body of diameter $D$. Then for any $\Sset \subset K$ with $\pi_{\nu,r}(\Sset) \leq 1/2$,
-	\begin{equation}
-	\label{eqn: kannan}
-	\frac{Q_{\nu,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\nu,r}(\Sset)} > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(1 + \frac{1}{\pi_{\nu,r}(\Sset)}\right)\right\}.
-	\end{equation}
-\end{theorem}
+\paragraph{Perturbation analysis.}
 
-\begin{lemma}
-	\label{lem: continuous_conductance_lower_bound}
-	Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, the following bounds hold: 
-	\begin{itemize}
-		\item 
-		for $0 < t < 1/2$,
-		\begin{equation*}
-		\widetilde{\Phi}_{\Pbb,r}(t) > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(1 + \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2 t}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
-		\end{equation*}
-		\item
-		Let
-		\begin{equation*}
-		M = \frac{2^{d+1}D^d \Lambda_{\sigma}^2}{r^d \lambda_{\sigma}^2}
-		\end{equation*}
-		and $t_i = (i + 1)/M$ for $i = 0, \ldots, m - 1$. Then, for $1/M < t < 1/2$
-		\begin{equation*}
-		\overline{\Phi}_{\Pbb,r}(t) > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{162 \sqrt{d}D}\Log\left( \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2 t}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
-		\end{equation*}
-		where $\overline{\Phi}_{\Pbb,r}(t)$ is defined as in \eqref{eqn: stepwise_approximation} with respect to $t_0, \ldots t_{M - 1}$, and $\Log(A/t) = \max\{\log(1 + 2A), \log(A/t)\}$.
-	\end{itemize}
+If $r_n^- = r = r_n^+$, \eqref{eqn: graph_to_continuous_conductance} would simplify to $\widetilde{\Phi}_{n,r}(S) \geq \widetilde{\Phi}_{\Pbb,r}(\Sset)$. We show that this conclusion is robust to asymptotically negligible perturbations of $r$.
+
+\begin{lemma}[Continuity of local conductance]
+	\label{lem: cont_local_conductance}
+	For $\seq{T_n}$ a sequence of stagnating transportation maps,
+	\begin{equation*}
+	\limsup_{n \to \infty} \frac{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx} = 1
+	\end{equation*}
 \end{lemma}
-Before we prove Lemma \ref{lem: continuous_conductance_lower_bound}, note that the choice of $M$ is made to ensure $t_0$ is greater than the local spread of $G_{n,r}\left[\Csig[\Xbf]\right]$, as we will see in Section \ref{sec: convex_consistency}.
-\begin{proof}[Proof of Lemma \ref{lem: continuous_conductance_lower_bound}]
-	We note that
-	\begin{equation*}
-	\pi_{\Pbb,r}(S) \leq \pi_{\nu,r}(S) \cdot \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2}, ~~~ Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset) \geq Q_{\nu,r}(\Sset, \Csig \setminus \Sset) \cdot \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2}
-	\end{equation*}
-	
-	Plugging these estimates in to \eqref{eqn: kannan} gives
-	\begin{equation*}
-	\frac{Q_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)} > \min\left\{\frac{1}{288\sqrt{d}},\frac{r}{81 \sqrt{d}D}\log\left(1 + \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2 \pi_{\Pbb,r}(\Sset)}\right)\right\} \cdot \frac{\lambda_{\sigma}^4}{\Lambda_{\sigma}^4}
-	\end{equation*}
-	and since the right hand side is decreasing in $\pi_{\Pbb,r}(\Sset)$, the desired lower bound holds on $\widetilde{\Phi}_{\Pbb,r}(t)$.  The bound on $\overline{\Phi}_{\Pbb,r}(t)$ then follows from  $\Log(A/t) \leq \log(1 + 1/t)$ for all $0 < t < 1/2$ and application of Lemma \ref{lem: stepwise_approximation}.
-\end{proof}
-
-\subsection{Consistency of local spread and conductance function: convex case.}
-\label{sec: convex_consistency}
-
-The introduction of the stepwise approximation allows us to make use of Lemma \ref{lem: consistency_of_conductance_function}, which gives us (pointwise) consistency of the discrete graph functionals $\widetilde{\Phi}_{n,r}(t)$ to the continuous functionals $\widetilde{\Phi}_{\Pbb,r}(t)$.
-
-We use $\omega_r(1)$ to denote a term which goes to infinity as $r \to 0$, and likewise $o_r(1)$ to denote a term which goes to $0$ as $r \to 0$. 
-
-\begin{lemma}
-	\label{lem: consistency_of_conductance_function}
-	Fix $0 < t < 1/2$. Under the conditions on $\Csig$ given by Theorem \ref{thm: inverse_mixing_time_lower_bound}, the following statement holds: with probability one, as $n \to \infty$,
-	\begin{equation}
-	\label{eqn: pointwise_consistency_of_conductance_function}
-	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \min\left\{\widetilde{\Phi}_{\Pbb,r}(t), c_d r \omega_r(1)\right\}
-	\end{equation}
-	where $c_d$ is a constant which may depend on the dimension $d$ (as well as the distribution $\Pbb$), but not $r$.
-	
-	As a consequence, for $M$ and $(t_i)_{i=0}^{M-1}$ defined as in Lemma \ref{lem: continuous_conductance_lower_bound}, we have that
-	\begin{equation}
-	\label{eqn: consistency_of_stepapprox_conductance_function}
-	\liminf_{n \to \infty} \overline{\Phi}_{n,r}(t) \geq \min\left\{\overline{\Phi}_{\Pbb,r}(t), c_d r \omega_r(1)\right\}
-	\end{equation}
-\end{lemma}
-We defer the proof of pointwise consistency to Section \ref{sec: pointwise_consistency_of_conductance_function}. For now, we show that \eqref{eqn: consistency_of_stepapprox_conductance_function} is immediately implied by \eqref{eqn: pointwise_consistency_of_conductance_function}.
-
-\begin{proof}[Proof of \eqref{eqn: consistency_of_stepapprox_conductance_function}]
-	We take as given that for any $0 < t < 1/2$,
-	\begin{equation*}
-	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) \geq \widetilde{\Phi}_{\Pbb,r}(t).
-	\end{equation*}
-	In particular, for sufficiently large $n$ this will occur for each of $t_0, t_1, \ldots, t_m$ and therefore
-	\begin{equation*}
-	\liminf_{n \to \infty} \overline{\Phi}_{n,r} \geq \overline{\Phi}_{\Pbb,r}
-	\end{equation*}
-	uniformly over $[1/m,1/2]$.
-\end{proof}
-
-\subsection{Pointwise consistency of conductance function: convex case.}
-\label{sec: pointwise_consistency_of_conductance_function}
-
-We will rely heavily on results of \cite{garciatrillos16}, which prove the same result but consider only a pointwise result on $\widetilde{\Phi}_{n,r}(1/2)$ rather than over the entire conductance function.
-
-Let $\wX = \Csig[\Xbf] = \set{\wx_1, \ldots, \wx_{\wn}}$, and $\wn = \abs{\wX}$. Then
-\begin{equation*}
-\widetilde{\Pbb}_n := \frac{1}{\wn} \sum_{\wx_i \in \wX} \delta_{\wx_i}
-\end{equation*}
-is the empirical distribution of $\wX$. Likewise, for $\Sset \subset \Csig$ let $\widetilde{\Pbb}$ be the conditional distribution $\Pbb(x \in S \vert x \in \Csig)$, given by
-\begin{equation*}
-\widetilde{\Pbb}(\Sset) := \frac{\nu_{\Pbb}(\Sset)}{\nu_{\Pbb}(\Csig)}.
-\end{equation*}
-A Borel map $T: \Csig \to \wX$ is a \emph{transportation map} between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ if
-\begin{equation*}
-\widetilde{\Pbb}(\Sset) = \widetilde{\Pbb}_n(T(\Sset))
-\end{equation*}
-for all $\Sset \in \Csig$. 
-
-\begin{lemma}[Proposition 5 of \cite{garciatrillos16}]
-	There exists a sequence of transportation maps $(T_{\wn})$ from $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ such that
-	\begin{equation*}
-	\limsup_{\wn \to \infty} \frac{\wn^{1/d} \norm{\Id - T_{\wn}}_{\L^{\infty}(\widetilde{\Pbb})}}{(\log \wn)^{p_d} } \leq C
-	\end{equation*}
-	where $p_d = 1/d$ for $d \geq 3$ and $3/4$ if $d = 2$. 
-\end{lemma}
-These are referred to stagnating transportation maps. We refer the curious reader to \cite{garciatrillos16} for more details.
-
-For $S \subset \wX$, we will denote $\vol(S; \widetilde{G}_{n,r})$ by $\widetilde{\vol}_{n,r}(S)$, and likewise $\cut(S; \widetilde{G}_{n,r})$ by $\widetilde{\cut}_{n,r}(S)$.
-
-Consider a sequence of sets $(S_{\wn})_{\wn \in \mathbb{N}}$, with $u_{\wn} = \1_{S_{\wn}}$ the characteristic function of $S_{\wn}$. Similarly, for $\Sset \subset \Csig$ let $u = \1_{\Sset}$. 
-
-\begin{definition}
-	For a sequence $(u_{\wn}) \in L^1(\widetilde{\Pbb}_{\wn})$ and $u \in L^1(\widetilde{\Pbb})$, we say $(u_{\wn})$ converges $TL^1$ to $u$ if there exists a sequence of stagnating transportation maps $(T_{\wn})$ such that
-	\begin{equation*}
-	\int_{\Csig} \abs{u(x) - (u_{\wn}) \circ T_{\wn}(x)} d\widetilde{\Pbb}(x) \to 0
-	\end{equation*}
-	and denote it $u_{\wn} \overset{TL^1}{\to} u$.
-\end{definition}
-
-\begin{lemma}
-	\label{lem: cut_convergence}
-	If $(u_{\wn}) \overset{TL^1}{\to} u$, with probability one
-	\begin{equation*}
-	\lim_{n \to \infty} \frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\wn^2} = \int_{\Sset} \wf(x) \left(\int_{(\Csig \setminus \Sset) \cap B(x,r)} \wf(x') dx' \right) dx
-	\end{equation*}
-	where $\wf$ is the density function of $\wPbb$ over $\Csig$.
-\end{lemma}
-
 \begin{proof}
-	We note immediately that $n \to \infty$ implies $\wn \to \infty$ with probability one.
-	
-	Now, we can write
-	\begin{align*}
-	 \frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\wn^2} & = \frac{1}{\wn^2} \sum_{i = 1}^{\wn} \sum_{j = 1}^{\wn} u_{\wn}(\wx_i) \bigl( 1 - u_{\wn}(\wx_j) \1(\norm{\wx_i - \wx_j} \leq r) \bigr)  \\
-	& = \int_{\Csig} \left(\int_{\Csig \cap B(x,r)} u_{\wn}(x) \bigl( 1 - u_{\wn}(x') \bigr) d\wPbb_n(x') \right) d\wPbb_n(x) \\
-	& = \int_{\Csig} \left(u_{\wn} \circ T_{\wn}(x)\right) \left(\int_{\Csig \cap B(T_{\wn}(x),r)}  \left(1 - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') \right) d\wPbb(x).
-	\end{align*}
-	
-	Note that, for any $x \in \Csig$,
-	\begin{align*}
-	\lim_{n \to \infty} \nu\bigl(B(T_{\wn}(x),r) \setminus B(x,r)\bigr) & = 0 \\
-	\lim_{n \to \infty} \nu\bigl(B(x,r) \setminus B(T_{\wn}(x),r)\bigr) & = 0.
-	\end{align*}
+	Letting $\mathcal{R}_n(x) := \set{x' \in \Csig: x' \in B(x,r_n^+), x' \not\in B(x,r_n^-)}$, we have
+	\begin{equation*}
+	\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx = \int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx + \int_{\Csig} \int_{\mathcal{R}_n(x)} f(y) f(x) \dy \dx.
+	\end{equation*}
 	and therefore
 	\begin{equation*}
-	\lim_{n \to \infty} \int_{\Csig \cap B(T_{\wn}(x),r)} \left(1 - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') = \lim_{n \to \infty} \int_{\Csig \cap B(x,r)}  \left(1 - u_{\wn} \circ T_{\wn}(x')\right) d\wPbb(x').
+	\frac{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx} = 1 + \frac{\int_{\Csig} \int_{\mathcal{R}_n(x)} f(y) f(x) \dy \dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}. 
 	\end{equation*}
-	An application of the bounded convergence theorem yields
-	\begin{align*}
-	& \lim_{n \to \infty} \int_{\Csig} \left(u_{\wn} \circ T_{\wn}(x)\right) \left(\int_{\Csig \cap B(T_{\wn}(x),r)}  \left(1 - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') \right) d\wPbb(x) = \nonumber \\
-	& \lim_{n \to \infty} \int_{\Csig} \left(u_{\wn} \circ T_{\wn}(x)\right) \left(\int_{\Csig \cap B(x,r)}  \left( 1 - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') \right) d\wPbb(x).
-	\end{align*}
-	Letting
-	\begin{align*}
-	\mathcal{I}_n^1 & = \int_{\Csig} \left(u(x)\right) \left(\int_{\Csig \cap B(x,r)}  \left( u(x') - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') \right) d\wPbb(x) \\
-	\mathcal{I}_n^2 & = \int_{\Csig} \left(u_{\wn} \circ T_{\wn}(x) - u(x)\right) \left(\int_{\Csig \cap B(x,r)}  \left(1 - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') \right) d\wPbb(x) \\
-	\end{align*}
-	we have
-	\begin{align}
-	\label{eqn: pointwise_convergence_1}
-	& \int_{\Csig} \left(u_{\wn} \circ T_{\wn}(x)\right) \left(\int_{\Csig \cap B(x,r)}  \left( 1 - u_{\wn} \circ T_{\wn}(x') \right) d\wPbb(x') \right) d\wPbb(x) = \nonumber \\
-	& \int_{\Csig} u(x) \left\{ \int_{\Csig \cap B(x,r)} (1 - u(x')) d\wPbb(x') \right\} d\wPbb(x) + \mathcal{I}_n^1 + \mathcal{I}_n^2. 
-	\end{align}
+	We upper bound the remainder term
+	\begin{equation*}
+	\int_{\Csig} \int_{\mathcal{R}_n(x)} f(y) f(x) \dy \dx \leq \Pbb(\Csig) \Lambda_{\sigma} \nu_d \bigl((r_n^+)^d - r^d) \to 0
+	\end{equation*}
+	where the convergence happens as $n \to \infty$ by the stagnating property of $\seq{T_n}$. 
 	
-	Recalling that $u = 1_{\Sset}$, we can see
-	\begin{align}
-	\label{eqn: pointwise_convergence_2}
-	\int_{\Csig} u(x) \left\{ \int_{\Csig \cap B(x,r)} (1 - u(x')) d\wPbb(x') \right\} d\wPbb(x) & = \int_{\Sset} \wf(x) \left(\int_{(\Csig \setminus \Sset) \cap B(x,r)} \wf(x') dx' \right) dx
-	\end{align}
-	Since $(u_{\wn}) \overset{TL^1}{\to} u$, another application of the bounded convergence theorem yields $\lim_{n \to \infty} \mathcal{I}_n^1 = \lim_{n \to \infty} \mathcal{I}_n^2 = 0$. Therefore by \eqref{eqn: pointwise_convergence_1} and \eqref{eqn: pointwise_convergence_2} the final result holds.
+	We apply a similar analysis to the denominator. By Lemma \ref{lem: local_conductance}
+	\begin{equation*}
+	\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx = \int_{\Csig} \int_{B(x,r_n^-)} f(y) f(x) \dy \dx \geq \frac{6}{25} \Pbb(\Csig) \lambda_{\sigma} (r_n^{-})^d \nu_d \to \Pbb(\Csig) \lambda_{\sigma}^2 r^d \nu_d > 0
+	\end{equation*}
+	where the convergence happens as $n \to \infty$ by the stagnating property of $\seq{T_n}$. 
+	
+	Then the desired result follows from an application of Slutsky's Theorem.
 \end{proof}
 
-\begin{lemma}
-	\label{lem: vol_convergence}
-	If $u_{\wn} \overset{TL^1}{\to} u$, then
+\begin{lemma}[Continuity of stationary distribution]
+	\label{lem: cont_stationary_dist}
+	Let $c > 0$ be a fixed constant, and $\seq{T_n}$ be a sequence of stagnating transportation maps. Then,
 	\begin{equation*}
-	\lim_{n \to \infty} \frac{\widetilde{\vol}_{n,r}(S_{\wn})}{\wn^2} = 
-	\int_{\Sset} \wf(x) \left(\int_{\Csig \cap B(x,r)} \wf(x') dx' \right) dx
+	\liminf_{n \to \infty} \frac{\min \set{\piwt_{\Pbb,r_n^-}(\Sset), \piwt_{\Pbb,r_n^-}(\Sset^c)} }{\min \set{\piwt_{\Pbb,r_n^+}(\Sset), \piwt_{\Pbb,r_n^+}(\Sset^c)} } = 1
 	\end{equation*}
-	with probability one. 
+	uniformly over all sets $\Sset \subseteq \mathfrak{B}(\Csig)$ satisfying $\min \set{\piwt_{\Pbb,r}(\Sset), \piwt_{\Pbb,r}(\Sset^c)}> c$. 
 \end{lemma}
 \begin{proof}
-	We note that
-	\begin{align*}
-	\frac{\widetilde{\vol}_{n,r}(S_{\wn})}{\wn^2} & = \frac{1}{\widetilde{n}^2} \sum_{i = 1}^{\wn} \sum_{j = 1}^{\wn} u_{\wn}(\wx_i) \1(\norm{\wx_i - \wx_j} \leq r) - \frac{1}{\widetilde{n}} \\
-	& = \int_{\Csig} \int_{\Csig \cap B(x,r)} \left(u_{\wn}(x) d\wPbb_n(x')\right) d{\wPbb}(x) - \frac{1}{\wn}
-	\end{align*}
-	Of course, $\lim_{n \to \infty}  \frac{1}{\wn} = 0$, and so
+	It will be sufficient to show that
 	\begin{equation*}
-	\lim_{n \to \infty} \frac{\widetilde{\vol}_{n,r}(S_{\wn})}{\wn^2} = \lim_{n \to \infty} \int_{\Csig} \left(\Csig \cap B(x,r) u_{\wn}(x) d\wPbb_n(x')\right) d_{\wPbb}(x)
+	\liminf_{n \to \infty} \frac{\piwt_{\Pbb,r_n^-}(\Sset)}{\piwt_{\Pbb,r_n^+}(\Sset)} \quad \text{and}  \quad \liminf_{n \to \infty} \frac{\piwt_{\Pbb,r_n^-}(\Sset^c)}{\piwt_{\Pbb,r_n^+}(\Sset^c)} = 1,
 	\end{equation*}
-	The proof then proceeds analogously to Lemma \ref{lem: cut_convergence}. 
+	and we will show only the former, the proof of the latter being identical.
+	
+	The proof proceeds similarly to Lemma \ref{lem: cont_local_conductance}. Letting 
+	\begin{equation*}
+	\mathcal{R}_n(x) := \set{x' \in \Sset: x' \in B(x,r_n^+), x' \not\in B(x,r_n^-}
+	\end{equation*}
+	we may rewrite
+	\begin{equation*}
+	\frac{\piwt_{\Pbb,r_n^-}(\Sset)}{\piwt_{\Pbb,r_n^+}(\Sset)} = 1 - \frac{\int_{\Sset} \int_{\mathcal{R}_n(x)} f(y) f(x) \dy \dx}{\piwt_{\Pbb,r_n^+}(\Sset)}.
+	\end{equation*}
+	
+	By the stagnating property of $T_n$,
+	\begin{equation*}
+	\liminf_{n \to \infty} \int_{\Sset} \int_{\mathcal{R}_n(x)} f(y) f(x) \dy \dx \leq \Pbb(\Sset) \Lambda_{\sigma} \bigl( (r_n^+)^d - (r_n^-)^d\bigr) \to 0 
+	\end{equation*}
+	where the convergence occurs as $n \to \infty$. On the other hand, by hyptohesis
+	\begin{equation*}
+	\limsup_{n \to \infty} \piwt_{\Pbb,r_n^+}(\Sset) \geq c > 0.
+	\end{equation*}
+	and the result follows by Slutsky's Theorem. 
 \end{proof}
 
-Lemma \ref{lem: pre-compactness} can be found in \cite{alberti1998non} (Theorem 3.1) or \cite{garciatrillos16} (Lemma 23).
-\begin{lemma}
-	\label{lem: pre-compactness}
-	If $u_{\wn} \not\overset{TL^1}{\to} u$ for some $u \in L^1{\nu}$, with probability one:
+\begin{lemma}[Stationary distribution lower bound]
+	\label{lem: stationary_dist_lb}
+	Let $\seq{T_n}$ be a sequence of stagnating transportation maps from $\Pbb$ to $\Pbb_n$. Then with probability one,
 	\begin{equation*}
-	\liminf_{n \to \infty} \frac{\widetilde{\cut}_{n,r}(\Sset_{\wn})}{\wn^2 } \geq  c_d r^{d+1} \omega_r(1)
+	\liminf_{n \to \infty} \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \piwt_{\Pbb,r}(T_n^{-1}(S)) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}}
 	\end{equation*}
-	where $c_d$ is a constant which does not depend on $r$ but may depend on $\Csig$ and $f$, and $\omega_r(1) \to \infty$ as $r \to 0$. 
 \end{lemma}
-
-\begin{proof}[Proof of \eqref{eqn: pointwise_consistency_of_conductance_function}]
-	Let $(S_{\wn}^{\star})$
+\begin{proof}
+	Fix $\epsilon > 0$, and let $S \in \mathcal{L}(\widetilde{G}_{n,r})$ be arbitrary, writing $\Sset := T_n^{-1}(S)$. Letting $\mathcal{R}_n(x)$ be as in the proof of Lemma \ref{lem: cont_stationary_dist}, we have
+	\begin{align}
+	\widetilde{\pi}_{n,r}(S) \leq \piwt_{\Pbb,r_n^-}(\Sset) + \frac{\int_\Sset \int_{\mathcal{R}_n(x)}  f(y) f(x) \dy \dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}. \label{eqn: stationary_dist_lb_1}
+	\end{align}
+	Clearly $\piwt_{\Pbb,r_n^-}(\Sset) \leq \piwt_{\Pbb,r}(\Sset)$. Moreover
 	\begin{equation*}
-	\frac{\widetilde{\cut}_{n,r}(S_{\wn}^{\star})}{\widetilde{\vol}_{n,r}(S_{\wn}^{\star})} = \widetilde{\Phi}_{n,r}(t),~~ \widetilde{\pi}_{n,r}(S_{\wn}) \leq t
+	\frac{\int_\Sset \int_{\mathcal{R}_n(x)}  f(y) f(x) \dy \dx}{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx} \leq \frac{\Lambda_{\sigma}}{\lambda_{\sigma}} \left(\frac{r_n^+ - r_n^-}{r_n^-}\right)^d
 	\end{equation*}
-	be the sequence of minimizers of the normalized cut with stationary distribution at most $t$ in the graph $\widetilde{G}_{n,r}$. Denote $u_{\wn}^{\star} = 1_{S_{\wn}^{\star}}$, and assume that $u_{\wn}^{\star} \overset{TL^1}{\to} u$, for $u = 1_{\Sset}, ~\Sset \subset \Csig$. 
-	Then, by Lemmas \ref{lem: cut_convergence} and \ref{lem: vol_convergence},
-	\begin{align*}
-	\lim_{n \to \infty} \frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\widetilde{\vol}_{n,r}(S_{\wn})} & = \frac{\int_{\Sset} \wf(x) \left(\int_{(\Csig \setminus \Sset) \cap B(x,r)} \wf(x') dx' \right) dx}{\int_{\Sset} \wf(x) \left(\int_{\Csig \cap B(x,r)} \wf(x') dx' \right) dx} \\
-	& \overset{(i)}{=} \frac{\int_{\Sset} f(x) \left(\int_{(\Csig \setminus \Sset) \cap B(x,r)} f(x') dx' \right) dx}{\int_{\Sset} f(x) \left(\int_{\Csig \cap B(x,r)} f(x') dx' \right) dx} 
-	& = \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)}.
-	\end{align*}
-	where $(i)$ holds because the normalization factors present in $\wf$ cancel. From Lemma \ref{lem: vol_convergence}, we also have that $\lim_{n \to \infty}\widetilde{\pi}_{n,r}(S_{\wn}) = \pi_{\Pbb,r}(\Sset)$, and therefore $\pi_{\Pbb,r}(\Sset) \leq t$. As a result,
+	which along with \eqref{eqn: stationary_dist_lb_1} implies
 	\begin{equation*}
-	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) = \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Csig \setminus \Sset)}{\pi_{\Pbb,r}(\Sset)} \geq \widetilde{\Phi}_{\Pbb,r}(t).
+	s(\widetilde{G}_{n,r}) \leq \widetilde{\pi}_{n,r}(S) \leq \piwt_{\Pbb,r}(\Sset) + \frac{\Lambda_{\sigma}}{\lambda_{\sigma}} \left(\frac{r_n^+ - r_n^-}{r_n^-}\right)^d \to \piwt_{\Pbb,r}(\Sset).
 	\end{equation*}
-	On the other hand, if $u_{\wn}^{\star}$ does not converge $TL^1$, then
+	where the first lower bound comes from the fact $S \in \mathcal{L}(\widetilde{G}_{n,r})$, and the convergence is as $n \to \infty$ by the stagnating property of $\seq{T_n}$. 
+	
+	By Lemma \ref{lem: local_spread_lb}, with probability one as $n \to \infty$,
 	\begin{equation*}
-	\frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\wn^2} \geq c_d r^{d+1} \omega_r(1)
+	s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}}
 	\end{equation*}
-	Additionally,
-	\begin{equation*}
-	\frac{\widetilde{\vol}_{n,r}(S_{\wn})}{\wn^2} \leq \frac{\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})}{\wn^2}
-	\end{equation*}
-	and
-	\begin{equation*}
-	\limsup_{n \to \infty} \frac{\widetilde{\vol}_{n,r}(\widetilde{G}_{n,r})}{\wn^2} \leq \nu_d r^d \Lambda_{\sigma}
-	\end{equation*}
-	As a result,
-	\begin{equation*}
-	\liminf_{n \to \infty} \frac{\widetilde{\cut}_{n,r}(S_{\wn})}{\widetilde{\vol}_{n,r}(S_{\wn})} \geq c_d r \omega_r(1).
-	\end{equation*}
+	and the claim is shown.
 \end{proof}
 
-\subsection{Proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}}
-\label{sec: inverse_mixing_time_lower_bound}
-Throughout this proof, we will refer to the subgraph $G_{n,r}\left[\Csig[\Xbf]\right]$ as $\widetilde{G}_{n,r}$. 
+\paragraph{Proof of Lemma \ref{lem: graph_conductance_profile_lb}}
 
-Fix arbitrary $v = x_i \in \Csig[\Xbf]$, and let
+By Lemma \ref{lem: stagnating_transportation_maps}, with probability one there exists a sequence of stagnating transportation maps from $\widetilde{\Pbb}$ to $\widetilde{\Pbb}_n$, which we will denote $\seq{T_n}$. 
+
+Let $S \subseteq \Csig[\Xbf]$ be arbitrary, and define
 \begin{equation*}
-\widetilde{\qbf}_n^{(m)} = e_v \Wbf_{\Csig[\Xbf]}^t, ~~ \widetilde{\qbf}_n = (\widetilde{q}_n^{(1)}, \widetilde{q}_n^{(2)}, \ldots)
+\xi_n := \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx},~ \gamma_n(S) := \frac{\min \set{\piwt_{\Pbb,r_n^-}(T_n^{-1}(S^c)), \piwt_{\Pbb,r_n^-}(T_n^{-1}(S^c))} }{\min \set{\piwt_{\Pbb,r_n^+}(T_n^{-1}(S^c)), \piwt_{\Pbb,r_n^+}(T_n^{-1}(S^c))} } 
 \end{equation*}
-Our goal is to upper bound $\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.
+where $r_n^{\pm} := r \pm \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$. By Proposition \ref{prop: nonuniform_continuous_conductance} and Lemma \ref{lem: graph_to_continuous_conductance} we have that
+\begin{align}
+\widetilde{\Phi}_{n,r}(S) & \geq \xi_n \gamma_n(S) \widetilde{\Phi}_{\Pbb,r_n^{-}}(T_n^{-1}(S)) \nonumber \\
+& \geq  \xi_n \gamma_n(S) \frac{\lambda_{\sigma}^2r_n^{-}}{2^{12} \Lambda_{\sigma}^2 D L \sqrt{d}}. \label{eqn: graph_ncut_lb_1}
+\end{align}
 
-By Lemmas \ref{lem: local_spread_G} and \ref{lem: local_spread_lower_bound},
-\begin{align*}
-\tau_{\infty}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) & \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, \log\left(\frac{4}{\widetilde{s}_{n,r}}\right) \right\} \nonumber \\
-& \leq 2752 \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \max\left\{2, 4d\log\left(\frac{2D \Lambda_{\sigma}^2}{\lambda_{\sigma}^2}\right) \right\}
-\end{align*} 
+By Lemma \ref{lem: cont_local_conductance}, with probability one
+\begin{equation*}
+\liminf_{n \to \infty} \xi_n = 1.
+\end{equation*}
 
-We now upper bound $\tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r})$.  From Lemma \ref{lem: expansion_to_tv_distance}, we have that
+By Lemma \ref{lem: stationary_dist_lb}, letting $c$ be any constant satisfying $0 < c < \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}}$, with probability one there exists some $m \in \mathbb{N}$ such that for all $n \geq m$,
+\begin{equation*}
+\min_{S \in \mathcal{L}(\widetilde{G}_{n,r})}\piwt_{\Pbb,r}(T_n^{-1}(S)) \geq c > 0
+\end{equation*}
+and therefore by Lemma \ref{lem: cont_stationary_dist}
+\begin{equation*}
+\liminf_{n \to \infty} \biggl\{ \inf_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \gamma_n(S)\biggr\} = 1.
+\end{equation*}
+
+As Lemma \ref{lem: stagnating_transportation_maps} implies $r_n^{-} \to r$ with probability one, an application of Slutsky's Theorem to \eqref{eqn: graph_ncut_lb_1} completes the proof.
+
+\subsection{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
+Lemma \ref{lem: expansion_to_tv_distance} implies
 \begin{equation}
-\label{eqn: mixing_time_bound_on_neighborhood_graph}
-\limsup_{n \to \infty} \tau_{1}(\widetilde{\qbf}_n; \widetilde{G}_{n,r}) \leq \limsup_{n \to \infty} \frac{1400}{3}\left(5 + \int_{\widetilde{s}_{n,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt\right)
+\label{eqn: expansion_to_tv_distance_1}
+\tau_1(\widetilde{G}_{n,r}) \leq 490 \cdot \left(\frac{20}{9} + \int_{s'(\widetilde{G}_{n,r})}^{1/2} \frac{4}{t \widetilde{\Phi}_{n,r}^2(t)} \dt \right)
 \end{equation}
-(Since $r$ remains constant, for sufficiently large $n$, $\Dbf_{xx} > C$ will be fulfilled for any $x \in \Csig[\Xbf]$, and any $C < \infty$.)
-We set aside the constant term for the moment and turn to the integral. By Lemma \ref{lem: local_spread_lower_bound},
+where we recall $s'(G) = \frac{s(G)}{9}$. 
+
+By Lemmas \ref{lem: graph_conductance_profile_lb} and \ref{lem: local_spread_lb} for sufficiently large $n$, and for any $0 < t \leq \frac{1}{2}$
 \begin{equation*}
-\limsup_{n \to \infty}\int_{\widetilde{s}_{n,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt \leq \limsup_{n \to \infty}\int_{ s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt
+s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20 \Lambda_{\sigma}}, \quad \widetilde{\Phi}_{n,r}(t) > \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}}
 \end{equation*}
-where $s_{\Pbb,r}$ is as in the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}. We now replace the discrete conductance function $\widetilde{\Phi}_{n,r}$ by the stepwise approximation to the continuous conductance function, $\overline{\Phi}_{n,r}$:
-\begin{align*}
-\limsup_{n \to \infty}\int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\widetilde{\Phi}_{n,r}^2(t)} dt & \overset{(i)}{\leq} \limsup_{n \to \infty}\int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\overline{\Phi}_{n,r}^2(t)} dt \\
-& = \int_{s_{\Pbb,r}}^{1/2} \limsup_{n \to \infty} \frac{4}{t\overline{\Phi}_{n,r}^2(t)} dt\\
-& \overset{(ii)}{\leq} \int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\overline{\Phi}_{\Pbb,r}^2(t)} dt + c_d^2 \log(s_{\Pbb,r}) \frac{1}{r^2} o_r(1)\\
-\end{align*}
-where $(i)$ follows from Lemma \ref{lem: stepwise_approximation} and $(ii)$ from Lemma \ref{lem: consistency_of_conductance_function} (along with the continuous mapping theorem). Now, we make use of Lemma \ref{lem: continuous_conductance_lower_bound}:
-\begin{align*}
-& \int_{s_{\Pbb,r}}^{1/2} \frac{4}{t\overline{\Phi}_{\Pbb,r}^2(t)} dt \leq \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} \cdot \left( 331776
-\int_{s_{\Pbb,r}}^{1/2} \frac{d}{t} dt + \int_{s_{\Pbb,r}}^{1/2} \frac{81dD^2}{r^2t \Log(\frac{\Lambda_{\sigma}^2}{t\lambda_{\sigma}^2})}  dt\right) \\
-& \leq \frac{\Lambda_{\sigma}^8}{\lambda_{\sigma}^8} \cdot \left( 331776
-\underbrace{\int_{s_{\Pbb,r}}^{1/2} \frac{d}{t} dt}_{:= \mathcal{J}_1} + 
-81\underbrace{\int_{s_{\Pbb,r}}^{\lambda_{\sigma}^2/(4 \Lambda_{\sigma}^2)} \frac{dD^2}{r^2t \log(\frac{\Lambda_{\sigma}^2}{t\lambda_{\sigma}^2})} dt}_{:= \mathcal{J}_2} +
-81\underbrace{\int_{\lambda_{\sigma}^2/(4 \Lambda_{\sigma}^2)}^{1/2} \frac{dD^2}{r^2t \log(1 + \frac{4 \lambda_{\sigma}^2}{\Lambda_{\sigma}^2})}dt}_{:= \mathcal{J}_3}  \right)
-\end{align*}
-
-Computing a few simple integrals yields the following upper bounds on $\mathcal{J}_1, \mathcal{J}_2, \mathcal{J}_3$:
-\begin{align*}
-\mathcal{J}_1 & \leq d^2 \log\left( \frac{2D\Lambda_{\sigma}^2}{r\lambda_{\sigma}^2} \right) \\
-\mathcal{J}_2 & \leq \frac{dD^2}{r^2} \left[ \log\left(2d\right) + \log\left(\log\left(\frac{2D}{r}\right)\right) \right] \\
-\mathcal{J}_3 & \overset{(iii)}{\leq} 2 \frac{dD^2}{r^2} \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2} \log\left(4 \frac{\Lambda_{\sigma}^2}{\lambda_{\sigma}^2}\right)
-\end{align*}
-where $(iii)$ uses the upper bound $\frac{1}{\log(1 + x)} \leq \frac{1}{x}$.
-
-Plugging these bounds in to \eqref{eqn: mixing_time_bound_on_neighborhood_graph} gives the desired upper bound on $\tau_{\infty}(\widetilde{q}_n, \widetilde{G}_{n,r})$, which translates to the lower bound of \eqref{eqn: inverse_mixing_time_lower_bound}.
+which along with \eqref{eqn: expansion_to_tv_distance_1} and Lemma \ref{lem: tv_mixing_to_pointwise_mixing1} implies the desired result.
 
 \subsection{Concentration inequalities}
 \label{sec: concentration}
@@ -1318,12 +1355,18 @@ We will require asymptotic bounds on several different degree and volume functio
 	Under the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}, for any $\epsilon > 0$, each of the following bounds hold with probability tending to one as $n \to \infty$:
 	\begin{align}
 	\frac{\degminwt}{n}, \frac{\degminpr}{n} & \geq (1 - \epsilon)\frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_cluster_degree_bound} \\
-	\frac{\degmin}{n} & \geq  (1 - \epsilon) \lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} \\
-	\frac{\degmax}{n} & \leq (1 + \epsilon) \Lambda_{\sigma} r^d \nu_d \label{eqn: max_degree_bound}\\
-	\frac{\abs{\Csig[\Xbf]}}{n} & \leq \Pbb(\Csig)(1 + \epsilon) \label{eqn: Csig_cardinality_bound}\\
+	\frac{\degmin}{n} & \geq  (1 - \epsilon)\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} \\
+	\frac{\degmax}{n} & \leq (1 + \epsilon)\Lambda_{\sigma} r^d \nu_d \label{eqn: max_degree_bound}\\
+	\frac{\abs{\Csig[\Xbf]}}{n} & \leq (1 + \epsilon)\Pbb(\Csig) \label{eqn: Csig_cardinality_bound}\\
 	\label{eqn: volwt_bound}
 	\frac{1}{2}\vol_0 \leq \vol_{n,r}(\Csig[\Xbf]) & \leq \frac{3}{2} \vol_0
 	\end{align}
+	
+	Additionally, with probability one,
+	\begin{align*}
+	\liminf_{n \to \infty} \frac{\degminwt}{n} & \geq \frac{6}{25} \lambda_{\sigma} r^d \nu_d \\
+	\limsup_{n \to \infty} \frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)} & \leq \Pbb(\Csig) \Lambda_{\sigma} \nu_d r^d
+	\end{align*}
 \end{lemma}
 \begin{proof}
 	We note that for any $x \in \Csig \cup \Csig'$, by \ref{asmp: bounded_density} and \ref{asmp: C'_bounded_density} along with Lemma \ref{lem: local_conductance},
@@ -1344,18 +1387,24 @@ We will require asymptotic bounds on several different degree and volume functio
 	\end{equation*}
 	can be rewritten as a U-statistic, and furthermore
 	\begin{equation*}
-	\int_{\Csig} \Pbb(B(x,r)) dx = \Ebb\left(\1(x_i \in \Csig) \1(\norm{x_i - x_j} \leq r)\right).
+	\int_{\Csig} \Pbb(B(x,r)) \dx = \Ebb\left(\1(x_i \in \Csig) \1(\norm{x_i - x_j} \leq r)\right).
 	\end{equation*}
 	
 	Therefore by Lemma \ref{lem: bounded_difference}
 	\begin{equation}
 	\label{eqn: ball_bounds_in_probability_1}
-	\abs{\widetilde{\vol}_{n,r}(\Csig[\Xbf]) - n(n-1)\int_{\Csig} \Pbb(B(x,r)) dx }\leq \frac{3}{20}n(n-1)\int_{\Csig} \Pbb(B(x,r)) dx 
+	\abs{\vol_{n,r}(\Csig[\Xbf]) - n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx }\leq \frac{3}{20}n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx 
 	\end{equation}
-	with probability at least $1 - 2\exp(-\frac{3}{20}n \int_{\Csig} \Pbb(B(x,r) dx) \to 0$ as $n \to \infty$. Then, application of the triangle inequality to \eqref{eqn: ball_bounds_in_probability_1}, along with the range $\vol_0 \in [3/4,5/4] \cdot n(n-1)\int_{\Csig} \Pbb(B(x,r)) dx$ given by \eqref{eqn: initialization}, yields
+	with probability at least $1 - 2\exp(-\frac{3}{20}n \int_{\Csig} \Pbb(B(x,r) \dx) \to 0$ as $n \to \infty$. Then, application of the triangle inequality to \eqref{eqn: ball_bounds_in_probability_1}, along with the range $\vol_0 \in [3/4,5/4] \cdot n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx$ given by \eqref{eqn: initialization}, yields
 	\begin{equation*}
-	\abs{\widetilde{\vol}_{n,r}(\Csig[\Xbf]) - \vol_0} \leq \left(\frac{3}{20} + \frac{1}{4}\right) n(n-1)\int_{\Csig} \Pbb(B(x,r)) dx \leq \frac{1}{2} \vol_0.
+	\abs{\vol_{n,r}(\Csig[\Xbf]) - \vol_0} \leq \left(\frac{3}{20} + \frac{1}{4}\right) n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx \leq \frac{1}{2} \vol_0.
 	\end{equation*}
+	
+	By similar reasoning to \eqref{eqn: ball_bounds_in_probability_1}, for any $\epsilon > 0$, letting $\mu = \int_{\Csig} \Pbb(B(x,r) \dx) \geq \Ebb\left(\frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)}\right)$ we have
+	\begin{equation*}
+	\Pbb\left(\frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)} \geq (1 + \epsilon)\mu \right) \leq \exp(-n\epsilon^2\mu).
+	\end{equation*}
+	The final two statements therefore both follow from the Borel-Cantelli Lemma.
 \end{proof}
 
 \subsection{Proof of Theorem \ref{thm: misclassification_rate}}
