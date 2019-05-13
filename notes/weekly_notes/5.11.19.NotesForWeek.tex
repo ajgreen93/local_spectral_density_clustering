@@ -1,0 +1,395 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+\newcommand{\dist}{\mathrm{dist}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\Sset}{\mathcal{S}}
+
+\newcommand{\Csig}{\Cset_{\sigma}}
+\newcommand{\Asig}{\Aset_{\sigma}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ebb}{\mathbb{E}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+%%% Functionals over graphs
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\vol}{\mathrm{vol}}
+% \newcommand{\deg}{\mathrm{deg}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for the week of 5/11/19 - 5/17/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+For an undirected graph $G = (V,E)$, the lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf + \Dbf^{-1}\Abf}{2}$, stationary distribution $\pi$. Denote the $m$-step probability distribution of this random walk originating from a particular $v \in V$ as $q^{(m)}: V \times V \to [0,1]$, $q^{(m)}(v,u) = e_v \Wbf^m e_u$. We wish to upper bound the total variation distance between the distributions $q_v^{(m)} := q^{(m)}(v,\cdot)$ and $\pi$,
+\begin{equation*}
+\norm{q_v^{(t + 1)} - \pi}_{TV} = \sum_{u \in V} \abs{q_v^{(m)}(u) - \pi(u)}
+\end{equation*}
+using geometric properties of the graph $\Wbf$. We introduce the \emph{degree, cut} and \emph{volume} functionals over a graph. For $u \in V$, $A \subseteq G$, 
+\begin{equation*}
+\cut(A;G) = \sum_{u \in A} \sum_{v \in A^c} \1((u,v) \in E), \quad \deg(u;G) = \sum_{v \in V} \1((u,v) \in E), \quad \vol(A;G) = \sum_{u \in A} \deg(u;G)
+\end{equation*}
+
+The \emph{local spread} is defined as
+\begin{equation*}
+s(G) := \frac{9}{10} \cdot \min_{u \in V} \set{\deg(u; G)} \cdot \min_{u \in V} \set{\pi(v)}
+\end{equation*}
+
+Letting \emph{normalized cut} of $A \subseteq G$, $\Phi(A;G)$ be defined as
+\begin{equation*}
+\Phi(A;G) = \frac{\cut(A, A^c; G)}{\min\set{\vol(A; G),\vol(A^c; G)}},
+\end{equation*}
+and the \emph{conductance} is
+\begin{equation*}
+\Phi(G) = \min_{A \subseteq V} \Phi(A;G).
+\end{equation*}
+
+\begin{theorem}
+	\label{thm: tv_mixing_time}
+	For any $v \in V$,
+	\begin{equation*}
+	\norm{q_v^{(t + 3)} - \pi}_{TV} \leq \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} + \left(\frac{1}{1 - 2s(G)/9}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{equation*}
+\end{theorem}
+
+As we will see, Theorem \ref{thm: tv_mixing_time} is an essential step to providing an upper bound on the uniform mixing time, which is what we want. We justify this statement next, before moving on to proving Theorem \ref{thm: tv_mixing_time}.
+
+\paragraph{Uniform mixing time.}
+Consider the \emph{uniform} distance \footnote{Note $d_{\textrm{unif}}$ is not a formally a distance as it is not symmetric.} between $q_v^{(t)}$ and $\pi$, given by
+\begin{equation*}
+d_{\textrm{unif}}(q_v^{(t)},\pi) = \max_{u \in V} \set{\frac{\pi(u) - q_v^{(t)}(u)}{\pi(u)}}.
+\end{equation*}
+
+\begin{theorem}
+	\label{thm: tv_to_uniform_distance}
+	Let $\norm{q_v^{(t)} - \pi}_{TV} \leq \frac{1}{14} \max \set{1, \frac{1}{s(G)}}$. Then,
+	\begin{equation*}
+	d_{\textrm{unif}}(q_v^{(t + 3)},\pi) \leq \frac{1}{4}
+	\end{equation*}
+\end{theorem}
+\begin{proof}
+	Fix $u \in V$ and let $m \geq t + 1$ be arbitrary. The stationarity of $\pi$ gives
+	\begin{align}
+	\frac{\pi(u) - q_v^{m}(u)}{\pi(u)} & = \sum_{y \in V} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \nonumber \\
+	& \overset{(i)}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
+	& \leq \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{2 \pi(u)} \label{eqn: tv_to_uniform_distance_1}
+	\end{align}
+	where $(i)$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
+	
+	Then 
+	\begin{align*}
+	\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) & \leq \norm{q_v^{(m-1)} - \pi}_{TV} \max_{y \neq u} \abs{\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}} \\
+	& \leq \norm{q_v^{(m-1)} - \pi}_{TV} \max \set{1, \max_{y \neq u}\set{\frac{q^{(1)}(y,u)}{\pi(u)}}} \\
+	& \leq \norm{q_v^{(m-1)} - \pi}_{TV} \max \set{1, \frac{1}{s(G)}} \\
+	\end{align*}
+	since for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known \cite{lovasz} that the laziness  of the random walk guarantees  $\norm{q_v^{(m - 1)} - \pi}_{TV} \leq \norm{q_v^{(t)} - \pi}_{TV}$, and therefore
+	\begin{equation*}
+	\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \leq \frac{1}{14}.
+	\end{equation*}
+	
+	Plugging this in to \eqref{eqn: tv_to_uniform_distance_1} and taking maximum on both sides, we obtain
+	\begin{equation}
+	d_{\textrm{unif}}(q_v^{(m)}, \pi) \leq \frac{2}{7} + \frac{d_{\textrm{unif}}(q_v^{(m - 1)}, \pi)}{2} \label{eqn: tv_to_uniform_distance_2}
+	\end{equation}
+	The recurrence relation of \eqref{eqn: tv_to_uniform_distance_2} along with the initial condition $d_{\textrm{unif}}(q_v^{(t)}, \pi) \leq 1$ yields
+	\begin{equation*}
+	d_{\textrm{unif}}(q_v^{(t + 1)}, \pi) \leq \frac{8}{14} \Rightarrow d_{\textrm{unif}}(q_v^{(t + 2)}, \pi) \leq \frac{10}{28} \Rightarrow  d_{\textrm{unif}}(q_v^{(t + 3)}, \pi) \leq \frac{1}{4}
+	\end{equation*}
+	and the claim is shown.
+\end{proof}
+
+\section{Proof of Theorem \ref{thm: tv_mixing_time}.}
+
+For arbitrary starting distribution $q$ (meaning $\textrm{supp}(q) \subseteq V$ and $\sum_{u \in V}q(u) = 1$), and for $t \geq 0$ an integer, consider the distance function $h_q^{(t)}, t \geq 0$, 
+\begin{equation*}
+h_q^{(t)}(x) = \max \left\{ \sum_{u \in V} \left(q^{(m)}(u) - \pi(u)\right)w(u)\right\}
+\end{equation*}
+where the maximum is over all $w: V \to [0,1]$ such that $0 \leq w(u) \leq 1$ for all $u$, and $\sum_{u \in V} w(u) \pi(u) = x$. Writing $h_v^{(t)}(x) := h_{e_v}^{(t)}(x)$ in a small abuse of notation, in Theorem \ref{thm: lt_ub} and Lemma \ref{lem: mixing_time_small_sets}, we give an upper bound on $h_{e_v}^{(t)}(x)$ for all $0 \leq x \leq 1$. 
+
+\vskip 0.1 in
+\begin{remark}
+	$h_q^{(t)}$ permits an equivalent relation. Order the elements of $V = \set{u_1, \ldots, u_N}$ ($N$ = $\abs{V}$), such that
+	\begin{equation*}
+	\frac{q^{(m)}(u_1)}{\pi(u_1)} \geq \frac{q^{(m)}(u_2)}{\pi(u_2)} \geq \ldots \geq \frac{q^{(m)}(u_N)}{\pi(u_N)}
+	\end{equation*}
+	and let $U_k = \set{u_1, \ldots, u_k}$. Then for any $x$, letting $k$ satisfy $\pi(U_{k - 1}) < x < \pi(U_k)$, it can be shown that,
+	\begin{equation}
+	\label{eqn: lovasz_simonovits_curve}
+	h_q^{(t)}(x) = \sum_{j = 1}^{k - 1} (q^{(m)}(u_j) - \pi(u_j)) + \frac{x - \pi(U_{k - 1})}{\pi(u_k)} \left(q^{(m)}(u_k) - \pi(u_k) \right).
+	\end{equation}
+	The formulation on the right hand side of \eqref{eqn: lovasz_simonovits_curve} has come to be known as the \emph{Lovasz-Simonovits curve}.
+\end{remark}
+
+\paragraph{Mixing over large sets.}
+
+For $0 \leq \mu \leq 1$ and $\mu \leq x \leq 1 - \mu$ let 
+\begin{equation*}
+\ell_{\mu}(x) = \frac{1 - \mu - x}{1 - 2\mu} h_q^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu}h_q^{(0)}(1 - \mu)
+\end{equation*}
+be the linear interpolator between $h_q^{(0)}(\mu)$ and $h_q^{(0)}(1 - \mu)$. 
+
+\begin{theorem}
+	\label{thm: lt_ub}
+	For any $0 \leq \mu \leq 1/2$ and $\mu \leq x \leq 1 - \mu$ and $t \geq 0$, 
+	\begin{equation*}
+	h_q^{(t)}(x) \leq \ell_{\mu}(x) + \max \set{\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} , \frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1 }\left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{equation*}
+\end{theorem}
+
+Theorem \ref{thm: lt_ub} is a direct consequence of Theorem \ref{thm: lovasz_simonovits_1993}. To state the latter, we introduce
+\begin{equation*}
+C_{\mu} = \max \set{\frac{h_q^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{x - \mu}}, \frac{h_q^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{1 - x - \mu}}: \mu < x < 1 - \mu}
+\end{equation*}
+\begin{theorem}[Theorem 1.2 of \textcolor{red}{Lovasz-Simonovits 1993}]
+	\label{thm: lovasz_simonovits_1993}
+	For any $0 \leq \mu \leq \frac{1}{2}$, $\mu \leq x \leq 1 - \mu$ and an integer $t \geq 0$,
+	\begin{equation*}
+	h_q^{(t)}(x) \leq \ell_{\mu}(x) + C_{\mu} \min \set{\sqrt{x - \mu}, \sqrt{1 - x - \mu}} \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{equation*}
+\end{theorem}
+
+\begin{proof}[Proof of Theorem \ref{thm: lt_ub}]
+	Fix $0 \leq \mu \leq \frac{1}{2}$. We will show that for all $\mu \leq x \leq 1 - \mu$
+	\begin{equation}
+	\label{eqn: lt_ub_1}
+	h_q^{(0)}(x) - \ell_{\mu}(x) \leq \max \set{\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} , \frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1 } \min \set{\sqrt{x - \mu},\sqrt{1 - x - \mu}}
+	\end{equation}
+	whence the claim follows by Theorem \ref{thm: lovasz_simonovits_1993}. 
+	
+	Note that $\ell_{\mu}(\mu) = h_q^{(0)}(\mu)$, and for $x \geq \mu$, 
+	\begin{equation*}
+	h_q^{(0)}(x) \leq h_q^{(0)}(\mu) + (x - \mu)\frac{h_q^{(0)}(\mu)}{\mu}
+	\end{equation*}
+	by the concavity of $h_0$ along with Lemma \ref{lem: lovasz_simonovits_subdifferential}. Some basic algebra then yields
+	\begin{align*}
+	h_q^{(0)}(x) - \ell_{\mu}(x) & \leq h_q^{(0)}(\mu) - \left(\frac{1 - \mu - x}{1 - 2\mu} h_q^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu} h_q^{(0)}(1 - \mu)\right) + \frac{h_q^{(0)}(\mu)}{\mu}(x - \mu) \\
+	& =  \frac{x - \mu}{1 - 2\mu}h_q^{(0)}(\mu) + \frac{h_q^{(0)}(\mu)}{\mu} (x - \mu) - \frac{x - \mu}{1 - 2\mu} h_q^{(0)}(1 - \mu) \\
+	& \leq \sqrt{x - \mu} \left(\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} \right)
+	\end{align*}
+	On the other hand, $\ell_{\mu}(1 - \mu) = h_q^{(0)}(1 - \mu)$, and by the concavity of $h_q^{(0)}$ and Lemma \ref{lem: lovasz_simonovits_subdifferential},  for $x \leq 1 - \mu$
+	\begin{equation*}
+	h_q^{(0)}(x) \leq h_q^{(0)}(1 - \mu) + (1 - x - \mu).
+	\end{equation*}
+	Similar manipulations to above give the upper bound
+	\begin{align*}
+	h_q^{(0)}(x) - \ell_{\mu}(x) \leq \sqrt{1 - \mu - x}\left(\frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1\right)
+	\end{align*}
+	and \eqref{eqn: lt_ub_1} follows.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: lovasz_simonovits_subdifferential}
+	The subdifferential $v(x)$ of $h_q^{(0)}(x)$ satisfies
+	\begin{equation*}
+	-1 \leq v(x) \leq \frac{h_q^{(0)}(\mu)}{\mu}
+	\end{equation*}
+\end{lemma}
+
+\paragraph{Mixing over small sets.}
+
+\begin{lemma}
+	\label{lem: mixing_time_small_sets}
+	Let $0 \leq a \leq 1$, and $t \geq 1$ an integer. Then for any $x \leq as(G)$ or $x \geq 1 - as(G)$,
+	\begin{equation*}
+	h_v^{(t)}(x) \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	First, we deal with the case $x \leq as(G)$. Letting $U_k$ be as in \eqref{eqn: lovasz_simonovits_curve}, we have
+	\begin{equation}
+	\label{eqn: mixing_time_small_sets_1}
+	h_v^{(t)}(x) \leq q_v^{(m)}(U_{k - 1}) + q_v^{(m)}(u_k)
+	\end{equation}
+	
+	We will rely on the key fact that for any $u \neq v, t \geq 1$,
+	\begin{equation}
+	\label{eqn: mixing_time_small_sets_2}
+	q_v^{(t)}(u) \leq \frac{1}{2 \min_{u \in V}\deg(u;G)}
+	\end{equation}
+	
+	On the other hand if $u = v$,
+	\begin{equation}
+	\label{eqn: mixing_time_small_sets_3}
+	q_v^{(m)}(u) \leq \frac{1}{2^t} + \frac{1}{2\min_{u \in V}\deg(u;G)}.
+	\end{equation}
+	Therefore by \eqref{eqn: mixing_time_small_sets_1}, \eqref{eqn: mixing_time_small_sets_2}, and \eqref{eqn: mixing_time_small_sets_3}
+	\begin{equation*}
+	h_v^{(t)}(x) \leq \frac{1}{2^t} + \frac{\abs{U_k}}{2 \min_{u \in V}\deg(u;G)} + \frac{1}{2 \min_{u \in V}\deg(u;G)}.
+	\end{equation*}
+	Since $x \leq a s(G)$, 
+	\begin{equation*}
+	\abs{U_k} \leq \frac{x}{10 \min_{u \in V}(\pi(v))} \leq \frac{9a\min_{u \in V}\deg(u;G)}{10}.
+	\end{equation*}
+	
+	For any $0 \leq b \leq 1$, $x \geq 1 - b$ implies $h_v^{(t)}(x) \leq b$. Taking $b = a s(G)$, the claim is shown.
+\end{proof}
+
+\paragraph{Proof of Theorem \ref{thm: tv_mixing_time}.}
+For any $A \subseteq V$ and any integer $t \geq 0$,
+\begin{equation*}
+\max \set{h_v^{(t)}(\pi(A)), h_v^{(t)}(1 - \pi(A))} \geq \abs{q_v^{(t)}(A) - \pi(A)}
+\end{equation*}
+and taking max over both sides, we have
+\begin{equation*}
+\max_{0 \leq x \leq 1} h_v^{(t)}(x) \geq \norm{q_v^{(t)} - \pi}_{TV}.
+\end{equation*}
+
+Letting $q = e_v W^3$, observe that $h_v^{(t + 3)}(x) = h_v^{(t)}(x)$. Fix $\mu = \frac{1}{9}s(G)$. Then, for $\mu \leq x \leq 1 - \mu$, by Theorem \ref{thm: lt_ub},
+\begin{align*}
+h_v^{(t + 3)}(x) & = h_q^{(t)}(x) \\
+& \leq \max \set{h_q^{(0)}(\mu), h_q^{(0)}(1 - \mu) }  + \left(\frac{1}{1 - 2 \mu} + \frac{1}{2\mu}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t\\
+& \leq \max \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} + \left(\frac{1}{1 - 2s(G)/9}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+\end{align*}
+where the last inequality comes from application of Lemma \ref{lem: mixing_time_small_sets} to $h_q^{(t)} = h_v^{(t + 3)}$. 
+
+For $x \leq \mu$ or $x \geq 1 - \mu$,
+\begin{equation*}
+h_v^{(t + 3)}(x) \leq \max \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}}
+\end{equation*}
+and the proof is complete.
+
+\end{document}

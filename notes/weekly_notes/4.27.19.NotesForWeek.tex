@@ -188,7 +188,7 @@ Let $\Aset \subseteq \Reals^d$, and for $\sigma \geq 0$, write $\sigma B := B(0,
 	\bigcup_{i = 1}^{N} B(x_i, \sigma) \subseteq \Asig \subset \bigcup_{i = 1}^{N} B(x_i, \sigma + \epsilon). \tag{$N := N(\epsilon)$}
 	\end{equation*}
 	
-	Observe that since $\Aset$ is closed and bounded, it is compact. As $B(x,\sigma)$ is compact, and the direct sum of two compact sets is also compact, $\Asig$ is compact. Moreover,
+	Observe that since $\Aset$ is closed and bounded, it is compact. As $B(x,\sigma)$ is compact, and the direct sum of two compact sets is itself compact, $\Asig$ is compact. Moreover,
 	\begin{equation*}
 	\Asig \subset \bigcup_{x \in \Aset} B^{\circ}(x,\sigma + \epsilon)
 	\end{equation*}
@@ -261,6 +261,69 @@ Let $\Aset \subseteq \Reals^d$, and for $\sigma \geq 0$, write $\sigma B := B(0,
 	\norm{x' - x_j} \geq \norm{x - x_j} - \norm{x - x'} > \sigma + \delta' - \frac{\delta'}{\sigma + \delta'}\norm{x} \geq \sigma
 	\end{equation*}
 	and therefore $x' \not\in B(x_j,\sigma)$ for any $j = 1,\ldots, i - 1$. So $x' \in \Asig^{(i)}$.
+\end{proof}
+
+\section{Old version of the same result.}
+
+For two sets $\mathcal{X},\mathcal{Y}$ and scalar $\alpha$, we write 
+\begin{equation*}
+\mathcal{X} + \mathcal{Y} := \set{z: z = x + y, x \in \mathcal{X}, y \in \mathcal{Y}},~ \mathcal{X} - \mathcal{Y} := \set{z: z = x - y, x \in \mathcal{X}, y \in \mathcal{Y}}
+\end{equation*}
+and $\alpha \mathcal{X} = \set{z: z = \alpha x, x \in \mathcal{X}}$. 
+
+Let $B = B(0,1)$ be the $d$-dimensional unit ball centered at the origin.
+
+\begin{lemma}
+	\label{lem: expansion_sets}
+	Let $\mathcal{K} \subseteq \Reals^d$ be a convex set, and $g: \Reals^d \to \Reals^d$ be a measure preserving Lipschitz mapping, meaning there exists $ L > 0$ such that
+	\begin{equation*}
+	\frac{1}{L} \norm{x - y} \leq \norm{g(x) - g(y)} \leq L \norm{x - y} \tag{for all $x,y \in \Reals^d$}
+	\end{equation*}
+	and $\norm{\nabla g (x)} = 1$ for all $x \in \Reals^d$. Letting $\mathcal{A} = g(\mathcal{K})$, the following statement holds: if for $\sigma > 0$, there exists some $x \in \Rd$ such that 
+	\begin{equation}
+	\label{eqn: expansion_sets}
+	B(x,\sigma) \subseteq \mathcal{A} 
+	\end{equation}
+	then for any $\delta > 0$
+	\begin{equation*}
+	\nu(\mathcal{A} + \delta B) \leq \left(1 + \frac{L^2 \delta}{\sigma}\right)^d \nu(\mathcal{A})
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We begin by showing the statement in the convex case, where $g = \mathrm{Id}$ is the identity mapping, before proceeding to show it in full generality. Without loss of generality assume $\sigma B \subseteq \mathcal{A}$, otherwise center by $\mathcal{A} - x$ for some $x$ such that $B(x,\sigma) \subseteq \mathcal{A}$, and as Lebesgue measure is invariant under translation any bound on the volume of $\mathcal{A} - x$ holds for $\mathcal{A}$ as well.
+	
+	\textbf{Convex case, $g = \Id$.}
+	
+	Note that 
+	\begin{equation}
+	\label{eqn: expansion_sets_1}
+	\mathcal{A} + \delta B \subseteq \mathcal{A} + \frac{\delta}{\sigma}\mathcal{A}
+	\end{equation}
+	as $y \in \delta B$ implies $\frac{\sigma}{\delta}y \in \sigma B \subseteq \mathcal{A}$. For $z \in \mathcal{A} + \frac{\delta}{\sigma}\mathcal{A}$, write $z := a + \frac{\delta}{\sigma} a'$ for some $a,a' \in \mathcal{A}$. Then
+	\begin{equation}
+	\label{eqn: expansion_sets_2}
+	\frac{1}{1 + \delta/\sigma}z = \frac{1}{1 + \delta/\sigma}a + \frac{\delta/\sigma}{1 + \delta/\sigma} a' \in \mathcal{A}
+	\end{equation}
+	where the last statement follows by the convexity of $\mathcal{A}$. Together, \eqref{eqn: expansion_sets_1} and \eqref{eqn: expansion_sets_2} imply $\mathcal{A} + \delta B \subseteq (1 + \frac{\delta}{\sigma})\mathcal{A}$, and therefore
+	\begin{equation*}
+	\nu(\mathcal{A} + \delta B) \leq \nu\Biggl(\left(1 + \frac{\delta}{\sigma}\right)\mathcal{A}\Biggr) = \left(1 + \frac{\delta}{\sigma}\right)^d \nu(\mathcal{A})
+	\end{equation*}
+	where the last statement follows by the change of variables formula.
+	
+	\textbf{Non-convex case, $g$ general.} For any $z \in \mathcal{A} + \delta B$, there exists $x \in \mathcal{A}$ such that $\norm{z - x} \leq \delta$. Therefore
+	\begin{equation*}
+	\norm{g^{-1}(z) - g^{-1}(x)} \leq L \delta
+	\end{equation*}
+	and since $g^{-1}(x) \in \mathcal{K}$, $g^{-1}(z) \in \mathcal{K} + L \delta B$. As a result, $\mathcal{A} + \delta B \subseteq g(\mathcal{K} + L \delta B)$; since $g$ is measure-preserving, we have
+	\begin{equation*}
+	\nu(\mathcal{A} + \delta B) \leq \nu(\mathcal{K} + L \delta B)
+	\end{equation*}
+	
+	Additionally, note that the hypothesis $\sigma B \subseteq \mathcal{A}$ implies that $g^{-1}(\sigma B) \subseteq \mathcal{K}$, and if $\norm{z} \leq \frac{\sigma}{L}$, then $g(z) \in \sigma(B)$ and $z \in g^{-1}(\sigma B)$. Therefore, letting $\sigma' = \frac{\sigma}{L}$, we have
+	\begin{equation*}
+	\sigma' B \subseteq \mathcal{K}
+	\end{equation*}
+	and the general result follows from applying the convex result to $\mathcal{K} + \delta'B$ for $\delta' = \delta L$. 
 \end{proof}
 
 \end{document}

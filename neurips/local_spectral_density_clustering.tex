@@ -1,6 +1,33 @@
-%%%%%%%% Local Spectral Clustering of Density Upper Level Sets %%%%%%%%%%%%%%%%%
-
 \documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2019
+
+% ready for submission
+% \usepackage{neurips_2019}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2019}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2019}
+
+\usepackage{neurips_2019}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2019}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{float}
@@ -18,18 +45,6 @@
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
 \usepackage{bm}
-\usepackage{fullpage}
-
-\usepackage[square,sort,comma,numbers]{natbib}
-\renewcommand{\bibname}{REFERENCES}
-\renewcommand{\bibsection}{\subsubsection*{\bibname}}
-
-% Left and right equations
-\makeatletter
-\newcommand{\leqnomode}{\tagsleft@true\let\veqno\@@leqno}
-\newcommand{\reqnomode}{\tagsleft@false\let\veqno\@@eqno}
-\makeatother
-
 
 \newcommand{\diam}{\mathrm{diam}}
 \newcommand{\set}[1]{\left\{#1\right\}}
@@ -70,7 +85,6 @@
 \newcommand{\Aset}{\mathcal{A}}
 \newcommand{\Asig}{\Aset_{\sigma}}
 \newcommand{\Csig}{\Cset_{\sigma}}
-\newcommand{\Sset}{\mathcal{S}}
 
 %%% Operators
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -108,27 +122,65 @@
 \theoremstyle{aldenrmrk}
 \newtheorem{remark}{Remark}
 
+\title{Local Spectral Clustering of Density Upper Level Sets}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  David S.~Hippocampus\thanks{Use footnote for providing further information
+    about author (webpage, alternative address)---\emph{not} for acknowledging
+    funding agencies.} \\
+  Department of Computer Science\\
+  Cranberry-Lemon University\\
+  Pittsburgh, PA 15213 \\
+  \texttt{hippo@cs.cranberry-lemon.edu} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
 \begin{document}
 
-\title{Local Spectral Clustering of Density Upper Level Sets}
-\author{Alden Green, Sivaraman Balakrishnan, and Ryan Tibshirani}
-\date{\today}
 \maketitle
 
 \begin{abstract}
-\vskip 0.1 in % RESOLVED
-Spectral clustering methods are a family of popular nonparametric clustering
-tools.  Recent works have proposed and analyzed \emph{local} spectral methods,
-which extract clusters using locally-biased random walks around a user-specified
-seed node.  Several authors have shown that local methods, such as personalized
-PageRank (PPR), have worst-case guarantees for certain graph-based measures of
-cluster quality.  In contrast to existing works, we analyze PPR in a traditional
-statistical learning setup, where we obtain samples from an unknown
-distribution, and aim to identify connected regions of high-density (density
-clusters).  We introduce two natural criteria for cluster quality, and derive
-bounds for these criteria when evaluated on empirical analogues of density
-clusters. Moreover, we prove that PPR, run on a neighborhood graph, extracts
-sufficiently salient density clusters. Finally, we provide empirical support of our theory.
+\vskip 0.1 in
+  Spectral clustering methods are a family of popular nonparametric clustering
+  tools.  Recent works have proposed and analyzed \emph{local} spectral methods,
+  which extract clusters using locally-biased random walks around a user-specified
+  seed node.  Several authors have shown that local methods, such as personalized
+  PageRank (PPR), have worst-case guarantees for certain graph-based measures of
+  cluster quality.  In contrast to existing works, we analyze PPR in a traditional
+  statistical learning setup, where we obtain samples from an unknown
+  distribution, and aim to identify connected regions of high-density (density
+  clusters).  We introduce two natural criteria for cluster quality, and derive
+  bounds for these criteria when evaluated on empirical analogues of density
+  clusters. Moreover, we prove that PPR, run on a neighborhood graph, extracts
+  sufficiently salient density clusters. Finally, we provide empirical support of our theory.
 \end{abstract}
 
 \section{Introduction}
@@ -153,8 +205,8 @@ Here $(u,v) \in E$ if and only if $w_{uv} > 0$.  We denote by $\Abf \in
 $A_{uv}=w_{uv}$, and by $\Dbf$ the degree matrix, with 
 \smash{$\Dbf_{uu} = \sum_{v \in V} \Abf_{uv}$}.  We also denote by $\Wbf,\Lbf$
 the random walk transition probability matrix and normalized\footnote{Other
-  popular choices here include the unnormalized Laplacian, and symmetric
-  normalized Laplacian.} 
+	popular choices here include the unnormalized Laplacian, and symmetric
+	normalized Laplacian.} 
 Laplacian matrix, respectively, which are defined as
 $$
 \Wbf = \Dbf^{-1}\Abf, \quad \Lbf = \Ibf{} - \Wbf,
@@ -228,9 +280,9 @@ q_{vu}^{(t)} = e_v\Wbf_S^t e_u
 $$
 for the $t$-step transition probability of a random walk over $G[S]$
 originating at $v$.\footnote{Given a starting node $v$ and and a random walk
-  defined by transition probability matrix $\mathbf{P}$, the notation $e_v
-  \mathbf{P}^t$ is used to denote the distribution of the random walk after $t$
-  steps.}   Also write \smash{$\widetilde\pibf = (\widetilde\pi_{u})_{u \in S}$}
+	defined by transition probability matrix $\mathbf{P}$, the notation $e_v
+	\mathbf{P}^t$ is used to denote the distribution of the random walk after $t$
+	steps.}   Also write \smash{$\widetilde\pibf = (\widetilde\pi_{u})_{u \in S}$}
 for the stationary distribution of this random walk.  (Given the definition of 
 $\Wbf_S$, it is well-known that the stationary distribution is given by
 \smash{$\widetilde\pi_{u} = (\Dbf_{S})_{uu} / \vol(S; G[S])$}.) 
@@ -238,11 +290,11 @@ $\Wbf_S$, it is well-known that the stationary distribution is given by
 Our internal connectivity parameter will capture the time it takes for the
 random walk over $G[S]$ to mix (approach the stationary distribution)
 uniformly over $S$.  For this, we first define the \emph{relative pointwise mixing
-  time} of $G[S]$ as 
+	time} of $G[S]$ as 
 $$
 \tau_{\infty}(G[S]) = \min\set{ m: \frac{|q_{vu}^{(m)} - 
-      \widetilde\pi_u|}{\widetilde\pi_u} \leq \frac{1}{4}, 
-    \; \text{for $u,v \in V$}}. 
+		\widetilde\pi_u|}{\widetilde\pi_u} \leq \frac{1}{4}, 
+	\; \text{for $u,v \in V$}}. 
 $$
 %where \smash{$\qbf = (\qbf_v^{(1)}, \qbf_v^{(2)}, ...)_{v \in V}$}, and
 %\smash{$\qbf_v^{(m)} = (q_{vu}^{(m)})_{u \in V}$}. 
@@ -260,11 +312,11 @@ less than $\Psi$, we call it as a \emph{$(\Phi,\Psi)$-cluster}. Both
 local \citep{zhu2013} and global \citep{kannan04} spectral algorithms have been
 shown to output clusters (or partitions) which approximate the optimal $(\Phi,
 \Psi)$-cluster (or partition) for a given graph $G$.\footnote{In the case of
-  \citep{kannan04}, the internal connectivity parameter $\phi$ is actually the
-  conductance, i.e., the minimum normalized cut within the subgraph $G[S]$. See
-  Theorem 3.1 in their paper for details; however, note that $\phi^2 /
-  \log(\vol(S)) \leq O(\Psi)$, and so the lower bound on $\phi$ translates to a
-  lower bound on $\Psi$.}   
+	\citep{kannan04}, the internal connectivity parameter $\phi$ is actually the
+	conductance, i.e., the minimum normalized cut within the subgraph $G[S]$. See
+	Theorem 3.1 in their paper for details; however, note that $\phi^2 /
+	\log(\vol(S)) \leq O(\Psi)$, and so the lower bound on $\phi$ translates to a
+	lower bound on $\Psi$.}   
 
 \subsection{PPR on a Neighborhood Graph}
 
@@ -297,32 +349,32 @@ For a level $\beta > 0$ and a target volume $\vol_0 > 0$, we define a
 S_\beta = \{u \in V: \textcolor{red}{\frac{p_u}{\Dbf_{uu}}} > \frac{\beta}{\vol_{0}}\}.
 \end{equation}
 Having computed sweep cuts over a range \smash{$\beta \in  
-(\frac{1}{40},\frac{1}{11})$},\footnote{The choice of a specific range such as 
-\smash{$(\frac{1}{40}, \frac{1}{11})$} is standard in the analysis of PPR
-algorithms, see, e.g., \citep{zhu2013}.}
+	(\frac{1}{40},\frac{1}{11})$},\footnote{The choice of a specific range such as 
+	\smash{$(\frac{1}{40}, \frac{1}{11})$} is standard in the analysis of PPR
+	algorithms, see, e.g., \citep{zhu2013}.}
 we output a cluster \smash{$\widehat{C} = S_{\beta^*}$}, based on the sweep cut
 $S_{\beta^*}$ that minimizes the normalized cut \smash{$\Phi(S_{\beta^*};
-  G_{n,r})$} as defined in \eqref{eqn: norm_cut}. For concreteness, we summarize
+	G_{n,r})$} as defined in \eqref{eqn: norm_cut}. For concreteness, we summarize
 this procedure in Algorithm \ref{alg: ppr}.   
 
 \begin{algorithm}
-\caption{PPR on a Neighborhood Graph}
-\label{alg: ppr}	
-{\bfseries Input:} data $\Xbf=\{x_1,\ldots,x_n\}$, radius $r > 0$, teleportation 
-parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, target stationary volume $\pi_0 >
-0$. \\   
-{\bfseries Output:} cluster $\widehat{C} \subseteq V$.
-\begin{algorithmic}[1]
-  \STATE Form the neighborhood graph $G_{n,r}$.
-  \STATE Compute the PPR vector $\pbf(v, \alpha; G_{n,r})$ as in \eqref{eqn:
-    ppr_vector}. 
-  \STATE For $\beta \in (\frac{1}{40}, \frac{1}{11})$ compute sweep cuts
-  $S_{\beta}$ as in \eqref{eqn: sweep_cuts}.
-  \STATE Return \smash{$\widehat{C} = S_{\beta^*}$}, where 
-  $$
-  \beta^* = \argmin_{\beta \in (\frac{1}{40}, \frac{1}{11})} \Phi(S_{\beta}; G_{n,r}).
-  $$
-\end{algorithmic}
+	\caption{PPR on a Neighborhood Graph}
+	\label{alg: ppr}	
+	{\bfseries Input:} data $\Xbf=\{x_1,\ldots,x_n\}$, radius $r > 0$, teleportation 
+	parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, target stationary volume $\pi_0 >
+	0$. \\   
+	{\bfseries Output:} cluster $\widehat{C} \subseteq V$.
+	\begin{algorithmic}[1]
+		\STATE Form the neighborhood graph $G_{n,r}$.
+		\STATE Compute the PPR vector $\pbf(v, \alpha; G_{n,r})$ as in \eqref{eqn:
+			ppr_vector}. 
+		\STATE For $\beta \in (\frac{1}{40}, \frac{1}{11})$ compute sweep cuts
+		$S_{\beta}$ as in \eqref{eqn: sweep_cuts}.
+		\STATE Return \smash{$\widehat{C} = S_{\beta^*}$}, where 
+		$$
+		\beta^* = \argmin_{\beta \in (\frac{1}{40}, \frac{1}{11})} \Phi(S_{\beta}; G_{n,r}).
+		$$
+	\end{algorithmic}
 \end{algorithm}
 
 \subsection{Summary of Results}
@@ -360,30 +412,30 @@ parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, target stationary volume $\pi_0
 Let $\Cbb_f(\lambda)$ denote the connected components of the density upper level
 set $\{x \in \Rd: f(x) > \lambda\}$.  For a given density cluster $\Cset \in
 \Cbb_f(\lambda)$, we call $\Cset[\Xbf] = \Cset \cap \Xbf$ the \emph{empirical
-density cluster}. Below we give two notions of performance of a density cluster estimate. 
+	density cluster}. Below we give two notions of performance of a density cluster estimate. 
 
 \begin{definition}[Misclassification rate]
-\label{def: misclassification_rate}
-For an estimator \smash{$\widehat{\Cset} \subseteq \Xbf$} and set
-$\mathcal{S} \subseteq \Reals^d$, the \emph{misclassification rate} of $\mathcal{S}$ by $\widehat{\Cset}$ is
-\begin{equation}
-\label{eqn: misclassification_rate}
-\abs{\widehat{\Cset} \setminus (\mathcal{S} \cap \Xbf)} + \abs{(\mathcal{S} \cap \Xbf) \setminus \widehat{\Cset}}.
-\end{equation}
+	\label{def: misclassification_rate}
+	For an estimator \smash{$\widehat{\Cset} \subseteq \Xbf$} and set
+	$\mathcal{S} \subseteq \Reals^d$, the \emph{misclassification rate} of $\mathcal{S}$ by $\widehat{\Cset}$ is
+	\begin{equation}
+	\label{eqn: misclassification_rate}
+	\abs{\widehat{\Cset} \setminus (\mathcal{S} \cap \Xbf)} + \abs{(\mathcal{S} \cap \Xbf) \setminus \widehat{\Cset}}.
+	\end{equation}
 \end{definition}    
 
 \begin{definition}[Consistent density cluster estimation]
-\label{def: consistent_density_cluster_estimation}
-For an estimator \smash{$\widehat{\Cset} \subseteq \Xbf$} and cluster 
-$\Cset \in \Cbb_f(\lambda)$, we say \smash{$\widehat{\Cset}$} is a consistent
-estimator of $\Cset$ if for all $\Cset' \in \Cbb_f(\lambda)$ with $\Cset \not=
-\Cset'$ the following holds as $n \to \infty$: 
-\begin{equation}
-\label{eqn: consistent_density_cluster_recovery}
-\Cset[\Xbf] \subseteq \widehat{\Cset} \quad \text{and} \quad
-\widehat{\Cset} \cap \Cset'[\Xbf] = \emptyset,
-\end{equation}
-with probability tending to 1.
+	\label{def: consistent_density_cluster_estimation}
+	For an estimator \smash{$\widehat{\Cset} \subseteq \Xbf$} and cluster 
+	$\Cset \in \Cbb_f(\lambda)$, we say \smash{$\widehat{\Cset}$} is a consistent
+	estimator of $\Cset$ if for all $\Cset' \in \Cbb_f(\lambda)$ with $\Cset \not=
+	\Cset'$ the following holds as $n \to \infty$: 
+	\begin{equation}
+	\label{eqn: consistent_density_cluster_recovery}
+	\Cset[\Xbf] \subseteq \widehat{\Cset} \quad \text{and} \quad
+	\widehat{\Cset} \cap \Cset'[\Xbf] = \emptyset,
+	\end{equation}
+	with probability tending to 1.
 \end{definition}
 
 
@@ -392,25 +444,25 @@ A summary of our main results (and outline for the rest of this paper) is as
 follows.  
 
 \begin{enumerate}
-\item In Section \ref{sec: cluster_quality_bounds}, we derive in Theorem
-  \ref{thm: conductance_upper_bound} an upper bound on the normalized cut of a  
-  (thickened) empirical density cluster $\Csig[\Xbf]$, under natural geometric 
-  conditions (precluding clusters that are arbitrarily thin).  
-
-\item Under \textcolor{red}{largely the same set of geometric conditions}, we derive in Theorem
-  \ref{thm: inverse_lower_bound_nonconvex} a lower bound on the
-  inverse mixing time of a random walk over $\Csig[\Xbf]$.
+	\item In Section \ref{sec: cluster_quality_bounds}, we derive in Theorem
+	\ref{thm: conductance_upper_bound} an upper bound on the normalized cut of a  
+	(thickened) empirical density cluster $\Csig[\Xbf]$, under natural geometric 
+	conditions (precluding clusters that are arbitrarily thin).  
 	
-\item In Section \ref{sec: consistent_cluster_estimation_with_ppr}, we show in
-  Theorem \ref{thm: consistent_recovery_of_density_clusters} that the bounds on the cluster quality criteria established in Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
-    inverse_mixing_time_lower_bound_nonconvex} have algorithmic consequences for \ppr: 
-  properly initialized, Algorithm \ref{alg: ppr} has low misclassification rate with respect to a small enlargement of the set $\Cset$, and if the density cluster $\Cset$ is particularly well-conditioned, Algorithm \ref{alg: ppr} will perform consistent density cluster estimation in the sense of \eqref{eqn: consistent_density_cluster_recovery}. 
+	\item Under \textcolor{red}{largely the same set of geometric conditions}, we derive in Theorem
+	\ref{thm: inverse_lower_bound_nonconvex} a lower bound on the
+	inverse mixing time of a random walk over $\Csig[\Xbf]$.
 	
-\item We show in Corollary \ref{cor: appr} that these statements hold also with respect to an approximate form of \pprspace, which can be efficiently computed.
-
-\item In Section \ref{sec: experiments}, we empirically
-  demonstrate the tightness of the bounds in Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, and provide examples showing how violations of the geometric conditions we require manifestly
-  impact density cluster recovery by \ppr.  
+	\item In Section \ref{sec: consistent_cluster_estimation_with_ppr}, we show in
+	Theorem \ref{thm: consistent_recovery_of_density_clusters} that the bounds on the cluster quality criteria established in Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
+		inverse_mixing_time_lower_bound_nonconvex} have algorithmic consequences for \ppr: 
+	properly initialized, Algorithm \ref{alg: ppr} has low misclassification rate with respect to a small enlargement of the set $\Cset$, and if the density cluster $\Cset$ is particularly well-conditioned, Algorithm \ref{alg: ppr} will perform consistent density cluster estimation in the sense of \eqref{eqn: consistent_density_cluster_recovery}. 
+	
+	\item We show in Corollary \ref{cor: appr} that these statements hold also with respect to an approximate form of \pprspace, which can be efficiently computed.
+	
+	\item In Section \ref{sec: experiments}, we empirically
+	demonstrate the tightness of the bounds in Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound}, and provide examples showing how violations of the geometric conditions we require manifestly
+	impact density cluster recovery by \ppr.  
 \end{enumerate}
 
 On the topic of conditions, it is worth mentioning that, as density clusters
@@ -476,50 +528,50 @@ cluster $\Cset \in \Cbb_f(\lambda)$ for some threshold $\lambda > 0$, and an
 expansion parameter $\sigma > 0$. 
 
 \begin{enumerate}[label=(A\arabic*)]
-\item
-\label{asmp: bounded_density}
-\emph{Bounded density within cluster:} There are $0 < \lambda_{\sigma} <
-\Lambda_{\sigma} < \infty$ such that
-$$
-\lambda_{\sigma} = \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x) \leq
-\Lambda_{\sigma}.
-$$
-% and 
-% \begin{equation*}
-% \frac{\diam \Asig}{\sigma} \leq \mu
-% \end{equation*}
-% where $\diam \Asig = \sup \set{d(x,y) : x,y \in \Asig}$
+	\item
+	\label{asmp: bounded_density}
+	\emph{Bounded density within cluster:} There are $0 < \lambda_{\sigma} <
+	\Lambda_{\sigma} < \infty$ such that
+	$$
+	\lambda_{\sigma} = \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x) \leq
+	\Lambda_{\sigma}.
+	$$
+	% and 
+	% \begin{equation*}
+	% \frac{\diam \Asig}{\sigma} \leq \mu
+	% \end{equation*}
+	% where $\diam \Asig = \sup \set{d(x,y) : x,y \in \Asig}$
 	
-\item 
-\label{asmp: low_noise_density}
-\emph{Low noise density:} There exists $\gamma,c_0 > 0$ such that for all $x
-\in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,   
-$$
-  \inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \dist(x, \Csig)^{\gamma},
-$$
-where \smash{$\dist(x,\Aset) = \inf_{x_0 \in \Aset} \norm{x - x_0}$}.
-
-\item
-\label{asmp: cluster_separation}
-\emph{Cluster separation:}
-For all $\Cset' \in \Cbb_f(\lambda)$ with $\Cset' \not= \Cset$,
-$$
-\dist(\Csig,\Csig') > \sigma,
-$$
-where \smash{$\dist(\Aset,\Aset') = \inf_{x \in \Aset} \dist(x,\Aset')$}.  
-
-\item
-\label{asmp: embedding}
-\emph{Lipschitz embedding:}
-There exists $\mathcal{K} \subseteq \Rd$ convex, and $g: \Reals^d \to \Reals^d$ satisfying
-\begin{equation*}
-\det(\nabla g (x) ) = 1,\frac{1}{L}\norm{x - y} \leq \norm{g(x) - g(y)} \leq L \norm{x - y} ~ \text{for all $x,y \in \Reals^d$}
-\end{equation*}
-such that $\Csig$ is the image of $\mathcal{K}$ by $g$, $\Csig = g(\mathcal{K})$.
-Furthermore, there exists $D < \infty$ such that for all $x, x' \in \mathcal{K}$
-$$
-\norm{x - x'} \leq D.
-$$
+	\item 
+	\label{asmp: low_noise_density}
+	\emph{Low noise density:} There exists $\gamma,c_0 > 0$ such that for all $x
+	\in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,   
+	$$
+	\inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \dist(x, \Csig)^{\gamma},
+	$$
+	where \smash{$\dist(x,\Aset) = \inf_{x_0 \in \Aset} \norm{x - x_0}$}.
+	
+	\item
+	\label{asmp: cluster_separation}
+	\emph{Cluster separation:}
+	For all $\Cset' \in \Cbb_f(\lambda)$ with $\Cset' \not= \Cset$,
+	$$
+	\dist(\Csig,\Csig') > \sigma,
+	$$
+	where \smash{$\dist(\Aset,\Aset') = \inf_{x \in \Aset} \dist(x,\Aset')$}.  
+	
+	\item
+	\label{asmp: embedding}
+	\emph{Lipschitz embedding:}
+	There exists $\mathcal{K} \subseteq \Rd$ convex, and $g: \Reals^d \to \Reals^d$ satisfying
+	\begin{equation*}
+	\det(\nabla g (x) ) = 1,\frac{1}{L}\norm{x - y} \leq \norm{g(x) - g(y)} \leq L \norm{x - y} ~ \text{for all $x,y \in \Reals^d$}
+	\end{equation*}
+	such that $\Csig$ is the image of $\mathcal{K}$ by $g$, $\Csig = g(\mathcal{K})$.
+	Furthermore, there exists $D < \infty$ such that for all $x, x' \in \mathcal{K}$
+	$$
+	\norm{x - x'} \leq D.
+	$$
 \end{enumerate}
 
 Note that $\sigma$ plays several roles here, precluding arbitrarily narrow
@@ -529,7 +581,7 @@ Assumptions \ref{asmp: bounded_density}, \ref{asmp: low_noise_density},
 and \ref{asmp: cluster_separation} are used to upper bound $\Phi(\Cset[\Xbf];
 G_{n,r})$, whereas \ref{asmp: bounded_density}, and \ref{asmp: embedding} are required to lower bound $\Psi(\Cset[\Xbf]; G_{n,r})$. We note that the
 lower bound on minimum density in \ref{asmp: bounded_density} along with \ref{asmp:  
-cluster_separation} are similar to the $(\sigma,\epsilon)$-saliency of
+	cluster_separation} are similar to the $(\sigma,\epsilon)$-saliency of
 \citep{chaudhuri2010}, a standard density clustering assumption, while
 \ref{asmp: low_noise_density} is seen in, e.g., \citep{singh2009} (as well as
 many other works on density clustering and level set estimation.)  It is worth
@@ -561,60 +613,60 @@ the parameter $\Lambda_\sigma>0$ from the theorem statement.) For $\mathcal{S} \
 \end{equation*}
 
 \begin{theorem}
-\label{thm: conductance_upper_bound}
-Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy
-Assumptions \ref{asmp: bounded_density}, \ref{asmp: low_noise_density},
-and \ref{asmp: cluster_separation}, for some 
-$\sigma, \lambda_{\sigma}, c_0, \gamma > 0$. Let $0 < r \leq \sigma/4d$ be such that
-\begin{equation}
-\label{eqn: weighted_cluster_volume}
-\pi_{\Pbb,r}(\Csig) \leq \frac{1}{2}.
-\end{equation}
- Then for any $0 < \delta < 1$, $\epsilon > 0$, if
-\begin{equation}
-\label{eqn: conductance_sample_complexity}
-n \geq \frac{(2+\epsilon)^2\log(3/\delta)}{\epsilon^2}\left(\frac{25}
-  {6 \lambda_{\sigma}^2\nu(\Csig) \nu_d r^d}\right)^2,
-\end{equation}
-then
-\begin{equation}
-  \label{eqn: conductance_additive_error_bound}
-  \frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq c_1 \frac{d}{\sigma}
-  \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
-    c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
-\end{equation}
-with probability at least $1-\delta$ (where $c_1 > 0$ is a universal constant).
+	\label{thm: conductance_upper_bound}
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy
+	Assumptions \ref{asmp: bounded_density}, \ref{asmp: low_noise_density},
+	and \ref{asmp: cluster_separation}, for some 
+	$\sigma, \lambda_{\sigma}, c_0, \gamma > 0$. Let $0 < r \leq \sigma/4d$ be such that
+	\begin{equation}
+	\label{eqn: weighted_cluster_volume}
+	\pi_{\Pbb,r}(\Csig) \leq \frac{1}{2}.
+	\end{equation}
+	Then for any $0 < \delta < 1$, $\epsilon > 0$, if
+	\begin{equation}
+	\label{eqn: conductance_sample_complexity}
+	n \geq \frac{(2+\epsilon)^2\log(3/\delta)}{\epsilon^2}\left(\frac{25}
+	{6 \lambda_{\sigma}^2\nu(\Csig) \nu_d r^d}\right)^2,
+	\end{equation}
+	then
+	\begin{equation}
+	\label{eqn: conductance_additive_error_bound}
+	\frac{\Phi_{n,r}(\Csig[\mathbf{X}])}{r} \leq c \frac{d}{\sigma}
+	\frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
+		c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
+	\end{equation}
+	with probability at least $1-\delta$ (where $c_1 > 0$ is a universal constant).
 \end{theorem}
 
 \begin{remark}
-The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other
-proofs in this paper, can be found in the supplementary document. The key 
-idea is that for any $x \in \Cset$, the simple fact
-$B(x,\sigma) \subseteq \Csig$ translates into the upper bound $\nu(\Csig + rB) \leq (1 + 2d r /\sigma)\nu(\Csig)$. We leverage \ref{asmp:
-  low_noise_density} to find a corresponding bound on the weighted volume,
-then apply standard concentration inequalities to convert from population-
-to sample-based results.  
+	The proof of Theorem \ref{thm: conductance_upper_bound}, along with all other
+	proofs in this paper, can be found in the supplementary document. The key 
+	idea is that for any $x \in \Cset$, the simple fact
+	$B(x,\sigma) \subseteq \Csig$ translates into the upper bound $\nu(\Csig + rB) \leq (1 + 2d r /\sigma)\nu(\Csig)$. We leverage \ref{asmp:
+		low_noise_density} to find a corresponding bound on the weighted volume,
+	then apply standard concentration inequalities to convert from population-
+	to sample-based results.  
 \end{remark}
 
 \begin{remark}
-The inequality in \eqref{eqn: conductance_additive_error_bound} is tight in the case of $\Cset = \set{0}$. To see this, let $\Csig = B(0,\sigma)$ and
-$$
- f(x)  = \begin{cases}
-   \lambda &\text{for $x \in \Csig$}, \\
-   \lambda - \dist(x,\Csig)^{\gamma} & \text{ for $0 < \dist(x,\Csig) < r$}, 
-\end{cases}
-$$
-Then, some simple calculations yield
-\begin{equation*}
-\frac{\Pbb((\Csig + B(0,r)) \setminus \Csig)}{\Pbb(\Csig)} \geq d\frac{(\lambda - r^{\gamma}) r}{\lambda\sigma},
-\end{equation*}
-and for some $c,c' > 0$,
-\begin{equation*}
-\Ebb(\cut(\Csig[\Xbf]; G_{n,r})) \geq c \lambda \nu_d r^d \Pbb((\Csig + B(0,r)), \quad \textrm{and} \quad \Ebb(\vol_{n,r}(\Csig[\Xbf]; G_{n,r}) \leq c' \lambda \nu_d r^d \Pbb(\Csig)
-\end{equation*}
-so the ratio $\Ebb(\cut(\Csig[\Xbf]; G_{n,r})) / \Ebb(\vol_{n,r}(\Csig[\Xbf]; G_{n,r})$ matches \ref{eqn: conductance_additive_error_bound}, up to constants.
-
-
+	The inequality in \eqref{eqn: conductance_additive_error_bound} is tight in the case of $\Cset = \set{0}$. To see this, let $\Csig = B(0,\sigma)$ and
+	$$
+	f(x)  = \begin{cases}
+	\lambda &\text{for $x \in \Csig$}, \\
+	\lambda - \dist(x,\Csig)^{\gamma} & \text{ for $0 < \dist(x,\Csig) < r$}, 
+	\end{cases}
+	$$
+	Then, some simple calculations yield
+	\begin{equation*}
+	\frac{\Pbb((\Csig + B(0,r)) \setminus \Csig)}{\Pbb(\Csig)} \geq d\frac{(\lambda - r^{\gamma}) r}{\sigma},
+	\end{equation*}
+	and for some $c > 0$,
+	\begin{equation*}
+	\Ebb(\cut(\Csig[\Xbf]; G_{n,r})) \setminus \Csig) \geq c \lambda \nu_d r^d \Pbb((\Csig + B(0,r)), \quad \textrm{and} \quad \Ebb(\vol_{n,r}(\Csig[\Xbf]; G_{n,r}) \leq c \lambda \nu_d r^d \Pbb(\Csig)
+	\end{equation*}
+	so the ratio $\Ebb(\cut(\Csig[\Xbf]; G_{n,r})) / \Ebb(\vol_{n,r}(\Csig[\Xbf]; G_{n,r})$ matches \ref{eqn: conductance_additive_error_bound}, up to constants.
+	
+	
 \end{remark}
 
 \subsection{Lower Bound on Inverse Mixing Time}
@@ -624,31 +676,33 @@ Next we lower bound the inverse mixing time \eqref{eqn: inv_mixing_time} of $\Cs
 \begin{theorem}
 	\label{thm: mixing_time_upper_bound}
 	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, D, K > 0$. Then, for any $0 < r < \sigma/2\sqrt{d}$, with probability one
-	\begin{equation}
-	\label{eqn: mixing_time_upper_bound}
+	\begin{equation*}
 	\limsup_{n \to \infty}\tau_{n,r}(\Csig[\Xbf]) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 D^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{1}{r}\right) + c_3 \log\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}}\right)
-	\end{equation}
+	\end{equation*}
 \end{theorem}
 for $c_2,c_3 > 0$ universal constants. 
 
-Our proof technique involves two key geometric quantities: the \emph{local spread} $s(\widetilde{G}_{n,r})$ (where we use the shorthand $\widetilde{G}_{n,r} = G_{n,r}[\Csig[\Xbf]]$) and the \emph{conductance} $\widetilde{\Phi}_{n,r}$, defined as
+We will outline the main techniques used to prove Theorem \ref{thm: mixing_time_upper_bound}, but first, we show that a straightforward and perhaps immediately obvious route to upper bounding the mixing time is insufficient for our purposes. Let $\widetilde{\Phi}_{n,r}$ be the \emph{conductance} of the induced subgraph $\widetilde{G}_{n,r} = G_{n,r}\bigl[\Csig[\Xbf]\bigr]$, given by
 \begin{equation*}
-s(\widetilde{G}_{n,r}) := \frac{9}{10} \min_{x \in \Csig[\Xbf]} \set{\textcolor{red}{\deg(x; \widetilde{G}_{n,r}) \cdot \pi(x; \widetilde{G}_{n,r})} }, \quad \widetilde{\Phi}_{n,r} = \min_{S \subseteq \Csig[\Xbf]} \Phi(S; \widetilde{G}_{n,r}).
-\end{equation*} 
-
-We argue that the random walk over $\widetilde{G}_{n,r}$ quickly escapes sets with stationary distribution less than $s(\widetilde{G}_{n,r})$, and so we avoid a $\log\left(1/\pi_0\right)$ `start penalty' -- where $\pi_0 := \min_{x \in \Csig[\Xbf]} \pi(x; \widetilde{G}_{n,r}) \leq \frac{1}{n}$ -- characteristic to analyses of mixing time, which would render any resultant upper bound on mixing time vacuous. Instead, we obtain \footnote{For sequences $a_n, b_n$, we write $a_n \lesssim b_n$ ($a_n \gtrsim b_n$) when there exists $c > 0$ such that $a_n \leq c b_n$ ($a_n \geq c b_n$) for all sufficiently large $n$.}
-\begin{equation*}
-\tau_{n,r}(\Csig[\Xbf]) \lesssim \frac{1}{\widetilde{\Phi}_{n,r}^2} \log\left(\frac{1}{s(\widetilde{G}_{n,r})}\right).
+\widetilde{\Phi}_{n,r} = \min_{S \subseteq \Csig[\Xbf]} \Phi(S; \widetilde{G}_{n,r}),
 \end{equation*}
-Some straightforward calculations yield $s(\widetilde{G}_{n,r}) \gtrsim \frac{\lambda r^d}{\lambda_{\sigma}}$. To handle the conductance, we introduce a continuous analogue, 
+and $\widetilde{\mu}_2$ be the 2nd largest eigenvalue of $\Wbf_{\Csig[\Xbf]}$, the random walk matrix over $\widetilde{G}_{n,r}$. The famous Cheeger's inequality
 \begin{equation*}
-\widetilde{\Phi}_{\Pbb,r} := \min_{\mathcal{S} \subseteq \Csig} \left(\frac{\int_{\Sset} \Pbb(B(x,r) \cap \Sset^c) fx dx}{\min \set{\int_{\Sset} \Pbb(B(x,r) \cap \Csig) fx dx, \int_{\Sset^c} \Pbb(B(x,r) \cap \Csig) fx dx}}\right) \tag{$\Sset^c = \Csig \setminus \Sset$}
+\frac{\widetilde{\Phi}_{n,r}^2}{2} \leq 1 - \widetilde{\mu}_2 \leq \widetilde{\Phi}_{n,r}
 \end{equation*}
-and show the asymptotic lower bound $\limsup_{n \to \infty} \widetilde{\Phi}_{n,r} \gtrsim \widetilde{\Phi}_{\Pbb,r}$. Finally, we extend classical isoperimetric results lower bounding $\widetilde{\Phi}_{\Pbb,r}$, when $\Pbb$ is uniform and $\Csig$ convex, to instead hold under \ref{asmp: bounded_density} and \ref{asmp: embedding}.
+applied with well known theory on $\infty$-mixing time yields
+\begin{equation*}
+\abs{\widetilde{\pi}_{n,r}(u) - e_v \Wbf_{\Csig[\Xbf]}^te_u} \leq \left(1 - \frac{\widetilde{\Phi}_{n,r}^2}{2}\right)^t \sqrt{\frac{\deg(u; \widetilde{G}_{n,r})}{\min_{v \in \Csig[\Xbf]} \deg(v; \widetilde{G}_{n,r})}} \tag{$u,v \in \Csig[\Xbf]$}
+\end{equation*}
+where $\widetilde{\pi}_{n,r}$ is the stationary distribution over $\widetilde{G}_{n,r}$ Unfortunately, even if $\widetilde{G}_{n,r}$ is an approximately degree-regular graph, (meaning we can ignore the term under the square root), this bound only yields \footnote{For sequences of numbers $\set{a_n}_{n \in \mathbb{N}}, \set{b_n}_{n \in \mathbb{N}}$, we say $a_n = \mathcal{O}(b_n)$ when there exists $c$ sufficiently large such that $a_n \leq c b_n$ for all $n$.}
+\begin{equation*}
+\tau_{n,r}(\Csig[\Xbf]) = \mathcal{O} \left( \frac{\log\left(\frac{1}{\widetilde{\pi}_{\min}}\right)}{\widetilde{\Phi}_{n,r}^2} \right).
+\end{equation*}
+where $\widetilde{\pi}_{\min} = \min_{u \in \Csig[\Xbf]} \widetilde{\pi}_{n,r}(u)$. As $\widetilde{\pi}_{\min} = \mathcal{O}(1/n)$, the upper bound on the right hand side will be of order at least $\log(n)$, and the bound becomes trivial as $n \to \infty$. 
 
-\begin{remark}
-	The parameter $L$ obviously plays an important role in the upper bound of Theorem \ref{thm: mixing_time_upper_bound}. It is clear that there is some interdependence between $L$ and other geometric parameters $\sigma$ and $D$, which might lead one to hope that \ref{asmp: embedding} is non-essential. However, it is not possible to eliminate this condition without incurring an additional factor of at least $(D/\sigma)^d$ in \eqref{eqn: mixing_time_upper_bound}, achieved, for instance, when $\Csig$ consists of two balls of diameter $D$ linked by a cylinder of diameter $D$ and radius $\sigma$. \citep{abbasi-yadkori2016, abbasi-yadkori2016a} develop theory regarding biLipschitz deformations of convex sets, wherein it is observed that star-shaped sets and moons of the type we consider in Section \ref{sec: experiments} both satisfy \ref{asmp: embedding} for reasonably small values of $L$.
-\end{remark}
+\textcolor{red}{We therefore apply a more complex approach.} 
+
+
 \section{Consistent Cluster Estimation}
 \label{sec: consistent_cluster_estimation_with_ppr}
 
@@ -671,7 +725,7 @@ Well-conditioned density clusters satisfy all of the given assumptions, for para
 	we call $\Cset$ a \textrm{$\kappa$-well-conditioned density cluster (with respect to $\theta$).}
 \end{definition}
 
-We focus for a moment on the neighborhood graph radius $r$. While taking $r \to 0$ as $n \to \infty$ -- and thereby ensuring $G_{n,r}$ is sparse-- is computationally attractive, the presence of a factor of $\frac{1}{r}$ in $\kappa(\Cset)$ unfortunately prevents us from making claims about the behavior of \pprspace for this regime. Although the restriction to a kernel function fixed in $n$ is standard for theoretical analysis \cite{schiebinger2015,vonluxburg2008}, it is an interesting question whether \pprspace exhibits some degeneracy over $r$-neighborhood graphs as $r \to 0$, or if this is merely looseness in our upper bounds.
+We focusing for a moment on the neighborhood graph radius $r$. While taking $r \to 0$ as $n \to \infty$ -- and thereby ensuring $G_{n,r}$ is sparse-- is computationally attractive, the presence of a factor of $\frac{1}{r}$ in $\kappa(\Cset)$ unfortunately prevents us from making claims about the behavior of \pprspace for this regime. While the restriction to a kernel function fixed in $n$ is standard for theoretical analysis \cite{schiebinger2015,vonluxburg2008}, it is an interesting question whether \pprspace exhibits some degeneracy over $r$-neighborhood graphs as $r \to 0$, or if this is merely looseness in our upper bounds.
 
 \paragraph{Well-conditioned clusters.}
 
@@ -717,7 +771,12 @@ Note that the latter condition in $\ref{asmp: valid_region}$ will be satisfied i
 	Fix $\lambda > 0$, let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well conditioned density cluster (with respect to some $\theta$), and additionally assume $f$ satisfies \ref{asmp: valid_region}. Then, with probability tending to one as $n \to \infty$,
 	\begin{equation}
 	\label{eqn: misclassification_rate_ub}
-	\frac{\abs{\Csig[\Xbf] \setminus \widehat{C}}}{\Bigl|\Csig[\Xbf]\Bigr|} \leq c_5 \kappa(\Cset) \frac{\Lambda_{\sigma}}{\lambda_{\sigma}}, \quad \textrm{and} \quad \frac{\abs{\widehat{C} \setminus \Csig[\Xbf]}}{\Bigl|\Csig[\Xbf]\Bigr|} \leq c_6 \kappa(\Cset) \frac{\Lambda_{\sigma}}{\lambda_{\min}}.
+	\frac{\abs{\Csig[\Xbf] \setminus \widehat{C}}}{\Bigl|\Csig[\Xbf]\Bigr|} \leq c_5 \kappa(\Cset) \frac{\Lambda_{\sigma}}{\lambda_{\sigma}}
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn: misclassification_rate_ub_2}
+	\frac{\abs{\widehat{C} \setminus \Csig[\Xbf]}}{\Bigl|\Csig[\Xbf]\Bigr|} \leq c_6 \kappa(\Cset) \frac{\Lambda_{\sigma}}{\lambda_{\min}}.
 	\end{equation}
 	for universal constants $c_5, c_6 > 0$. 
 \end{theorem}
@@ -788,34 +847,34 @@ Application of \eqref{eqn: appr_error} within the proofs of Theorems \ref{thm: m
 \begin{figure}
 	\centering
 	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
-	\begin{subfigure}{.33\linewidth}
-		\includegraphics[width=\linewidth]{example1plots/sample2}
+		\begin{subfigure}{.33\linewidth}
+			\includegraphics[width=\linewidth]{example1plots/sample2}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.33\linewidth}
+			\includegraphics[width=\linewidth]{example1plots/sample1}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.33\linewidth}
+			\includegraphics[width=\linewidth]{example1plots/sigma_normalized_cut_plot}
+			\caption{}
+		\end{subfigure}
+		
+		
+		\begin{subfigure}{.33\linewidth}
+			\includegraphics[width=\linewidth]{example1plots/sigma_mixing_time_plot}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.33\linewidth}
+			\includegraphics[width=\linewidth]{example1plots/diameter_normalized_cut_plot}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.33\linewidth}
+			\includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
+			\caption{}
+		\end{subfigure}
 		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.33\linewidth}
-		\includegraphics[width=\linewidth]{example1plots/sample1}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.33\linewidth}
-		\includegraphics[width=\linewidth]{example1plots/sigma_normalized_cut_plot}
-		\caption{}
-	\end{subfigure}
-
-	
-	\begin{subfigure}{.33\linewidth}
-		\includegraphics[width=\linewidth]{example1plots/sigma_mixing_time_plot}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.33\linewidth}
-		\includegraphics[width=\linewidth]{example1plots/diameter_normalized_cut_plot}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.33\linewidth}
-		\includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
-		\caption{}
-	\end{subfigure}
-	\caption{}
-	\label{fig:fig1}
+		\label{fig:fig1}
 	\end{adjustbox}
 \end{figure}
 
@@ -844,75 +903,75 @@ The story in panels $(c)$ and $(e)$ is less obvious. We note that while, broadly
 \begin{figure}
 	\centering
 	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth,scale = .5]{example2plots/row1_true_density_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row1_ppr_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row1_conductance_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row1_density_cluster}
-		\caption{}
-	\end{subfigure}
-	
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row2_true_density_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row2_ppr_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row2_conductance_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row2_density_cluster}
-		\caption{}
-	\end{subfigure}
-	
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row3_true_density_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row3_ppr_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row3_conductance_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row3_density_cluster}
-		\caption{}
-	\end{subfigure}
-	
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row4_true_density_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row4_ppr_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row4_conductance_cluster}
-		\caption{}
-	\end{subfigure}
-	\begin{subfigure}{.24\linewidth}
-		\includegraphics[width=\linewidth]{example2plots/row4_density_cluster}
-		\caption{}
-	\end{subfigure}
-	\caption{True density (column 1), \pprspace (column 2), normalized cut (column 3) and estimated density (column 4) clusters for 4 different simulated data sets. Seed node for \pprspace denoted by a black cross.}
-	\label{fig:fig2}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth,scale = .5]{example2plots/row1_true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row1_ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row1_conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row1_density_cluster}
+			\caption{}
+		\end{subfigure}
+		
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row2_true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row2_ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row2_conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row2_density_cluster}
+			\caption{}
+		\end{subfigure}
+		
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row3_true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row3_ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row3_conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row3_density_cluster}
+			\caption{}
+		\end{subfigure}
+		
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row4_true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row4_ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row4_conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{example2plots/row4_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\caption{True density (column 1), \pprspace (column 2), normalized cut (column 3) and estimated density (column 4) clusters for 4 different simulated data sets. Seed node for \pprspace denoted by a black cross.}
+		\label{fig:fig2}
 	\end{adjustbox}
 \end{figure}
 
@@ -950,9 +1009,9 @@ The initial motivation for this article was based on the intuition that density 
 
 \clearpage
 
+\clearpage
+
 \bibliographystyle{plainnat}
 \bibliography{../local_spectral_bibliography}
-
-
 
 \end{document}
