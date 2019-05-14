@@ -20,17 +20,24 @@
 \usepackage{xr-hyper}
 \usepackage{natbib}
 \usepackage{fullpage}
+\usepackage{mathtools}
 
 \let\pprspace\relax
 \let\ppr\relax
+\let\Cset\relax
+\let\Csig\relax
+
 \externaldocument{arxiv_local_density_clustering}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+
 
 \newcommand{\diam}{\mathrm{diam}}
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\seq}[1]{\left\{#1\right\}_{n \in \mathbb{N}}}
 \newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+% \newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
 \newcommand{\vol}{\mathrm{vol}}
-\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Reals}{\mathbb{R}}
 \newcommand{\Rd}{\Reals^d}
@@ -54,10 +61,10 @@
 \newcommand{\degmin}{\deg_{\min}}
 
 %%% Vectors
-\newcommand{\pbf}{\mathbf{p}}
+\newcommand{\pbf}{p} % no bold font
 \newcommand{\qbf}{\mathbf{q}}
 \newcommand{\ebf}[1]{\mathbf{e}_{#1}}
-\newcommand{\pibf}{\bm{\pi}}
+\newcommand{\pibf}{\pi} % no bold font
 \newcommand{\rhobf}{\bm{\rho}}
 \newcommand{\Deltabf}{\bm{\Delta}}
 \newcommand{\deltabf}{\bm{\delta}}
@@ -68,7 +75,7 @@
 
 %%% Matrices
 \newcommand{\Abf}{\mathbf{A}}
-\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Xbf}{X} % no bold font
 \newcommand{\Wbf}{\mathbf{W}}
 \newcommand{\Lbf}{\mathbf{L}}
 \newcommand{\Dbf}{\mathbf{D}}
@@ -129,39 +136,14 @@
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}{Proposition}
 
-
-%\newcommand{\theHalgorithm}{\arabic{algorithm}}
-
-
-%\icmltitlerunning{Local clustering of density upper level sets}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
 
 \begin{document}
 
-%\twocolumn[
-%\icmltitle{Supplement to ``Local clustering of density upper level sets''}
-
-%\icmlsetsymbol{equal}{*}
-
-%\begin{icmlauthorlist}
-%\icmlauthor{Alden Green}{cmu}
-%\icmlauthor{Sivaraman Balakrishnan}{cmu}
-%\icmlauthor{Ryan Tibshirani}{cmu}
-%\end{icmlauthorlist}
-
-%\icmlaffiliation{cmu}{Department of Statistics and Data Science, Carnegie Mellon University, Pittsburgh PA, USA}
-
-%\icmlcorrespondingauthor{Alden Green}{ajgreen@andrew.cmu.edu}
-
-%\icmlkeywords{local clustering}
-
-%\vskip 0.3in
-%]
-
-%\printAffiliationsAndNotice{} % otherwise use the standard text.
-
 \section{Proofs}
 
-In this supplement, we present proofs for ``Local Clustering of Density Upper Level Sets''. Sections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. \ref{sec: mixing_time_on_graphs} develops a bound of the form of \eqref{eqn: average_conductance}, which we recall links the conductance function to mixing time; this will be necessary for both Theorems \ref{thm: inverse_mixing_time_lower_bound_nonconvex} and \ref{thm: inverse_mixing_time_lower_bound}. \ref{sec: non_convex_conductance_function_and_local_spread} and \ref{sec: inverse_mixing_time_lower_bound_nonconvex} give the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, while \ref{sec: convex_population_conductance_function}- \ref{sec: inverse_mixing_time_lower_bound} give the proof of Theorem \ref{thm: inverse_mixing_time_lower_bound}. \ref{sec: concentration} gives some general concentration results used throughout, before we finish with the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters} in \ref{sec: proof_of_consistent_cluster_recovery}.
+In this supplement, we present proofs for ``Local Clustering of Density Upper Level Sets''. Sections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. In Sections \ref{sec: mixing_time_on_graphs} and \ref{sec: proof_of_proposition_tv_mixing_time}, we establish a link between the conductance and local spread, and mixing time; this will be necessary for Theorem \ref{thm: mixing_time_upper_bound}. The proof of Theorem \ref{thm: mixing_time_upper_bound} is then carried out in Sections \ref{sec: population_conductance_function} - \ref{sec: proof_of_theorem_mixing_time}. \ref{sec: concentration} gives some general concentration results we use throughout, before we finish with the proofs of Theorems \ref{thm: misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}, and Corollary \ref{cor: appr}, in Sections \ref{sec: proof_of_misclassification_rate} - \ref{sec: linalg}.
 
 \subsection{Volume estimates}
 \label{sec: volume_estimates}
@@ -317,7 +299,8 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\end{align}
 	where the second equality comes from rearranging terms in the sum.
 	
-	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by \ref{asmp: cluster_diameter}. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
+	% AJG 5/14/19: This argument makes sense, correct?
+	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by \ref{asmp: bounded_density}, as otherwise $\int_{\Csig} f(x) dx = \infty$. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
 	\begin{equation}
 	\label{eqn: slice_volume_bound}
 	\nu_{i,k} = \nu(\Csig + rt_{i,k}B) \leq \nu(\Csig)\left(1 + \frac{rt_{i,k}}{\sigma}\right)^d
@@ -574,178 +557,260 @@ which implies $2 \frac{\Err_n}{p_V - \Err_n} \leq \epsilon$.
 \subsection{Mixing time on graphs}
 \label{sec: mixing_time_on_graphs}
 
-For $N \in \mathbb{N}$ and a collection $V = \set{v_1,\ldots,v_N}$ of $N$ vertices, take $G = (V,E)$ to be an undirected and unweighted graph, with associated adjacency matrix $\Abf$, degree matrix $\Dbf$, and random walk matrix $\Wbf$. We consider the stationary distribution $\pi$ to be a mapping from $V$ to $[0,1]$, with $\pi(u) := \frac{\Dbf_{uu}}{\vol(V; G)}$ for $u \in V$. For $v \in V$, let $q: V \times V \to [0,1]$ represent the $m$-step transition probability of the random walk over $G$ originating from $v$, $q^{(m)}(v,u) = e_v\Wbf^m e_u$. The relative pointwise mixing time over $G$ is then
+We recall some notation from the main text. For an undirected graph $G = (V,E)$, the lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf + \Dbf^{-1} \Abf}{2}$ and stationary distribution $\pi$.  Denote the $m$-step probability distribution of this random walk originating from a particular $v \in V$ as $q^{(m)}: V \times V \to [0,1]$, $q^{(m)}(v,u) = e_v \Wbf^m e_u$. An important intermediate quantity used to bound the relative pointwise mixing time $\tau_{\infty}(G)$ is the total variation distance between the distributions $q_v^{(m)} := q^{(m)}(v,\cdot)$ and $\pi$,
 \begin{equation*}
-\tau_{\infty}(G) = \min\set{m: \forall u,v \in V, \frac{\abs{q^{(m)}(v,u) - \pi(u)}}{\pi(u)} \leq 1/4}. 
+\norm{q_v^{(t + 1)} - \pi}_{TV} = \sum_{u \in V} \abs{q_v^{(m)}(u) - \pi(u)}
+\end{equation*}
+We recall the \emph{degree, cut} and \emph{volume} functionals over a graph. For $u \in V$, $S \subseteq V$, 
+\begin{equation*}
+\cut(A;G) = \sum_{u \in A} \sum_{v \in A^c} \1((u,v) \in E), \quad \deg(u;G) = \sum_{v \in V} \1((u,v) \in E), \quad \vol(A;G) = \sum_{u \in A} \deg(u;G)
 \end{equation*}
 
-Two key quantities relate the mixing time to the expansion of subsets $S$ of $V$. The \emph{local spread} is defined as
+The \emph{local spread} is defined as
 \begin{equation*}
-s(G) := \frac{9}{10} \cdot \min_{v \in V} \set{\deg(v; G)} \cdot \min_{v \in V} \set{\pi(v)}
+s(G) := \frac{9}{10} \cdot \min_{u \in V} \set{\deg(u; G)} \cdot \min_{u \in V} \set{\pi(v)}
 \end{equation*}
-For $f: V \to \Reals$, and $S \subseteq V$, write $f(S) := \sum_{u \in S} f(u)$. We collect some necessary facts about the local spread in Lemma \ref{lem: local_spread_G}.
+
+Letting the \emph{normalized cut} $\Phi(S;G)$ be defined as
+\begin{equation*}
+\Phi(S;G) = \frac{\cut(S, S^c; G)}{\min\set{\vol(S; G),\vol(S^c; G)}},
+\end{equation*}
+the \emph{conductance} is
+\begin{equation*}
+\Phi(G) = \min_{S \subseteq V} \Phi(S;G).
+\end{equation*}
+
+Proposition \ref{prop: tv_mixing_time} relates these geometric quantities to the TV distance between $q_v^{(t)}$ and stationary distribution $\pi$.
+\begin{proposition}
+	\label{prop: tv_mixing_time}
+	For any $v \in V$, and any $0 < a \leq 1$,
+	\begin{equation*}
+	\norm{q_v^{(t + 3)} - \pi}_{TV} \leq \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} + \left(\frac{1}{1 - 2as(G)} + \frac{1}{2 as(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{equation*}
+\end{proposition}
+
+As we will see, Proposition \ref{prop: tv_mixing_time} is an essential step to providing an upper bound on the uniform mixing time. We justify this statement next, before moving on to proving Proposition \ref{prop: tv_mixing_time} in the following subsection.
+
+\paragraph{Uniform mixing time.}
+Consider the uniform distance \footnote{Note $d_{\textrm{unif}}$ is not a formally a distance as it is not symmetric.} between $q_v^{(t)}$ and $\pi$, given by
+\begin{equation*}
+d_{\textrm{unif}}(q_v^{(t)},\pi) = \max_{u \in V} \set{\frac{\pi(u) - q_v^{(t)}(u)}{\pi(u)}}.
+\end{equation*}
+
 \begin{lemma}
-	~
-	
-	\label{lem: local_spread_G}
-	\begin{itemize}
-		\item If $\pi(S) \leq s(G)$, then for every $u \in S$, $q^{(1)}(u,S^c) \geq \frac{1}{10}$.
-		\item For any $v, u \in V$, and $m \in \mathbb{N}, m \geq 0$,
-		\begin{equation*}
-		q^{(m)}(v,u) \leq \frac{\min_{v \in V} \set{\pi(v)}}{s(G)}.
-		\end{equation*}
-	\end{itemize}
-	
-\end{lemma}
-
-\begin{proof}
-	If $\pi(S) \leq s(G)$, divide both sides by $\min_{v \in V} \set{\pi(v)}$ to obtain $\abs{S} \leq 9\min_{v \in V} \set{\deg(v; G)}/10$,
-	which implies $q^{(1)}(v,S^c) \geq 1/10$ for all $v \in S$. This implies the first statement.
-	
-	The second statement follows from the fact $q^{(m)}(v,u) \leq 1/\min_{v \in V} \set{\deg(v; G)}$ for any $m$.
-\end{proof}
-
-The local spread facilitates conversion between $\tau_{\infty}(G)$ and the more easily manageable \emph{total variation} mixing time, given by
-\begin{equation*}
-\tau_1(G) = \min\biggl\{m: \forall v \in V, \norm{\rho^{(m)}(v,\cdot) - \pi}_{TV} \leq 1/4 \biggr\}
-\end{equation*}
-where $\rho^{(m)}(u,v) = \sum_{l = 1}^{m} p^{(l)}(u,v)$ 
-and $\norm{\rho(v,\cdot) - \pi}_{TV} = \sum_{u \in V}\abs{\rho(u,v) - \pi(v)}$ is the total variation norm between distributions $\rho(v,\cdot)$ and $\pi$. 
-\begin{lemma}
-	\label{lem: tv_mixing_to_pointwise_mixing1}
+	\label{lem: tv_to_uniform_distance}
+	Let $\norm{q_v^{(t)} - \pi}_{TV} \leq \frac{1}{14} \max \set{1, \frac{1}{s(G)}}$. Then,
 	\begin{equation*}
-	\tau_{\infty}(G) \leq 2752 \cdot \tau_1(G) \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\}\right)
+	d_{\mathrm{unif}}(q_v^{(t + 3)},\pi) \leq \frac{1}{4}
 	\end{equation*}
 \end{lemma}
 \begin{proof}
-	Masking dependence on the starting vertex $v$ for the moment, let
-	\begin{equation*}
-	\Delta^{(m)}(u) = q^{(m)}(v,u) - \pi(u), ~~ \delta^{(m)}(u) = \frac{\Delta^{(m)}(u)}{\pi(u)}
-	\end{equation*}
-	and denote $\Deltabf^{(m)} = \bigl(\Delta^{(m)}(u)\bigr)_{u \in V}$, $\deltabf^{(m)} = \bigl(\delta^{(m)}(u)\bigr)_{u \in V}$. For a vector $\Deltabf = (\Delta_u)_{u \in V}$, the $L^{p}(\pi)$ norm is given by
-	\begin{equation*}
-	\norm{\Deltabf}_{L^p(\pi)} = \left(\sum_{u \in V} \left(\Delta_u\right)^{p} \pi(u) \right)^{1/p}
-	\end{equation*}
-	To go between the $L^{\infty}(\pi)$ and $L^{1}(\pi)$ norms, we capitalize on a clever argument developed in \cite{morris2005}. For any $v,u \in V$, by the time-reversibility of the graph random walk,
+	Fix $u \in V$ and let $m \geq t + 1$ be arbitrary. The stationarity of $\pi$ gives
 	\begin{align}
-	\abs{\frac{q^{(2m)}(v,u) - \pi(u)}{\pi(u)}} & = \abs{\sum_{y \in V} \pi(y) \left( \frac{q^{(m)}(v,y) - \pi(y)}{\pi(y)}\right)\left(\frac{q^{(m)}(u,y) - \pi(y)}{\pi(y)} \right)} \nonumber \\
-	& \leq \norm{(\deltabf^{(m)})}_{L^{1}(\pi)} \norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)}, \label{eqn: infty_norm_to_one_norm}
+	\frac{\pi(u) - q_v^{m}(u)}{\pi(u)} & = \sum_{y \in V} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \nonumber \\
+	& \overset{(i)}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
+	& \leq \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{2 \pi(u)} \label{eqn: tv_to_uniform_distance_1}
 	\end{align}
-	with the second line following by Holder's inequality.
+	where $(i)$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
 	
-	Now, we upper bound the second factor on the right hand side by observing
-	\begin{align}
-	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} & \leq \max\left\{1, \max_{u \in V} \frac{q^{(m)}(v,u)}{\pi(u)} \right\} \nonumber \\
-	& \overset{(i)}{\leq} \max\left\{1, \frac{1}{s(G)}\right\} \label{eqn: ub_infinity_norm}
-	\end{align}
-	where $(i)$ follows from Lemma \ref{lem: local_spread_G}.
+	Then 
+	\begin{align*}
+	\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) & \leq \norm{q_v^{(m-1)} - \pi}_{TV} \max_{y \neq u} \abs{\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}} \\
+	& \leq \norm{q_v^{(m-1)} - \pi}_{TV} \max \set{1, \max_{y \neq u}\set{\frac{q^{(1)}(y,u)}{\pi(u)}}} \\
+	& \leq \norm{q_v^{(m-1)} - \pi}_{TV} \max \set{1, \frac{1}{s(G)}} \\
+	\end{align*}
+	since for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known \cite{lovasz1990} that the laziness  of the random walk guarantees  $\norm{q_v^{(m - 1)} - \pi}_{TV} \leq \norm{q_v^{(t)} - \pi}_{TV}$, and therefore
+	\begin{equation*}
+	\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \leq \frac{1}{14}.
+	\end{equation*}
 	
-	Set $m_0 = 1376 \tau_1(G) $, which we will show implies $\norm{q^{(m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4}$. Now, we leverage the following well-known fact (see pg. 1 of \cite{montenegro2002}): for any $\epsilon > 0$, if $m \geq m_0 \cdot \log(1/\epsilon)$ then for any $v \in V$,
+	Plugging this in to \eqref{eqn: tv_to_uniform_distance_1} and taking maximum on both sides, we obtain
 	\begin{equation}
-	\label{eqn: rapid_mixing}
-	\norm{q^{(m)}(v,\cdot) - \pi}_{TV} \leq \epsilon.
+	d_{\textrm{unif}}(q_v^{(m)}, \pi) \leq \frac{2}{7} + \frac{d_{\textrm{unif}}(q_v^{(m - 1)}, \pi)}{2} \label{eqn: tv_to_uniform_distance_2}
 	\end{equation}
-	But $\norm{q^{(m)}(v,\cdot) - \pi}_{TV}$ is exactly $\norm{\deltabf^{(m)}}_{L^{1}(\pi)}$. Letting
+	The recurrence relation of \eqref{eqn: tv_to_uniform_distance_2} along with the initial condition $d_{\textrm{unif}}(q_v^{(t)}, \pi) \leq 1$ yields
 	\begin{equation*}
-	m_1 = m_0 \cdot \log \left(4 \max\left\{1, \frac{1}{s(G)}\right\} \right)
-	\end{equation*} 
-	by \eqref{eqn: infty_norm_to_one_norm}, \eqref{eqn: ub_infinity_norm}, and \eqref{eqn: rapid_mixing}, $\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} \leq 1/4$ for all $m \geq 2 m_1$.  Recall that
-	\begin{equation*}
-	\norm{(\deltabf^{(m)})}_{L^{\infty}(\pi)} = \sup_{u \in V}\left\{ \frac{\abs{q^{(m)}(v,u) - \pi(u)}}{\pi(u)} \right\}.
+	d_{\textrm{unif}}(q_v^{(t + 1)}, \pi) \leq \frac{8}{14} \Rightarrow d_{\textrm{unif}}(q_v^{(t + 2)}, \pi) \leq \frac{10}{28} \Rightarrow  d_{\textrm{unif}}(q_v^{(t + 3)}, \pi) \leq \frac{1}{4}
 	\end{equation*}
-	and since none of the above depended on a specific choice of $v$, the supremum can be taken over all starting vertices $v$ as well. Thus for all $m \geq 2m_1$, for any $v,u \in V$, $\abs{q^{m}(v,u) - \pi(u)} \leq \frac{\pi(u)}{4}$. 
-	
-	Finally, it is known (pg.15 of \citep{montenegro2002}) that
-	\begin{equation*}
-	\norm{\rho^{(m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4} \Longrightarrow  \norm{q^{(1376m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4} 
-	\end{equation*}
-	and so $m_0 = 1376 \tau_1(G)$ implies $\norm{q^{(m)}(v,\cdot) - \pi}_{TV} \leq \frac{1}{4}$, completing the proof.
+	and the claim is shown.
 \end{proof}
 
-The second key quantity is the \emph{conductance function}. For $\min_{u \in V}\set{\pi(u)} \leq t \leq 1/2$, the conductance function is defined as
-\begin{equation}
-\label{eqn: conductance_function}
-\Phi(t; G) := \min_{\substack{S \subseteq V, \\ 0 < \pibf(S) \leq t} } \Phi(S; G)
-\end{equation}
-where $\Phi(S; G)$ is the normalized cut of $S$ in $G$ given by \eqref{eqn: norm_cut}, and in the minimization $S$ may not be the empty set. 
+Together, Proposition \ref{prop: tv_mixing_time} and Lemma \ref{lem: tv_to_uniform_distance} imply the main result of this section.
 
-Lemma \ref{lem: expansion_to_tv_distance} leverages the conductance function and local spread to produce an upper bound on the total variation distance between $\rhobf_{v}^{(m)}$ and $\pibf.$
-\begin{lemma}
-	\label{lem: expansion_to_tv_distance}
-	If $D_{\min} > 10$, for any $v \in V$:
+\begin{proposition}
+	\label{prop: pointwise_mixing_time}
+	Assume $\min_{u \in v} \deg(u; G) \geq 10$. Then,
 	\begin{equation*}
-	\norm{\rhobf_v^{(m)} - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, \frac{1}{10} +  \frac{70}{m}\left(\frac{20}{9} + \int_{t = s'(G)}^{1/2} \frac{4}{t \Phi^2(t; G)} dt\right) \right\}
+	\tau_{\infty}(G) \leq \frac{2}{\Phi^2(G)} \log \left(\frac{1440}{s(G)}\right)\log \left(\frac{14}{s(G)}\right)  + 3 \log \left(\frac{14}{s(G)}\right) + 3
 	\end{equation*}
-	where $s'(G) = s(G) / 9$.
+\end{proposition}
+\begin{proof}
+	Fix $a = \frac{1}{18}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \log \left(\frac{80}{a s(G)}\right)$. Then,
+	\begin{equation*}
+	\left(1 - \frac{\Phi^2(G)}{2}\right)^{\tau_0} \leq \exp(- \tau_0\Phi^2(G)/2) \leq \frac{as(G)}{80}
+	\end{equation*}
+	and so by Proposition \ref{prop: tv_mixing_time},
+	\begin{equation*}
+	\norm{q_v^{(\tau_0 + 3)} - \pi}_{TV} \leq \max \set{\frac{1}{20}, \frac{1}{8} + \frac{1}{20} + \frac{1}{20}} + \left(\frac{2}{as(G)}\right) \frac{as(G)}{80} \leq \frac{1}{4}.
+	\end{equation*}
+	
+	It is a well known fact \cite{montenegro2002} that if $\norm{q_v^{(t)} - \pi}_{TV} \leq \frac{1}{4}$, then for any $) < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{TV} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log(\frac{14}{s(G)})$, 
+	\begin{equation*}
+	\norm{q_v^{(\tau_1)} - \pi}_{TV} \leq \frac{1}{14 s(G)}
+	\end{equation*}
+	and so $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$. 
+\end{proof}
+
+\subsection{Proof of Proposition \ref{prop: tv_mixing_time}.}
+\label{sec: proof_of_proposition_tv_mixing_time}
+
+For arbitrary starting distribution $q$ (meaning $\textrm{supp}(q) \subseteq V$ and $\sum_{u \in V}q(u) = 1$), and for $t \geq 0$ an integer, let $q^{(t)}$ be the $t$-step probability distribution of the lazy random walk with starting distribution $q$. Consider the distance function $h_q^{(t)}, t \geq 0$, 
+\begin{equation*}
+h_q^{(t)}(x) = \max \left\{ \sum_{u \in V} \left(q^{(m)}(u) - \pi(u)\right)w(u)\right\}
+\end{equation*}
+where the maximum is over all $w: V \to [0,1]$ such that $0 \leq w(u) \leq 1$ for all $u$, and $\sum_{u \in V} w(u) \pi(u) = x$. Writing $h_v^{(t)}(x) := h_{e_v}^{(t)}(x)$ in a small abuse of notation, in Lemmas \ref{lem: lt_ub} and \ref{lem: mixing_time_small_sets}, we give an upper bound on $h_{e_v}^{(t)}(x)$ for all $0 \leq x \leq 1$. 
+
+\vskip 0.1 in
+\begin{remark}
+	$h_q^{(t)}$ permits an equivalent relation. Order the elements of $V = \set{u_1, \ldots, u_N}$ ($N$ = $\abs{V}$), such that
+	\begin{equation*}
+	\frac{q^{(m)}(u_1)}{\pi(u_1)} \geq \frac{q^{(m)}(u_2)}{\pi(u_2)} \geq \ldots \geq \frac{q^{(m)}(u_N)}{\pi(u_N)}
+	\end{equation*}
+	and let $U_k = \set{u_1, \ldots, u_k}$. Then for any $x$, letting $k$ satisfy $\pi(U_{k - 1}) < x < \pi(U_k)$, it can be shown that,
+	\begin{equation}
+	\label{eqn: lovasz_simonovits_curve}
+	h_q^{(t)}(x) = \sum_{j = 1}^{k - 1} (q^{(m)}(u_j) - \pi(u_j)) + \frac{x - \pi(U_{k - 1})}{\pi(u_k)} \left(q^{(m)}(u_k) - \pi(u_k) \right).
+	\end{equation}
+	The formulation on the right hand side of \eqref{eqn: lovasz_simonovits_curve} has come to be known as the \emph{Lovasz-Simonovits curve}.
+\end{remark}
+
+\paragraph{Mixing over large sets.}
+
+For $0 \leq \mu \leq 1$ and $\mu \leq x \leq 1 - \mu$ let 
+\begin{equation*}
+\ell_{\mu}(x) = \frac{1 - \mu - x}{1 - 2\mu} h_q^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu}h_q^{(0)}(1 - \mu)
+\end{equation*}
+be the linear interpolator between $h_q^{(0)}(\mu)$ and $h_q^{(0)}(1 - \mu)$. 
+
+\begin{lemma}
+	\label{lem: lt_ub}
+	For any $0 \leq \mu \leq 1/2$ and $\mu \leq x \leq 1 - \mu$ and $t \geq 0$, 
+	\begin{equation*}
+	h_q^{(t)}(x) \leq \ell_{\mu}(x) + \max \set{\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} , \frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1 }\left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{equation*}
 \end{lemma}
 
-To prove Lemma \ref{lem: expansion_to_tv_distance} we first introduce a generalization of $\Phi(t;G) \cdot \Phi(t;G)$ known as a blocking conductance function.
-\footnote{For more details, see \cite{montenegro2002}}
-
-\begin{definition}[Blocking Conductance Function of \cite{montenegro2002}]
-	\label{def: blocking_conductance_function}
-	For $t_0 \geq \pi_{\min}$, a function $\phi(t; G): [t_0, 1/2] \to [0,1]$ is a \emph{blocking conductance function} if for all $S \subset V$ with $\pibf(S) = t \in [t_0, 1/2]$, either of the following hold: 
-	\begin{enumerate}
-		\item \emph{Exterior inequality.} For all $y \in \left[\frac{1}{2}t, t\right]: \phi_{int}(S) \geq \phi(\max\{t_0,y\})$
-		\item \emph{Interior inequality.} For all $y  \in \left[t, \frac{3}{2}t\right]: \phi_{ext}(S) \geq \phi(\max\{y,1 - y\})$.
-	\end{enumerate}
-	where $\phi_{int}$ and $\phi_{ext}$ are defined respectively as
-	\begin{align*}
-	\phi_{int}(S) & = \sup_{\lambda \leq \pibf(S)} \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{\vol(V; G) \left[\pibf(S) \pibf(S^c)\right]^2} \\
-	\phi_{ext}(S) & = \sup_{\lambda \leq \pibf(S)} \min_{\substack{B \subset S^c \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{\vol(V; G) \left[\pibf(S) \pibf(S^c)\right]^2}
-	\end{align*}
-\end{definition}
-
-\begin{theorem}[Theorem 3.2 of \cite{montenegro2002}]
-	\label{thm: montenegro}
-	Consider $\phi(t; G): [t_0, 1/2] \to [0,1]$ a blocking conductance function. Then, letting
+Theorem \ref{lem: lt_ub} is a direct consequence of Theorem 1.2 of \cite{lovasz1990}. To state the latter, we introduce
+\begin{equation*}
+C_{\mu} = \max \set{\frac{h_q^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{x - \mu}}, \frac{h_q^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{1 - x - \mu}}: \mu < x < 1 - \mu}
+\end{equation*}
+\begin{theorem}[Theorem 1.2 of \cite{lovasz1990}]
+	\label{thm: lovasz_simonovits_1993}
+	For any $0 \leq \mu \leq \frac{1}{2}$, $\mu \leq x \leq 1 - \mu$ and an integer $t \geq 0$,
 	\begin{equation*}
-	h^m(t_0) = \sup_{S: \pibf(S) < t_0}  \bigl(\rhobf_v^{(m)}(S) - \pibf(S) \bigr)
+	h_q^{(t)}(x) \leq \ell_{\mu}(x) + C_{\mu} \min \set{\sqrt{x - \mu}, \sqrt{1 - x - \mu}} \left(1 - \frac{\Phi^2(G)}{2}\right)^t
 	\end{equation*}
-	the following statement holds: if $\phi$ is a blocking conductance function,
-	\begin{align*}
-	\norm{\rhobf_v^{(m)} - \pibf}_{TV} & \leq \max\left\{ \frac{1}{4}, h^1(t_0) +  \frac{70}{m}\left(\frac{1}{\phi(t_0; G)} + \int_{t = t_0}^{1/2} \frac{4}{t \phi(t; G)} dt\right) \right\} \\
-	\end{align*}
 \end{theorem}
 
-Note that in \cite{montenegro2002} this theorem is stated with respect to $h^0$. However, in the subsequent proof it holds with respect to $h^m$, and it is observed that $h^m$ is decreasing in $m$. For our purposes it is more useful to state it with respect to $h^1$, as we have done.
-
-\begin{proof}[Proof of Lemma \ref{lem:  expansion_to_tv_distance}]
-	Consider the function $\phi_0(t, G): [s(G), 1/2] \to [0,1]$ defined by
+\begin{proof}[Proof of Lemma \ref{lem: lt_ub}]
+	Fix $0 \leq \mu \leq \frac{1}{2}$. We will show that for all $\mu \leq x \leq 1 - \mu$
 	\begin{equation}
-	\label{eqn: local_spread_blocking_conductance_function}
-	\phi_0(t; G) = 
-	\begin{cases}
-	\frac{1}{5}, ~~~~~~~~~~~~ t = s'(G) \\
-	\frac{1}{4} \Phi^2(t; G), ~ t \in \left(s'(G), 1/2\right] \\
-	\end{cases}
+	\label{eqn: lt_ub_1}
+	h_q^{(0)}(x) - \ell_{\mu}(x) \leq \max \set{\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} , \frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1 } \min \set{\sqrt{x - \mu},\sqrt{1 - x - \mu}}
 	\end{equation}
-	\begin{lemma}
-		\label{lem: local_spread_blocking_conductance_function}
-		If $D_{\min} > 10$, $\phi_0$ is a blocking conductance function.
-	\end{lemma}
-	We take Lemma \ref{lem: local_spread_blocking_conductance_function} as given, and defer the proof until after the proof of Lemma \ref{lem: expansion_to_tv_distance}. 
+	whence the claim follows by Theorem \ref{thm: lovasz_simonovits_1993}. 
 	
-	Lemma \ref{lem: local_spread_blocking_conductance_function} and Theorem \ref{thm: montenegro} together yield:
+	Note that $\ell_{\mu}(\mu) = h_q^{(0)}(\mu)$, and for $x \geq \mu$, 
 	\begin{equation*}
-	\norm{\rhobf^t - \pibf}_{TV} \leq \max\left\{ \frac{1}{4}, h^1(s'(G)) +  \frac{70}{m}\left(5 + \int_{t = s'(G)}^{1/2} \frac{4}{t \Phi^2(t; G)}\right) \right\}
+	h_q^{(0)}(x) \leq h_q^{(0)}(\mu) + (x - \mu)\frac{h_q^{(0)}(\mu)}{\mu}
+	\end{equation*}
+	by the concavity of $h_0$ along with Lemma \ref{lem: lovasz_simonovits_subdifferential}. Some basic algebra then yields
+	\begin{align*}
+	h_q^{(0)}(x) - \ell_{\mu}(x) & \leq h_q^{(0)}(\mu) - \left(\frac{1 - \mu - x}{1 - 2\mu} h_q^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu} h_q^{(0)}(1 - \mu)\right) + \frac{h_q^{(0)}(\mu)}{\mu}(x - \mu) \\
+	& =  \frac{x - \mu}{1 - 2\mu}h_q^{(0)}(\mu) + \frac{h_q^{(0)}(\mu)}{\mu} (x - \mu) - \frac{x - \mu}{1 - 2\mu} h_q^{(0)}(1 - \mu) \\
+	& \leq \sqrt{x - \mu} \left(\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} \right)
+	\end{align*}
+	On the other hand, $\ell_{\mu}(1 - \mu) = h_q^{(0)}(1 - \mu)$, and by the concavity of $h_q^{(0)}$ and Lemma \ref{lem: lovasz_simonovits_subdifferential},  for $x \leq 1 - \mu$
+	\begin{equation*}
+	h_q^{(0)}(x) \leq h_q^{(0)}(1 - \mu) + (1 - x - \mu).
+	\end{equation*}
+	Similar manipulations to above give the upper bound
+	\begin{align*}
+	h_q^{(0)}(x) - \ell_{\mu}(x) \leq \sqrt{1 - \mu - x}\left(\frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1\right)
+	\end{align*}
+	and \eqref{eqn: lt_ub_1} follows.
+\end{proof}
+
+\begin{lemma}
+	\label{lem: lovasz_simonovits_subdifferential}
+	The subdifferential $v(x)$ of $h_q^{(0)}(x)$ satisfies
+	\begin{equation*}
+	-1 \leq v(x) \leq \frac{h_q^{(0)}(\mu)}{\mu}
+	\end{equation*}
+\end{lemma}
+
+\paragraph{Mixing over small sets.}
+
+\begin{lemma}
+	\label{lem: mixing_time_small_sets}
+	Let $0 \leq a \leq 1$, and $t \geq 1$ an integer. Then for any $x \leq as(G)$ or $x \geq 1 - as(G)$,
+	\begin{equation*}
+	h_v^{(t)}(x) \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	First, we deal with the case $x \leq as(G)$. Letting $U_k$ be as in \eqref{eqn: lovasz_simonovits_curve}, we have
+	\begin{equation}
+	\label{eqn: mixing_time_small_sets_1}
+	h_v^{(t)}(x) \leq q_v^{(m)}(U_{k - 1}) + q_v^{(m)}(u_k)
+	\end{equation}
+	
+	We will rely on the key fact that for any $u \neq v, t \geq 1$,
+	\begin{equation}
+	\label{eqn: mixing_time_small_sets_2}
+	q_v^{(t)}(u) \leq \frac{1}{2 \min_{u \in V}\deg(u;G)}
+	\end{equation}
+	
+	On the other hand if $u = v$,
+	\begin{equation}
+	\label{eqn: mixing_time_small_sets_3}
+	q_v^{(m)}(u) \leq \frac{1}{2^t} + \frac{1}{2\min_{u \in V}\deg(u;G)}.
+	\end{equation}
+	Therefore by \eqref{eqn: mixing_time_small_sets_1}, \eqref{eqn: mixing_time_small_sets_2}, and \eqref{eqn: mixing_time_small_sets_3}
+	\begin{equation*}
+	h_v^{(t)}(x) \leq \frac{1}{2^t} + \frac{\abs{U_k}}{2 \min_{u \in V}\deg(u;G)} + \frac{1}{2 \min_{u \in V}\deg(u;G)}.
+	\end{equation*}
+	Since $x \leq a s(G)$, 
+	\begin{equation*}
+	\abs{U_k} \leq \frac{x}{10 \min_{u \in V}(\pi(v))} \leq \frac{9a\min_{u \in V}\deg(u;G)}{10}.
 	\end{equation*}
 	
-	Then, $h^1(s'(G)) \leq 1/10$ follows exactly from the proof of Lemma \ref{lem: local_spread_G}, except now $\pibf(S) \leq s'(G)$ results in the sharper bound of $\qbf_u^{(1)}(S^c) \geq 9/10$ for every $u \in S$.
+	For any $0 \leq b \leq 1$, $x \geq 1 - b$ implies $h_v^{(t)}(x) \leq b$. Taking $b = a s(G)$, the claim is shown.
 \end{proof}
-\begin{proof}[Lemma \ref{lem: local_spread_blocking_conductance_function}]
-	The condition $D_{\min} > 10$ ensures that $s(G) \geq \pi_{\min}$.
-	
-	It is known that $\frac{1}{4} \Phi^2(x;G)$ satisfies the exterior inequality for all $t \in (\pi_{\min}, 1/2]$.
-	
-	For $t = s'(G)$ we will instead use the interior inequality. For any $S$ such that $\pibf(S) \leq s'(G)$, the following statement holds: for every $u \in S$, $\cut(u, S^c; G) \geq 9/10 \cdot \deg(u; G)$. 
-	Fixing $\lambda = \pi(S)/2$, we have
-	\begin{align*}
-	\phi_{int}(S) & \geq \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{\lambda \cut(S \setminus B, S^c; G)}{\vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
-	& \geq  \min_{\substack{B \subset S \\ \pibf(B) \leq \lambda} } \frac{9 \lambda \sum_{u \in S \setminus B} \deg(u; G)}{10 \vol(V; G) \left[\lambda (1 - \lambda)\right]^2} \\
-	& \geq \frac{9\lambda^2}{20[\lambda^2(1 - \lambda)^2]} \geq \frac{9}{20}. 
-	\end{align*} 
-\end{proof}
+
+\paragraph{Proof of Proposition \ref{prop: tv_mixing_time}.}
+For any $A \subseteq V$ and any integer $t \geq 0$,
+\begin{equation*}
+\max \set{h_v^{(t)}(\pi(A)), h_v^{(t)}(1 - \pi(A))} \geq \abs{q_v^{(t)}(A) - \pi(A)}
+\end{equation*}
+and taking max over both sides, we have
+\begin{equation*}
+\max_{0 \leq x \leq 1} h_v^{(t)}(x) \geq \norm{q_v^{(t)} - \pi}_{TV}.
+\end{equation*}
+
+Letting $q = e_v W^3$, observe that $h_v^{(t + 3)}(x) = h_v^{(t)}(x)$. Fix $\mu = as(G)$. Then, for $\mu \leq x \leq 1 - \mu$, by Proposition \ref{lem: lt_ub},
+\begin{align*}
+h_v^{(t + 3)}(x) & = h_q^{(t)}(x) \\
+& \leq \max \set{h_q^{(0)}(\mu), h_q^{(0)}(1 - \mu) }  + \left(\frac{1}{1 - 2 \mu} + \frac{1}{2\mu}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t\\
+& \leq \max \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} + \left(\frac{1}{1 - 2a s(G)} + \frac{1}{2 a s(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+\end{align*}
+where the last inequality comes from application of Lemma \ref{lem: mixing_time_small_sets} to $h_q^{(t)} = h_v^{(t + 3)}$. 
+
+For $x \leq \mu$ or $x \geq 1 - \mu$,
+\begin{equation*}
+h_v^{(t + 3)}(x) \leq \max \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}}
+\end{equation*}
+and the proof is complete. 
 
 \subsection{Population-level conductance profile.}
 \label{sec: population_conductance_function}
@@ -777,19 +842,18 @@ the \emph{$\Pbb$-(continuous) normalized cut} by
 \begin{equation*}
 \widetilde{\Phi}_{\Pbb,r}(\Sset) := \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c)}{\min \set{\piwt_{\Pbb,r}(\Sset),\piwt_{\Pbb,r}(\Sset^c)}}, \tag{$\Sset \in \mathfrak{B}(\Csig)$}
 \end{equation*}
-and the \emph{$\Pbb$-(continuous) conductance profile} by
+and the \emph{$\Pbb$-(continuous) conductance} by
 \begin{equation*}
-\widetilde{\Phi}_{\Pbb,r}(t) := \min_{\substack{\Sset \in \mathfrak{B}(\Csig) \\ 0 < \piwt_{\Pbb,r}(\Sset) \leq t} } \widetilde{\Phi}_{\Pbb,r}(\Sset) \tag{$0 < t \leq 1/2 $}
+\widetilde{\Phi}_{\Pbb,r} := \min_{\Sset \in \mathfrak{B}(\Csig)} \widetilde{\Phi}_{\Pbb,r}(\Sset)
 \end{equation*}
-where $\Sset^c = \Csig \setminus \Sset$. 
+where $\Sset^c = \Csig \setminus \Sset$, and we note this definition agrees with \eqref{eqn: continuous_conductance}.
 
 \begin{proposition}
 	\label{prop: nonuniform_continuous_conductance}
-	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the continuous conductance function of the $r$-ball walk satisfies
+	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the $\Pbb$-continuous conductance of the $r$-ball walk satisfies
 	\begin{equation*}
 	\widetilde{\Phi}_{\Pbb,r}(t) > \frac{\lambda_{\sigma}^2 r}{2^{12} \Lambda_{\sigma}^2 D L \sqrt{d}}.
 	\end{equation*}
-	for any $0 < t \leq \frac{1}{2}$. 
 \end{proposition}
 
 Similar results are already known (see e.g. \cite{kannan04}) when the density $f$ is uniform (or log-concave) and $\Csig$ is itself a convex set -- indeed, in this case stronger versions of it exist, though we will not require them. We first prove an analogous result for the special case of $f \equiv 1$ everywhere on $\Csig$. For $x \in \Csig, \Sset \in \mathfrak{B}(\Csig)$, let 
@@ -798,16 +862,15 @@ Similar results are already known (see e.g. \cite{kannan04}) when the density $f
 \end{equation*}
 The uniform continuous normalized cut and conductance profile are then defined analogously to the weighted case,
 \begin{equation*}
-\widetilde{\Phi}_{\nu,r}(\Sset) := \frac{\widetilde{Q}_{\nu,r}(\Sset, \Sset^c)}{\min \set{\pi_{\nu,r}(\Sset),\pi_{\nu,r}(\Sset^c)}}, \quad \widetilde{\Phi}_{\nu,r}(t) := \min_{\substack{\Sset \in \mathfrak{B}(\Csig) \\ 0 < \pi_{\nu,r}(\Sset) \leq t} } \widetilde{\Phi}_{\nu,r}(\Sset).
+\widetilde{\Phi}_{\nu,r}(\Sset) := \frac{\widetilde{Q}_{\nu,r}(\Sset, \Sset^c)}{\min \set{\pi_{\nu,r}(\Sset),\pi_{\nu,r}(\Sset^c)}}, \quad \widetilde{\Phi}_{\nu,r}(t) := \min_{\Sset \in \mathfrak{B}(\Csig)} \widetilde{\Phi}_{\nu,r}(\Sset).
 \end{equation*}
 
 \begin{lemma}
 	\label{lem: uniform_continuous_conductance}
-	Let $\Cset$ satisfy Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the uniform conductance function of the $r$-ball walk satisfies
+	Let $\Cset$ satisfy Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the uniform conductance of the $r$-ball walk satisfies
 	\begin{equation*}
-	\widetilde{\Phi}_{\nu,r}(t) > \frac{r}{2^{12} D L \sqrt{d}}.
+	\widetilde{\Phi}_{\nu,r} > \frac{r}{2^{12} D L \sqrt{d}}.
 	\end{equation*}
-	for any $0 < t \leq 1/2$.
 \end{lemma}
 
 Most of the technical work needed to show Proposition \ref{prop: nonuniform_continuous_conductance} involves proving Lemma \ref{lem: uniform_continuous_conductance}. We defer this work to the next subsection, and first show that Proposition \ref{prop: nonuniform_continuous_conductance} is a simple consequence of Lemma \ref{lem: uniform_continuous_conductance} along with \ref{asmp: bounded_density}.
@@ -824,11 +887,12 @@ By \ref{asmp: bounded_density} we obtain
 & \geq \frac{\lambda_{\sigma}^2 \int_{\Sset} \nu(S \cap B(x,r)) \dx}{\Lambda_{\sigma}^2 \int_{\Sset} \nu(\Csig \cap B(x,r)) \dx} \\
 & \geq \frac{\lambda_{\sigma}^2}{\Lambda_{\sigma}^2} \widetilde{\Phi}_{\nu,r}(\Sset)
 \end{align*}
-Noting that $\widetilde{\Phi}_{\nu,r}(\Sset) = \widetilde{\Phi}_{\nu,r}(\Sset^c)$, and as $0 < \piwt_{\Pbb,r}(\Sset) < 1/2$, one of $0 < \pi_{\nu,r}(\Sset) \leq 1/2$ or $0 < \pi_{\nu,r}(\Sset^c) \leq 1/2$ must hold, the statement follows by Lemma \ref{lem: uniform_continuous_conductance}.
+and the statement follows by Lemma \ref{lem: uniform_continuous_conductance}.
 
 \subsection{Proof of Lemma \ref{lem: uniform_continuous_conductance}.}
+\label{sec: proof_of_lemma_continuous_conductance}
 
-As is standard, the proof of a lower bound on the conductance profile relies on an isoperimetric inequality.
+As is standard, the proof of a lower bound on the conductance relies on an isoperimetric inequality.
 
 \begin{lemma}[Isoperimetry of Lipschitz embeddings of convex sets.]
 	\label{lem: nonconvex_isoperimetry}
@@ -838,7 +902,7 @@ As is standard, the proof of a lower bound on the conductance profile relies on 
 	\end{equation*}
 \end{lemma}
 The proof of Lemma \ref{lem: nonconvex_isoperimetry} from first principles is non-trivial, even in the convex setting, and is a primary technical contribution of the seminal work \cite{lovasz1990}, extended by \cite{dyer1991} among others. 
-Once the result is shown in the case where $\Omega$ is convex, however, generalizing to the setting implied  Assumption \ref{asmp: embedding} is not difficult.
+Once the result is shown in the case where $\Omega$ is convex, however, generalizing to the setting given by  Assumption \ref{asmp: embedding} is not difficult.
 
 \begin{proof}[Proof of Lemma \ref{lem: nonconvex_isoperimetry}]
 	For $\Omega_i, i = 1,2,3$, denote the preimage
@@ -986,15 +1050,16 @@ We now prove the desired result:
 & \geq \frac{\sqrt{2} r \ell^4}{24 D L \sqrt{d}} \min \set {\pi_{\nu,r}(S_1), \pi_{\nu,r}(S_2)}.
 \end{align*}
 
-\subsection{Graph conductance profile and local spread.}
+\subsection{Graph conductance and local spread.}
+\label{sec: graph_conductance_and_local_spread}
 
-Let $\widetilde{G}_{n,r} := G_{n,r}\bigl[\Csig[\Xbf]\bigr]$ denote the subgraph induced by $\Csig[\Xbf]$.$\widetilde{{\Phi}}_{n,r}(t)$, the graph conductance profile over $\widetilde{G}_{n,r}$ is defined in \eqref{eqn: graph_conductance_profile}. Write $\piminwt := \min_{u \in \Csig[\Xbf]} \piwt_{n,r}(u)$. 
+Recall that $\widetilde{G}_{n,r} = G_{n,r}\bigl[\Csig[\Xbf]\bigr]$ denotes  the subgraph induced by $\Csig[\Xbf]$. $\widetilde{{\Phi}}_{n,r}$, the graph conductance over $\widetilde{G}_{n,r}$ is defined in \eqref{eqn: local_spread_and_conductance}. Write $\piminwt := \min_{u \in \Csig[\Xbf]} \piwt_{n,r}(u)$. 
 
 \begin{proposition}[Lower bound on graph conductance profile]
 	\label{prop: graph_conductance_profile_lb}
-	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, with probability one the following lower bound holds on the graph conductance function:
+	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $D$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, with probability one the following lower bound holds on the graph conductance:
 	\begin{equation*}
-	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r}(t) > \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}} \tag{$0 < t \leq \frac{1}{2}$}
+	\liminf_{n \to \infty} \widetilde{\Phi}_{n,r} > \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}}
 	\end{equation*}
 \end{proposition}
 
@@ -1022,11 +1087,13 @@ Lemma \ref{lem: graph_conductance_profile_lb_1} shows that for the remaining sma
 	\end{equation*}
 \end{lemma}
 \begin{proof}
-	Observing that
-	\begin{equation*}
-	\Phi(S;G) \geq \sum_{u \in S} q^{(1)}(u,S^c) \frac{\deg(u;G)}{\vol(S)},
-	\end{equation*}
-	the claim follows by Lemma \ref{lem: local_spread_G}.
+	The claim follows by simple manipulations:
+	\begin{align*}
+	\Phi(S;G) & \geq \sum_{u \in S} \frac{\cut(u, S^c; G)}{\vol(S;G)} \\
+	& \geq \sum_{u \in S} \frac{\deg(u;G) - \abs{S}}{\vol(S;G)} \\
+	& \geq \sum_{u \in S} \frac{\deg(u;G) - \frac{9}{10} \min_{u \in V}\deg(u;G)}{\vol(S;G)} \tag{since $\pi(S) \leq s(G)$}\\ 
+	& \geq \frac{1}{10} \sum_{u \in S} \frac{\deg(u;G)}{\vol(S;G)} = \frac{1}{10}.
+	\end{align*}
 \end{proof}
 
 Proposition \ref{prop: graph_conductance_profile_lb} follows in light of the fact $\frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}} < \frac{1}{10}$.
@@ -1046,6 +1113,7 @@ Proposition \ref{prop: graph_conductance_profile_lb} follows in light of the fac
 \end{proof}
 
 \subsection{Proof of Lemma \ref{lem: graph_conductance_profile_lb}}
+\label{sec: proof_of_lemma_graph_conductance}
 
 Let $\mathfrak{B}(\Csig)$ be the Borel $\sigma$-algebra of $\Csig$, and define the conditional probability measures
 \begin{equation*}
@@ -1230,7 +1298,7 @@ If $r_n^- = r = r_n^+$, \eqref{eqn: graph_to_continuous_conductance} would simpl
 	\begin{equation*}
 	\liminf_{n \to \infty} \int_{\Sset} \int_{\mathcal{R}_n(x)} f(y) f(x) \dy \dx \leq \Pbb(\Sset) \Lambda_{\sigma} \bigl( (r_n^+)^d - (r_n^-)^d\bigr) \to 0 
 	\end{equation*}
-	where the convergence occurs as $n \to \infty$. On the other hand, by hyptohesis
+	where the convergence occurs as $n \to \infty$. On the other hand, by hypothesis
 	\begin{equation*}
 	\limsup_{n \to \infty} \piwt_{\Pbb,r_n^+}(\Sset) \geq c > 0.
 	\end{equation*}
@@ -1297,27 +1365,21 @@ and therefore by Lemma \ref{lem: cont_stationary_dist}
 As Lemma \ref{lem: stagnating_transportation_maps} implies $r_n^{-} \to r$ with probability one, an application of Slutsky's Theorem to \eqref{eqn: graph_ncut_lb_1} completes the proof.
 
 \subsection{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
-Lemma \ref{lem: expansion_to_tv_distance} implies
-\begin{equation}
-\label{eqn: expansion_to_tv_distance_1}
-\tau_1(\widetilde{G}_{n,r}) \leq 490 \cdot \left(\frac{20}{9} + \int_{s'(\widetilde{G}_{n,r})}^{1/2} \frac{4}{t \widetilde{\Phi}_{n,r}^2(t)} \dt \right)
-\end{equation}
-where we recall $s'(G) = \frac{s(G)}{9}$. 
+\label{sec: proof_of_theorem_mixing_time}
 
-By Lemmas \ref{lem: graph_conductance_profile_lb} and \ref{lem: local_spread_lb} for sufficiently large $n$, and for any $0 < t \leq \frac{1}{2}$
+Since $r$ is fixed, $\min_{u \in V} \deg(u; \widetilde{G}_{n,r}) \to \infty$ with $n$. Therefore for sufficiently large $n$ we may apply Proposition \ref{prop: pointwise_mixing_time} and obtain
 \begin{equation*}
-s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20 \Lambda_{\sigma}}, \quad \widetilde{\Phi}_{n,r}(t) > \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{12} D L \sqrt{d}}
+\tau_{\infty}(\widetilde{G}_{n,r}) \leq \frac{2}{\widetilde{\Phi}_{n,r}^2} \log\left(\frac{1440}{s(\widetilde{G}_{n,r})}\right) \log \left(\frac{14}{s(\widetilde{G}_{n,r})}\right) + 3 \log\left(\frac{14}{s(\widetilde{G}_{n,r})}\right) + 3
 \end{equation*}
-which along with \eqref{eqn: expansion_to_tv_distance_1} and Lemma \ref{lem: tv_mixing_to_pointwise_mixing1} implies the desired result.
+and the claim follows from Proposition \ref{prop: graph_conductance_profile_lb} and Lemma \ref{lem: local_spread_lb}.
 
 \subsection{Concentration inequalities}
 \label{sec: concentration}
-Given a symmetric kernel function $k: \mathcal{X}^m \to \Reals$, and data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$m$ $U$ statistic} to be 
-\begin{equation*}
-U := \frac{1}{ {n \choose m} } \sum_{1 \leq i_1 < \ldots < i_m \leq n} k(x_{i_1},\ldots,x_{i_m})
-\end{equation*}
 
-For Lemmas \ref{lem: bounded_difference}, let $X_1, \ldots, X_n \in \mathcal{X}$ be independent and identically distributed. We will additionally assume the order-$m$ kernel function $k$ satisfies the boundedness property $\sup_{x_1, \ldots, x_m} \abs{k(x_1, \ldots, x_m)} \leq 1$. 
+Given a symmetric kernel function $K: \Rd \to \Reals$ with $\sup_{x,y \in \Rd} \abs{K(x,y)} \leq 1$, and independent and identically distributed data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$2$ $U$ statistic} to be 
+\begin{equation*}
+U := \frac{1}{ {n \choose 2} } \sum_{1 \leq i < j \leq n} K(x_i,x_j).
+\end{equation*}
 
 \begin{lemma}[Hoeffding's inequality for $U$-statistics.]
 	\label{lem: bounded_difference}
@@ -1327,27 +1389,27 @@ For Lemmas \ref{lem: bounded_difference}, let $X_1, \ldots, X_n \in \mathcal{X}$
 	\end{equation*}
 	Further, for any $\delta > 0$, we have
 	\begin{align*}
-	U & \leq \mathbb{E}U + \sqrt{\frac{m \log(1 / \delta)}{2n} }, \\
-	U & \geq \mathbb{E}U - \sqrt{\frac{m \log(1 / \delta)}{2n} }
+	U & \leq \mathbb{E}U + \sqrt{\frac{\log(1 / \delta)}{n} }, \\
+	U & \geq \mathbb{E}U - \sqrt{\frac{\log(1 / \delta)}{n} }
 	\end{align*}
 	each with probability at least $1 - \delta$. 
 \end{lemma}
 
-We will employ a sharper concentration inequality for $\sum_{i = 1}^{n} X_i$.
+We will employ a sharper inequality to bound the sum of independent Bernoulli random variables.
 \begin{lemma}
 	\label{lem: multiplicative_Hoeffding}
-	Let $X_i \in \set{0,1}$ for $i = 1, \ldots, n$ and let $\mu = \Ebb(\sum_{i = 1}^n X_i)$. Then,
+	Let $X_i \in \set{0,1}$ for $i = 1, \ldots, n$ and let $\mu = \sum_{i = 1}^n \Ebb(X_i)$. Then,
 	\begin{align*}
 	\Pbb\left(\sum_{i=1}^{n}X_i > (1 + \epsilon) \mu \right) \leq \exp \left(\frac{-\epsilon^2 \mu}{3}\right) \\
 	\Pbb\left(\sum_{i=1}^{n}X_i < (1 - \epsilon) \mu \right) \leq \exp \left(\frac{-\epsilon^2 \mu}{2}\right)
 	\end{align*}
 \end{lemma}
 
-We will require asymptotic bounds on several different degree and volume functionals, which follow from Lemma \ref{lem: multiplicative_Hoeffding}. Let
+We will require asymptotic bounds on several different degree and volume functionals, which follow from Lemmas \ref{lem: bounded_difference} and \ref{lem: multiplicative_Hoeffding}. Let
 \begin{alignat*}{2}
 \degminwt & := \min_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}\left[\Csig[\Xbf]\right]),~ && \degmaxwt := \max_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}\left[\Csig[\Xbf]\right]) \\ 
 \degminpr & := \min_{u \in \Csig'[\Xbf]} \deg(u; G_{n,r}),~ && \degmax := \max_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}) \\
-\degmin & := \min_{u \in \Csig{\Xbf}} \deg(u; G_{n,r}).
+\degmin & := \min_{u \in \Xbf} \deg(u; G_{n,r}).
 \end{alignat*}
 
 \begin{lemma}
@@ -1355,7 +1417,7 @@ We will require asymptotic bounds on several different degree and volume functio
 	Under the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters}, for any $\epsilon > 0$, each of the following bounds hold with probability tending to one as $n \to \infty$:
 	\begin{align}
 	\frac{\degminwt}{n}, \frac{\degminpr}{n} & \geq (1 - \epsilon)\frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_cluster_degree_bound} \\
-	\frac{\degmin}{n} & \geq  (1 - \epsilon)\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} \\
+	\frac{\degmin}{n} & \geq \frac{6}{25}(1 - \epsilon)\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} \\
 	\frac{\degmax}{n} & \leq (1 + \epsilon)\Lambda_{\sigma} r^d \nu_d \label{eqn: max_degree_bound}\\
 	\frac{\abs{\Csig[\Xbf]}}{n} & \leq (1 + \epsilon)\Pbb(\Csig) \label{eqn: Csig_cardinality_bound}\\
 	\label{eqn: volwt_bound}
@@ -1416,7 +1478,7 @@ Lemma \ref{lem: zhu} is a restatement of Lemma 3.4 of \cite{zhu2013}, translated
 
 \begin{lemma}
 	\label{lem: zhu}
-	Let $\epsilon \geq 0$, $v \in A^g$, $\alpha \leq \frac{\Psi(A; G)}{9}$, and $\vol_0 \in [1 - c,1 + c] \vol(A;G)$ for $0 < c < 1$. Consider taking sweep cuts of the \textcolor{red}{approximate \pprspace vector} $\pbf^{(\epsilon)} := \pbf^{(\epsilon)}(v,\alpha; G)$ of the form
+	Let $\epsilon \geq 0$, $v \in A^g$, $\alpha \leq \frac{\Psi(A; G)}{9}$, and $\vol_0 \in [1 - c,1 + c] \vol(A;G)$ for $0 < c < 1$. Consider taking sweep cuts of the approximate \pprspace vector $\pbf^{(\epsilon)} := \pbf^{(\epsilon)}(v,\alpha; G)$ of the form
 	\begin{equation*}
 	S_{\beta} := \left\{u \in V: \pbf^{(\epsilon)} \geq \beta \frac{\deg(u; G)}{\vol_0} \right\}
 	\end{equation*}
@@ -1430,15 +1492,23 @@ Lemma \ref{lem: zhu} is a restatement of Lemma 3.4 of \cite{zhu2013}, translated
 
 \paragraph{Proof of Theorem \ref{thm: misclassification_rate}.}
 
-Observe that by Theorem \ref{thm: inverse_mixing_time_lower_bound} and the upper bounds $\alpha \leq \frac{\mathbf{\Psi}(\theta)}{9}, r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$. Moreover, i) we restrict $v \in \Csig[\Xbf]^g$; ii) the output of Algorithm \ref{alg: ppr} $\widehat{C} = S_{\beta}$ for some $1/40 < \beta < 1/11$; iii) by Lemma \ref{lem: ball_bounds_in_probability}, $\vol_0 \in [1/2,3/2]\vol_{n,r}(\Csig[\Xbf])$, and iv) the \pprspace vector $\pbf(v,\alpha;G_{n,r})$ is simply an approximate \pprspace vector with $\epsilon = 0$. All conditions of Lemma \ref{lem: zhu} are therefore satisfied, and consequently by \eqref{eqn: zhu_1}, \eqref{eqn: zhu_2}, Theorem \ref{thm: conductance_upper_bound}, and the lower bound $\alpha \geq \mathbf{\Psi}(\theta)/10$, the following bounds hold with probability tending to 1 as $n \to \infty$:
+Observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds $\alpha \leq \frac{\mathbf{\Psi}(\theta)}{9}, r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$. Moreover, 
+\begin{enumerate}[(i)]
+	\item we restrict $v \in \Csig[\Xbf]^g$
+	\item the output of Algorithm \ref{alg: ppr} $\widehat{C} = S_{\beta}$ for some $1/40 < \beta < 1/11$
+	\item by Lemma \ref{lem: ball_bounds_in_probability}, $\vol_0 \in [1/2,3/2]\vol_{n,r}(\Csig[\Xbf])$
+	\item the \pprspace vector $\pbf(v,\alpha;G_{n,r})$ is simply an approximate \pprspace vector with $\epsilon = 0$.
+\end{enumerate}
+
+All conditions of Lemma \ref{lem: zhu} are therefore satisfied, and consequently by \eqref{eqn: zhu_1}, \eqref{eqn: zhu_2}, Theorem \ref{thm: conductance_upper_bound}, and the lower bound $\alpha \geq \mathbf{\Psi}(\theta)/10$, the following bounds hold with probability tending to 1 as $n \to \infty$:
 \begin{equation*}
 \vol_{n,r}(\widehat{C} \setminus \Csig[\Xbf]) \leq 1600 \kappa(\Cset) \vol_{n,r}(\Csig[\Xbf]), \quad \textrm{and} \quad  \vol_{n,r}(\Csig[\Xbf] \setminus \widehat{C}) \leq 52 \kappa(\Cset) \vol_{n,r}(\Csig[\Xbf])
 \end{equation*}
 Noting that
 \begin{align*}
-\vol_{n,r}(\widehat{C} \setminus \Csig[\Xbf]) & \geq \abs{\widehat{C} \setminus \Csig[\Xbf]} \min_{x \in \Xbf} \{\deg_{n,r}(x)\} \\
-\vol_{n,r}(\Csig[\Xbf] \setminus \widehat{C}) & \geq \abs{\Csig[\Xbf] \setminus \widehat{C}} \min_{x \in \Csig[\Xbf]} \{\deg_{n,r}(x)\},~ \textrm{and} \\
-\vol_{n,r}(\Csig[\Xbf]) & \leq \abs{\Csig[\Xbf]} \max_{x \in \Csig[\Xbf]} \set{\deg_{n,r}(x)}
+\vol_{n,r}(\widehat{C} \setminus \Csig[\Xbf]) & \geq \abs{\widehat{C} \setminus \Csig[\Xbf]} \degmin \\
+\vol_{n,r}(\Csig[\Xbf] \setminus \widehat{C}) & \geq \abs{\Csig[\Xbf] \setminus \widehat{C}} \degminwt,~ \textrm{and} \\
+\vol_{n,r}(\Csig[\Xbf]) & \leq \abs{\Csig[\Xbf]} \max_{x \in \Csig[\Xbf]} \degmax
 \end{align*}
 the claim follows in light of Lemma \ref{lem: ball_bounds_in_probability}.
 
@@ -1451,11 +1521,11 @@ The choice $\epsilon = \frac{1}{20 \vol_0}$, along with Lemma \ref{lem: ball_bou
 \subsection{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
 
-We begin with some notation. Let $\widetilde{\Dbf}$ and $\widetilde{\Wbf}$ be the degree and random walk matrices for the induced subgraph $G_{n,r}(\Csig[\Xbf]) = \widetilde{G}_{n,r}$, with vertex set $\widetilde{V} = \Csig[\Xbf]$ and edge set $\widetilde{E} = \set{(u,v) \in G_{n,r}: u,v \in \Csig[\Xbf]}$. Consider the function $\overline{\pibf}_{n,r}: \Csig[\Xbf] \to [0,1]$ 
+We begin with some notation. Let $\Dbf$ and $\Wbf$ be the degree and (lazy) random walk matrices for the neighborhood graph $G_{n,r}$. Similarly, let $\widetilde{\Dbf}$ and $\widetilde{\Wbf}$ be the degree and (lazy) random walk matrices for the induced subgraph $\widetilde{G}_{n,r}$. Consider $\overline{\pibf}_{n,r}: \Csig[\Xbf] \to [0,1]$ given by
 \begin{equation*}
 \overline{\pibf}_{n,r}(x) := \frac{\widetilde{\deg}_{n,r}(x)}{\vol_{n,r}(\Csig[\Xbf])}.
 \end{equation*}
-(Note $\overline{\pibf}_{n,r}$ is distinct from $\widetilde{\pibf}_{n,r}$, as we normalize by $\vol_{n,r}(\Csig[\Xbf])$ rather than $\widetilde{\vol}_{n,r}(\Csig[\Xbf])$.)
+(Note that $\overline{\pibf}_{n,r}$ is distinct from $\widetilde{\pibf}_{n,r}$, as we normalize by $\vol_{n,r}(\Csig[\Xbf])$ rather than $\widetilde{\vol}_{n,r}(\Csig[\Xbf])$.)
 
 Lemma \ref{lem: setup} provides uniform error bounds on $\pbf(u) - \overline{\pibf}_{n,r}(u)$ over all $x \in \Xbf$ (where in an abuse of notation we consider $\overline{\pibf}_{n,r}(x) = 0$ for $x \in \Xbf \setminus \Csig[\Xbf]$). 
 \begin{lemma} 
@@ -1480,7 +1550,7 @@ Lemma \ref{lem: setup} provides uniform error bounds on $\pbf(u) - \overline{\pi
 	\begin{equation}
 	\widetilde{\pbf}_q = \alpha q + (1 - \alpha) \widetilde{\pbf}_{q} \widetilde{\Wbf}
 	\end{equation}
-	be the \pprspace vector originating from $q$ over $\widetilde{G}_{n,r}$. (When the starting distribution $q = e_v$ is a point mass at a seed node $v \in \widetilde{V}$, we write $\widetilde{\pbf}_v := \widetilde{\pbf}_{e_v}$ in a slight abuse of notation).
+	be the \pprspace vector originating from $q$ over $\widetilde{G}_{n,r}$. (When the starting distribution $q = e_v$ is a point mass at a seed node $v \in \Csig[\Xbf]$, we write $\widetilde{\pbf}_v := \widetilde{\pbf}_{e_v}$ in a slight abuse of notation).
 	
 	Our analysis will involve \emph{leakage} and \emph{soakage} vectors, defined by
 	\begin{align}
@@ -1508,19 +1578,23 @@ Lemma \ref{lem: setup} provides uniform error bounds on $\pbf(u) - \overline{\pi
 	\pbf(u) \geq \frac{4}{5} \overline{\pibf}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u).
 	\end{equation*}
 	
-	We proceed to show the upper bound $\widetilde{\pbf}_{\ell}(u) \leq \norm{\ell}_1 / \degminwt$, whence \eqref{eqn: lower_bound_PPR_in_cluster} follows by \eqref{eqn: zhulemma3.1}. We note two facts regarding $\widetilde{\pbf}_{\ell}(u)$, which hold for all $u \in \Cset[\Xbf]$. First, since $r < \sigma$, $(u,w) \not\in G_{n,r}$ for any $w \not\in \Csig$. As a result, for all $t \geq 1$, $\ell_t(u) = 0$ and by extension, $\ell(u) = 0$ as well. Second, for any $q$ such that $\sum_{w \in \Csig[\Xbf]} q(w) \leq 1$, and any $t \geq 1$,
-	\begin{align}
-	\label{eqn: one_step_bound}
-	q \widetilde{\Wbf}^t (u) & \leq \norm{q}_1 ||\widetilde{\Wbf}_{\cdot u}||_{\infty} \nonumber \\
-	& \leq \frac{1}{\degminwt} 
-	\end{align}
-	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}$, and the last inequality follows from the fact $(u,w) \in \widetilde{G}_{n,r}$ implies $w \in \Csig$, and therefore $\deg(w; \widetilde{G}_{n,r}) \geq \degminwt$.
+	We proceed to show the upper bound $\widetilde{\pbf}_{\ell}(u) \leq \norm{\ell}_1 / \degminwt$, whence \eqref{eqn: lower_bound_PPR_in_cluster} follows by \eqref{eqn: zhulemma3.1}. We note two facts regarding $\widetilde{\pbf}_{\ell}(u)$, which hold for all $u \in \Cset[\Xbf]$. 
+	\begin{enumerate}
+		\item Since $r < \sigma$, $(u,w) \not\in G_{n,r}$ for any $w \not\in \Csig$. As a result, for all $t \geq 1$, $\ell_t(u) = 0$ and by extension, $\ell(u) = 0$ as well.
+		\item For any $q$ such that $\sum_{w \in \Csig[\Xbf]} q(w) \leq 1$, and any $t \geq 1$,
+		\begin{align}
+		\label{eqn: one_step_bound}
+		q \widetilde{\Wbf}^t (u) & \leq \norm{q}_1 ||\widetilde{\Wbf}_{\cdot u}||_{\infty} \nonumber \\
+		& \leq \frac{1}{\degminwt} 
+		\end{align}
+		where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}$, and the last inequality follows from the fact $(u,w) \in \widetilde{G}_{n,r}$ implies $w \in \Csig$, and therefore $\deg(w; \widetilde{G}_{n,r}) \geq \degminwt$.
+	\end{enumerate}
 	
 	These facts, along with some basic algebra, lead to the desired lower bound on $\widetilde{\pbf}_{\ell}(u)$ for every $u \in \Cset[\Xbf]$:
 	\begin{align*}
-	\widetilde{\pbf}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{\Wbf}_n^t \right)(u)  \nonumber \\
-	& = \norm{\ell}_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\norm{\ell}_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
-	& = \norm{\ell}_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\norm{\ell}_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
+	\widetilde{\pbf}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{\Wbf}^t \right)(u)  \nonumber \\
+	& = \norm{\ell}_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\norm{\ell}_1}  \widetilde{\Wbf}^t \right)(u)\nonumber \\
+	& = \norm{\ell}_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\norm{\ell}_1}  \widetilde{\Wbf}^t \right)(u)\nonumber \\
 	& \leq \frac{\norm{\ell}_1 }{\degminwt}.
 	\end{align*}
 	and \eqref{eqn: lower_bound_PPR_in_cluster} is proved.
@@ -1532,9 +1606,9 @@ Lemma \ref{lem: setup} provides uniform error bounds on $\pbf(u) - \overline{\pi
 	
 	Note that by \ref{asmp: cluster_separation}, for every $u \in \Csig[\Xbf], (u',u) \not\in E$ and therefore $s(u') = 0$. Some manipulations, similar to those in the preceding part of the proof, yield a lower bound on $\pbf_v(u')$ in terms of $\norm{s}_1$:
 	\begin{align*}
-	\pbf_s(u') & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \Wbf_n^t\right)(u') \\
-	& = \norm{s}_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\norm{s}_1} \Wbf_n^t\right)(u') \\
-	& = \norm{s}_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\norm{s}_1} \Wbf_n^t\right)(u') \\
+	\pbf_s(u') & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \Wbf^t\right)(u') \\
+	& = \norm{s}_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\norm{s}_1} \Wbf^t\right)(u') \\
+	& = \norm{s}_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\norm{s}_1} \Wbf^t\right)(u') \\
 	& \leq \frac{\norm{s}_1}{\degminpr}
 	\end{align*}
 	where the last inequality follows from precisely the same reasoning as \eqref{eqn: one_step_bound}. The claim follows in light of Lemma \ref{lem: total_leakage_equal_total_soakage}, along with \eqref{eqn: zhulemma3.1}.
@@ -1548,7 +1622,7 @@ We turn now to the proof of Theorem \ref{thm: consistent_recovery_of_density_clu
 
 In the proof that follows, every inequality will hold with probability tending to one as $n \to \infty$.
 
-Observe that by Theorem \ref{thm: inverse_mixing_time_lower_bound} and the upper bounds $\alpha \leq \frac{\mathbf{\Psi}}{9}$ and $r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$. As a result, with probability one as $n \to \infty$, the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters} subsume the requirements of Lemma \ref{lem: setup}, and by that lemma, the following inequalities hold for each $u \in \Cset[\Xbf]$, $u' \in \Cset'[\Xbf]$:
+Observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds $\alpha \leq \frac{\mathbf{\Psi}}{9}$ and $r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{\Psi_{n,r}(\Csig[\Xbf])}{9}$. As a result, with probability one as $n \to \infty$, the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters} subsume the requirements of Lemma \ref{lem: setup}, and by that lemma, the following inequalities hold for each $u \in \Cset[\Xbf]$, $u' \in \Cset'[\Xbf]$:
 \begin{align}
 \pbf(u) & \geq \frac{4}{5} \overline{\pibf}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\alpha \degminwt} \nonumber \\
 \pbf(u') & \leq \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\alpha \degminpr} \label{eqn: setup_redux}
@@ -1617,13 +1691,13 @@ We state here a number of basic facts which follow from matrix manipulations, wh
 \begin{proof}
 	The statement follows from Lemma \ref{lem: sum_of_soakages} along with a series of algebraic manipulations,
 	\begin{align*}
-	\pbf_v(u) & = \alpha\sum_{T = 0}^{\infty} (1 - \alpha)^t \left(e_v \Wbf_n^T\right)(u) \\
-	& = \alpha\sum_{T = 1}^{\infty} (1 - \alpha)^t \left(e_v \Wbf_n^T\right)(u) \\
-	& \leq \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf_n^{T - t - 1} \right)(u) \tag{Lemma \ref{lem: sum_of_soakages}}\\
-	& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf_n^{T - t - 1} \right)(u)\\
-	& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf_n^{\Delta} \right)(u) \\
-	& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf_n^{\Delta} \right)(u) \\
-	& = \alpha \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta} \left(s \Wbf_n^{\Delta}\right)(u) \\
+	\pbf_v(u) & = \alpha\sum_{T = 0}^{\infty} (1 - \alpha)^t \left(e_v \Wbf^T\right)(u) \\
+	& = \alpha\sum_{T = 1}^{\infty} (1 - \alpha)^t \left(e_v \Wbf^T\right)(u) \\
+	& \leq \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} \right)(u) \tag{Lemma \ref{lem: sum_of_soakages}}\\
+	& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf^{T - t - 1} \right)(u)\\
+	& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf^{\Delta} \right)(u) \\
+	& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf^{\Delta} \right)(u) \\
+	& = \alpha \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta} \left(s \Wbf^{\Delta}\right)(u) \\
 	& = \pbf_s(u)
 	\end{align*}
 \end{proof}
@@ -1672,286 +1746,15 @@ Let $s_t := q(\Wbf \Ibf{S})^t(\Wbf(\Ibf{S^c}))$ be the soakage vector out of $S 
 \begin{proof}
 	By the definition of $s_t$ and $\ell_t$, we have
 	\begin{align*}
-	\norm{s_t}_1 & = \norm{q_t (\Wbf_n \widetilde{\mathbf{I}}_n^c)}_1 \\
-	& = \sum_{u \in \Xbf} \sum_{u' \in \Xbf} q_t(u) (\Wbf_n \widetilde{\mathbf{I}}_n^c)(u, u') \\
-	& = \sum_{u \in\Csig[\Xbf]} \sum_{u' \in \Csig[\Xbf]^c} \frac{q_t(u)}{(\Dbf_n)_{uu}} \1((u,u') \in G_{n,r}) \\
-	& = \sum_{u \in \Csig[\Xbf]} \frac{q_t(u) \left((\Dbf_n)_{uu} - (\widetilde{\Dbf}_n)_{uu} \right)}{(\Dbf_n)_{uu}} \\
-	& = \norm{q_t (\Ibf{n} - \Dbf_n^{-1} \widetilde{\Dbf}_n)}_1 = \norm{\ell_t}_1.
+	\norm{s_t}_1 & = \norm{q_t (\Wbf \widetilde{\mathbf{I}}^c)}_1 \\
+	& = \sum_{u \in \Xbf} \sum_{u' \in \Xbf} q_t(u) (\Wbf \widetilde{\mathbf{I}}^c)(u, u') \\
+	& = \sum_{u \in\Csig[\Xbf]} \sum_{u' \in \Csig[\Xbf]^c} \frac{q_t(u)}{(\Dbf)_{uu}} \1((u,u') \in G_{n,r}) \\
+	& = \sum_{u \in \Csig[\Xbf]} \frac{q_t(u) \left((\Dbf)_{uu} - (\widetilde{\Dbf})_{uu} \right)}{(\Dbf)_{uu}} \\
+	& = \norm{q_t (\Ibf{} - \Dbf^{-1} \widetilde{\Dbf})}_1 = \norm{\ell_t}_1.
 	\end{align*}
 \end{proof}
 
 \section{Additional Experiments}
-
-\begin{figure}
-	\centering
-	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/true_density_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/ppr_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/conductance_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example3plots/density_cluster}
-			\caption{}
-		\end{subfigure}
-	\caption{}
-	\end{adjustbox}
-\end{figure}
-
-
-\section{\textcolor{red}{OLD STUFF}}
-
-\subsection{Volume estimates}
-We will fix $\Aset \subset \Rd$ to be an arbitrary set. To simplify expressions, for the $\sigma$-expansion $\Asig$, we will write the set difference between $\Asig$ and the $(\sigma + r)$-expansion $\Aset_{\sigma + r}$ as 
-\begin{equation*}
-\Asigr := \set{x: 0 < \dist(x, \Asig) \leq r},
-\end{equation*}
-where as a reminder $\dist(x, \Aset) = \min_{x' \in \Aset} \norm{x - x'}$.
-
-\paragraph{Lemma \ref{lem: interior_of_expansion_sets}.}
-
-We will repeatedly employ Lemma \ref{lem: expansion_sets} and Lemma \ref{lem: Taylor_series} in tandem. As a first example, in Lemma \ref{lem: interior_of_expansion_sets}, we bound the ratio of $\nu(\Aset)$ to $\nu(\Aset_{-\delta})$, where we write $\partial \Aset$ for the boundary of $\Aset$, and for $\delta > 0$ we let
-\begin{equation*}
-\Aset_{-\delta} : = \set{x \in \Aset: \dist(x, \partial \Aset) > \delta}.
-\end{equation*}
-
-This will be useful when we bound $\vol(\Csig)$.
-
-\begin{lemma}
-	\label{lem: interior_of_expansion_sets}
-	For $\sigma$, $\Asig$ as in Lemma \ref{lem: expansion_sets}, let $r > 0$ satisfy $r \leq \sigma/4d$. Then,
-	\begin{equation*}
-	\frac{\nu(\Asig)}{\nu(\Aset_{\sigma - r})} \leq 2.
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	Fix $q = \sigma - r$. Then,
-	\begin{align*}
-	\nu(\Asig) & = \nu(\Aset_{q + \sigma - q}) = \nu(\Aset_q + (\sigma - q)B ) \\
-	& \leq \nu(\Aset_q + \frac{(\sigma - q)}{q} \Aset_q) = \left(1 + \frac{\sigma - q}{q}\right)^d \nu(\Aset_q)
-	\end{align*}
-	where the inequality follows from Lemma \ref{lem: expansion_sets}. Of course, $\sigma - q = r$, and $\frac{r}{q} \leq \frac{1}{2d}$ for $r \leq \frac{1}{4d}$. The claim then follows from Lemma \ref{lem: Taylor_series}.
-\end{proof}
-
-\subsection{Proof of Lemma \ref{lem: setup}}
-
-\begin{proof}
-	We will write $\Wbf_n = \Dbf_n \Abf_n^{-1}$ for the transition probability matrix over $G_{n,r}$, and let $\widetilde{\Dbf}_n$ and $\widetilde{\Wbf}_n$ be the degree and random walk matrices for the subgraph $\widetilde{G}_{n,r}$.
-	
-	We introduce \emph{leakage} and \emph{soakage} vectors, defined by
-	\begin{align*}
-	\ell_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\mathbf{I}_n - \Dbf_n^{-1} \wDbf_{n}),~ \ell := \sum_{t = 0}^{\infty} (1 - \alpha)^t \ell_t, \\
-	s_t & := e_v (\Wbf_n \widetilde{\mathbf{I}}_n )^t (\Wbf_n \widetilde{\mathbf{I}}_n^c),~ s := \sum_{t = 0}^{\infty} (1 - \alpha)^{t} s_t.
-	\end{align*}
-	where $\mathbf{I}_n$ is the $n \times n$ identity matrix, $\widetilde{\mathbf{I}}_n$ is an $n \times n$ diagonal matrix with $(\widetilde{\mathbf{I}}_n)_{uu} = 1$ if $u \in \Csig[\Xbf]$ and $0$ otherwise, and $\widetilde{\mathbf{I}}_n^c = \mathbf{I}_n - \widetilde{\mathbf{I}}_n$. 
-	
-	Roughly, the proof of Lemma \ref{lem: setup} will unfold in four steps. The first two will result in the lower bound of (\ref{eqn: lower_bound_PPR_in_cluster}), while the latter two will imply the upper bound in (\ref{eqn: upper_bound_PPR_in_other_cluster}). We briefly summarize the approach before diving into the formal proof:
-	
-	\begin{enumerate}
-		\item For $u \in \Cset[\Xbf]$, we use the results of \cite{zhu2013} to produce the lower bound 
-		\begin{equation*}
-		\pbf(u) \geq \frac{4}{5}\widetilde{\pi}_{n,r}(u) - \widetilde{\pbf}_{\ell}(u)
-		\end{equation*}
-		where 
-		\begin{equation*}
-		\widetilde{\pbf}_{\ell} = \alpha \ell + (1 - \alpha) \widetilde{\pbf}_{\ell} \widetilde{\Wbf}_n
-		\end{equation*}
-		is the \pprspace random walk over $\widetilde{G}_{n,r}$, and $\ell$ has bounded norm $||\ell||_1 \leq 2\frac{\Phi_{n,r}(\Csig[\Xbf])}{\alpha}$.
-		
-		\item Since $r < \sigma$, for any $u \in \Cset[\Xbf]$ there are no edges between $u$ and $\Xbf \setminus \Csig[\Xbf]$. Therefore, the page-rank vector $\widetilde{\pbf}_{\ell}$ will not assign more than $||\ell||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. This observation will conclude our proof of (\ref{eqn: lower_bound_PPR_in_cluster}).
-		\item For vertices $u' \in G_{n,r} / \Csig[\Xbf]$, we can upper bound $p_v(u) \leq p_s(u')$. In particular, this hold for all $u' \in \Cset'[\Xbf]$.
-		\item Since $r < \sigma$, there are no edges between $u'$ and $G / \Cset'[\Xbf]$. Therefore, the page-rank vector $p_{s}$ will assign no more than $||s||_1 / d_{\min}(\Csig[\Xbf])$ probability mass to any vertex in $\Cset'[\Xbf]$. Additionally, $s$ has bounded norm $||s||_1 \leq ||\ell||_1$. This will conclude our proof of (\ref{eqn: upper_bound_PPR_in_other_cluster}), and hence Lemma \ref{lem: setup}.
-	\end{enumerate}
-	
-	\paragraph{Step 1}
-	We will begin by restating some results of \cite{zhu2013}.
-	
-	For seed node $v$, we write
-	\begin{align} \label{eqn: page_rank_body}
-	\widetilde{\pbf}_v & = \alpha e_v + (1 - \alpha) \widetilde{\pbf}_v \widetilde{\Wbf}_n \\
-	& = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(e_v \widetilde{\Wbf}_n^t \right)
-	\end{align}
-	
-	From Lemma 3.1 of \cite{zhu2013} we have that there exists a good set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ with $\vol(\Csig[\Xbf]^g) \geq \vol(\Csig[\Xbf])/2$ for all $v \in \Csig[\Xbf]^g$, $u \in \Csig[\Xbf]$
-	
-	\begin{align} \label{eqn: zhu_body}
-	p_u & \geq \widetilde{\pbf}_v(u) - \widetilde{\pbf}_{\ell}(u) \nonumber \\
-	||\ell||_1 & \leq \frac{2 \widetilde{\Phi}_{n,r}}{\alpha}
-	\end{align}
-	where $\widetilde{\pbf}_v = (\widetilde{\pbf}_v(u))$ and likewise for $\widetilde{\pbf}_{\ell} = (\widetilde{\pbf}_{\ell}(u))$. (This will be the only time we need to restrict ourselves to this 'good set'.)
-	
-	Moreover if, as we have specified, $\alpha \leq \widetilde{\Psi}_{n,r}/9$, Lemma 3.2 of \cite{zhu2013} yields a lower bound on $\widetilde{p}$
-	\begin{equation} \label{eqn: page_rank_mixes}
-	\widetilde{\pbf}_v(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u).
-	\end{equation}
-	
-	\paragraph{Step 2}
-	
-	We turn to upper bounding $\widetilde{\pbf}_{\ell}(u)$. For any $u \in \Cset[\Xbf]$, we have
-	
-	\begin{align} \label{eqn: leakage_page_rank_body}
-	\widetilde{\pbf}_{\ell}(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\ell \widetilde{\Wbf}_n^t \right)(u)  \nonumber \\
-	& = \|\ell\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
-	& \overset{\text{(i)}}{=} \|\ell\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u)\nonumber \\
-	& \overset{\text{(ii)}}{\leq} \|\ell\|_1 \frac{1}{\widetilde{D}_{\min}} 
-	\end{align}
-	
-	where we use $\left(\ell \widetilde{\Wbf}_n^t \right)(u)$ to denote $\ell \widetilde{\Wbf}_n^te_u$.
-	
-	$\text{(i)}$ follows from the fact that since $r < \sigma$, $\cut(\Cset[\Xbf], G_{n,r} / \Csig[\Xbf]; G_{n,r}) = 0$. Therefore $(\Dbf_n^{-1})_{uu} (\widetilde{\Dbf}_n)_{uu} = 1$, and as a result
-	\begin{equation*}
-	(\ell \widetilde{\Wbf}_n^0)(u) = \ell(u) = 0.
-	\end{equation*}
-	To see $\text{(ii)}$, let $q = \frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^{t-1}$. Then 
-	
-	\begin{align*}
-	\left(\frac{\ell}{\|\ell\|_1}  \widetilde{\Wbf}_n^t \right)(u) & = \left(q \widetilde{\Wbf}_n \right)(u) \\
-	& \leq \|q\|_1 \|\widetilde{\Wbf}_{\cdot u}\|_{\infty} \\
-	& \overset{\text{(iii)}}{\leq} \frac{1}{\widetilde{D}_{\min}}.
-	\end{align*}
-	where $\widetilde{\Wbf}_{\cdot u}$ is the $u$th column of $\widetilde{\Wbf}_n$. $\text{(iii)}$ then follows from the fact that any vertex in $\Cset[\Xbf]$ is connected only to vertices in $\Csig[\Xbf]$, and therefore every entry of $\widetilde{\Wbf}_{\cdot u}$ is either $0$ or at most $1 / \widetilde{D}_{\min}$.
-	
-	
-	Combined, (\ref{eqn: leakage_page_rank_body}), (\ref{eqn: page_rank_mixes}), and \eqref{eqn: zhu_body} imply
-	\begin{equation*}
-	p_v(u) \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - 18\frac{ \Phi_{n,r}(\Csig[\Xbf])}{\widetilde{D}_{\min} \alpha}.
-	\end{equation*}
-	for any $v \in \Csig[\Xbf]$. 
-	
-	\paragraph{Step 3}
-	To get the corresponding upper bound on $p_v(u')$, we will use the soakage vectors $s$ and $s_t$. We will first argue that $s$ is a worse starting distribution -- meaning it puts uniformly more mass outside the cluster -- than simply starting at $v$.
-	
-	\begin{lemma} \label{lem: gained mass is soaked_body}
-		For all $u' \notin \Csig[\Xbf]$,
-		\begin{equation}
-		\pbf_v(u') \leq \pbf_{s}(u').
-		\end{equation}
-	\end{lemma}
-	
-	\begin{proof}
-		
-		We have
-		\begin{align*}
-		\pbf_v(u') & = \alpha \sum_{T=0}^{\infty} (1 - \alpha)^T (e_v \Wbf_n^T)(u)\\
-		& \overset{(i)}{=} \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T (e_v \Wbf_n^T)(u')
-		\end{align*}
-		
-		where $(i)$ follows from $v \in \Csig$ , $u \not\in \Csig$ and therefore $e_v(u) = 0$. 
-		
-		Lemma \ref{lem: sum_of_soakages} allows us to make the transition to sums of soakage vectors. 
-		\begin{lemma}
-			
-			Let $G = (V,E)$ be a graph, with associated random walk matrix $W$.
-			
-			For any $T \geq 1$, $q$ vector, $S \subset V$, and $s_t = s_t(S^c,q)$
-			\begin{equation}
-			qW^T = \sum_{t = 0}^{T - 1} s_t W^{T - t - 1} + q(W I_S)^T
-			\end{equation}
-		\end{lemma}
-		We prove Lemma \ref{lem: sum_of_soakages} after completing the proof of Lemma \ref{lem: gained mass is soaked_body}.
-		
-		Now, along with the fact $u \not\in \Csig$, we have
-		
-		\begin{equation*}
-		\left(e_v \Wbf_n^T \right)(u') = \sum_{t = 0}^{T - 1} \left(s_t \Wbf_n^{T - t - 1} \right)(u')
-		\end{equation*}
-		
-		and so
-		
-		\begin{align*}
-		\pbf_v(u) & = \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} \right)(u') \\
-		& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf^{T - t - 1} \right)(u')\\
-		& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf_n^{\Delta} \right)(u') \\
-		& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf_n^{\Delta} \right)(u') \\
-		& = \alpha \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta} \left(s \Wbf_n^{\Delta}\right)(u') \\
-		& = \pbf_s(u')
-		\end{align*}
-	\end{proof}
-	
-	\begin{proof}[Proof of Lemma \ref{lem: sum_of_soakages}]
-		Proceed by induction. When $T = 1$,
-		
-		\begin{align*}
-		qW & = q(WI_S) + q(WI_{S^c}) \\
-		& = q(W I_S)^T + s_0 
-		\end{align*}
-		
-		Assume true for $T_0$. For $T = T_0 + 1$,
-		
-		\begin{align*}
-		qW^T & = qW^{T_0}W \\
-		& = \left\{ \sum_{t = 0}^{T_0 - 1} s_t W^{T_0 - 1 - t} + q(WI_S)^{T_0} \right\} W \\
-		& =  \sum_{t = 0}^{T_0 - 1} s_t W^{T - 1 - t} + q(WI_S)^{T_0}(WI_S + WI_{S^c}) \\
-		& =  \sum_{t = 0}^{T - 1} s_t W^{T - 1 - t} + q(WI_S)^{T}
-		\end{align*}
-	\end{proof}
-	
-	\paragraph{Step 4}
-	
-	Just as we upper bounded the probability mass $\widetilde{\pbf}_{\ell}$ could assign to any one vertex, we can upper bound 
-	
-	\begin{align} \label{eqn: soakage_page_rank_body}
-	\pbf_{s}(u') & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(s \Wbf_n^t \right)(u') \nonumber \\
-	& = \|s\|_1 \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1} {\Wbf}_n^t \right)(u')\nonumber \\
-	& = \|s\|_1 \alpha \sum_{t = 1}^{\infty} (1 - \alpha)^t \left(\frac{s}{\|s\|_1}  {\Wbf}_n^t \right)(u')\nonumber \\
-	& \leq \|s\|_1 \frac{1}{\widetilde{D}_{\min}}.
-	\end{align}
-	
-	Finally, letting $q_t = e_v (\Wbf_n \widetilde{\mathbf{I}}_n)^t$ for ease of notation, we have
-	\begin{align*}
-	\|s_t\|_1 & = \|q_t (\Wbf_n \widetilde{\mathbf{I}}_n)\|_1 \\
-	& = \sum_{u' \in \Xbf} \sum_{u \in \Xbf} q_t(u) (\Wbf_n \widetilde{\mathbf{I}}_n)(u, u')\\
-	& = \sum_{u' \in \Xbf / \Csig[\Xbf]} \sum_{u \in \Csig[\Xbf]} \frac{q_t(u)}{(\Dbf_n)_{uu}} \1(e_{u,u'} \in G_{n,r}) \\
-	& = \sum_{u \in \Csig[\Xbf]} \frac{q(u) \left((\Dbf_n)_{uu} - (\widetilde{\Dbf}_n)_{uu} \right)}{(\Dbf_n)_{uu}} \\
-	& = \|q_t (I - \Dbf_n^{-1} \widetilde{\Dbf}_n)\|_1 = \|\ell_t\|_1.
-	\end{align*}
-	
-	and as a result $\|s\|_1 = \|\ell\|_1$. Combining with $\|\ell\|_1 \leq 2 \frac{\widetilde{\Phi}_{n,r}}{\alpha}$ and (\ref{eqn: soakage_page_rank_body}) yields the desired upper bound.
-\end{proof}
-
-\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.}
-
-We note that by Theorems \ref{thm: conductance_upper_bound} and \ref{thm: inverse_mixing_time_lower_bound_nonconvex}, 
-\begin{equation*}
-\kappa_2(\Cset) \geq \frac{\Phi_{n,r}(\Csig[\Xbf])}{\Psi_{n,r}(\Csig[\Xbf])}.
-\end{equation*}
-As a result Lemma \ref{lem: setup} implies
-\begin{align}
-\label{eqn: theorem_4_1}
-p_u & \geq \frac{4}{5} \widetilde{\pi}_{n,r}(u) - \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~ (u \in \Cset[\Xbf]) \nonumber \\
-p_{u'} & \leq \frac{18 \kappa_2(\Cset)}{\widetilde{D}_{\min}} ~~~~~~~~~~~~~~~~~~~~~ (u' \in \Cset'[\Xbf])
-\end{align}
-
-We turn to bounding $\widetilde{\pi}_{n,r}(u)$. Clearly,
-\begin{align*}
-\widetilde{\pi}_{n,r}(u) & \geq \frac{\widetilde{D}_{\min}}{\widetilde{\vol}_{n,r}(\Csig[\Xbf])} \\
-& \geq \frac{\widetilde{D}_{\min}}{\wn \widetilde{D}_{\max}}.
-\end{align*}
-Application of Lemma \ref{lem: ball_bounds_in_probability} then yields
-\begin{equation}
-\label{eqn: theorem_4_2}
-\widetilde{\pi}_{n,r}(u) \geq 8 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
-\end{equation}
-as well as
-\begin{equation}
-\label{eqn: theorem_4_3}
-\frac{1}{\widetilde{D}_{\min}} \leq \frac{2}{\nu_d r^d \lambda_{\sigma}}
-\end{equation}
-with probability tending to $1$ as $n \to \infty$, for all $u \in \Cset[\Xbf]$ (indeed, all $u \in \Csig[\Xbf]$.)
-
-Combining \eqref{eqn: theorem_4_1}, \eqref{eqn: theorem_4_2} and \eqref{eqn: theorem_4_3}, along with the requirement on $\kappa_2(\Cset)$ given by \eqref{eqn: kappa2_ub}, we have
-\begin{align*}
-p_u & \geq 3/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2} \\
-p_{u'} & \leq 1/5 \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}
-\end{align*}
-for any $u \in \Cset$, $u' \in \Cset'$. As a result, if $\pi_0 \in (2/5, 3/5)\cdot \frac{\lambda_{\sigma}}{\nu(\Csig) \Lambda_{\sigma}^2}$, as $n \to \infty$ with probability tending to one any sweep cut of the form of \eqref{eqn: sweep_cuts}, including the output set $\widehat{C}$, will successfully recover $\Cset$ in the sense of \eqref{eqn: consistent_density_cluster_recovery}.
 
 \clearpage
 \bibliographystyle{plain}
