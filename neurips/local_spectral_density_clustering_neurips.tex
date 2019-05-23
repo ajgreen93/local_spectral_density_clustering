@@ -466,7 +466,7 @@ precisely later, in \eqref{eqn: mixing_time}).  The left-hand side in
 \eqref{eqn:  graph_symmetric_set_difference_1} resembles a (degree-weighted) 
 form of the symmetric set difference metric in \eqref{eqn:
   misclassification_rate}.  As we will show in Section \ref{sec:
-  analysis}, the conditions \ref{asmp: bounded_density}-\ref{asmp:
+  analysis}, the conditions \ref{asmp: bounded_density}--\ref{asmp:
   bounded_volume} allow us to upper bound the normalized cut 
 \smash{$\Phi(\Csig[\Xbf]; G_{n,r})$}, and the mixing time 
 \smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}.  (Informally, 
@@ -680,57 +680,73 @@ formally state and prove this in the supplement.
 \section{Analysis}
 \label{sec: analysis}
 
-The primary technical contribution of our work is showing that the geometric conditions \ref{asmp: bounded_density} - \ref{asmp: bounded_volume} translate to meaningful bounds on the normalized cut and mixing time of $\Csig[\Xbf]$ in $G_{n,r}$. In doing so, we elaborate on how some of the geometric conditions introduced in Section \ref{sec: consistent_cluster_estimation_with_ppr} contribute to the difficulty of the clustering problem.
+The primary technical contribution of our work is showing that the geometric
+conditions \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} translate to 
+meaningful bounds on the normalized cut and mixing time of $\Csig[\Xbf]$ in
+$G_{n,r}$. In doing so, we elaborate on how some of the geometric conditions
+introduced in Section \ref{sec: consistent_cluster_estimation_with_ppr}
+contribute to the difficulty of the clustering problem. 
 
-\paragraph{Normalized cut} We start with a finite sample upper bound on the normalized cut \eqref{eqn: normalized_cut} of 
-$\Cset_\sigma[\Xbf]$. For simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
+\paragraph{Normalized cut.} We start with a finite sample upper bound on the
+normalized cut \eqref{eqn: normalized_cut} of $\Cset_\sigma[\Xbf]$. For
+simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$. 
 
 \begin{theorem}
-	\label{thm: conductance_upper_bound}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy
-	Assumptions \ref{asmp: bounded_density}-\ref{asmp: low_noise_density}, and \ref{asmp: bounded_volume} for some 
-	$r, \sigma, \lambda_{\sigma}, c_0, \gamma > 0$ (no bound on maximum density is needed). 
-	Then for any $0 < \delta < 1$, $\epsilon > 0$, if
-	\begin{equation}
-	\label{eqn: conductance_sample_complexity}
-	n \geq \frac{(2+\epsilon)^2\log(3/\delta)}{\epsilon^2}\left(\frac{25}
-	{6 \lambda_{\sigma}^2\nu(\Csig) \nu_d r^d}\right)^2,
-	\end{equation}
-	then
-	\begin{equation}
-	\label{eqn: conductance_additive_error_bound}
-	\frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c_1 \frac{d}{\sigma}
-	\frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
-		c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
-	\end{equation}
-	with probability at least $1-\delta$ (where $c_1 > 0$ is a universal constant).
+  \label{thm: conductance_upper_bound}
+  Fix $\lambda > 0$, and assume $\Cset \in \Cbb_f(\lambda)$ satisfies
+  Assumptions \ref{asmp: bounded_density}--\ref{asmp: low_noise_density}, 
+  \ref{asmp: bounded_volume} for some $r, \sigma, \lambda_{\sigma}, c_0, \gamma
+  > 0$ (no bound on maximum density is needed). Then for any $0 < \delta < 1$,
+  $\epsilon > 0$, if 
+  \begin{equation}
+    \label{eqn: conductance_sample_complexity}
+    n \geq \frac{(2+\epsilon)^2\log(3/\delta)}{\epsilon^2}\left(\frac{25}
+      {6 \lambda_{\sigma}^2\nu(\Csig) \nu_d r^d}\right)^2,
+  \end{equation}
+  then
+  \begin{equation}
+    \label{eqn: conductance_additive_error_bound}
+    \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c_1 \frac{d}{\sigma}
+    \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
+      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
+  \end{equation}
+  with probability at least $1-\delta$ (where $c_1 > 0$ is a universal constant).
 \end{theorem}
 
 \begin{remark}
-	\label{rmk: diameter}
-	Observe that the diameter $\rho$ is absent from Theorem \ref{thm: conductance_upper_bound}, in contrast to the difficulty function $\kappa(\Cset)$, which worsens (increases) as $\rho$ increases. This phenomenon reflects established wisdom regarding spectral partitioning algorithms more generally \cite{guattery1995, hein2010}, albeit newly applied to the density clustering setting. It suggests that if the diameter $\rho$ is large, \pprspace may fail to recover $\Csig[\Xbf]$ even when $\Cset$ is sufficiently well-conditioned to ensure $\Csig[\Xbf]$ has a small normalized cut in $G_{n,r}$. This intuition will be supported by simulations in Section \ref{sec: experiments}.
+  \label{rmk: diameter}
+  Observe that the diameter $\rho$ is absent from Theorem \ref{thm:
+    conductance_upper_bound}, in contrast to the condition number
+  $\kappa(\Cset)$, which worsens (increases) as $\rho$ increases. This
+  reflects established wisdom regarding spectral partitioning
+  algorithms more generally \citep{guattery1995, hein2010}, albeit newly applied
+  to the density clustering setting. It suggests that if the diameter $\rho$ is
+  large, PPR may fail to recover $\Csig[\Xbf]$ even when $\Cset$ is
+  sufficiently well-conditioned to ensure $\Csig[\Xbf]$ has a small normalized
+  cut in $G_{n,r}$. This intuition will be supported by simulations in Section
+  \ref{sec: experiments}. 
 \end{remark}
 
-\paragraph{Mixing time.}
-For $S \subseteq V$, denote by $G[S] = (S, E_S)$ the subgraph induced by 
-$S$ (where the edges are $E_S = E \cap (S \times S)$). Let $\Wbf_S$ be the (lazy) random walk matrix over $G[S]$, and write 
+\paragraph{Mixing time.} For $S \subseteq V$, denote by $G[S] = (S, E_S)$ the
+subgraph induced by $S$ (where the edges are $E_S = E \cap (S \times S)$). Let
+$\Wbf_S$ be the (lazy) random walk matrix over $G[S]$, and write  
 $$
 q_{v}^{(t)}(u) = e_v\Wbf_S^t e_u
 $$
 for the $t$-step transition probability of the lazy random walk over $G[S]$
 originating at $v \in V$. Also write \smash{$\pi = (\pi(u))_{u \in S}$}
 for the stationary distribution of this random walk.  (As
-$\Wbf_S$ is the transition matrix of a lazy random walk, it is well-known that a unique stationary distribution exists and is given by
-\smash{$\pi(u) = (\Dbf_S)_{uu}/\vol(S; G[S])$}, where $\Dbf_S$ is the degree matrix of $G[S]$.)
-
-Then, the \emph{relative pointwise mixing time} of $G[S]$ is 
+$\Wbf_S$ is the transition matrix of a lazy random walk, 
+it is well-known that a unique stationary distribution exists and is given by 
+\smash{$\pi(u) = (\Dbf_S)_{uu}/\vol(S; G[S])$}, where we write $\Dbf_S$ for the  
+degree matrix of $G[S]$.) We define the \emph{mixing time} of $G[S]$ as
 \begin{equation}
 \label{eqn: mixing_time}
-\tau_{\infty}(G[S]) = \min\set{ t: \frac{\pi(u) - q_{v}^{(t)}(u)
-	}{\pi(u)} \leq \frac{1}{4}, 
-	\; \text{for $u,v \in V$}}. 
+\tau_{\infty}(G[S]) = \min\set{ t: \frac{\pi(u) - q_{v}^{(t)}(u)}
+  {\pi(u)} \leq \frac{1}{4}, \; \text{for $u,v \in V$}}. 
 \end{equation}
-In the following theorem, we give an asymptotic (in the number of vertices $n$) upper bound on $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
+Next, we give an asymptotic (in the number of vertices $n$) upper bound on
+$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.  
 
 \begin{theorem}
 	\label{thm: mixing_time_upper_bound}
