@@ -396,7 +396,7 @@ of $\kappa(\Cset)$.)
 \paragraph{Geometric conditions on density clusters.} At a high level, for PPR
 to be successful, the underlying density cluster must be geometrically
 well-conditioned.  At a minimum, we want to avoid sets that contain arbitrarily
-thin bridges or spikes.  Hence, as in \cite{chaudhuri2010}, we consider a
+thin bridges or spikes.  Hence, as in \citet{chaudhuri2010}, we consider a
 thickened version of \smash{$\Cset \in \Cbb_f(\lambda)$} defined as 
 $\Csig := \set{x \in \Reals^d: \dist(x,\Cset) \leq \sigma}$, which 
 we call the \emph{$\sigma$-expansion} of $\Cset$. Here 
@@ -576,11 +576,11 @@ main bound on the symmetric set difference metric.
   Fix $\lambda > 0$, let \smash{$\Cset \in \Cbb_f(\lambda)$} be a
   $\kappa$-well-conditioned density cluster (with respect to some $\theta$), and
   additionally assume $f$ satisfies \ref{asmp: valid_region}. If Algorithm
-  \ref{alg: ppr} is well-initialized, there exists a universal constant $c_4 >
-  0$ such that with probability tending to $1$ as $n \to \infty$,  
+  \ref{alg: ppr} is well-initialized, there exists a universal constant $c >
+  0$ such that with probability tending to 1 as $n \to \infty$,  
   \begin{equation}
     \label{eqn: misclassification_rate_ub}
-    \Delta(\Csig[\Xbf], \Cest) \leq c_4 \kappa(\Cset)
+    \Delta(\Csig[\Xbf], \Cest) \leq c \kappa(\Cset)
     \frac{\Lambda_{\sigma}}{\lambda_{\min}}. 
   \end{equation}
 \end{theorem}
@@ -626,11 +626,11 @@ Next we give our main result on consistent cluster recovery by PPR.
   Fix $\lambda > 0$, let $\Cset \in \Cbb_f(\lambda)$ be a
   $\kappa$-well-conditioned density cluster (with respect to some $\theta$), and
   additionally assume $f$ satisfies \ref{asmp: C'_bounded_density}. If Algorithm
-  \ref{alg: ppr} is well-initialized, there exists a universal constant $c_5 >
-  0$ such that if 
+  \ref{alg: ppr} is well-initialized, there exists a universal constant $c >  0$
+  such that if  
   \begin{equation}
     \label{eqn: kappa_ub}
-    \kappa(\Cset) \leq c_5 \frac{\lambda_{\sigma}^2r^d
+    \kappa(\Cset) \leq c \frac{\lambda_{\sigma}^2r^d
       \nu_d}{\Lambda_{\sigma}\Pbb(\Csig)}, 
   \end{equation}
   then the output set $\Cest \subseteq \Xbf$ is a consistent estimator for
@@ -749,18 +749,39 @@ Next, we give an asymptotic (in the number of vertices $n$) upper bound on
 $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.  
 
 \begin{theorem}
-	\label{thm: mixing_time_upper_bound}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ satisfy Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, \rho, L > 0$. Then, for any $0 < r < \sigma/2\sqrt{d}$, with probability $1$
-	\begin{equation}
-	\label{eqn: mixing_time_upper_bound}
-	\limsup_{n \to \infty}\tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{1}{r}\right) + c_3
-	\end{equation}
-	for $c_2,c_3 > 0$ universal constants. 
+  \label{thm: mixing_time_upper_bound}
+  Fix $\lambda > 0$, and assume that \smash{$\Cset \in \Cbb_f(\lambda)$}
+  satisfies Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding}
+  for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, \rho, L > 0$. Then, for
+  any \smash{$0 < r < \sigma/2\sqrt{d}$}, with probability 1,
+  \begin{equation} 
+    \label{eqn: mixing_time_upper_bound}
+    \limsup_{n \to \infty}\tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_1
+    \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2}
+    \log^2\left(\frac{1}{r}\right) + c_2,
+  \end{equation}
+  for $c_1,c_2 > 0$ universal constants. 
 \end{theorem}
 
-To the best of our knowledge, Theorem \ref{thm: mixing_time_upper_bound} is the first bound, albeit asymptotic, on the mixing time of random walks over neighborhood graphs which is independent of $n$, the number of vertices.
+To the best of our knowledge, Theorem \ref{thm: mixing_time_upper_bound} is the
+first bound, albeit asymptotic, on the mixing time of random walks over
+neighborhood graphs which is independent of $n$, the number of vertices. 
+
 \begin{remark}
-	The embedding assumption \ref{asmp: embedding} and Lipschitz parameter $L$ play an important role in proving the upper bound of Theorem \ref{thm: mixing_time_upper_bound}. There is some interdependence between $L$ and other geometric parameters $\sigma$ and $\rho$, which might lead one to hope that \ref{asmp: embedding} is non-essential. However, it is not possible to eliminate this condition without incurring an additional factor of at least $(\rho/\sigma)^d$ in \eqref{eqn: mixing_time_upper_bound}, achieved, for instance, when $\Csig$ is a dumbbell-like set consisting of two balls of diameter $\rho$ linked by a cylinder of radius $\sigma$.  \citep{abbasi-yadkori2016, abbasi-yadkori2016a} develop theory regarding bi-Lipschitz deformations of convex sets, wherein it is observed that star-shaped sets as well as half-moon shapes of the type we consider in Section \ref{sec: experiments} both satisfy \ref{asmp: embedding} for reasonably small values of $L$.
+  The embedding assumption \ref{asmp: embedding} and Lipschitz parameter $L$
+  play an important role in proving the upper bound of Theorem \ref{thm:
+    mixing_time_upper_bound}. There is some interdependence between $L$ and
+  $\sigma,\rho$, which might lead one to hope that \ref{asmp: embedding} is
+  non-essential. However, it is not possible to eliminate condition \ref{asmp:
+    embedding} without incurring an additional factor of at least
+  $(\rho/\sigma)^d$ in \eqref{eqn: mixing_time_upper_bound}, achieved, for
+  instance, when $\Csig$ is a dumbbell-like set consisting of two balls of
+  diameter $\rho$ linked by a cylinder of radius
+  $\sigma$. \citet{abbasi-yadkori2016, abbasi-yadkori2016a}  
+  develop theory regarding bi-Lipschitz deformations of convex sets, wherein it
+  is observed that star-shaped sets as well as half-moon shapes of the type we
+  consider in Section \ref{sec: experiments} both satisfy \ref{asmp: embedding}
+  for reasonably small values of $L$. 
 \end{remark}
 
 \section{Experiments}
@@ -771,37 +792,39 @@ We provide numerical experiments to investigate the tightness of our bounds on n
 \paragraph{Validating theoretical bounds}
 
 \begin{figure}
-	\centering
-	\begin{adjustbox}{minipage=\linewidth}
-		\begin{subfigure}{.33\linewidth}
-			\includegraphics[width=\linewidth]{example1plots/sample2}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.33\linewidth}
-			\includegraphics[width=\linewidth]{example1plots/sample1}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.33\linewidth}
-			\includegraphics[width=\linewidth]{example1plots/sigma_normalized_cut_plot}
-			\caption{}
-		\end{subfigure}
-		
-		
-		\begin{subfigure}{.33\linewidth}
-			\includegraphics[width=\linewidth]{example1plots/sigma_mixing_time_plot}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.33\linewidth}
-			\includegraphics[width=\linewidth]{example1plots/diameter_normalized_cut_plot}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.33\linewidth}
-			\includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
-			\caption{}
-		\end{subfigure}
-		\caption{Samples, empirical results, and theoretical bounds for mixing time and normalized cut as diameter and thickness are varied. In (a) and (b), points in $\Cset$ are colored in red; points in $\Csig \setminus \Cset$ are colored in yellow; and remaining points in blue.}
-		\label{fig:fig1}
-	\end{adjustbox}
+  \centering
+%  \begin{adjustbox}{minipage=\linewidth}
+%    \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.33\textwidth]{example1plots/sample2}
+%      \caption{}
+%    \end{subfigure}
+%    \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.33\textwidth]{example1plots/sample1}
+%      \caption{}
+%    \end{subfigure}
+%    \begin{subfigure}{.33\linewidth}
+      \includegraphics[width=0.33\textwidth]{example1plots/sigma_normalized_cut_plot}
+%      \caption{}
+%    \end{subfigure}
+     
+%    \begin{subfigure}{.33\linewidth}
+      \includegraphics[width=0.33\textwidth]{example1plots/sigma_mixing_time_plot}
+%      \caption{}
+%    \end{subfigure}
+    \begin{subfigure}{.33\linewidth}
+      \includegraphics[width=\linewidth]{example1plots/diameter_normalized_cut_plot}
+      \caption{}
+    \end{subfigure}
+    \begin{subfigure}{.33\linewidth}
+      \includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
+      \caption{}
+    \end{subfigure}
+    \caption{Samples, empirical results, and theoretical bounds for mixing time
+      and normalized cut as diameter and thickness are varied. In (a) and (b),
+      points in $\Cset$ are colored in red; points in $\Csig \setminus \Cset$
+      are colored in yellow; and remaining points in blue.} 
+    \label{fig:fig1}
+  \end{adjustbox}
 \end{figure}
 
 As we do not provide any theoretical lower bounds, we investigate the tightness of Theorems \ref{thm: conductance_upper_bound} and \ref{thm: mixing_time_upper_bound} via simulation. Figure \ref{fig:fig1} compares these theoretical bounds with the empirical quantities \eqref{eqn: normalized_cut} and \eqref{eqn: mixing_time}, as we vary the diameter $\rho$ and thickness $\sigma$ of a cluster $\Cset$. Panels $(a)$ and $(b)$ show the resulting empirical clusters for two different values of $\rho$ and $\sigma$.
