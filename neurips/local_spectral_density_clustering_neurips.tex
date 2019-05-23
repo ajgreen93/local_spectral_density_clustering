@@ -380,7 +380,7 @@ minimax optimal level set estimators under Hausdorff loss and
 cluster tree, to note but a few works. Our goal is not to improve on these
 results, nor to offer a better algorithm for level set estimation; indeed, seen as
 a density clustering algorithm, PPR has none of the optimality guarantees 
-found in the aforementioned works. Instead, our motivation is start with a
+found in the aforementioned works. Instead, our motivation is to start with a 
 widely-used local spectral method, PPR, and to better understand and
 characterize the distinctions between those density clusters which are
 well-conditioned for PPR, and those which are not. 
@@ -469,15 +469,15 @@ form of the symmetric set difference metric in \eqref{eqn:
   analysis}, the conditions \ref{asmp: bounded_density}--\ref{asmp:
   bounded_volume} allow us to upper bound the normalized cut 
 \smash{$\Phi(\Csig[\Xbf]; G_{n,r})$}, and the mixing time 
-\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}.  (Informally, 
+\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}.\footnote{Informally, assumptions  
 \ref{asmp: cluster_separation}, \ref{asmp: low_noise_density} yield an upper
 bound on \smash{$\cut(\Csig[\Xbf]; G_{n,r})$}, and \ref{asmp: bounded_density}
 yields a lower bound on \smash{$\vol(\Csig[\Xbf]; G_{n,r})$}; together with 
 \ref{asmp: bounded_volume}, this gives an upper bound on the normalized cut.  On 
 the other hand, \ref{asmp: bounded_density}, \ref{asmp: embedding} preclude
 bottlenecks in the induced subgraph \smash{$G_{n,r}[\Csig[\Xbf]]$}, and combined
-with \ref{asmp: embedding}, this leads to an upper bound on the mixing time over 
-this subgraph.) 
+with the upper bound in \ref{asmp: embedding}, this leads to an upper bound on
+the mixing time over this subgraph.}
 
 \paragraph{Condition number.} Motivated by \eqref{eqn:
   graph_symmetric_set_difference_1}, we will define $\kappa(\Cset)$ to be an
@@ -706,11 +706,11 @@ simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
   then
   \begin{equation}
     \label{eqn: conductance_additive_error_bound}
-    \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c_1 \frac{d}{\sigma}
+    \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c \frac{d}{\sigma}
     \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
       c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
   \end{equation}
-  with probability at least $1-\delta$ (where $c_1 > 0$ is a universal constant).
+  with probability at least $1-\delta$, where $c > 0$ is a universal constant. 
 \end{theorem}
 
 \begin{remark}
@@ -756,11 +756,11 @@ $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
   any \smash{$0 < r < \sigma/2\sqrt{d}$}, with probability 1,
   \begin{equation} 
     \label{eqn: mixing_time_upper_bound}
-    \limsup_{n \to \infty}\tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_1
+    \limsup_{n \to \infty}\tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2
     \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2}
-    \log^2\left(\frac{1}{r}\right) + c_2,
+    \log^2\left(\frac{1}{r}\right) + c_3,
   \end{equation}
-  for $c_1,c_2 > 0$ universal constants. 
+  for $c_2,c_3 > 0$ universal constants. 
 \end{theorem}
 
 To the best of our knowledge, Theorem \ref{thm: mixing_time_upper_bound} is the
@@ -787,117 +787,163 @@ neighborhood graphs which is independent of $n$, the number of vertices.
 \section{Experiments}
 \label{sec: experiments}
 
-We provide numerical experiments to investigate the tightness of our bounds on normalized cut and mixing time of $\Csig[\Xbf]$, and examine the performance of \pprspace on the ``two moons'' dataset. For space reasons, we defer details of the experimental settings to the supplement.
+We provide numerical experiments to investigate the tightness of our bounds on
+the normalized cut and mixing time of $\Csig[\Xbf]$, and examine the performance
+of PPR on the ``two moons'' dataset. For space reasons, we defer details of the
+experimental settings to the supplement.  
 
-\paragraph{Validating theoretical bounds}
+\begin{figure}[tb]
+  \centering
+  % \begin{adjustbox}{minipage=\linewidth}
+  %   \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.32\textwidth]{example1plots/sample2}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.32\textwidth]{example1plots/sample1}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.32\textwidth]{example1plots/sigma_normalized_cut_plot}
+  % \caption{}
+  % \end{subfigure}
+  
+  % \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.32\textwidth]{example1plots/sigma_mixing_time_plot}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.32\textwidth]{example1plots/diameter_normalized_cut_plot}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.33\linewidth}
+  \includegraphics[width=0.32\textwidth]{example1plots/diameter_mixing_time_plot}
+  % \caption{}
+  % \end{subfigure}
+  \caption{\it\small Top left and top middle: samples from a geometrically
+    well- and poor-conditioned cluster. The points in $\Cset$ are colored in 
+    red, points in $\Csig \setminus \Cset$ are colored in yellow, and the
+    remaining points in blue. Other panels: empirical normalized cut and mixing
+    time, as a function of $\sigma$ or $\rho$, versus their theoretical upper
+    bounds.} 
+  \label{fig:fig1}
+%  \end{adjustbox}
+\end{figure}
+
+\paragraph{Validating theoretical bounds.}  We investigate the tightness of
+Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
+  mixing_time_upper_bound} via simulation. Figure \ref{fig:fig1} compares our
+upper bounds with the actual empirically-computed quantities \eqref{eqn:
+  normalized_cut} and \eqref{eqn: mixing_time}, as we vary the diameter $\rho$
+and thickness $\sigma$ of a cluster $\Cset$. The top left and top middle panels
+display the resulting empirical clusters for two different values of
+$\rho,\sigma$. 
+
+The bottom left and bottom right panels assure that our mixing  
+time upper bounds track closely the empirical mixing time, in both 2 and 3 
+dimensions.\footnote{We rescaled all values of theoretical upper
+  bounds by a constant, tto mask the effect of large universal constants
+  in these bounds. Therefore only the comparison of slopes, rather than
+  intercepts, is meaningful.} This provides empirical evidence that Theorem
+\ref{thm: mixing_time_upper_bound} has the right dependency on both expansion
+parameter $\sigma$ and diameter $\rho$. The story for the normalized cut panels
+is less obvious. We remark that while, broadly speaking, the trends do not
+appear to match, this gap between theory and empirical results seems largest
+when $\sigma $ and $\rho$ are approximately equal. As the ratio $\rho/\sigma$
+grows, the slopes of empirical and theoretical curves become more similar.
+
+\paragraph{Empirical behavior of PPR.} In Figure \ref{fig:fig2}, to drive home
+the main implications of Theorems \ref{thm: misclassification_rate} and
+\ref{thm: consistent_recovery_of_density_clusters}, we show the
+behavior of PPR, normalized cut, and the density clustering algorithm of
+\citet{chaudhuri2010} on the well known ``two moons'' dataset (with added 2d 
+Gaussian noise), considered a prototypical success story for spectral clustering
+algorithms. The first column shows the empirical density clusters $C[X]$
+and $C'[X]'$ for a particular threshold $\lambda$ of the density function; the 
+second column shows the cluster recovered by PPR; the third column shows the
+global minimum normalized cut, computed according to the algorithm of
+\citet{szlam2010}; and the last column shows a cut of the density cluster tree
+estimator of \citet{chaudhuri2010}.  We can see the degrading ability of PPR to
+recover density clusters as the two moons become less well-separated. Of 
+particular interest is the fact that PPR fails to recover one of the moons even
+when normalized cut still succeeds in doing so, supporting our claim from Remark
+\ref{rmk: diameter}. Additionally, we note that the Chaudhuri-Dasgupta algorithm 
+succeeds even when both PPR and normalized cut fail.  While our main message was
+that PPR recovers geometrically well-conditioned density clusters, it would be  
+interesting to establish that it \emph{only} recovers such clusters, a point we
+return to below.   
 
 \begin{figure}
   \centering
-%  \begin{adjustbox}{minipage=\linewidth}
-%    \begin{subfigure}{.33\linewidth}
-  \includegraphics[width=0.33\textwidth]{example1plots/sample2}
-%      \caption{}
-%    \end{subfigure}
-%    \begin{subfigure}{.33\linewidth}
-  \includegraphics[width=0.33\textwidth]{example1plots/sample1}
-%      \caption{}
-%    \end{subfigure}
-%    \begin{subfigure}{.33\linewidth}
-      \includegraphics[width=0.33\textwidth]{example1plots/sigma_normalized_cut_plot}
-%      \caption{}
-%    \end{subfigure}
-     
-%    \begin{subfigure}{.33\linewidth}
-      \includegraphics[width=0.33\textwidth]{example1plots/sigma_mixing_time_plot}
-%      \caption{}
-%    \end{subfigure}
-    \begin{subfigure}{.33\linewidth}
-      \includegraphics[width=\linewidth]{example1plots/diameter_normalized_cut_plot}
-      \caption{}
-    \end{subfigure}
-    \begin{subfigure}{.33\linewidth}
-      \includegraphics[width=\linewidth]{example1plots/diameter_mixing_time_plot}
-      \caption{}
-    \end{subfigure}
-    \caption{Samples, empirical results, and theoretical bounds for mixing time
-      and normalized cut as diameter and thickness are varied. In (a) and (b),
-      points in $\Cset$ are colored in red; points in $\Csig \setminus \Cset$
-      are colored in yellow; and remaining points in blue.} 
-    \label{fig:fig1}
-  \end{adjustbox}
+  % \begin{adjustbox}{minipage=\linewidth}
+  %   \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth,scale = .5]{example2plots/row1_true_density_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row1_ppr_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row1_conductance_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row1_density_cluster}
+  % \caption{}
+  % \end{subfigure}
+  
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row2_true_density_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row2_ppr_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row2_conductance_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row2_density_cluster}
+  % \caption{}
+  % \end{subfigure}
+  
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row3_true_density_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row3_ppr_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row3_conductance_cluster}
+  % \caption{}
+  % \end{subfigure}
+  % \begin{subfigure}{.24\linewidth}
+  \includegraphics[width=0.24\textwidth]{example2plots/row3_density_cluster}
+  % \caption{}
+  % \end{subfigure}
+  \caption{\it\small True density (column 1), PPR (column 2), normalized
+    cut (column 3) and estimated density (column 4) clusters for 3 different 
+    simulated data sets. Seed node for PPR denoted by a black cross.} 
+  \label{fig:fig2}
+  %\end{adjustbox}
 \end{figure}
-
-As we do not provide any theoretical lower bounds, we investigate the tightness of Theorems \ref{thm: conductance_upper_bound} and \ref{thm: mixing_time_upper_bound} via simulation. Figure \ref{fig:fig1} compares these theoretical bounds with the empirical quantities \eqref{eqn: normalized_cut} and \eqref{eqn: mixing_time}, as we vary the diameter $\rho$ and thickness $\sigma$ of a cluster $\Cset$. Panels $(a)$ and $(b)$ show the resulting empirical clusters for two different values of $\rho$ and $\sigma$.
-
-Panels $(d)$ and $(f)$ show our theoretical bounds on mixing time tracking closely with empirical mixing time, in both 2 and 3 dimensions.\footnote{Note that we have rescaled all values of theoretical upper bounds by a constant, in order to mask the effect of large universal constants in these bounds. Therefore only comparison of slopes, rather than intercepts, is meaningful.} This provides empirical evidence that the upper bound on mixing time given by Theorem \ref{thm: mixing_time_upper_bound} has the right dependency on both expansion parameter $\sigma$ and diameter $\rho$. The story in panels $(c)$ and $(e)$ is less obvious. We note that while, broadly speaking, the trends do not appear to match, this gap between theory and empirical results seems largest when $\sigma $ and $\rho$ are approximately equal. As the ratio $\rho/\sigma$ grows, we see the slopes of the empirical curves become more similar to those predicted by theory.
-
-\paragraph{Empirical behavior of \ppr}
-
-\begin{figure}
-	\centering
-	\begin{adjustbox}{minipage=\linewidth}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth,scale = .5]{example2plots/row1_true_density_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row1_ppr_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row1_conductance_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row1_density_cluster}
-			\caption{}
-		\end{subfigure}
-		
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row2_true_density_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row2_ppr_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row2_conductance_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row2_density_cluster}
-			\caption{}
-		\end{subfigure}
-		
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row3_true_density_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row3_ppr_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row3_conductance_cluster}
-			\caption{}
-		\end{subfigure}
-		\begin{subfigure}{.24\linewidth}
-			\includegraphics[width=\linewidth]{example2plots/row3_density_cluster}
-			\caption{}
-		\end{subfigure}
-		\caption{True density (column 1), \pprspace (column 2), normalized cut (column 3) and estimated density (column 4) clusters for 3 different simulated data sets. Seed node for \pprspace denoted by a black cross.}
-		\label{fig:fig2}
-	\end{adjustbox}
-\end{figure}
-
-To drive home the main implications of Theorems \ref{thm: misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}, in Figure \ref{fig:fig2} we show the behavior of \ppr, normalized cut, and the density clustering algorithm of \citep{chaudhuri2010} on the well known ``two moons'' dataset (with added 2d Gaussian noise), considered a prototypical success story for spectral clustering algorithms. The first column consists of the empirical density clusters $C_n$ and $C_n'$ for a particular threshold $\lambda$ of the density function; the second column shows the cluster recovered by \ppr; the third column shows the global minimum normalized cut, computed according to the algorithm of \cite{szlam2010}; and the last column shows a cut of the density cluster tree estimator of \citep{chaudhuri2010}.
-
-Figure \ref{fig:fig2} shows the degrading ability of \pprspace to recover density clusters as the two moons become less well-separated. Of particular interest is the fact that \pprspace fails to recover one of the moons even when normalized cut still succeeds in doing so, supporting our claim from Remark \ref{rmk: diameter}. Additionally, we note that a density clustering algorithm recovers a moon even when both \pprspace and normalized cut fail, lending empirical weight to our overall message that \pprspace recovers only geometrically well-conditioned density clusters.
 
 \section{Discussion}
 \label{sec: discussion}
-For given data, there are an almost limitless number of ways to define what the ``right'' clustering is. We have considered one such notion -- density upper level sets -- and have detailed a set of natural geometric criteria which, when appropriately satisfied, translate to provable bounds on estimation of the cluster by \ppr. We do not, however, provide a theoretical lower bound showing that our geometric conditions are required for successful recovery on an upper level set. Although we investigate the matter empirically, this is a direction for future work.
+
+There are an almost limitless number of ways to define what the ``right''
+clustering is. In this paper, we have considered one such notion---density upper
+level sets---and have detailed a set of natural geometric criteria which, when 
+appropriately satisfied, translate to provable bounds on estimation of the
+cluster by PPR. We do not, however, provide a theoretical lower bound showing
+that our geometric conditions are required for successful recovery on an upper
+level set. Although we investigate the matter empirically, this is a direction
+for future work.
 
 \clearpage
 
