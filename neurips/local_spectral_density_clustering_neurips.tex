@@ -180,7 +180,7 @@
 \begin{abstract}
 We analyze Personalized PageRank (PPR), a local spectral method for clustering,
 which extract clusters using locally-biased random walks around a user-specified
-seed node.  In constrast to pervious work, we adopt a traditional statistical
+seed node.  In constrast to previous work, we adopt a traditional statistical
 learning setup, where we obtain samples from an unknown distribution, and aim to
 identify connected regions of high-density (density clusters).  We prove that
 PPR, run on a neighborhood graph, extracts sufficiently salient density
@@ -476,7 +476,7 @@ yields a lower bound on \smash{$\vol(\Csig[\Xbf]; G_{n,r})$}; together with
 \ref{asmp: bounded_volume}, this gives an upper bound on the normalized cut.  On 
 the other hand, \ref{asmp: bounded_density}, \ref{asmp: embedding} preclude
 bottlenecks in the induced subgraph \smash{$G_{n,r}[\Csig[\Xbf]]$}, and combined
-with the upper bound in \ref{asmp: embedding}, this leads to an upper bound on
+with the upper bound on diameter in \ref{asmp: embedding}, this leads to an upper bound on
 the mixing time over this subgraph.}
 
 \paragraph{Condition number.} Motivated by \eqref{eqn:
@@ -764,8 +764,8 @@ $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
 \end{theorem}
 
 The proof of Theorem \ref{thm: mixing_time_upper_bound} relies heavily on
-analogous mixing time bounds developed for the mixing time of the
-continuous-space ball walk over convex sets. To the best of our knowledge, our
+analogous mixing time bounds developed for the mixing time of a
+continuous-space ``ball walk'' over convex sets. To the best of our knowledge, our
 result is the first bound, albeit asymptotic, on the mixing time of random walks
 over neighborhood graphs that is independent of $n$, the number of vertices.   
 
@@ -860,8 +860,8 @@ the main implications of Theorems \ref{thm: misclassification_rate} and
 behavior of PPR, normalized cut, and the density clustering algorithm of
 \citet{chaudhuri2010} on the well known ``two moons'' dataset (with added 2d 
 Gaussian noise), considered a prototypical success story for spectral clustering
-algorithms. The first column shows the empirical density clusters $C[X]$
-and $C'[X]'$ for a particular threshold $\lambda$ of the density function; the 
+algorithms. The first column shows the empirical density clusters $\Cset[\Xbf]$
+and $\Cset'[\Xbf]$ for a particular threshold $\lambda$ of the density function; the 
 second column shows the cluster recovered by PPR; the third column shows the
 global minimum normalized cut, computed according to the algorithm of
 \citet{szlam2010}; and the last column shows a cut of the density cluster tree
