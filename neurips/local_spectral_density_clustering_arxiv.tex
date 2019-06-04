@@ -1,24 +1,34 @@
-\documentclass{article}
+\documentclass[11pt,twoside]{article}
+\usepackage{fancyhdr}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=blue,bookmarks=false]{hyperref}
+\usepackage{amsfonts,epsfig,graphicx}
+\usepackage{afterpage}
+\usepackage{amsmath,amssymb,amsthm} 
+\usepackage{fullpage}
+\usepackage[T1]{fontenc} 
+\usepackage{epsf} 
+\usepackage{graphics} 
+\usepackage{amsfonts,amsmath}
+\usepackage[sort,numbers]{natbib} 
+\usepackage{psfrag,xspace}
+\usepackage{color,etoolbox}
 
-% if you need to pass options to natbib, use, e.g.:
-%     \PassOptionsToPackage{numbers, compress}{natbib}
-% before loading neurips_2019
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-6cm}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-4cm}
+\addtolength{\textheight}{-1.1\headheight}
+\addtolength{\textheight}{-\headsep}
+\addtolength{\textheight}{-\footskip}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
 
-% ready for submission
-% \usepackage{neurips_2019}
-
-% to compile a preprint version, e.g., for submission to arXiv, add add the
-% [preprint] option:
-     \usepackage[preprint]{neurips_2019}
-
-% to compile a camera-ready version, add the [final] option, e.g.:
-%     \usepackage[final]{neurips_2019}
-
-%\PassOptionsToPackage{numbers}{natbib}
-\usepackage{neurips_2019}
-
-% to avoid loading the natbib package, add option nonatbib:
-%     \usepackage[nonatbib]{neurips_2019}
+\newtheorem{theorem}{Theorem} 
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem*{remark}{Remark}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -36,13 +46,13 @@
 \usepackage{subcaption}
 \usepackage{booktabs}
 \usepackage{xcolor}
-\usepackage{xr-hyper}
-\usepackage{hyperref}
-\usepackage[reqno]{amsmath}
-\usepackage{amsfonts, amsthm, amssymb}
+%\usepackage{xr-hyper}
+%\usepackage{hyperref}
+%\usepackage[reqno]{amsmath}
+%\usepackage{amsfonts, amsthm, amssymb}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage[parfill]{parskip}
+%\usepackage[parfill]{parskip}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
 \usepackage{bm}
@@ -130,38 +140,38 @@
 \newcommand{\wDbf}{\widetilde{\Dbf}}
 \newcommand{\piwt}{\widetilde{\pi}}
 
-\newtheoremstyle{aldenthm}
-{6pt} % Space above
-{6pt} % Space below
-{\itshape} % Body font
-{} % Indent amount
-{\bfseries} % Theorem head font
-{.} % Punctuation after theorem head
-{.5em} % Space after theorem head
-{} % Theorem head spec (can be left empty, meaning `normal')
+%\newtheoremstyle{aldenthm}
+%{6pt} % Space above
+%{6pt} % Space below
+%{\itshape} % Body font
+%{} % Indent amount
+%{\bfseries} % Theorem head font
+%{.} % Punctuation after theorem head
+%{.5em} % Space after theorem head
+%{} % Theorem head spec (can be left empty, meaning `normal')
 
-\theoremstyle{aldenthm}
-\newtheorem{theorem}{Theorem}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{proposition}{Proposition}
-\newtheorem{corollary}{Corollary}
+%\theoremstyle{aldenthm}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{definition}{Definition}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proposition}{Proposition}
+%\newtheorem{corollary}{Corollary}
 
-\newtheoremstyle{aldenrmrk}
-{6pt} % Space above
-{6pt} % Space below
-{} % Body font
-{} % Indent amount
-{\itshape} % Theorem head font
-{.} % Punctuation after theorem head
-{.5em} % Space after theorem head
-{} % Theorem head spec (can be left empty, meaning `normal')
-
-\theoremstyle{aldenrmrk}
-\newtheorem{remark}{Remark}
+%\newtheoremstyle{aldenrmrk}
+%{6pt} % Space above
+%{6pt} % Space below
+%{} % Body font
+%{} % Indent amount
+%{\itshape} % Theorem head font
+%{.} % Punctuation after theorem head
+%{.5em} % Space after theorem head
+%{} % Theorem head spec (can be left empty, meaning `normal')
+%
+%\theoremstyle{aldenrmrk}
+%\newtheorem{remark}{Remark}
 %%%%%% End Alden
 
-\title{Local Spectral Clustering of Density Upper Level Sets}
+%\title{Local Spectral Clustering of Density Upper Level Sets}
 
 % The \author macro works with any number of authors. There are two commands
 % used to separate the names and addresses of multiple authors: \And and \AND.
@@ -170,26 +180,125 @@
 % lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
 % authors names on the first line, and the last on the second line, try using
 % \AND instead of \And before the third author name.
+%
+%\author{
+%Alden Green \And
+%Sivaraman Balakrishnan \And
+%Ryan J. Tibshirani}
+%
+%\begin{document}
+%\maketitle
+%
+%\vspace{0.1in}
+%\begin{abstract}
 
-\author{
-Alden Green \And
-Sivaraman Balakrishnan \And
-Ryan J. Tibshirani}
+
+\newcommand{\widgraph}[2]{\includegraphics[keepaspectratio,width=#1]{#2}}
+\newcommand{\Like}{\ensuremath{\mathcal{L}}}
+\newcommand{\Ball}[2]{\mathbb{B}_{#1}(#2)}
+\newcommand{\Complement}[1]{\overline{#1}}
+
+\newcommand{\xsam}{\ensuremath{x}}
+\newcommand{\samind}{\ensuremath{\ell}}
+\newcommand{\Xrv}{\ensuremath{X}}
+\newcommand{\Event}{\ensuremath{\mathcal{E}}}
+\newcommand{\Fevent}{\ensuremath{\mathcal{F}}}
+
+\newcommand{\usedim}{\ensuremath{d}}
+\newcommand{\mubold}{\ensuremath{\boldsymbol{\mu}}}
+\newcommand{\lambold}{\ensuremath{\boldsymbol{\lambda}}}
+\newcommand{\sep}{\ensuremath{\xi}}
+\newcommand{\mixind}{\ensuremath{i}}
+\newcommand{\mixtwo}{\ensuremath{j}}
+\newcommand{\nummix}{\ensuremath{M}}
+\newcommand{\mustar}{\ensuremath{\mu^*}}
+\newcommand{\muboldstar}{\ensuremath{\mubold^*}}
+\newcommand{\muboldt}{\ensuremath{\mubold^t}}
+
+\newcommand{\numobs}{\ensuremath{n}}
+\newcommand{\SamLike}{\ensuremath{\Like_\numobs}}
+\newcommand{\PopLike}{\ensuremath{\Like}}
+\newcommand{\Exs}{\E}
+\newcommand{\thetanew}{\ensuremath{\theta^{\text{\small{new}} }}}
+
+\newcommand{\stepsize}{\ensuremath{s}}
+
+
+\newcommand{\QMAT}{\ensuremath{\mathbf{Q}}} 
+\newcommand{\DMAT}{\ensuremath{\mathbf{D}}} 
+
+\newcommand{\defn}{\ensuremath{: \, =}}
+\newcommand{\muboldtilde}{\ensuremath{\tilde{\mubold}}}
+
+%%% New version of \caption puts things in smaller type, single-spaced 
+%%% and indents them to set them off more from the text.
+\makeatletter
+\long\def\@makecaption#1#2{
+        \vskip 0.8ex
+        \setbox\@tempboxa\hbox{\small {\bf #1:} #2}
+        \parindent 1.5em  %% How can we use the global value of this???
+        \dimen0=\hsize
+        \advance\dimen0 by -3em
+        \ifdim \wd\@tempboxa >\dimen0
+                \hbox to \hsize{
+                        \parindent 0em
+                        \hfil 
+                        \parbox{\dimen0}{\def\baselinestretch{0.96}\small
+                                {\bf #1.} #2
+                                %%\unhbox\@tempboxa
+                                } 
+                        \hfil}
+        \else \hbox to \hsize{\hfil \box\@tempboxa \hfil}
+        \fi
+        }
+\makeatother
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-\maketitle
 
-\vspace{0.1in}
+
+
+\begin{center} {\Large{\bf{Local Spectral Clustering of Density Upper Level Sets}}}
+
+\vspace*{.3cm}
+
+{\large{
+\begin{center}
+Alden Green ~~~~~ Sivaraman Balakrishnan~~~~~ Ryan Tibshirani\\
+\vspace{.2cm}
+\end{center}
+
+
+\begin{tabular}{c}
+Department of Statistics and Data Science \\
+Carnegie Mellon University
+\end{tabular}
+
+\vspace*{.2in}
+
+\begin{tabular}{c}
+\texttt{\{ajgreen,sbalakri,ryantibs\}@andrew.cmu.edu}
+\end{tabular}
+}}
+
+\vspace*{.2in}
+
+\today
+\vspace*{.2in}
+
 \begin{abstract}
-We analyze Personalized PageRank (PPR), a local spectral method for clustering,
-which extract clusters using locally-biased random walks around a user-specified
-seed node.  In constrast to previous work, we adopt a traditional statistical
+\noindent We analyze Personalized PageRank (PPR), a local spectral method for clustering,
+which extracts clusters using locally-biased random walks around a user-specified
+seed node.  In contrast to previous work, we adopt a traditional statistical
 learning setup, where we obtain samples from an unknown distribution, and aim to
 identify connected regions of high-density (density clusters).  We prove that
 PPR, run on a neighborhood graph, extracts sufficiently salient density
 clusters. We also provide empirical support for our theory.
 \end{abstract}
-
+\end{center}
 \section{Introduction}
 \label{sec: introduction}
 
@@ -950,10 +1059,12 @@ conditions are required for successful recovery of a density level set. This
 seems to be supported by our empirical results, and it remains a direction for 
 future work.  
 
-\clearpage
+\section{Acknowledgements}
+SB is grateful to Peter Bickel, Martin Wainwright and Larry Wasserman for helpful and inspiring conversations. This work was supported in part by the NSF grant DMS-1713003.
+
 \appendix
 
-In this supplement, we present proofs and experimental details for the article ``Local Spectral Clustering of Density Upper Level Sets''.
+%In this supplement, we present proofs and experimental details for the article ``Local Spectral Clustering of Density Upper Level Sets''.
 
 \section{Proofs}
 
@@ -2261,9 +2372,9 @@ We will require large-sample and asymptotic bounds on several different degree a
 	\end{align}
 	
 	If additionally \ref{asmp: valid_region} holds: for any $\epsilon > 0$, the following bound holds with probability tending to one as $n \to \infty$:
-	\begin{equation}
-	\frac{\degmin}{n} \geq (1 - \epsilon)\frac{6}{25}\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} \\
-	\end{equation}
+	\begin{align}
+	\frac{\degmin}{n} \geq (1 - \epsilon)\frac{6}{25}\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} 
+	\end{align}
 	
 	If additionally \ref{asmp: C'_bounded_density} holds (but not necessarily \ref{asmp: valid_region}): for any $\epsilon > 0$, the following bound holds with probability tending to one as $n \to \infty$:
 	\begin{equation}
