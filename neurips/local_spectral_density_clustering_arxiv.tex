@@ -1067,6 +1067,7 @@ SB is grateful to Peter Bickel, Martin Wainwright and Larry Wasserman for helpfu
 \appendix
 
 %In this supplement, we present proofs and experimental details for the article ``Local Spectral Clustering of Density Upper Level Sets''.
+\section{Proof of Theorem~\ref{}}
 
 \section{Proofs}
 
@@ -1203,13 +1204,13 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\begin{equation*}
 	\mathcal{T}_{i,k} = \set{x \in \Csigr: t_{i,k} < \frac{\dist(x, \Csig)}{r} \leq t_{i+1,k}}, ~~ \Csigr = \bigcup_{i = 0}^{k-1} \mathcal{T}_{i,k}
 	\end{equation*}
-	where $t_i = i/k$ for $i = 0, \ldots, k - 1$. As a result, for any $k \in \mathbb{N}$,
+	\sbcomment{Changed $t_i$ to $t_{i,k}$.}
+	where $t_{i,k} = i/k$ for $i = 0, \ldots, k - 1$. As a result, for any $k \in \mathbb{N}$,
 	\begin{equation}
 	\label{eqn: partition_ub}
 	\Pbb(\Csigr) = \int_{\Csigr} f(x) \dx = \sum_{i = 0}^{k-1} \int_{\mathcal{T}_{i,k}} f(x) \dx \leq \sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x).
 	\end{equation}
-	
-	\ref{asmp: bounded_density} and \ref{asmp: low_noise_density} imply the upper bound
+	Assumptions~\ref{asmp: bounded_density} and \ref{asmp: low_noise_density} imply the upper bound
 	\begin{equation*}
 	\max_{x \in \mathcal{T}_{i,k}} f(x) \leq \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma},
 	\end{equation*}
@@ -1221,13 +1222,13 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\begin{align}
 	\label{eqn: telescoping_sum}
 	\sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x) & \leq \sum_{i = 0}^{k-1} \biggl\{ \nu_{i+1,k} - \nu_{i,k} \biggr\} \biggl( \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma} \biggr) \nonumber \\
-	& = \sum_{i = 1}^{k} 
-	\underbrace{\nu_{i,k} \biggl( \left[\lambda_{\sigma} - c_0(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - c_0(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - c_0r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
+	& = \underbrace{\sum_{i = 1}^{k} 
+	\nu_{i,k} \biggl( \left[\lambda_{\sigma} - c_0(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - c_0(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - c_0r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
 	\end{align}
-	where the second equality comes from rearranging terms in the sum.
+	\sbcomment{I changed the braces above -- I think they were incorrect earlier} where the second equality comes from rearranging terms in the sum.
 	
 	% AJG 5/14/19: This argument makes sense, correct?
-	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by \ref{asmp: bounded_density}, as otherwise $\int_{\Csig} f(x) dx = \infty$. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as the boundary $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
+	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by Assumption~\ref{asmp: bounded_density}, as otherwise $\int_{\Csig} f(x) dx = \infty$. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as the boundary $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
 	\begin{equation}
 	\label{eqn: slice_volume_bound}
 	\nu_{i,k} = \nu(\Csig + rt_{i,k}B) \leq \nu(\Csig)\left(1 + \frac{rt_{i,k}}{\sigma}\right)^d
@@ -1235,7 +1236,7 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	which in turn gives
 	\begin{align}
 	\Sigma_k & \leq c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
-	& = c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (u_{i,k} = t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
+	& = c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (\text{substituting}~u_{i,k} := t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
 	\end{align}
 	The expression in~\eqref{eqn: Sigmak_riemann_sum} is a Riemann sum, and taking the limit as $k \to \infty$ we obtain
 	\begin{align}
@@ -1252,7 +1253,7 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\end{align}
 	where $\text{(ii)}$ follows from \eqref{eqn: slice_volume_bound}, and $\text{(iii)}$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
 \end{proof}
-
+\sbcomment{Here now.}
 Lemma \ref{lem: local_conductance} will be necessary to lower bound the expected volume of $\Csig[\Xbf]$ in $G_{n,r}$. Define the \emph{uniform local conductance} $\ell_{\nu,r}(u)$ to be
 \begin{equation*}
 \ell_{\nu,r}(u) = \nu\bigl(\Csig \cap B(u,r)\bigr)
