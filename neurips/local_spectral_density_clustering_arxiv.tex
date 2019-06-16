@@ -140,6 +140,8 @@
 \newcommand{\wDbf}{\widetilde{\Dbf}}
 \newcommand{\piwt}{\widetilde{\pi}}
 
+\newcommand{\sbcomment}[1]{{\color{red} \bf{{{{SB --- #1}}}}}}
+
 %\newtheoremstyle{aldenthm}
 %{6pt} % Space above
 %{6pt} % Space below
@@ -1068,14 +1070,14 @@ SB is grateful to Peter Bickel, Martin Wainwright and Larry Wasserman for helpfu
 
 \section{Proofs}
 
-Subsections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. In subsections \ref{sec: mixing_time_on_graphs} and \ref{sec: proof_of_proposition_tv_mixing_time}, we establish some results regarding mixing time over general graphs. The proof of Theorem \ref{thm: mixing_time_upper_bound} is then carried out in subsections \ref{sec: population_conductance_function} - \ref{sec: proof_of_theorem_mixing_time}. \ref{sec: concentration} gives some general concentration results we use throughout, before we finish with the proofs of Theorems \ref{thm: misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}, and the statement and proof of our results regarding the a\pprspace vector (Corollary \ref{cor: appr}), in subsections \ref{sec: proof_of_misclassification_rate} - \ref{sec: linalg}.
+Subsections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. In subsections \ref{sec: mixing_time_on_graphs} and \ref{sec: proof_of_proposition_tv_mixing_time}, we establish some results regarding mixing time over general graphs. The proof of Theorem \ref{thm: mixing_time_upper_bound} is then provided in subsections \ref{sec: population_conductance_function} - \ref{sec: proof_of_theorem_mixing_time}. Section~\ref{sec: concentration} gives some general concentration results we use throughout, before we finish with the proofs of Theorems \ref{thm: misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}, and the statement and proof of our results regarding the a\pprspace vector (Corollary \ref{cor: appr}), in subsections \ref{sec: proof_of_misclassification_rate} - \ref{sec: linalg}.
 
 \subsection{Volume estimates}
 \label{sec: volume_estimates}
 
 We begin with some notation. Let $\Aset \subseteq \Reals^d$, and for $\sigma \geq 0$, write $\sigma B := B(0,\sigma) = \set{x \in \Rd: \norm{x} \leq \sigma}$ for the closed ball of radius $\sigma$ centered at the origin (and let $B^{\circ}(0,\sigma)$ denote the corresponding open ball). Let $\Asig = \Aset + \sigma B$ be the direct sum of $\Aset$ and $\sigma B$, $\Asig = \set{z = x + y: x \in \Aset, y \in \sigma B}$. Recall that we use $\nu$ for Lebesgue measure, and $\nu_d = \nu(B)$ for $B = (0,1)$. 
 
-Lemma \ref{lem: expansion_volume} allows us to reason about the ratio $\nu(\Csig + r B) / \nu(\Csig)$, an important quantity in bounding the ratio $\cut(\Csig[\Xbf]; G_{n,r})/\vol(\Csig[\Xbf]; G_{n,r})$. 
+Lemma \ref{lem: expansion_volume} provides a bound on the ratio $\nu(\Csig + r B) / \nu(\Csig)$, an important intermediate quantity in bounding the ratio $\cut(\Csig[\Xbf]; G_{n,r})/\vol(\Csig[\Xbf]; G_{n,r})$. 
 
 \begin{lemma}
 	\label{lem: expansion_volume}
@@ -1115,51 +1117,48 @@ Lemma \ref{lem: expansion_volume} allows us to reason about the ratio $\nu(\Csig
 	
 	We next show a lower bound on $\nu(\Asig)$. Partition $\Asig$ using the balls $B(x_i,\sigma)$, meaning let $\Aset_{\sigma}^{(1)} := B(x_1,\sigma)$, $\Aset_{\sigma}^{(2)} := B(x_2,\sigma) \setminus B(x_1,\sigma)$, and so on, so that
 	\begin{equation*}
-	\Aset_{\sigma}^{(i)} := B(x_i,\sigma) \setminus \bigcup_{j = 1}^{i - 1} \Aset_{\sigma}^{(j)}. \tag{$i = 1,\ldots,N$}
+	\Aset_{\sigma}^{\text{(i)}} := B(x_i,\sigma) \setminus \bigcup_{j = 1}^{i - 1} \Aset_{\sigma}^{(j)}. \tag{$i = 1,\ldots,N$}
 	\end{equation*}
-	Observe that $\bigcup_{i = 1}^{N} \Asig^{(i)} = \bigcup_{i = 1}^{N} B(x_i,\sigma)$, so by \eqref{eqn: finite_subcover} $\Asig \supseteq \bigcup_{i = 1}^{N} \Asig^{(i)}$. As $\Asig^{(1)},\ldots, \Asig^{(N)}$ are non-overlapping,
+	Observe that $\bigcup_{i = 1}^{N} \Asig^{\text{(i)}} = \bigcup_{i = 1}^{N} B(x_i,\sigma)$, so by \eqref{eqn: finite_subcover} $\Asig \supseteq \bigcup_{i = 1}^{N} \Asig^{\text{(i)}}$. As $\Asig^{(1)},\ldots, \Asig^{(N)}$ are non-overlapping,
 	\begin{align*}
-	\nu(\Asig) & \geq \sum_{i = 1}^{N} \nu(\Asig^{(i)}) \\
-	& = \sigma^d \nu_d \sum_{i = 1}^{N}  \frac{\nu(\Asig^{(i)})}{\nu(B(x_i,\sigma))}
+	\nu(\Asig) & \geq \sum_{i = 1}^{N} \nu(\Asig^{\text{(i)}}) \\
+	& = \sigma^d \nu_d \sum_{i = 1}^{N}  \frac{\nu(\Asig^{\text{(i)}})}{\nu(B(x_i,\sigma))}
 	\end{align*}
 	We turn to proving an analogous upper bound on $\nu(\Asig + \delta B)$. Let $\Aset_{\sigma + \epsilon + \delta}^{(1)} := B(x_1,\sigma + \delta + \epsilon)$ and
 	\begin{equation*}
-	\Aset_{\sigma + \delta + \epsilon}^{(i)} := B(x_i,\sigma + \delta + \epsilon) \setminus \bigcup_{j = 1}^{i - 1} \Aset_{\sigma + \delta + \epsilon}^{(j)}. \tag{$i = 2,\ldots,N$}
+	\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}} := B(x_i,\sigma + \delta + \epsilon) \setminus \bigcup_{j = 1}^{i - 1} \Aset_{\sigma + \delta + \epsilon}^{(j)}. \tag{$i = 2,\ldots,N$}
 	\end{equation*}
-	
-	As $\bigcup_{i = 1}^{N} \Aset_{\sigma + \delta + \epsilon}^{(i)} = \bigcup_{i = 1}^{N} B(x_i,\sigma + \delta + \epsilon)$, by \eqref{eqn: finite_subcover}
+As $\bigcup_{i = 1}^{N} \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}} = \bigcup_{i = 1}^{N} B(x_i,\sigma + \delta + \epsilon)$, by \eqref{eqn: finite_subcover}
 	\begin{equation*}
-	\Aset_{\sigma} + \delta B \subset \bigcup_{i =1}^{N} \Aset_{\sigma + \delta + \epsilon}^{(i)}
+	\Aset_{\sigma} + \delta B \subset \bigcup_{i =1}^{N} \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}}
 	\end{equation*}
-	and therefore
+	and therefore \sbcomment{Added a subscript $\sigma$ on LHS}
 	\begin{align*}
-	\nu(\Aset + \delta B) & \leq \sum_{i = 1}^{N} \nu\bigl(\Aset_{\sigma + \delta + \epsilon}^{(i)}\bigr) \\
-	& = \sum_{i = 1}^{N} \nu_d (\sigma + \delta + \epsilon)^d \frac{\nu(\Aset_{\sigma + \delta + \epsilon}^{(i)})}{\nu(B(x_i, \sigma + \delta + \epsilon))} \\
-	& \leq \nu_d (\sigma + \delta + \epsilon)^d \sum_{i = 1}^{N} \frac{\nu(\Asig^{(i)})}{\nu(B(x_i,\sigma))}
+	\nu(\Aset_\sigma + \delta B) & \leq \sum_{i = 1}^{N} \nu\bigl(\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}}\bigr) \\
+	& = \sum_{i = 1}^{N} \nu_d (\sigma + \delta + \epsilon)^d \frac{\nu(\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}})}{\nu(B(x_i, \sigma + \delta + \epsilon))} \\
+	& \leq \nu_d (\sigma + \delta + \epsilon)^d \sum_{i = 1}^{N} \frac{\nu(\Asig^{\text{(i)}})}{\nu(B(x_i,\sigma))}
 	\end{align*}
 	where the last inequality follows from Lemma \ref{lem: covering}. We have shown \eqref{eqn: ratio_of_volume}, and thus the claim.
 \end{proof}
-
-We require Lemma \ref{lem: covering} to prove Lemma \ref{lem: expansion_volume}.
-
+\noindent We require Lemma \ref{lem: covering} to prove Lemma \ref{lem: expansion_volume}.
 \begin{lemma}
-	\label{lem: covering}
-	For $i = 1, \ldots, N$ and  $A_{\sigma}^{(i)}, A_{\sigma + \delta + \epsilon}^{(i)}$ as in Lemma \ref{lem: expansion_volume},
+	\label{lem: covering}\sbcomment{Changed $A$ to $\Aset$ in the statement}
+	For $i = 1, \ldots, N$ and  $\Aset_{\sigma}^{\text{(i)}}, \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}}$ as in Lemma \ref{lem: expansion_volume},
 	\begin{equation*}
-	\frac{\nu(\Aset_{\sigma + \delta + \epsilon}^{(i)})}{\nu(B(x_i, \sigma + \delta + \epsilon))} \leq \frac{\nu(\Aset_{\sigma}^{(i)})}{\nu(B(x_i, \sigma))}
+	\frac{\nu(\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}})}{\nu(B(x_i, \sigma + \delta + \epsilon))} \leq \frac{\nu(\Aset_{\sigma}^{\text{(i)}})}{\nu(B(x_i, \sigma))}
 	\end{equation*}
 \end{lemma}
 \begin{proof}
 	Let $\delta' := \delta + \epsilon$. It will be sufficient to show that
 	\begin{equation*}
-	\biggl(\Aset_{\sigma + \delta'}^{(i)} - \set{x_i}\biggr) \subseteq \left(1 + \frac{\delta'}{\sigma}\right)\cdot\biggl(\Asig^{(i)} - \set{x_i}\biggr) 
+	\biggl(\Aset_{\sigma + \delta'}^{\text{(i)}} - \set{x_i}\biggr) \subseteq \left(1 + \frac{\delta'}{\sigma}\right)\cdot\biggl(\Asig^{\text{(i)}} - \set{x_i}\biggr) 
 	\end{equation*}
 	since then
 	\begin{equation*}
-	\nu(\Aset_{\sigma + \delta'}^{(i)}) \leq \left(1 + \frac{\delta'}{\sigma}\right)^d \nu(\Aset_{\sigma}^{(i)}) = \frac{\nu(B(x_i, \sigma + \delta'))}{\nu(B(x_i, \sigma))} \nu(\Aset_{\sigma}^{(i)}).
+	\nu(\Aset_{\sigma + \delta'}^{\text{(i)}}) \leq \left(1 + \frac{\delta'}{\sigma}\right)^d \nu(\Aset_{\sigma}^{\text{(i)}}) = \frac{\nu(B(x_i, \sigma + \delta'))}{\nu(B(x_i, \sigma))} \nu(\Aset_{\sigma}^{\text{(i)}}).
 	\end{equation*}
 	
-	Assume without loss of generality that $x_i = 0$, and let $x \in \Aset_{\sigma + \delta'}^{(i)}$, meaning
+	Assume without loss of generality that $x_i = 0$, and let $x \in \Aset_{\sigma + \delta'}^{\text{(i)}}$, meaning
 	\begin{equation}
 	\norm{x} \leq \sigma + \delta',~ \norm{x - x_j} > \sigma + \delta'~ \textrm{for $j = 1, \ldots, i - 1$}.
 	\end{equation}
@@ -1167,10 +1166,10 @@ We require Lemma \ref{lem: covering} to prove Lemma \ref{lem: expansion_volume}.
 	\begin{equation*}
 	\norm{x' - x_j} \geq \norm{x - x_j} - \norm{x - x'} > \sigma + \delta' - \frac{\delta'}{\sigma + \delta'}\norm{x} \geq \sigma
 	\end{equation*}
-	and therefore $x' \not\in B(x_j,\sigma)$ for any $j = 1,\ldots, i - 1$. So $x' \in \Asig^{(i)}$.
+	and therefore $x' \not\in B(x_j,\sigma)$ for any $j = 1,\ldots, i - 1$. So $x' \in \Asig^{\text{(i)}}$.
 \end{proof}
 
-We will need to carefully control the volume of expansion sets using the estimate in Lemma \ref{lem: expansion_volume}; Lemma \ref{lem: Taylor_series} serves this purpose.
+We will need to carefully control the volume of expansion sets using the estimate in Lemma~\ref{lem: expansion_volume}; Lemma~\ref{lem: Taylor_series} serves this purpose (see also, Lemma~23 in \cite{balakrishnan2013}). 
 \begin{lemma}
 	\label{lem: Taylor_series}
 	For any $0 \leq x \leq 1/2d$,
@@ -1187,8 +1186,7 @@ We will need to carefully control the volume of expansion sets using the estimat
 	& \leq 1 + \dx + \dx\left(\sum_{k = 2}^d \frac{{d \choose k}}{(2d)^{k-1}d}\right) \tag{since $x \leq \frac{1}{2d}$} \\
 	& \leq 1 + \dx + \dx\left(\sum_{k = 2}^d \frac{1}{2^{k - 1}}\right) \leq 1 + 2\dx.
 	\end{align*}
-	
-	The proof for the corresponding lower bound on $(1 - x)^d$ is symmetric.
+The proof for the corresponding lower bound on $(1 - x)^d$ is symmetric.
 \end{proof}
 
 Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem \ref{thm: conductance_upper_bound}. Lemma \ref{lem: expected_number_boundary_points} involves the bulk of the technical effort required to prove Theorem \ref{thm: conductance_upper_bound}; it will be necessary to bound the expected cut size of $\Csig[\Xbf]$ in $G_{n,r}$. We write $\Pbb(\Aset) = \int_{\Aset} f(x) dx$ for measurable $\Aset \subseteq \Rd$.
@@ -1239,20 +1237,20 @@ Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem
 	\Sigma_k & \leq c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
 	& = c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (u_{i,k} = t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
 	\end{align}
-	\eqref{eqn: Sigmak_riemann_sum} is a Riemann sum, and taking the limit as $k \to \infty$ we obtain
+	The expression in~\eqref{eqn: Sigmak_riemann_sum} is a Riemann sum, and taking the limit as $k \to \infty$ we obtain
 	\begin{align}
 	\lim_{k \to \infty} c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}) & = c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{r u^{1/\gamma}}{\sigma}\right)^{d} du \nonumber \\
-	& \overset{(i)}{\leq} c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{2 d r u^{1/\gamma}}{\sigma}\right) du \nonumber \\
+	& \overset{\text{(i)}}{\leq} c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{2 d r u^{1/\gamma}}{\sigma}\right) du \nonumber \\
 	& = c_0\nu(\Csig) r^\gamma \left(1 + \gamma \frac{2 d r}{(\gamma + 1)\sigma}\right). \label{eqn: Sigmak_integral}
 	\end{align}
-	where $(i)$ follows from Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma / 2d$. 
+	where $\text{(i)}$ follows from Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma / 2d$. 
 	
 	An upper bound on $\xi$ follows from largely the same logic, although it does not involve integration:
 	\begin{align}
-	\xi & \overset{(ii)}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
-	& \overset{(iii)}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{2d r}{\sigma}\right)(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{2dr}{\sigma}(\lambda_{\sigma} - c_0r^{\gamma}) - c_0 r^{\gamma} \biggr\}. \label{eqn: xi_ub}
+	\xi & \overset{\text{(ii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
+	& \overset{\text{(iii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{2d r}{\sigma}\right)(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{2dr}{\sigma}(\lambda_{\sigma} - c_0r^{\gamma}) - c_0 r^{\gamma} \biggr\}. \label{eqn: xi_ub}
 	\end{align}
-	where $(ii)$ follows from \eqref{eqn: slice_volume_bound}, and $(iii)$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
+	where $\text{(ii)}$ follows from \eqref{eqn: slice_volume_bound}, and $\text{(iii)}$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
 \end{proof}
 
 Lemma \ref{lem: local_conductance} will be necessary to lower bound the expected volume of $\Csig[\Xbf]$ in $G_{n,r}$. Define the \emph{uniform local conductance} $\ell_{\nu,r}(u)$ to be
@@ -1331,10 +1329,10 @@ The following formula for the volume of the spherical cap, stated in terms of th
 	\begin{align*}
 	\int_{1 - \alpha}^{1}u^{(d-1)/2}(1 - u)^{-1/2}du & \leq \frac{3}{2}\alpha^{-1/2} \int_{1 - \alpha}^{1}u^{(d-1)/2}du \\
 	& = \frac{3}{d+1}\alpha^{-1/2} \left(1 - (1 - \alpha)^{(d + 1)/2}\right) \\
-	& \overset{(iv)}{\leq} \frac{3}{(d+1)}\alpha^{-1/2} (\alpha(d + 1)) \\
+	& \overset{\text{(iv)}}{\leq} \frac{3}{(d+1)}\alpha^{-1/2} (\alpha(d + 1)) \\
 	& =  3\alpha^{1/2}.
 	\end{align*}
-	where $(iv)$ follows from Lemma \ref{lem: Taylor_series}, and the fact $\alpha \leq \frac{1}{16d}$. The result follows from the condition $\alpha \leq \frac{t^2}{16d}$. 
+	where $\text{(iv)}$ follows from Lemma \ref{lem: Taylor_series}, and the fact $\alpha \leq \frac{1}{16d}$. The result follows from the condition $\alpha \leq \frac{t^2}{16d}$. 
 \end{proof}
 
 Lemma \ref{lem: beta_function} follows from $\Gamma(1/2) = \sqrt{\pi}$ and the upper bound $\Gamma(x + 1)/ \Gamma(x+s) \leq (x + 1)^{1-s}$ for $s \in [0,1]$.
@@ -1537,10 +1535,10 @@ d_{\textrm{unif}}(q_v^{(t)},\pi) = \max_{u \in V} \set{\frac{\pi(u) - q_v^{(t)}(
 	Fix $u \in V$ and let $m \geq t + 1$ be arbitrary. The stationarity of $\pi$ gives
 	\begin{align}
 	\frac{\pi(u) - q_v^{m}(u)}{\pi(u)} & = \sum_{y \in V} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \nonumber \\
-	& \overset{(i)}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
+	& \overset{\text{(i)}}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
 	& \leq \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{2 \pi(u)} \label{eqn: tv_to_uniform_distance_1}
 	\end{align}
-	where $(i)$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
+	where $\text{(i)}$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
 	
 	Then 
 	\begin{align}
@@ -1890,7 +1888,7 @@ The key result needed to show Lemma \ref{lem: one_step_distributions} deals with
 	\end{equation*} 
 	From Lemma \ref{lem: volume_of_spherical_cap} we therefore obtain
 	\begin{equation*}
-	\nu(I) = \nu_d r^d I_{1 - \alpha}(\frac{d + 1}{2}; \frac{1}{2})
+	\nu\text{(i)} = \nu_d r^d I_{1 - \alpha}(\frac{d + 1}{2}; \frac{1}{2})
 	\end{equation*}
 	where
 	\begin{equation*}
@@ -1898,11 +1896,11 @@ The key result needed to show Lemma \ref{lem: one_step_distributions} deals with
 	\end{equation*}
 	Expanding the incomplete beta function in integral form, we therefore have
 	\begin{align*}
-	\nu(I) & = \nu_d r^d \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \int_{0}^{1 - \alpha}u^{(d-1)/2}(1 - u)^{-1/2}du \\
-	& \overset{(i)}{\geq} \nu_d r^d \left(1 - \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \frac{3 t}{4\sqrt{d}} \right) \\
-	& \overset{(ii)}{\geq} \nu_d r^d \left(1 -  \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} \right)
+	\nu\text{(i)} & = \nu_d r^d \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \int_{0}^{1 - \alpha}u^{(d-1)/2}(1 - u)^{-1/2}du \\
+	& \overset{\text{(i)}}{\geq} \nu_d r^d \left(1 - \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \frac{3 t}{4\sqrt{d}} \right) \\
+	& \overset{\text{(ii)}}{\geq} \nu_d r^d \left(1 -  \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} \right)
 	\end{align*}
-	where $(i)$ follows from Lemma \ref{lem: beta_integral} (which we may validly apply since $\alpha \leq \frac{t^2}{16d}$), and $(ii)$ from Lemma \ref{lem: beta_function}.
+	where $\text{(i)}$ follows from Lemma \ref{lem: beta_integral} (which we may validly apply since $\alpha \leq \frac{t^2}{16d}$), and $\text{(ii)}$ from Lemma \ref{lem: beta_function}.
 \end{proof}
 
 \begin{proof}[Proof of Lemma \ref{lem: one_step_distributions}]
@@ -1928,8 +1926,8 @@ The key result needed to show Lemma \ref{lem: one_step_distributions} deals with
 	
 	From here, some simple manipulations yield
 	\begin{align}
-	\nu(\Csig \cap I)  & = \nu(I) - \nu(I \setminus \Csig) \nonumber \\
-	& \geq \nu(I) - \max \set{\nu\bigl(B(u,r) \setminus \Csig\bigr), \nu\bigl(B(v,r) \setminus \Csig\bigr)} \nonumber \\
+	\nu(\Csig \cap I)  & = \nu\text{(i)} - \nu(I \setminus \Csig) \nonumber \\
+	& \geq \nu\text{(i)} - \max \set{\nu\bigl(B(u,r) \setminus \Csig\bigr), \nu\bigl(B(v,r) \setminus \Csig\bigr)} \nonumber \\
 	& \geq \nu_d r^d \left(1 - \frac{3 \sqrt{3} t}{4\sqrt{2\pi}} - (1 -\ell) \label{eqn: one_step_2} \right) = \nu_d r^d\left(\ell - \frac{3 \sqrt{3} t}{4\sqrt{2\pi}}\right)
 	\end{align}
 	where the last inequality follows from Lemma \ref{lem: overlap_balls_1}. \eqref{eqn: one_step_2} along with \eqref{eqn: one_step_1} then give the desired result.
@@ -2456,7 +2454,7 @@ Lemma \ref{lem: zhu} is a restatement of Lemma 3.4 of \cite{zhu2013}, translated
 \paragraph{Proof of Theorem \ref{thm: misclassification_rate}.}
 
 Observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds $\alpha \leq \frac{1}{9 \tau_u(\theta)}, r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{1}{9\tau_{\infty}(G[S])}$. Moreover, 
-\begin{enumerate}[(i)]
+\begin{enumerate}[\text{(i)}]
 	\item we restrict $v \in \Csig[\Xbf]^g$
 	\item the output of Algorithm \ref{alg: ppr} $\widehat{C} = S_{\beta}$ for some $1/40 < \beta < 1/11$
 	\item by Lemma \ref{lem: ball_bounds_in_probability}, $\vol_0 \in [1/2,3/2]\vol_{n,r}(\Csig[\Xbf])$
