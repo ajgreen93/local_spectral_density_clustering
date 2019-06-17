@@ -773,23 +773,26 @@ Next we give our main result on consistent cluster recovery by PPR.
   this is merely looseness in our upper bounds.  
 \end{remark}
 
+\sbcomment{You are using $\epsilon$ here and in the future to mean different things. I have
+changed this $\epsilon$ to $\varepsilon$.} 
 \paragraph{Approximate PPR vector.}  In practice, exactly solving \eqref{eqn:
   ppr_vector} may be too computationally expensive. To address this limitation,
-\citet{andersen2006} introduced the \emph{$\epsilon$-approximate} PPR vector
-(aPPR), which we will denote by \smash{$\pbf^{(\epsilon)}$}. We refer the
+\citet{andersen2006} introduced the \emph{$\varepsilon$-approximate} PPR vector
+(aPPR), which we will denote by \smash{$\pbf^{(\varepsilon)}$}. We refer the
 curious reader to \citet{andersen2006} for a formal algorithmic definition of
 the aPPR vector, and limit ourselves to highlighting a few salient points: the
-aPPR vector can be computed in order $\mathcal{O}(1/(\epsilon\alpha))$ time,
+aPPR vector can be computed in order $\mathcal{O}(1/(\varepsilon\alpha))$ time,
 while satisfying the following uniform error bound: 
 \begin{equation}
 \label{eqn: appr_error}
-\textrm{for all $u \in V$}, \quad \pbf(u) - \epsilon \Dbf_{uu}\leq
-\pbf^{(\epsilon)}(u) \leq \pbf(u).  
+\textrm{for all $u \in V$}, \quad \pbf(u) - \varepsilon \Dbf_{uu}\leq
+\pbf^{(\varepsilon)}(u) \leq \pbf(u).  
 \end{equation}
 Application of \eqref{eqn: appr_error} within the proofs of Theorems \ref{thm:
   misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}
-leads to analogous results which hold for \smash{$\pbf^{(\epsilon)}$}. We
-formally state and prove this in the appendix. 
+leads to analogous results which hold for \smash{$\pbf^{(\varepsilon)}$}. We
+formally state and prove this in Corollary~\ref{cor: appr} in 
+the appendix. 
 
 \section{Analysis}
 \label{sec: analysis}
@@ -817,14 +820,13 @@ simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
     n \geq \frac{(2+\epsilon)^2\log(3/\delta)}{\epsilon^2}\left(\frac{25}
       {6 \lambda_{\sigma}^2\nu(\Csig) \nu_d r^d}\right)^2,
   \end{equation}
-  then
+  then with probability at least $1-\delta$, for a universal constant $c_1 > 0$,
   \begin{equation}
     \label{eqn: conductance_additive_error_bound}
     \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c_1 \frac{d}{\sigma}
     \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
-      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon, 
+      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon.
   \end{equation}
-  with probability at least $1-\delta$, where $c_1 > 0$ is a universal constant. 
 \end{theorem}
 
 \begin{remark}
@@ -1067,16 +1069,273 @@ SB is grateful to Peter Bickel, Martin Wainwright and Larry Wasserman for helpfu
 \appendix
 
 %In this supplement, we present proofs and experimental details for the article ``Local Spectral Clustering of Density Upper Level Sets''.
-\section{Proof of Theorem~\ref{}}
+\section{Proof of Theorem \ref{thm: conductance_upper_bound}}
+\label{sec: proof_of_theorem_1}
 
-\section{Proofs}
+For notational ease, we write
+\begin{align*}
+\cut_{n,r} = \cut(\Csig[\Xbf]; G_{n,r}), ~ \mu_K = \mathbb{E}(\cut_{n,r}), ~ p_K = \frac{\mu_K}{{n \choose 2}} \\
+\vol_{n,r} = \vol(\Csig[\Xbf]; G_{n,r}), ~ \mu_V = \mathbb{E}(\vol_{n,r}), ~ p_V = \frac{\mu_V}{{n \choose 2}} \\
+\vol_{n,r}^c = \vol(\Xbf \setminus \Csig[\Xbf]; G_{n,r}), ~ \mu_V^c = \mathbb{E}(\vol_{n,r}^c), ~ p_V^c = \frac{\mu_V^c}{{n \choose 2}}
+\end{align*}
+for the random variable, mean, and probability of cut size and volume, respectively.
 
-Subsections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. In subsections \ref{sec: mixing_time_on_graphs} and \ref{sec: proof_of_proposition_tv_mixing_time}, we establish some results regarding mixing time over general graphs. The proof of Theorem \ref{thm: mixing_time_upper_bound} is then provided in subsections \ref{sec: population_conductance_function} - \ref{sec: proof_of_theorem_mixing_time}. Section~\ref{sec: concentration} gives some general concentration results we use throughout, before we finish with the proofs of Theorems \ref{thm: misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}, and the statement and proof of our results regarding the a\pprspace vector (Corollary \ref{cor: appr}), in subsections \ref{sec: proof_of_misclassification_rate} - \ref{sec: linalg}.
+With this notation in place, the goal of Theorem~\ref{thm: conductance_upper_bound} is roughly to show that, with probability at least $1 - \delta$, for a universal constant $c_1 > 0$ and for any $\epsilon > 0$, for a sufficiently large sample size $n$:
+\begin{align*}
+\Phi_{n,r}(\Csig[\Xbf]) := \frac{\cut_{n,r}}{\min\{\vol_{n,r}, \vol_{n,r}^c\}} \leq c_1 \frac{d}{\sigma}
+    \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
+      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon.
+\end{align*}
 
-\subsection{Volume estimates}
+The proof of this theorem follows essentially from two technical Lemmas. 
+The following Lemma relates the terms in the numerator and denominator of $\Phi_{n,r}(\Csig[\Xbf])$ to their expected values.
+\begin{lemma}
+	\label{lem: prob_bound_cutvol}
+	For any $\delta \in (0,1]$,
+	\begin{equation}
+	\label{eqn: numerator_additive_bound}
+	\frac{\cut_{n,r}}{{n \choose 2}} \leq p_K + \sqrt{\frac{\log(1/\delta)}{n}}, \\ 
+	\frac{\vol_{n,r}}{{n \choose 2}} \geq p_V - \sqrt{\frac{\log(1/\delta)}{n}}, \\
+	\frac{\vol_{n,r}^c}{{n \choose 2}} \geq p_V^c - \sqrt{\frac{\log(1/\delta)}{n}},
+	\end{equation}
+	each with probability at least $1 - \delta$. 
+\end{lemma}
+We note that as a consequence of~\ref{asmp: bounded_volume} we have that $p_V^c \geq p_V$, so it will suffice to lower bound $p_V$ (since a lower bound for $p_V^c$ follows).
+The 
+following result provides upper and lower bounds on the expected values $p_K$ and $p_V$ respectively:
+\begin{lemma}
+	\label{lem: expected_density_cut}\label{lem: expected_density_volume}
+	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+	\begin{align}
+	p_K &\leq \frac{4 d \nu_d r^{d+1} \lambda}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig), \label{eqn:claim_one} \\
+	p_V &\geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig).\label{eqn:claim_two}
+	\end{align}
+\end{lemma}
+%\begin{lemma}
+%	\label{lem: expected_density_volume}
+%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+%	\begin{equation*}
+%	p_V \geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig).
+%	\end{equation*}
+%\end{lemma}
+
+
+
+Taking these two technical lemmas as given we can now complete the proof of the theorem. 
+We fix $\delta \in (0,1]$ and let $\delta' = \delta/3$. We rewrite
+\begin{equation}
+\label{eqn: conductance_representation_1}
+\Phi_{n,r}(\Csig[\Xbf]) = \frac{p_K + \left(\frac{\cut_{n,r}}{{n \choose 2}} - p_K\right)}{p_V + \left(\frac{\min\set{\vol_{n,r}, \vol_{n,r}^c}}{{n \choose 2}} - p_V\right)}.
+\end{equation}
+By a union bound we see that all three bounds in \eqref{eqn: numerator_additive_bound} hold with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this yields the upper bound \sbcomment{Changed $\mathbf{X}$ to $X$}
+\begin{equation*}
+\Phi_{n,r}(\Csig[X]) \leq \frac{p_K + \Err_n}{p_V - \Err_n}
+\end{equation*}
+for $\Err_n = \sqrt{\frac{\log(1/\delta')}{n}}$.
+Now, some straightforward algebraic manipulations yield,
+\begin{align*}
+\frac{p_K + \Err_n}{p_V - \Err_n} & = \frac{p_K}{p_V} \left(\frac{p_V}{p_V - \Err_n}\right) + \frac{\Err_n}{p_V - \Err_n} \\
+& = \frac{p_K}{p_V} + \left(\frac{p_K}{p_V} + 1\right)\frac{\Err_n}{p_V - \Err_n} \\
+& \leq \frac{p_K}{p_V} + 2 \frac{\Err_n}{p_V - \Err_n}.
+\end{align*}
+
+%The proof of Theorem \ref{thm: conductance_upper_bound} is more or less given by Lemmas \ref{lem: expected_density_cut}, \ref{lem: expected_density_volume}, and \ref{lem: prob_bound_cutvol}. All that remains is some algebra, which we take care of below.
+
+\noindent Using Lemma \ref{lem: expected_density_cut}, we have
+\begin{equation*}
+\frac{p_K}{p_V} \leq \frac{100rd}{12\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{\left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right)}{\lambda_{\sigma}}.
+\end{equation*}
+Then, by the choice of sample size in \eqref{eqn: conductance_sample_complexity}, 
+\begin{equation*}
+n \geq \frac{(2 + \epsilon)^2 \log\left(\frac{3}{\delta}\right)}{\epsilon^2 p_V^2}
+\end{equation*}
+which implies $2 \frac{\Err_n}{p_V - \Err_n} \leq \epsilon$, and this yields the desired bound on $\Phi_{n,r}(\Csig[X])$. In order to complete the proof of
+the theorem it remains to prove Lemmas~\ref{lem: prob_bound_cutvol} and~\ref{lem: expected_density_cut}.
+
+\subsection{Proof of Lemma~\ref{lem: prob_bound_cutvol}}
+We first note that we can write $\cut_{n,r}$ as a double sum,
+	\begin{equation}
+	\label{eqn: density_cut_expansion}
+	\cut_{n,r} = \sum_{i = 1}^{n} \sum_{j \neq i} \1(x_i \not\in \Csig) \1(x_j \in \Csig) \1(\norm{x_i - x_j} \leq r),
+	\end{equation}
+	and similarly we can write $\vol_{n,r}$ as a sum of indicator functions,
+	\begin{equation}
+	\label{eqn: volume_expansion}
+	\vol_{n,r} = \sum_{i = 1}^{n} \sum_{j \neq i} \1(x_i \in \Csig) \1(x_j \in B(x_i, r)).
+	\end{equation}
+From this we see that $\cut_{n,r}$ and $\vol_{n,r}$, properly scaled, can be expressed as order-$2$ $U$-statistics,
+	\begin{equation*}
+	\frac{\cut_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_K(x_i, x_j),~~ \frac{\vol_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_V(x_i, x_j)
+	\end{equation*}
+	with kernels
+	\begin{align*}
+	\phi_K(x_i,x_j) & = \1(x_i \in \Csig, x_j \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, x_i \not\in \Csig, \norm{x_i - x_j} \leq r) \\
+	\phi_V(x_i,x_j) & = \1(x_i \in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, \norm{x_i - x_j} \leq r). 
+	\end{align*}
+	Similarly,
+	\begin{equation*}
+	\frac{\vol_{n,r}^c}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_{V^c}(x_i, x_j)
+	\end{equation*}
+	with kernel,
+	\begin{equation*}
+	\phi_{V^c}(x_i,x_j) = \1(x_i \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \not\in \Csig, \norm{x_i - x_j} \leq r). 
+	\end{equation*}
+	Appealing to a standard concentration inequality for U-statistics (see Lemma \ref{lem: bounded_difference}) we therefore have
+	\begin{equation*}
+	\frac{\cut_{n,r}}{{n \choose 2}} \leq p_K + \sqrt{\frac{\log(1/\delta)}{n}},~  \frac{\vol_{n,r}}{{n \choose 2}} \geq p_V - \sqrt{\frac{\log(1/\delta)}{n}}, ~ \frac{\vol_{n,r}^c}{{n \choose 2}} \geq p_V^c - \sqrt{\frac{\log(1/\delta)}{n}}
+	\end{equation*}
+	each with probability at least $1 - \delta$. 
+	%The claim follows in light of \ref{asmp: bounded_volume}, which implies $p_V^c \geq p_V$. 
+
+
+\subsection{Proof of Lemma~\ref{lem: expected_density_cut}}
+We write $\Pbb(\Aset) = \int_{\Aset} f(x) dx$ for measurable $\Aset \subseteq \Rd$.
+We 
+let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem \ref{thm: conductance_upper_bound}. 
+Our goal will be to upper bound $p_K$ by a term that depends on the probability mass $\Pbb(\Csigr)$, 
+and the bulk of our technical effort will be devoted to showing the following upper bound on $\Pbb(\Csigr)$:
+%Lemma \ref{lem: expected_number_boundary_points} involves the bulk of the technical effort required to prove Theorem \ref{thm: conductance_upper_bound}; it will be necessary to bound the expected cut size of $\Csig[\Xbf]$ in $G_{n,r}$. 
+\begin{lemma}
+	\label{lem: expected_number_boundary_points}
+	Under the conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+	\begin{equation*}
+	\Pbb(\Csigr) \leq \frac{2dr}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
+	\end{equation*}	
+\end{lemma}
+\noindent Define the \emph{uniform local conductance} $\ell_{\nu,r}(u)$ to be
+\begin{equation*}
+\ell_{\nu,r}(u) = \nu\bigl(\Csig \cap B(u,r)\bigr).
+\end{equation*}
+In order to lower bound $p_V$ we will show the following lower bound on the uniform local conductance:
+\begin{lemma}
+	\label{lem: local_conductance}
+	Let $u \in \Csig$. Then, for any $0 < r \leq \frac{\sigma}{2\sqrt{d}}$,
+	\begin{equation*}
+	\ell_{\nu,r}(u) \geq \frac{6}{25} \nu_d r^d.
+	\end{equation*}
+\end{lemma}
+Taking these two results as given we can now prove each of the two claims~\eqref{eqn:claim_one} and~\eqref{eqn:claim_two} in turn.
+\paragraph{Proof of Claim~\eqref{eqn:claim_one}: } Recalling,~\eqref{eqn: density_cut_expansion} 
+	and by the linearity of expectations, we obtain
+	\begin{equation*}
+	p_K = \frac{\mu_K}{{n \choose 2}} = 2 \cdot \Pbb(x_i \not\in \Csig, x_j \in \Csig, \norm{x_i - x_j} \leq r). \tag{for each $i,j$, $i \neq j$}
+	\end{equation*}
+	Writing this with respect to the density function $f$, we have
+	\begin{align*}
+	p_K & = 2 \int_{\Rd \setminus \Csig} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
+	& = 2 \int_{\Csigr} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
+	& \leq 2 \nu_d r^d \lambda  \int_{\Csigr} f(x) \dx = 2 \nu_d r^d \lambda \Pbb(\Csigr).
+	\end{align*}
+	where the inequality follows from \ref{asmp: cluster_separation}, which implies $f(x) \leq \lambda$ for $x \in \Csig \setminus \Cset$. Then, upper bounding the integral using \sbcomment{I changed the Lemma referenced here. I think it was wrong before} Lemma \ref{lem: expected_number_boundary_points} gives the final result.
+
+
+%\subsection{Proof of Lemma~\ref{Z}}
+\paragraph{Proof of Claim~\eqref{eqn:claim_two}: } Recalling,~\eqref{eqn: volume_expansion}
+%The proof will proceed similarly to Lemma \ref{lem: expected_density_cut}. 
+	and by the linearity of expectation we obtain
+	\begin{equation*}
+	p_V = \frac{\mu_V}{{n \choose 2}} = 2 \cdot \Pbb(x_i \in \Csig, x_j \in B(x_i,r)). \tag{for any $i,j$, $i \neq j$. }
+	\end{equation*}
+	Writing this with respect to the density function $f$, we have
+	\begin{align*}
+	p_V & = 2 \int_{\Csig} f(x) \Pbb(B(x,r)) \dx \\
+	& \geq 2 \int_{\Csig} f(x) \Pbb(B(x,r) \cap \Csig) \dx
+	\end{align*}
+	whence the claim then follows by Lemma \ref{lem: local_conductance}.
+It remains to prove Lemmas~\ref{lem: expected_number_boundary_points} and~\ref{lem: local_conductance}, and we turn our attention to this next.
+\subsection{Proof of Lemma~\ref{lem: expected_number_boundary_points}}
+The proof of this Lemma relies on certain volume estimates whose statement and proof we defer to Appendix~\ref{sec: volume_estimates}.
+	We partition $\Csigr$ into slices based on distance from $\Csig$ as follows: for $k \in \N$,
+	\begin{equation*}
+	\mathcal{T}_{i,k} = \set{x \in \Csigr: t_{i,k} < \frac{\dist(x, \Csig)}{r} \leq t_{i+1,k}}, ~~ \Csigr = \bigcup_{i = 0}^{k-1} \mathcal{T}_{i,k},
+	\end{equation*}
+	\sbcomment{Changed $t_i$ to $t_{i,k}$.}
+	where $t_{i,k} = i/k$ for $i = 0, \ldots, k - 1$. As a result, for any $k \in \mathbb{N}$,
+	\begin{equation}
+	\label{eqn: partition_ub}
+	\Pbb(\Csigr) = \int_{\Csigr} f(x) \dx = \sum_{i = 0}^{k-1} \int_{\mathcal{T}_{i,k}} f(x) \dx \leq \sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x).
+	\end{equation}
+	Assumptions~\ref{asmp: bounded_density} and \ref{asmp: low_noise_density} imply the upper bound
+	\begin{equation*}
+	\max_{x \in \mathcal{T}_{i,k}} f(x) \leq \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma},
+	\end{equation*}
+	and writing
+	\begin{equation*}
+	\nu(\mathcal{T}_{i,k}) = \nu(\Csig + rt_{i+1,k}B) - \nu(\Csig + rt_{i,k}B) =: \nu_{i+1,k} - \nu_{i,k},
+	\end{equation*}
+	we have
+	\begin{align}
+	\label{eqn: telescoping_sum}
+	\sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x) & \leq \sum_{i = 0}^{k-1} \biggl\{ \nu_{i+1,k} - \nu_{i,k} \biggr\} \biggl( \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma} \biggr) \nonumber \\
+	& = \underbrace{\sum_{i = 1}^{k} 
+	\nu_{i,k} \biggl( \left[\lambda_{\sigma} - c_0(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - c_0(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - c_0r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
+	\end{align}
+	\sbcomment{I changed the braces above -- I think they were incorrect earlier} where the second equality comes from rearranging terms in the sum.
+	
+	% AJG 5/14/19: This argument makes sense, correct?
+	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by Assumption~\ref{asmp: bounded_density}, as otherwise $\int_{\Csig} f(x) dx = \infty$. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as the boundary $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
+	\begin{equation}
+	\label{eqn: slice_volume_bound}
+	\nu_{i,k} = \nu(\Csig + rt_{i,k}B) \leq \nu(\Csig)\left(1 + \frac{rt_{i,k}}{\sigma}\right)^d
+	\end{equation}
+	which in turn gives
+	\begin{align}
+	\Sigma_k & \leq c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
+	& = c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (\text{substituting}~u_{i,k} := t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
+	\end{align}
+	The expression in~\eqref{eqn: Sigmak_riemann_sum} is a Riemann sum, and taking the limit as $k \to \infty$ we obtain
+	\begin{align}
+	\lim_{k \to \infty} c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}) & = c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{r u^{1/\gamma}}{\sigma}\right)^{d} du \nonumber \\
+	& \overset{\text{(i)}}{\leq} c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{2 d r u^{1/\gamma}}{\sigma}\right) du \nonumber \\
+	& = c_0\nu(\Csig) r^\gamma \left(1 + \gamma \frac{2 d r}{(\gamma + 1)\sigma}\right). \label{eqn: Sigmak_integral}
+	\end{align}
+	where $\text{(i)}$ follows from the upper bound in Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma / 2d$. 
+	
+	An upper bound on $\xi$ follows from largely the same logic, although it does not involve integration:
+	\begin{align}
+	\xi & \overset{\text{(ii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
+	& \overset{\text{(iii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{2d r}{\sigma}\right)(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{2dr}{\sigma}(\lambda_{\sigma} - c_0r^{\gamma}) - c_0 r^{\gamma} \biggr\}. \label{eqn: xi_ub}
+	\end{align}
+	where $\text{(ii)}$ follows from \eqref{eqn: slice_volume_bound}, and $\text{(iii)}$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
+
+
+
+%\subsection{Proof of Lemma~\ref{lem: expected_number_boundary_points}}
+
+
+
+\subsection{Proof of Lemma~\ref{lem: local_conductance}}
+The proof of this result relies on estimates of the volume of spherical caps which we defer to Appendix~\ref{sec:caps}.
+	Since $u \in \Csig$ there exists $x \in \Cset$ such that $u \in B(x, \sigma)$, and as $B(x,\sigma) \subseteq \Csig$,
+	\begin{equation*}
+	\nu\bigl(B(u, r) \cap B(x, \sigma)\bigr) \leq \nu\bigl(B(u, r) \cap \Csig \bigr)
+	\end{equation*}
+	Without loss of generality, let $\norm{u - x} = \sigma$; it is not hard to see that if $\norm{u - x} < \sigma$, the volume of the overlap will only grow. Then, since $\norm{u  - x} = \sigma$, $B(u, r) \cap B(x, \sigma)$ contains a spherical cap of radius $r$ and height
+	\begin{equation*}
+	h = r - r^2/2\sigma = r \left( 1 - \frac{r}{2 \sigma} \right)
+	\end{equation*}	
+	which by Lemma \ref{lem: volume_of_spherical_cap} has volume
+	\begin{equation*}
+	\nu_{\text{cap}} = \frac{1}{2} \nu_d r^d I_{1 - \alpha}\left( \frac{d + 1}{2}  ,\frac{1}{2}\right)
+	\end{equation*}
+	with $\alpha = 1 - \frac{2rh - h^2}{r^2} = \frac{r^2}{4 \sigma^2} \leq \frac{1}{16d}$. 
+	By Lemmas \ref{lem: beta_integral} (applied with $t = 1$) and \ref{lem: beta_function},
+	\begin{align*}
+	I_{1 - \alpha}\left( \frac{d + 1}{2}  ,\frac{1}{2}\right) & \geq 1 - \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \frac{3}{4\sqrt{d}} \\
+	& \geq 1 - \frac{3}{4}\sqrt{\frac{d+2}{\pi d}} \geq 1 - \frac{3}{4}\sqrt{\frac{3}{2 \pi}}.
+	\end{align*}
+
+
+\subsection{Volume Estimates}
 \label{sec: volume_estimates}
+%\section{Proofs}
+%
+%Subsections \ref{sec: volume_estimates} - \ref{sec: proof_of_theorem_1} detail the proof for Theorem \ref{thm: conductance_upper_bound}. In subsections \ref{sec: mixing_time_on_graphs} and \ref{sec: proof_of_proposition_tv_mixing_time}, we establish some results regarding mixing time over general graphs. The proof of Theorem \ref{thm: mixing_time_upper_bound} is then provided in subsections \ref{sec: population_conductance_function} - \ref{sec: proof_of_theorem_mixing_time}. Section~\ref{sec: concentration} gives some general concentration results we use throughout, before we finish with the proofs of Theorems \ref{thm: misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}, and the statement and proof of our results regarding the a\pprspace vector (Corollary \ref{cor: appr}), in subsections \ref{sec: proof_of_misclassification_rate} - \ref{sec: linalg}.
 
-We begin with some notation. Let $\Aset \subseteq \Reals^d$, and for $\sigma \geq 0$, write $\sigma B := B(0,\sigma) = \set{x \in \Rd: \norm{x} \leq \sigma}$ for the closed ball of radius $\sigma$ centered at the origin (and let $B^{\circ}(0,\sigma)$ denote the corresponding open ball). Let $\Asig = \Aset + \sigma B$ be the direct sum of $\Aset$ and $\sigma B$, $\Asig = \set{z = x + y: x \in \Aset, y \in \sigma B}$. Recall that we use $\nu$ for Lebesgue measure, and $\nu_d = \nu(B)$ for $B = (0,1)$. 
+%\subsection{Volume estimates}
+
+
+We begin by recalling some notation. We let $\Aset \subseteq \Reals^d$, and for $\sigma \geq 0$, write $\sigma B := B(0,\sigma) = \set{x \in \Rd: \norm{x} \leq \sigma}$ for the closed ball of radius $\sigma$ centered at the origin (and let $B^{\circ}(0,\sigma)$ denote the corresponding open ball). Let $\Asig = \Aset + \sigma B$ be the direct sum of $\Aset$ and $\sigma B$, $\Asig = \set{z = x + y: x \in \Aset, y \in \sigma B}$. Recall that we use $\nu$ for Lebesgue measure, and $\nu_d = \nu(B)$ for $B = (0,1)$. 
 
 Lemma \ref{lem: expansion_volume} provides a bound on the ratio $\nu(\Csig + r B) / \nu(\Csig)$, an important intermediate quantity in bounding the ratio $\cut(\Csig[\Xbf]; G_{n,r})/\vol(\Csig[\Xbf]; G_{n,r})$. 
 
@@ -1113,10 +1372,9 @@ Lemma \ref{lem: expansion_volume} provides a bound on the ratio $\nu(\Csig + r B
 	As a direct consequence of \eqref{eqn: finite_subcover}, $\Asig + \delta B \subset \bigcup_{i = 1}^{N} B^{\circ}(x_i,\sigma + \epsilon + \delta)$, and by definition for every $x_i \in \Aset$, $B(x_i,\sigma) \in \Asig$. Summarizing our findings, we have
 	\begin{equation}
 	\label{eqn: finite_subcover-1}
-	\bigcup_{i = 1}^{N} B(x_i,\sigma) \subseteq \Asig  ,~\Asig + \delta B \subset \bigcup_{i = 1}^{N} B^{\circ}(x_i,\sigma + \delta + \epsilon)
+	\bigcup_{i = 1}^{N} B(x_i,\sigma) \subseteq \Asig  ,~\Asig + \delta B \subset \bigcup_{i = 1}^{N} B^{\circ}(x_i,\sigma + \delta + \epsilon).
 	\end{equation}
-	
-	We next show a lower bound on $\nu(\Asig)$. Partition $\Asig$ using the balls $B(x_i,\sigma)$, meaning let $\Aset_{\sigma}^{(1)} := B(x_1,\sigma)$, $\Aset_{\sigma}^{(2)} := B(x_2,\sigma) \setminus B(x_1,\sigma)$, and so on, so that
+\noindent	We next show a lower bound on $\nu(\Asig)$. Partition $\Asig$ using the balls $B(x_i,\sigma)$, meaning let $\Aset_{\sigma}^{(1)} := B(x_1,\sigma)$, $\Aset_{\sigma}^{(2)} := B(x_2,\sigma) \setminus B(x_1,\sigma)$, and so on, so that
 	\begin{equation*}
 	\Aset_{\sigma}^{\text{(i)}} := B(x_i,\sigma) \setminus \bigcup_{j = 1}^{i - 1} \Aset_{\sigma}^{(j)}. \tag{$i = 1,\ldots,N$}
 	\end{equation*}
@@ -1190,110 +1448,16 @@ We will need to carefully control the volume of expansion sets using the estimat
 The proof for the corresponding lower bound on $(1 - x)^d$ is symmetric.
 \end{proof}
 
-Let $\Csigr := \set{x: 0 < \dist(x, \Csig) < r}$, where $\Csig$ is as in Theorem \ref{thm: conductance_upper_bound}. Lemma \ref{lem: expected_number_boundary_points} involves the bulk of the technical effort required to prove Theorem \ref{thm: conductance_upper_bound}; it will be necessary to bound the expected cut size of $\Csig[\Xbf]$ in $G_{n,r}$. We write $\Pbb(\Aset) = \int_{\Aset} f(x) dx$ for measurable $\Aset \subseteq \Rd$.
 
-\begin{lemma}
-	\label{lem: expected_number_boundary_points}
-	Under the conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
-	\begin{equation*}
-	\Pbb(\Csigr) \leq \frac{2dr}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
-	\end{equation*}	
-\end{lemma}
-\begin{proof}
-	We partition $\Csigr$ into slices based on distance from $\Csig$ as follows: for $k \in \N$,
-	\begin{equation*}
-	\mathcal{T}_{i,k} = \set{x \in \Csigr: t_{i,k} < \frac{\dist(x, \Csig)}{r} \leq t_{i+1,k}}, ~~ \Csigr = \bigcup_{i = 0}^{k-1} \mathcal{T}_{i,k}
-	\end{equation*}
-	\sbcomment{Changed $t_i$ to $t_{i,k}$.}
-	where $t_{i,k} = i/k$ for $i = 0, \ldots, k - 1$. As a result, for any $k \in \mathbb{N}$,
-	\begin{equation}
-	\label{eqn: partition_ub}
-	\Pbb(\Csigr) = \int_{\Csigr} f(x) \dx = \sum_{i = 0}^{k-1} \int_{\mathcal{T}_{i,k}} f(x) \dx \leq \sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x).
-	\end{equation}
-	Assumptions~\ref{asmp: bounded_density} and \ref{asmp: low_noise_density} imply the upper bound
-	\begin{equation*}
-	\max_{x \in \mathcal{T}_{i,k}} f(x) \leq \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma},
-	\end{equation*}
-	and writing
-	\begin{equation*}
-	\nu(\mathcal{T}_{i,k}) = \nu(\Csig + rt_{i+1,k}B) - \nu(\Csig + rt_{i,k}B) =: \nu_{i+1,k} - \nu_{i,k},
-	\end{equation*}
-	we have
-	\begin{align}
-	\label{eqn: telescoping_sum}
-	\sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x) & \leq \sum_{i = 0}^{k-1} \biggl\{ \nu_{i+1,k} - \nu_{i,k} \biggr\} \biggl( \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma} \biggr) \nonumber \\
-	& = \underbrace{\sum_{i = 1}^{k} 
-	\nu_{i,k} \biggl( \left[\lambda_{\sigma} - c_0(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - c_0(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - c_0r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
-	\end{align}
-	\sbcomment{I changed the braces above -- I think they were incorrect earlier} where the second equality comes from rearranging terms in the sum.
-	
-	% AJG 5/14/19: This argument makes sense, correct?
-	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by Assumption~\ref{asmp: bounded_density}, as otherwise $\int_{\Csig} f(x) dx = \infty$. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as the boundary $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
-	\begin{equation}
-	\label{eqn: slice_volume_bound}
-	\nu_{i,k} = \nu(\Csig + rt_{i,k}B) \leq \nu(\Csig)\left(1 + \frac{rt_{i,k}}{\sigma}\right)^d
-	\end{equation}
-	which in turn gives
-	\begin{align}
-	\Sigma_k & \leq c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
-	& = c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (\text{substituting}~u_{i,k} := t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
-	\end{align}
-	The expression in~\eqref{eqn: Sigmak_riemann_sum} is a Riemann sum, and taking the limit as $k \to \infty$ we obtain
-	\begin{align}
-	\lim_{k \to \infty} c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}) & = c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{r u^{1/\gamma}}{\sigma}\right)^{d} du \nonumber \\
-	& \overset{\text{(i)}}{\leq} c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{2 d r u^{1/\gamma}}{\sigma}\right) du \nonumber \\
-	& = c_0\nu(\Csig) r^\gamma \left(1 + \gamma \frac{2 d r}{(\gamma + 1)\sigma}\right). \label{eqn: Sigmak_integral}
-	\end{align}
-	where $\text{(i)}$ follows from Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma / 2d$. 
-	
-	An upper bound on $\xi$ follows from largely the same logic, although it does not involve integration:
-	\begin{align}
-	\xi & \overset{\text{(ii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
-	& \overset{\text{(iii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{2d r}{\sigma}\right)(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{2dr}{\sigma}(\lambda_{\sigma} - c_0r^{\gamma}) - c_0 r^{\gamma} \biggr\}. \label{eqn: xi_ub}
-	\end{align}
-	where $\text{(ii)}$ follows from \eqref{eqn: slice_volume_bound}, and $\text{(iii)}$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
-\end{proof}
-\sbcomment{Here now.}
-Lemma \ref{lem: local_conductance} will be necessary to lower bound the expected volume of $\Csig[\Xbf]$ in $G_{n,r}$. Define the \emph{uniform local conductance} $\ell_{\nu,r}(u)$ to be
-\begin{equation*}
-\ell_{\nu,r}(u) = \nu\bigl(\Csig \cap B(u,r)\bigr)
-\end{equation*}
-\begin{lemma}
-	\label{lem: local_conductance}
-	Let $u \in \Csig$. Then, for any $0 < r \leq \frac{\sigma}{2\sqrt{d}}$,
-	\begin{equation*}
-	\ell_{\nu,r}(u) \geq \frac{6}{25} \nu_d r^d.
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	Since $u \in \Csig$ there exists $x \in \Cset$ such that $u \in B(x, \sigma)$, and as $B(x,\sigma) \subseteq \Csig$,
-	\begin{equation*}
-	\nu\bigl(B(u, r) \cap B(x, \sigma)\bigr) \leq \nu\bigl(B(u, r) \cap \Csig \bigr)
-	\end{equation*}
-	Without loss of generality, let $\norm{u - x} = \sigma$; it is not hard to see that if $\norm{u - x} < \sigma$, the volume of the overlap will only grow. Then, since $\norm{u  - x} = \sigma$, $B(u, r) \cap B(x, \sigma)$ contains a spherical cap of radius $r$ and height
-	\begin{equation*}
-	h = r - r^2/2\sigma = r \left( 1 - \frac{r}{2 \sigma} \right)
-	\end{equation*}	
-	which by Lemma \ref{lem: volume_of_spherical_cap} has volume
-	\begin{equation*}
-	\nu_{cap} = \frac{1}{2} \nu_d r^d I_{1 - \alpha}\left( \frac{d + 1}{2}  ,\frac{1}{2}\right)
-	\end{equation*}
-	with $\alpha = 1 - \frac{2rh - h^2}{r^2} = \frac{r^2}{4 \sigma^2} \leq \frac{1}{16d}$. 
-	
-	Then by Lemmas \ref{lem: beta_integral} (applied with $t = 1$) and \ref{lem: beta_function},
-	\begin{align*}
-	I_{1 - \alpha}\left( \frac{d + 1}{2}  ,\frac{1}{2}\right) & \geq 1 - \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \frac{3}{4\sqrt{d}} \\
-	& \geq 1 - \frac{3}{4}\sqrt{\frac{d+2}{\pi d}} \geq 1 - \frac{3}{4}\sqrt{\frac{3}{2 \pi}}.
-	\end{align*}
-\end{proof}
-
-The following formula for the volume of the spherical cap, stated in terms of the incomplete beta function, is well known. We include it without proof. 
-
+\subsection{Spherical Caps and Associated Estimates}
+\label{sec:caps}
+In this section, we state a result for the volume of a spherical cap and derive some 
+useful upper bounds. 
 \begin{lemma}
 	\label{lem: volume_of_spherical_cap}
-	Let $\mathrm{Cap}_r(h)$ denote a spherical cap of radius $r$ and height $h$. Then, 
+	Let $\mathrm{cap}_r(h)$ denote a spherical cap of radius $r$ and height $h$. Then, 
 	\begin{equation*}
-	\nu\bigl( \mathrm{Cap}_r(h)  \bigr) = \frac{1}{2} \nu_d r^d I_{1 - \alpha}(\frac{d + 1}{2}; \frac{1}{2})
+	\nu\bigl( \mathrm{cap}_r(h)  \bigr) = \frac{1}{2} \nu_d r^d I_{1 - \alpha}\left(\frac{d + 1}{2}; \frac{1}{2}\right)
 	\end{equation*}
 	where
 	\begin{equation*}
@@ -1306,6 +1470,8 @@ The following formula for the volume of the spherical cap, stated in terms of th
 	is the cumulative distribution function of a $\mathrm{Beta}(z,w)$ distribution, evaluated at $1 - \alpha$. 
 \end{lemma}
 
+The following result provides a lower bound on the Beta integral, and the result in Lemma~\ref{lem: beta_function} provides
+an upper bound on the ratio of Gamma functions. 
 \begin{lemma}
 	\label{lem: beta_integral}
 	For any $0 \leq t \leq 1$ and $\alpha \leq \frac{t^2}{16 d}$,
@@ -1336,151 +1502,138 @@ The following formula for the volume of the spherical cap, stated in terms of th
 	where $\text{(iv)}$ follows from Lemma \ref{lem: Taylor_series}, and the fact $\alpha \leq \frac{1}{16d}$. The result follows from the condition $\alpha \leq \frac{t^2}{16d}$. 
 \end{proof}
 
-Lemma \ref{lem: beta_function} follows from $\Gamma(1/2) = \sqrt{\pi}$ and the upper bound $\Gamma(x + 1)/ \Gamma(x+s) \leq (x + 1)^{1-s}$ for $s \in [0,1]$.
 \begin{lemma}
 	\label{lem: beta_function}
 	\begin{equation*}
 	\frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \leq \sqrt{\frac{d + 2}{2\pi}}
 	\end{equation*}
 \end{lemma}
+\noindent The proof of Lemma \ref{lem: beta_function} is straightforward and follows from the fact that $\Gamma(1/2) = \sqrt{\pi}$ and the upper bound $\Gamma(x + 1)/ \Gamma(x+s) \leq (x + 1)^{1-s}$ for $s \in [0,1]$.
 
-\subsection{Density-weighted cut and volume estimates}
-\label{sec: density_weighted_cut_and_volume_estimates}
+%\subsection{Density-weighted cut and volume estimates}
+%\label{sec: density_weighted_cut_and_volume_estimates}
+%
+%For notational ease, we write
+%\begin{align*}
+%\cut_{n,r} = \cut(\Csig[\Xbf]; G_{n,r}), ~ \mu_K = \mathbb{E}(\cut_{n,r}), ~ p_K = \frac{\mu_K}{{n \choose 2}} \\
+%\vol_{n,r} = \vol(\Csig[\Xbf]; G_{n,r}), ~ \mu_V = \mathbb{E}(\vol_{n,r}), ~ p_V = \frac{\mu_V}{{n \choose 2}} \\
+%\vol_{n,r}^c = \vol(\Xbf \setminus \Csig[\Xbf]; G_{n,r}), ~ \mu_V^c = \mathbb{E}(\vol_{n,r}^c), ~ p_V^c = \frac{\mu_V^c}{{n \choose 2}}
+%\end{align*}
+%for the random variable, mean, and probability of cut size and volume, respectively. 
+%
+%\begin{lemma}
+%	\label{lem: expected_density_cut}
+%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+%	\begin{equation*}
+%	p_K \leq \frac{4 d \nu_d r^{d+1} \lambda}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
+%	\end{equation*}
+%\end{lemma}
+%\begin{proof}
+%
+%\end{proof}
+%
+%\begin{lemma}
+%	\label{lem: expected_density_volume}
+%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+%	\begin{equation*}
+%	p_V \geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig)
+%	\end{equation*}
+%\end{lemma}
+%\begin{proof}
+%	The proof will proceed similarly to Lemma \ref{lem: expected_density_cut}. We begin by writing $\vol_{n,r}$ as the sum of indicator functions,
+%	\begin{equation}
+%	\label{eqn: volume_expansion}
+%	\vol_{n,r} = \sum_{i = 1}^{n} \sum_{j \neq i} \1(x_i \in \Csig) \1(x_j \in B(x_i, r))
+%	\end{equation}
+%	and by linearity of expectation we obtain
+%	\begin{equation*}
+%	p_V = \frac{\mu_V}{{n \choose 2}} = 2 \cdot \Pbb(x_i \in \Csig, x_j \in B(x_i,r)). \tag{for any $i,j$, $i \neq j$. }
+%	\end{equation*}
+%	Writing this with respect to the density function $f$, we have
+%	\begin{align*}
+%	p_V & = 2 \int_{\Csig} f(x) \Pbb(B(x,r)) \dx \\
+%	& \geq 2 \int_{\Csig} f(x) \Pbb(B(x,r) \cap \Csig) \dx
+%	\end{align*}
+%	whence the claim then follows by Lemma \ref{lem: local_conductance}.
+%\end{proof}
+%
+%To employ Lemmas \ref{lem: expected_density_cut} and \ref{lem: expected_density_volume} in the proof of Theorem \ref{thm: conductance_upper_bound}, we must relate the random variable
+%\begin{equation*}
+%\Phi_{n,r}(\Csig[\Xbf]) = \frac{\cut_{n,r}}{\min \set{\vol_{n,r}, \vol_{n,r}^c}}
+%\end{equation*}
+%to $p_K$ and $p_V$. 
+%
+%In Lemma \ref{lem: prob_bound_cutvol}, we give probabilistic bounds on the $\cut_{n,r}$, $\vol_{n,r}$ and $\vol_{n,r}^c$ in terms of $p_K$ and $p_V$. These bounds are a straightforward consequence of Lemma \ref{lem: bounded_difference}, Hoeffding's inequality for U-statistics.
+%
+%\begin{lemma}
+%	\label{lem: prob_bound_cutvol}
+%	For any $\delta \in (0,1]$,
+%	\begin{equation}
+%	\label{eqn: numerator_additive_bound}
+%	\frac{\cut_{n,r}}{{n \choose 2}} \leq p_K + \sqrt{\frac{\log(1/\delta)}{n}},~\text{and}~ \frac{\vol_{n,r}}{{n \choose 2}}, \frac{\vol_{n,r}^c}{{n \choose 2}}  \geq p_V - \sqrt{\frac{\log(1/\delta)}{n}}.
+%	\end{equation}
+%	each with probability at least $1 - \delta$. 
+%\end{lemma}
+%
+%\begin{proof}[Proof of Lemma \ref{lem: prob_bound_cutvol}]
+%	From \eqref{eqn: density_cut_expansion} and \eqref{eqn: volume_expansion}, we see that $\cut_{n,r}$ and $\vol_{n,r}$, properly scaled, can be expressed as order-$2$ $U$-statistics,
+%	\begin{equation*}
+%	\frac{\cut_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_K(x_i, x_j),~~ \frac{\vol_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_V(x_i, x_j)
+%	\end{equation*}
+%	with kernels
+%	\begin{align*}
+%	\phi_K(x_i,x_j) & = \1(x_i \in \Csig, x_j \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, x_i \not\in \Csig, \norm{x_i - x_j} \leq r) \\
+%	\phi_V(x_i,x_j) & = \1(x_i \in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, \norm{x_i - x_j} \leq r). 
+%	\end{align*}
+%	
+%	Similarly,
+%	\begin{equation*}
+%	\frac{\vol_{n,r}^c}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_{V^c}(x_i, x_j)
+%	\end{equation*}
+%	with kernel,
+%	\begin{equation*}
+%	\phi_{V^c}(x_i,x_j) = \1(x_i \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \not\in \Csig, \norm{x_i - x_j} \leq r). 
+%	\end{equation*}
+%	
+%	From Lemma \ref{lem: bounded_difference} we therefore have
+%	\begin{equation*}
+%	\frac{\cut_{n,r}}{{n \choose 2}} \leq p_K + \sqrt{\frac{\log(1/\delta)}{n}},~  \frac{\vol_{n,r}}{{n \choose 2}} \geq p_V - \sqrt{\frac{\log(1/\delta)}{n}}, ~ \frac{\vol_{n,r}^c}{{n \choose 2}} \geq p_V^c - \sqrt{\frac{\log(1/\delta)}{n}}
+%	\end{equation*}
+%	each with probability at least $1 - \delta$. The claim follows in light of \ref{asmp: bounded_volume}, which implies $p_V^c \geq p_V$. 
+%\end{proof}
+%
+%\subsection{Proof of Theorem \ref{thm: conductance_upper_bound}}
+%\label{sec: proof_of_theorem_1}
+%
+%The proof of Theorem \ref{thm: conductance_upper_bound} is more or less given by Lemmas \ref{lem: expected_density_cut}, \ref{lem: expected_density_volume}, and \ref{lem: prob_bound_cutvol}. All that remains is some algebra, which we take care of below.
+%
+%Fix $\delta \in (0,1]$ and let $\delta' = \delta/3$. We rewrite
+%\begin{equation}
+%\label{eqn: conductance_representation_1}
+%\Phi_{n,r}(\Csig[\Xbf]) = \frac{p_K + \left(\frac{\cut_{n,r}}{{n \choose 2}} - p_K\right)}{p_V + \left(\frac{\min\set{\vol_{n,r}, \vol_{n,r}^c}}{{n \choose 2}} - p_V\right)}.
+%\end{equation}
+%Assume (\ref{eqn: numerator_additive_bound}) holds with respect to $\delta'$, keeping in mind that this will happen with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this means
+%\begin{equation*}
+%\Phi_{n,r}(\Csig[\mathbf{X}]) \leq \frac{p_K + \Err_n}{p_V - \Err_n}
+%\end{equation*}
+%for $\Err_n = \sqrt{\frac{\log(1/\delta')}{n}}$.
+%Now, some straightforward algebraic manipulations yield
+%\begin{align*}
+%\frac{p_K + \Err_n}{p_V - \Err_n} & = \frac{p_K}{p_V} \left(\frac{p_V}{p_V - \Err_n}\right) + \frac{\Err_n}{p_V - \Err_n} \\
+%& = \frac{p_K}{p_V} + \left(\frac{p_K}{p_V} + 1\right)\frac{\Err_n}{p_V - \Err_n} \\
+%& \leq \frac{p_K}{p_V} + 2 \frac{\Err_n}{p_V - \Err_n}.
+%\end{align*}
+%By Lemmas \ref{lem: expected_density_cut} and \ref{lem: expected_density_volume}, we have
+%\begin{equation*}
+%\frac{p_K}{p_V} \leq \frac{100rd}{12\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{\left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right)}{\lambda_{\sigma}}.
+%\end{equation*}
+%Then, by the choice of sample size in \eqref{eqn: conductance_sample_complexity}, 
+%\begin{equation*}
+%n \geq \frac{(2 + \epsilon)^2 \log\left(\frac{3}{\delta}\right)}{\epsilon^2 p_V^2}
+%\end{equation*}
+%which implies $2 \frac{\Err_n}{p_V - \Err_n} \leq \epsilon$. 
 
-For notational ease, we write
-\begin{align*}
-\cut_{n,r} = \cut(\Csig[\Xbf]; G_{n,r}), ~ \mu_K = \mathbb{E}(\cut_{n,r}), ~ p_K = \frac{\mu_K}{{n \choose 2}} \\
-\vol_{n,r} = \vol(\Csig[\Xbf]; G_{n,r}), ~ \mu_V = \mathbb{E}(\vol_{n,r}), ~ p_V = \frac{\mu_V}{{n \choose 2}} \\
-\vol_{n,r}^c = \vol(\Xbf \setminus \Csig[\Xbf]; G_{n,r}), ~ \mu_V^c = \mathbb{E}(\vol_{n,r}^c), ~ p_V^c = \frac{\mu_V^c}{{n \choose 2}}
-\end{align*}
-for the random variable, mean, and probability of cut size and volume, respectively. 
-
-\begin{lemma}
-	\label{lem: expected_density_cut}
-	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
-	\begin{equation*}
-	p_K \leq \frac{4 d \nu_d r^{d+1} \lambda}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	We can write $\cut_{n,r}$ as a double sum,
-	\begin{equation}
-	\label{eqn: density_cut_expansion}
-	\cut_{n,r} = \sum_{i = 1}^{n} \sum_{j \neq i} \1(x_i \not\in \Csig) \1(x_j \in \Csig) \1(\norm{x_i - x_j} \leq r)
-	\end{equation}
-	and by linearity of expectation, we obtain
-	\begin{equation*}
-	p_K = \frac{\mu_K}{{n \choose 2}} = 2 \cdot \Pbb(x_i \not\in \Csig, x_j \in \Csig, \norm{x_i - x_j} \leq r). \tag{for each $i,j$, $i \neq j$}
-	\end{equation*}
-	Writing this with respect to the density function $f$, we have
-	\begin{align*}
-	p_K & = 2 \int_{\Rd \setminus \Csig} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
-	& = 2 \int_{\Csigr} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
-	& \leq 2 \nu_d r^d \lambda  \int_{\Csigr} f(x) \dx = 2 \nu_d r^d \lambda \Pbb(\Csigr).
-	\end{align*}
-	where the inequality follows from \ref{asmp: cluster_separation}, which implies $f(x) \leq \lambda$ for $x \in \Csig \setminus \Cset$. Then, upper bounding the integral using Lemma \ref{lem: expected_density_cut} gives the final result.
-\end{proof}
-
-\begin{lemma}
-	\label{lem: expected_density_volume}
-	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
-	\begin{equation*}
-	p_V \geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig)
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	The proof will proceed similarly to Lemma \ref{lem: expected_density_cut}. We begin by writing $\vol_{n,r}$ as the sum of indicator functions,
-	\begin{equation}
-	\label{eqn: volume_expansion}
-	\vol_{n,r} = \sum_{i = 1}^{n} \sum_{j \neq i} \1(x_i \in \Csig) \1(x_j \in B(x_i, r))
-	\end{equation}
-	and by linearity of expectation we obtain
-	\begin{equation*}
-	p_V = \frac{\mu_V}{{n \choose 2}} = 2 \cdot \Pbb(x_i \in \Csig, x_j \in B(x_i,r)). \tag{for any $i,j$, $i \neq j$. }
-	\end{equation*}
-	Writing this with respect to the density function $f$, we have
-	\begin{align*}
-	p_V & = 2 \int_{\Csig} f(x) \Pbb(B(x,r)) \dx \\
-	& \geq 2 \int_{\Csig} f(x) \Pbb(B(x,r) \cap \Csig) \dx
-	\end{align*}
-	whence the claim then follows by Lemma \ref{lem: local_conductance}.
-\end{proof}
-
-To employ Lemmas \ref{lem: expected_density_cut} and \ref{lem: expected_density_volume} in the proof of Theorem \ref{thm: conductance_upper_bound}, we must relate the random variable
-\begin{equation*}
-\Phi_{n,r}(\Csig[\Xbf]) = \frac{\cut_{n,r}}{\min \set{\vol_{n,r}, \vol_{n,r}^c}}
-\end{equation*}
-to $p_K$ and $p_V$. 
-
-In Lemma \ref{lem: prob_bound_cutvol}, we give probabilistic bounds on the $\cut_{n,r}$, $\vol_{n,r}$ and $\vol_{n,r}^c$ in terms of $p_K$ and $p_V$. These bounds are a straightforward consequence of Lemma \ref{lem: bounded_difference}, Hoeffding's inequality for U-statistics.
-
-\begin{lemma}
-	\label{lem: prob_bound_cutvol}
-	For any $\delta \in (0,1]$,
-	\begin{equation}
-	\label{eqn: numerator_additive_bound}
-	\frac{\cut_{n,r}}{{n \choose 2}} \leq p_K + \sqrt{\frac{\log(1/\delta)}{n}},~\text{and}~ \frac{\vol_{n,r}}{{n \choose 2}}, \frac{\vol_{n,r}^c}{{n \choose 2}}  \geq p_V - \sqrt{\frac{\log(1/\delta)}{n}}.
-	\end{equation}
-	each with probability at least $1 - \delta$. 
-\end{lemma}
-
-\begin{proof}[Proof of Lemma \ref{lem: prob_bound_cutvol}]
-	From \eqref{eqn: density_cut_expansion} and \eqref{eqn: volume_expansion}, we see that $\cut_{n,r}$ and $\vol_{n,r}$, properly scaled, can be expressed as order-$2$ $U$-statistics,
-	\begin{equation*}
-	\frac{\cut_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_K(x_i, x_j),~~ \frac{\vol_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_V(x_i, x_j)
-	\end{equation*}
-	with kernels
-	\begin{align*}
-	\phi_K(x_i,x_j) & = \1(x_i \in \Csig, x_j \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, x_i \not\in \Csig, \norm{x_i - x_j} \leq r) \\
-	\phi_V(x_i,x_j) & = \1(x_i \in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, \norm{x_i - x_j} \leq r). 
-	\end{align*}
-	
-	Similarly,
-	\begin{equation*}
-	\frac{\vol_{n,r}^c}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_{V^c}(x_i, x_j)
-	\end{equation*}
-	with kernel,
-	\begin{equation*}
-	\phi_{V^c}(x_i,x_j) = \1(x_i \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \not\in \Csig, \norm{x_i - x_j} \leq r). 
-	\end{equation*}
-	
-	From Lemma \ref{lem: bounded_difference} we therefore have
-	\begin{equation*}
-	\frac{\cut_{n,r}}{{n \choose 2}} \leq p_K + \sqrt{\frac{\log(1/\delta)}{n}},~  \frac{\vol_{n,r}}{{n \choose 2}} \geq p_V - \sqrt{\frac{\log(1/\delta)}{n}}, ~ \frac{\vol_{n,r}^c}{{n \choose 2}} \geq p_V^c - \sqrt{\frac{\log(1/\delta)}{n}}
-	\end{equation*}
-	each with probability at least $1 - \delta$. The claim follows in light of \ref{asmp: bounded_volume}, which implies $p_V^c \geq p_V$. 
-\end{proof}
-
-\subsection{Proof of Theorem \ref{thm: conductance_upper_bound}}
-\label{sec: proof_of_theorem_1}
-
-The proof of Theorem \ref{thm: conductance_upper_bound} is more or less given by Lemmas \ref{lem: expected_density_cut}, \ref{lem: expected_density_volume}, and \ref{lem: prob_bound_cutvol}. All that remains is some algebra, which we take care of below.
-
-Fix $\delta \in (0,1]$ and let $\delta' = \delta/3$. We rewrite
-\begin{equation}
-\label{eqn: conductance_representation_1}
-\Phi_{n,r}(\Csig[\Xbf]) = \frac{p_K + \left(\frac{\cut_{n,r}}{{n \choose 2}} - p_K\right)}{p_V + \left(\frac{\min\set{\vol_{n,r}, \vol_{n,r}^c}}{{n \choose 2}} - p_V\right)}.
-\end{equation}
-Assume (\ref{eqn: numerator_additive_bound}) holds with respect to $\delta'$, keeping in mind that this will happen with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this means
-\begin{equation*}
-\Phi_{n,r}(\Csig[\mathbf{X}]) \leq \frac{p_K + \Err_n}{p_V - \Err_n}
-\end{equation*}
-for $\Err_n = \sqrt{\frac{\log(1/\delta')}{n}}$.
-Now, some straightforward algebraic manipulations yield
-\begin{align*}
-\frac{p_K + \Err_n}{p_V - \Err_n} & = \frac{p_K}{p_V} \left(\frac{p_V}{p_V - \Err_n}\right) + \frac{\Err_n}{p_V - \Err_n} \\
-& = \frac{p_K}{p_V} + \left(\frac{p_K}{p_V} + 1\right)\frac{\Err_n}{p_V - \Err_n} \\
-& \leq \frac{p_K}{p_V} + 2 \frac{\Err_n}{p_V - \Err_n}.
-\end{align*}
-By Lemmas \ref{lem: expected_density_cut} and \ref{lem: expected_density_volume}, we have
-\begin{equation*}
-\frac{p_K}{p_V} \leq \frac{100rd}{12\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{\left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right)}{\lambda_{\sigma}}.
-\end{equation*}
-Then, by the choice of sample size in \eqref{eqn: conductance_sample_complexity}, 
-\begin{equation*}
-n \geq \frac{(2 + \epsilon)^2 \log\left(\frac{3}{\delta}\right)}{\epsilon^2 p_V^2}
-\end{equation*}
-which implies $2 \frac{\Err_n}{p_V - \Err_n} \leq \epsilon$. 
+\section{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
 
 \subsection{Mixing time on graphs}
 \label{sec: mixing_time_on_graphs}
@@ -2317,7 +2470,7 @@ and the claim follows from Proposition \ref{prop: graph_conductance_profile_lb} 
 \subsection{Concentration inequalities}
 \label{sec: concentration}
 
-Given a symmetric kernel function $K: \Rd \to \Reals$ with $\sup_{x,y \in \Rd} \abs{K(x,y)} \leq 1$, and independent and identically distributed data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$2$ $U$ statistic} to be 
+Given a symmetric kernel function $K: \Rd \to \Reals$ with $\sup_{x,y \in \Rd} \abs{K(x,y)} \leq 1$, and independent and identically distributed data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$2$ $U$-statistic} to be 
 \begin{equation*}
 U := \frac{1}{ {n \choose 2} } \sum_{1 \leq i < j \leq n} K(x_i,x_j).
 \end{equation*}
@@ -2361,7 +2514,7 @@ We will require large-sample and asymptotic bounds on several different degree a
 	\frac{\degmax}{n} & \leq (1 + \epsilon)\Lambda_{\sigma} r^d \nu_d \label{eqn: max_degree_bound}\\
 	\frac{\abs{\Csig[\Xbf]}}{n} & \leq (1 + \epsilon)\Pbb(\Csig) \label{eqn: Csig_cardinality_bound}\\
 	\label{eqn: volwt_bound}
-	\frac{1}{2}\vol_0 \leq \vol_{n,r}(\Csig[\Xbf]) & \leq \frac{3}{2} \vol_0
+	\frac{1}{2}\vol_0 &\leq \vol_{n,r}(\Csig[\Xbf])  \leq \frac{3}{2} \vol_0
 	\end{align}
 	
 	Additionally, with probability one,
@@ -2423,7 +2576,7 @@ We will require large-sample and asymptotic bounds on several different degree a
 Before we proceed to the next subsection, we include a formal statement of our claims regarding the a\pprspace vector. 
 \begin{corollary}
 	\label{cor: appr}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster (with respect to some $\theta$). Choose input parameters $\alpha, r, \vol_0, v$ to be well-initialized in the sense of \eqref{eqn: initialization}, set $\epsilon = \frac{1}{20 \vol_0}$, and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\epsilon)}$ rather than the exact \pprspace vector $\pbf$, with resulting output $\Cest$.
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster (with respect to some $\theta$). Choose input parameters $\alpha, r, \vol_0, v$ to be well-initialized in the sense of \eqref{eqn: initialization}, set $\varepsilon = \frac{1}{20 \vol_0}$, and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\varepsilon)}$ rather than the exact \pprspace vector $\pbf$, with resulting output $\Cest$.
 	\begin{enumerate}
 		\item If \ref{asmp: valid_region} holds, then \eqref{eqn: misclassification_rate_ub} is still a valid upper bound for the misclassification error of $\Cest$.
 		\item If \ref{asmp: C'_bounded_density} and \eqref{eqn: kappa_ub} hold, 
@@ -2440,12 +2593,12 @@ Lemma \ref{lem: zhu} is a restatement of Lemma 3.4 of \cite{zhu2013}, translated
 
 \begin{lemma}
 	\label{lem: zhu}
-	Let $\epsilon \geq 0$, $v \in S^g$, $\alpha \leq \frac{1}{9\tau_{\infty}(G[S])}$, and $\vol_0 \in [1 - c,1 + c] \vol(S;G)$ for $0 < c < 1$. Consider taking sweep cuts of the approximate \pprspace vector $\pbf^{(\epsilon)} := \pbf^{(\epsilon)}(v,\alpha; G)$ of the form
+	Let $\varepsilon \geq 0$, $v \in S^g$, $\alpha \leq \frac{1}{9\tau_{\infty}(G[S])}$, and $\vol_0 \in [1 - c,1 + c] \vol(S;G)$ for $0 < c < 1$. Consider taking sweep cuts of the approximate \pprspace vector $\pbf^{(\varepsilon)} := \pbf^{(\varepsilon)}(v,\alpha; G)$ of the form
 	\begin{equation*}
-	S_{\beta} := \left\{u \in V: \pbf^{(\epsilon)} \geq \beta \frac{\deg(u; G)}{\vol_0} \right\}
+	S_{\beta} := \left\{u \in V: \pbf^{(\varepsilon)} \geq \beta \frac{\deg(u; G)}{\vol_0} \right\}
 	\end{equation*}
 	
-	For any $\beta < \frac{3}{5(1 + c)}$, and $0 \leq \epsilon \leq \frac{1}{10} \vol(S;G)$ the following bounds hold:
+	For any $\beta < \frac{3}{5(1 + c)}$, and $0 \leq \varepsilon \leq \frac{1}{10} \vol(S;G)$ the following bounds hold:
 	\begin{align}
 	\vol(S_{\beta} \setminus S; G) & \leq \frac{2\Phi(A;G)}{\alpha \beta(1 - c)} \vol(S; G), \label{eqn: zhu_1}\\
 	\vol(S \setminus S_{\beta}; G) & \leq \left(\frac{2\Phi(S;G)}{\alpha (\frac{3}{5} - \beta(1 + c))} + 8\Phi(S;G)\right)\vol(S; G).  \label{eqn: zhu_2}
@@ -2459,7 +2612,7 @@ Observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds 
 	\item we restrict $v \in \Csig[\Xbf]^g$
 	\item the output of Algorithm \ref{alg: ppr} $\widehat{C} = S_{\beta}$ for some $1/40 < \beta < 1/11$
 	\item by Lemma \ref{lem: ball_bounds_in_probability}, $\vol_0 \in [1/2,3/2]\vol_{n,r}(\Csig[\Xbf])$
-	\item the \pprspace vector $\pbf(v,\alpha;G_{n,r})$ is simply an approximate \pprspace vector with $\epsilon = 0$.
+	\item the \pprspace vector $\pbf(v,\alpha;G_{n,r})$ is simply an approximate \pprspace vector with $\varepsilon = 0$.
 \end{enumerate}
 
 All conditions of Lemma \ref{lem: zhu} are therefore satisfied, and consequently by \eqref{eqn: zhu_1}, \eqref{eqn: zhu_2}, Theorem \ref{thm: conductance_upper_bound}, and the lower bound $\alpha \geq 1/10\tau_u(\theta)$, the following bounds hold with probability tending to 1 as $n \to \infty$:
@@ -2476,7 +2629,7 @@ the claim follows in light of \eqref{eqn: min_degree_bound}, \eqref{eqn: min_clu
 
 \paragraph{Proof of Corollary \ref{cor: appr} misclassification rates.}
 
-The choice $\epsilon = \frac{1}{20 \vol_0}$, along with Lemma \ref{lem: ball_bounds_in_probability} and the upper bound on $\vol_0$ given by \eqref{eqn: initialization}, together imply that $\epsilon < \frac{1}{10}\vol_{n,r}(\Csig[\Xbf])$ with probability tending to one as $n \to \infty$. We may therefore apply Lemma \ref{lem: zhu} with respect to $\pbf^{(\epsilon)}$. All other aspects of the proof of Theorem \ref{thm: misclassification_rate} may be applied exactly as stated.
+The choice $\varepsilon = \frac{1}{20 \vol_0}$, along with Lemma \ref{lem: ball_bounds_in_probability} and the upper bound on $\vol_0$ given by \eqref{eqn: initialization}, together imply that $\varepsilon < \frac{1}{10}\vol_{n,r}(\Csig[\Xbf])$ with probability tending to one as $n \to \infty$. We may therefore apply Lemma \ref{lem: zhu} with respect to $\pbf^{(\varepsilon)}$. All other aspects of the proof of Theorem \ref{thm: misclassification_rate} may be applied exactly as stated.
 
 
 
@@ -2599,7 +2752,7 @@ We will show that under the conditions of Theorem \ref{thm: consistent_recovery_
 The bounds in \eqref{eqn: gap_bounds} along with \eqref{eqn: setup_redux} imply that for each $u \in \Cset[\Xbf]$,
 \begin{align*}
 \frac{\pbf(u)}{\deg_{n,r}(u)} & \geq \frac{4}{5} \frac{\widetilde{\deg}_{n,r}(u)}{\deg_{n,r}(u) \vol_{n,r}(\Csig[\Xbf])} - \frac{\degminwt}{125 \deg_{n,r}(u) \vol_{n,r}(\Csig[\Xbf])} \\
-& \geq \frac{22}{125 \vol_{n,r}(\Csig[\Xbf])} \tag{by \eqref{eqn: min_degree_bound} and \eqref{eqn: max_degree_bound}, applied with $\epsilon = \frac{1}{47}$} \\
+& \geq \frac{22}{125 \vol_{n,r}(\Csig[\Xbf])} \tag{by \eqref{eqn: min_degree_bound} and \eqref{eqn: max_degree_bound}, applied with $\varepsilon = \frac{1}{47}$} \\
 & \geq \frac{44}{375 \vol_0}. \tag{by \eqref{eqn: volwt_bound}}
 \end{align*}
 Similarly, for each $u' \in \Cset'[\Xbf]$,
@@ -2610,7 +2763,7 @@ Similarly, for each $u' \in \Cset'[\Xbf]$,
 \end{align*}
 and as every sweep cut $S_\beta$ under consideration in Algorithm \ref{alg: ppr} satisfies $8/375 < \frac{\beta}{\vol_0} < 44/375$, \eqref{eqn: consistent_density_cluster_recovery} must hold for the output $\widehat{C} = S_{\beta^*}$.
 
-It remains to prove \eqref{eqn: gap_bounds}. First, apply Lemma \ref{lem: ball_bounds_in_probability} with $\epsilon = 1/11$ to obtain
+It remains to prove \eqref{eqn: gap_bounds}. First, apply Lemma \ref{lem: ball_bounds_in_probability} with $\varepsilon = 1/11$ to obtain
 \begin{equation}
 \label{eqn: pimin_Dmin_lb}
 \frac{\degminpr^2}{\vol_{n,r}(\Csig[\Xbf])},~ \frac{\degminwt^2}{\vol_{n,r}(\Csig[\Xbf])} \geq \left(\frac{6}{25}\right)^2 \frac{\lambda_{\sigma}^2 \nu_d r^d}{\Lambda_{\sigma}\Pbb(\Csig)}  
@@ -2625,16 +2778,16 @@ Then, by Theorem \ref{thm: conductance_upper_bound} and the lower bound $\alpha 
 
 \paragraph{Proof of Corollary \ref{cor: appr}: consistent cluster estimation.}
 
-Using \eqref{eqn: appr_error} with $\epsilon = \frac{1}{20}\vol_0$ along with \eqref{eqn: lower_bound_PPR_in_cluster} we obtain
+Using \eqref{eqn: appr_error} with $\varepsilon = \frac{1}{20}\vol_0$ along with \eqref{eqn: lower_bound_PPR_in_cluster} we obtain
 \begin{equation*}
-\pbf^{(\epsilon)}(u) \geq \frac{4}{5} \overline{\pibf}_{n,r}(u) - \frac{\deg_{n,r}(u)}{20\vol_0} - \frac{2\Phi_{n,r}(\Csig[\Xbf])}{\alpha \degminwt}, \quad \textrm{for all $u \in \Cset[\Xbf]$}
+\pbf^{(\varepsilon)}(u) \geq \frac{4}{5} \overline{\pibf}_{n,r}(u) - \frac{\deg_{n,r}(u)}{20\vol_0} - \frac{2\Phi_{n,r}(\Csig[\Xbf])}{\alpha \degminwt}, \quad \textrm{for all $u \in \Cset[\Xbf]$}
 \end{equation*}
 and similar reasoning as used in the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters} yields
 \begin{equation*}
-\frac{\pbf^{(\epsilon)}(u)}{\deg_{n,r}(u)} \geq \frac{15}{125\vol_0} \geq \frac{1}{11 \vol_0}, \quad \textrm{for all $u \in \Cset[\Xbf]$}.
+\frac{\pbf^{(\varepsilon)}(u)}{\deg_{n,r}(u)} \geq \frac{15}{125\vol_0} \geq \frac{1}{11 \vol_0}, \quad \textrm{for all $u \in \Cset[\Xbf]$}.
 \end{equation*}
 
-On the other hand $\pbf^{(\epsilon)}(u) \leq \pbf(u)$. Therefore $\frac{\pbf^{(\epsilon)}(u')}{\deg_{n,r}(u')} \leq \frac{8}{375\vol_0}$, and the claim is proved.
+On the other hand $\pbf^{(\varepsilon)}(u) \leq \pbf(u)$. Therefore $\frac{\pbf^{(\varepsilon)}(u')}{\deg_{n,r}(u')} \leq \frac{8}{375\vol_0}$, and the claim is proved.
 
 
 \subsection{Linear Algebra Facts}
