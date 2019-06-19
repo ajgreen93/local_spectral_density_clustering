@@ -1752,9 +1752,14 @@ Together, Proposition \ref{prop: tv_mixing_time} and Lemma \ref{lem: tv_to_unifo
 
 For arbitrary starting distribution $q$ (meaning $\textrm{supp}(q) \subseteq V$ and $\sum_{u \in V}q(u) = 1$), and for $t \geq 0$ an integer, let $q^{(t)}$ be the $t$-step probability distribution of the lazy random walk with starting distribution $q$. Consider the distance function $h_q^{(t)}, t \geq 0$, 
 \begin{equation*}
-h_q^{(t)}(x) = \max \left\{ \sum_{u \in V} \left(q^{(m)}(u) - \pi(u)\right)w(u)\right\}
+h_q^{(t)}(x) = \max_{w \in \mathcal{W}_x} \left\{ \sum_{u \in V} \left(q^{(m)}(u) - \pi(u)\right)w(u)\right\}
 \end{equation*}
-where the maximum is over all $w: V \to [0,1]$ such that $0 \leq w(u) \leq 1$ for all $u$, and $\sum_{u \in V} w(u) \pi(u) = x$. Writing $h_v^{(t)}(x) := h_{e_v}^{(t)}(x)$ in a small abuse of notation, in Lemmas \ref{lem: lt_ub} and \ref{lem: mixing_time_small_sets}, we give an upper bound on $h_{v}^{(t)}(x)$ for all $0 \leq x \leq 1$. 
+where the maximum is over:
+\begin{align*}
+\mathcal{W}_x = \left\{w: V \to [0,1] \Big\vert 0 \leq w(u) \leq 1~~\forall~u,~~\text{and}~~\sum_{u \in V} w(u) \pi(u) = x\right\}.
+\end{align*}
+%$w: V \to [0,1]$ such that $0 \leq w(u) \leq 1$ for all $u$, and $\sum_{u \in V} w(u) \pi(u) = x$. 
+Writing $h_v^{(t)}(x) := h_{e_v}^{(t)}(x)$ in a small abuse of notation, in Lemmas \ref{lem: lt_ub} and \ref{lem: mixing_time_small_sets}, we give an upper bound on $h_{v}^{(t)}(x)$ for all $0 \leq x \leq 1$. 
 
 \vskip 0.1 in
 \begin{remark}
