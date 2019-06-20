@@ -5,7 +5,6 @@
 \usepackage{afterpage}
 \usepackage{amsmath,amssymb,amsthm} 
 \usepackage{fullpage}
-\usepackage[T1]{fontenc} 
 \usepackage{epsf} 
 \usepackage{graphics} 
 \usepackage{amsfonts,amsmath}
@@ -1671,92 +1670,27 @@ an upper bound on the ratio of Gamma functions.
 
 \section{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
 
-\subsection{Mixing time on graphs}
-\label{sec: mixing_time_on_graphs}
-
-We generalize some notation from the main text. For an undirected graph $G = (V,E)$, the lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf{} + \Dbf^{-1} \Abf}{2}$ and stationary distribution $\pi$.  Denote the $m$-step probability distribution of this random walk originating from a particular $v \in V$ as $q^{(m)}: V \times V \to [0,1]$, $q^{(m)}(v,u) = e_v \Wbf^m e_u$. An important intermediate quantity used to bound the relative pointwise mixing time $\tau_{\infty}(G)$ is the total variation distance between the distributions $q_v^{(m)} := q^{(m)}(v,\cdot)$ and $\pi$,
+Denote $\widetilde{G}_{n,r} = G_{n,r}[\Csig[\Xbf]]$; in general, we will use tilde notation to refer to quantities computed over $\Csig$ or over the induced subgraph $\widetilde{G}_{n,r}$. The goal of Theorem \ref{thm: mixing_time_upper_bound} is to show that, for universal constants $c_2, c_3 > 0$, with probability one as $n \to \infty$,
 \begin{equation*}
-\norm{q_v^{(m)} - \pi}_{\mathrm{TV}} = \sum_{u \in V} \abs{q_v^{(m)}(u) - \pi(u)}
+\limsup_{n \to \infty} \tau_{\infty}(\widetilde{G}_{n,r}) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{1}{r}\right) + c_3
 \end{equation*}
-We recall the \emph{cut} and \emph{volume} functionals over a graph, and introduce the \emph{degree} functional as well. For $u \in V$, $S \subseteq V$, 
-\begin{equation*}
-\cut(S;G) = \sum_{u \in S} \sum_{v \in S^c} \1((u,v) \in E), \quad \deg(u;G) = \sum_{v \in V} \1((u,v) \in E), \quad \vol(S;G) = \sum_{u \in S} \deg(u;G)
-\end{equation*}
+We follow a two-step approach typically to used to establish upper bounds on the mixing time of Markov chains.
 
-The \emph{local spread} is defined as
+In the first step, we relate the mixing time $\tau_{\infty}(G)$ of a generic graph $G = (V,E)$ to expansion properties of subsets $U \subseteq V$. We now build to a formal definition of these expansion properties. First, we recall the the \emph{cut} and \emph{volume} functionals over a graph, and introduce the \emph{degree} functional as well. For $u \in V$, $S \subseteq V$, 
 \begin{equation*}
-s(G) := \frac{9}{10} \cdot \min_{u \in V} \set{\deg(u; G)} \cdot \min_{u \in V} \set{\pi(v)}
+\cut(S;G) = \sum_{u \in S} \sum_{v \in S^c} \1((u,v) \in E), \quad \deg(u;G) = \sum_{v \in V} \1((u,v) \in E), \quad \vol(S;G) = \sum_{u \in S} \deg(u;G).
+\end{equation*}
+Additionally, we recall the \emph{normalized cut} $\Phi(S;G)$ is defined (as in \eqref{eqn: normalized_cut}) as
+\begin{equation*}
+\Phi(S;G) = \frac{\cut(S; G)}{\min\set{\vol(S; G),\vol(S^c; G)}}.
 \end{equation*}
 
-Recalling the \emph{normalized cut} $\Phi(S;G)$ is defined (as in \eqref{eqn: normalized_cut}) as
+With these functionals in hand, we can now formally define the expansion parameters \emph{local spread} $s(G)$ and \emph{conductance} $\Phi(G)$,
 \begin{equation*}
-\Phi(S;G) = \frac{\cut(S; G)}{\min\set{\vol(S; G),\vol(S^c; G)}},
-\end{equation*}
-we refer to the minimum normalized cut over $V$ as the \emph{conductance},
-\begin{equation*}
-\Phi(G) := \min_{S \subseteq V} \Phi(S;G).
+s(G) := \frac{9}{10} \cdot \min_{u \in V} \set{\deg(u; G)} \cdot \min_{u \in V} \set{\pi(v)}, \quad \Phi(G) := \min_{S \subseteq V} \Phi(S;G).
 \end{equation*}
 
-Proposition \ref{prop: tv_mixing_time} relates these geometric quantities to the TV distance between $q_v^{(t)}$ and stationary distribution $\pi$.
-\sbcomment{Added $\max$ to the RHS.}
-\begin{proposition}
-	\label{prop: tv_mixing_time}
-	For any $v \in V$, and any $0 < a \leq 1$,
-	\begin{align*}
-	\norm{q_v^{(t + 3)} - \pi}_{\mathrm{TV}} \leq \max\set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} 
-	 \\
-	~~~~~~~~~~~~~~~~~~~~~ + \left(\frac{1}{1 - 2as(G)} +  \frac{1}{2 as(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
-	\end{align*}
-\end{proposition}
-
-As we will see, Proposition \ref{prop: tv_mixing_time} is an essential step to proving an upper bound on the uniform mixing time. We justify this statement next, before moving on to proving Proposition \ref{prop: tv_mixing_time} in the following subsection.
-
-\paragraph{Uniform mixing time}
-Consider the uniform distance\footnote{Note $d_{\textrm{unif}}$ is not formally a distance as it is not symmetric.} between $q_v^{(t)}$ and $\pi$, given by
-\begin{equation*}
-d_{\textrm{unif}}(q_v^{(t)},\pi) = \max_{u \in V} \set{\frac{\pi(u) - q_v^{(t)}(u)}{\pi(u)}}.
-\end{equation*}
-
-\begin{lemma}
-	\label{lem: tv_to_uniform_distance}
-	Let $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{14} \max \set{1, \frac{1}{s(G)}}$. Then,
-	\begin{equation*}
-	d_{\mathrm{unif}}(q_v^{(t + 3)},\pi) \leq \frac{1}{4}
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	Fix $u \in V$ and let $m \geq t + 1$ be arbitrary. The stationarity of $\pi$ gives
-	\begin{align}
-	\frac{\pi(u) - q_v^{m}(u)}{\pi(u)} & = \sum_{y \in V} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \nonumber \\
-	& \overset{\text{(i)}}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
-	& \leq \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{2 \pi(u)} \label{eqn: tv_to_uniform_distance_1}
-	\end{align}
-	where $\text{(i)}$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
-	
-	Then 
-	\begin{align}
-	\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) & \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max_{y \neq u} \abs{\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}} \nonumber \\
-	& \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \max_{y \neq u}\set{\frac{q^{(1)}(y,u)}{\pi(u)}}} \nonumber \\
-	& \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \frac{1}{s(G)}} \label{eqn: tv_to_uniform_distance_3}
-	\end{align}
-	since for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known \cite{lovasz1990} that the laziness of the random walk guarantees $\norm{q_v^{(m - 1)} - \pi}_{\mathrm{TV}} \leq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}$, and therefore by \eqref{eqn: tv_to_uniform_distance_3} and hypothesis,
-	\begin{equation*}
-	\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \leq \frac{1}{14}.
-	\end{equation*}
-	
-	Plugging this in to \eqref{eqn: tv_to_uniform_distance_1} and taking maximum on both sides, we obtain
-	\begin{equation}
-	d_{\textrm{unif}}(q_v^{(m)}, \pi) \leq \frac{2}{7} + \frac{d_{\textrm{unif}}(q_v^{(m - 1)}, \pi)}{2} \label{eqn: tv_to_uniform_distance_2}
-	\end{equation}
-	The recurrence relation of \eqref{eqn: tv_to_uniform_distance_2} along with the initial condition $d_{\textrm{unif}}(q_v^{(t)}, \pi) \leq 1$ yields
-	\begin{equation*}
-	d_{\textrm{unif}}(q_v^{(t + 1)}, \pi) \leq \frac{8}{14} \Rightarrow d_{\textrm{unif}}(q_v^{(t + 2)}, \pi) \leq \frac{10}{28} \Rightarrow  d_{\textrm{unif}}(q_v^{(t + 3)}, \pi) \leq \frac{1}{4}
-	\end{equation*}
-	and the claim is shown.
-\end{proof}
-
-Together, Proposition \ref{prop: tv_mixing_time} and Lemma \ref{lem: tv_to_uniform_distance} imply the main result of this section.
-
+The following Proposition establishes an upper bound on the mixing time $\tau_{\infty}(G)$ in terms of the local spread $s(G)$ and conductance $\Phi(G)$.
 \begin{proposition}
 	\label{prop: pointwise_mixing_time}
 	Assume $\min_{u \in v} \deg(u; G) \geq 10$. Then,
@@ -1764,177 +1698,262 @@ Together, Proposition \ref{prop: tv_mixing_time} and Lemma \ref{lem: tv_to_unifo
 	\tau_{\infty}(G) \leq \frac{2}{\Phi^2(G)} \log \left(\frac{1440}{s(G)}\right)\log \left(\frac{14}{s(G)}\right)  + 3 \log \left(\frac{14}{s(G)}\right) + 3
 	\end{equation*}
 \end{proposition}
-\begin{proof}
-	Fix $a = \frac{1}{18}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \log \left(\frac{80}{a s(G)}\right)$. Then,
-	\begin{equation*}
-	\left(1 - \frac{\Phi^2(G)}{2}\right)^{\tau_0} \leq \exp(- \tau_0\Phi^2(G)/2) \leq \frac{as(G)}{80}
-	\end{equation*}
-	and so by Proposition \ref{prop: tv_mixing_time},
-	\begin{equation*}
-	\norm{q_v^{(\tau_0 + 3)} - \pi}_{\mathrm{TV}} \leq \max \set{\frac{1}{20}, \frac{1}{8} + \frac{1}{20} + \frac{1}{20}} + \left(\frac{2}{as(G)}\right) \frac{as(G)}{80} \leq \frac{1}{4}.
-	\end{equation*}
-	
-	It is a well known fact \cite{montenegro2002} that if $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{4}$, then for any $0 < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{\mathrm{TV}} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log(\frac{14}{s(G)})$, 
-	\begin{equation*}
-	\norm{q_v^{(\tau_1)} - \pi}_{\mathrm{TV}} \leq \frac{1}{14 s(G)}
-	\end{equation*}
-	and so by Lemma \ref{lem: tv_to_uniform_distance}, $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$. 
-\end{proof}
 
-\subsection{Proof of Proposition \ref{prop: tv_mixing_time}.}
-\label{sec: proof_of_proposition_tv_mixing_time}
+The second step in our approach is to lower bound the local spread and conductance over the particular graph $\widetilde{G}_{n,r}$. The following result provides the desired lower bounds, which hold asymptotically as $n \to \infty$,
+\begin{proposition}
+	\label{prop: local_spread_conductance}
+	Under the setup and conditions of Theorem \ref{thm: mixing_time_upper_bound}, with probability one,
+	\begin{equation*}
+	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}} 
+	\end{equation*}
+	and
+	\begin{equation*}
+	\liminf_{n \to \infty} \Phi(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}}.
+	\end{equation*}
+\end{proposition}
 
-For arbitrary starting distribution $q$ (meaning $\textrm{supp}(q) \subseteq V$ and $\sum_{u \in V}q(u) = 1$), and for $t \geq 0$ an integer, let $q^{(t)}$ be the $t$-step probability distribution of the lazy random walk with starting distribution $q$. Consider the distance function $h_q^{(t)}, t \geq 0$, 
+Taking these results as given, the proof of the theorem is more or less complete. We note that since $r$ is fixed, \textcolor{red}{with probability one} $\liminf_{n \to \infty} \min_{u \in \Csig[\Xbf]} \deg(u; \widetilde{G}_{n,r}) = \infty > 10$, and we may therefore apply Proposition \ref{prop: pointwise_mixing_time} with respect to $\widetilde{G}_{n,r}$. Along with Lemma \ref{prop: local_spread_conductance}, this yields
 \begin{equation*}
-h_q^{(t)}(x) = \max_{w \in \mathcal{W}_x} \left\{ \sum_{u \in V} \left(q^{(m)}(u) - \pi(u)\right)w(u)\right\}
+\tau_{\infty}(\widetilde{G}_{n,r}) \leq \frac{2^{27}\Lambda_{\sigma}^4\rho^2L^2 d^3}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{28800\Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + 3 \log^2\left(\frac{280\Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + 3
+\end{equation*}
+The first term dominates the middle term, and the theorem follows after an appropriate choice of $c_2$ and $c_3$.
+
+\subsection{Proof of Proposition \ref{prop: pointwise_mixing_time}}
+\label{sec: pointwise_mixing_time}
+
+We first generalize some notation from the main text. For an undirected graph $G = (V,E)$, the lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf{} + \Dbf^{-1} \Abf}{2}$ and stationary distribution $\pi$.  Denote the $t$-step probability distribution of this random walk, originating from a particular $v \in V$, as $q^{(t)}: V \times V \to [0,1]$, $q^{(t)}(v,u) = e_v \Wbf^t e_u$.
+
+Consider the uniform distance\footnote{Note $d_{\textrm{unif}}$ is not formally a distance as it is not symmetric.} between $q_v^{(t)} := q^{(t)}(v,\cdot)$ and $\pi$, given by
+\begin{equation*}
+d_{\textrm{unif}}(q_v^{(t)},\pi) = \max_{u \in V} \set{\frac{\pi(u) - q_v^{(t)}(u)}{\pi(u)}}.
+\end{equation*}
+Our goal is to demonstrate that for sufficiently large $t$, $d_{\textrm{unif}}(q_v^{(t)},\pi) \leq \frac{1}{4}$ for every $v \in V$. To do so, we introduce the \emph{total variation distance} between the distributions $q_v^{(t)}$ and $\pi$, given by
+\begin{equation*}
+\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} = \sum_{u \in V} \abs{q_v^{(t)}(u) - \pi(u)}.
+\end{equation*}
+As we will see, an upper bound on the uniform distance can be obtained from an analogous upper bound on the total variation distance. First, however, we upper bound the total variation distance $||q_v^{(t)} - \pi||_{\mathrm{TV}}$ as a function of the local spread $s(G)$, the conductance $\Phi(G)$ and the number of steps $t$.
+\begin{lemma}
+	\label{lem: tv_mixing_time}
+	For any $v \in V$, and any $0 < a \leq 1$,
+	\begin{align*}
+	\norm{q_v^{(t + 3)} - \pi}_{\mathrm{TV}} \leq \max\set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} 
+	\\
+	~~~~~~~~~~~~~~~~~~~~~ + \left(\frac{1}{1 - 2as(G)} +  \frac{1}{2 as(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{align*}
+\end{lemma}
+
+As mentioned, a bound on the total variation distance implies a corresponding bound on the uniform distance $d_{\mathrm{unif}}$, given by the following result:
+\begin{lemma}
+	\label{lem: tv_to_uniform_distance}
+	Let $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{14} \max \set{1, \frac{1}{s(G)}}$. Then,
+	\begin{equation*}
+	d_{\mathrm{unif}}(q_v^{(t + 3)},\pi) \leq \frac{1}{4}
+	\end{equation*}
+\end{lemma}
+
+Taking these Lemmas as given, we proceed to prove the proposition. Fix $a = \frac{1}{18}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \log \left(\frac{80}{a s(G)}\right)$. Then,
+\begin{equation*}
+\left(1 - \frac{\Phi^2(G)}{2}\right)^{\tau_0} \leq \exp(- \tau_0\Phi^2(G)/2) \leq \frac{as(G)}{80}
+\end{equation*}
+and so by Lemma \ref{lem: tv_mixing_time},
+\begin{equation*}
+\norm{q_v^{(\tau_0 + 3)} - \pi}_{\mathrm{TV}} \leq \max \set{\frac{1}{20}, \frac{1}{8} + \frac{1}{20} + \frac{1}{20}} + \left(\frac{2}{as(G)}\right) \frac{as(G)}{80} \leq \frac{1}{4}.
+\end{equation*}
+It is a well known fact \cite{montenegro2002} that if $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{4}$, then for any $0 < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{\mathrm{TV}} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log(\frac{14}{s(G)})$, 
+\begin{equation*}
+\norm{q_v^{(\tau_1)} - \pi}_{\mathrm{TV}} \leq \frac{1}{14 s(G)}
+\end{equation*}
+and so by Lemma \ref{lem: tv_to_uniform_distance}, $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$. 
+
+
+\subsection{Proof of Lemma \ref{lem: tv_mixing_time}}
+\label{sec: mixing_time_on_graphs}
+
+We generalize the notation of the previous subsection. For a starting distribution $z$ to be specified later (meaning $\textrm{supp}(z) \subseteq V$ and $\sum_{u \in V}z(u) = 1$), and for $t \geq 0$ an integer, let $q_z^{(t)}$ be the $t$-step probability distribution of the lazy random walk with starting distribution $z$.
+
+We will find it useful to introduce the \emph{Lovasz-Simonovits curve}, defined as
+$h_z^{(t)}, t \geq 0$, 
+\begin{equation*}
+h_q^{(t)}(x) = \max_{w \in \mathcal{W}_x} \left\{ \sum_{u \in V} \left(q_z^{(t)}(u) - \pi(u)\right)w(u)\right\}
 \end{equation*}
 where the maximum is over:
 \begin{align*}
 \mathcal{W}_x = \left\{w: V \to [0,1] \Big\vert 0 \leq w(u) \leq 1~~\forall~u,~~\text{and}~~\sum_{u \in V} w(u) \pi(u) = x\right\}.
 \end{align*}
-%$w: V \to [0,1]$ such that $0 \leq w(u) \leq 1$ for all $u$, and $\sum_{u \in V} w(u) \pi(u) = x$. 
-Writing $h_v^{(t)}(x) := h_{e_v}^{(t)}(x)$ in a small abuse of notation, in Lemmas \ref{lem: lt_ub} and \ref{lem: mixing_time_small_sets}, we give an upper bound on $h_{v}^{(t)}(x)$ for all $0 \leq x \leq 1$. 
-
-\vskip 0.1 in
-\begin{remark}
-	$h_q^{(t)}$ permits an equivalent definition. Order the elements of $V = \set{u_1, \ldots, u_N}$ ($N$ = $\abs{V}$), such that
-	\begin{equation*}
-	\frac{q^{(m)}(u_1)}{\pi(u_1)} \geq \frac{q^{(m)}(u_2)}{\pi(u_2)} \geq \ldots \geq \frac{q^{(m)}(u_N)}{\pi(u_N)}
-	\end{equation*}
-	and let $U_k = \set{u_1, \ldots, u_k}$. Then for any $x$, letting $k$ satisfy $\pi(U_{k - 1}) < x < \pi(U_k)$, it can be shown that,
-	\begin{equation}
-	\label{eqn: lovasz_simonovits_curve}
-	h_q^{(t)}(x) = \sum_{j = 1}^{k - 1} (q^{(m)}(u_j) - \pi(u_j)) + \frac{x - \pi(U_{k - 1})}{\pi(u_k)} \left(q^{(m)}(u_k) - \pi(u_k) \right).
-	\end{equation}
-	where we have used the standard notation $\pi(S) = \sum_{u \in S} \pi(u)$. 
-	The formulation on the right hand side of \eqref{eqn: lovasz_simonovits_curve} has come to be known as the \emph{Lovasz-Simonovits curve}, a concave, piecewise linear curve.
-\end{remark}
-
-\paragraph{Mixing over large sets}
-
-For $0 \leq \mu \leq 1$ and $\mu \leq x \leq 1 - \mu$ let 
+The utility of the Lovasz-Simonovits curve comes from the following observations:
+first, note that
 \begin{equation*}
-\ell_{\mu}(x) = \frac{1 - \mu - x}{1 - 2\mu} h_q^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu}h_q^{(0)}(1 - \mu)
+\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} = \sup_{S \subseteq V} \abs{q_v^{(t)}(S) - \pi(S)}
 \end{equation*}
-be the linear interpolator between $h_q^{(0)}(\mu)$ and $h_q^{(0)}(1 - \mu)$. 
-
-\begin{lemma}
-	\label{lem: lt_ub}
-	For any $0 \leq \mu \leq 1/2$ and $\mu \leq x \leq 1 - \mu$ and $t \geq 0$, 
-	\begin{equation*}
-	h_q^{(t)}(x) \leq \ell_{\mu}(x) + \max \set{\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} , \frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1 }\left(1 - \frac{\Phi^2(G)}{2}\right)^t
-	\end{equation*}
-\end{lemma}
-
-Theorem \ref{lem: lt_ub} is a direct consequence of Theorem 1.2 of \cite{lovasz1990}. To state the latter, we introduce
-\begin{equation*}
-C_{\mu} = \max \set{\frac{h_q^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{x - \mu}}, \frac{h_q^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{1 - x - \mu}}: \mu < x < 1 - \mu}
-\end{equation*}
-\begin{theorem}[Theorem 1.2 of \cite{lovasz1990}]
-	\label{thm: lovasz_simonovits_1993}
-	For any $0 \leq \mu \leq \frac{1}{2}$, $\mu \leq x \leq 1 - \mu$ and an integer $t \geq 0$,
-	\begin{equation*}
-	h_q^{(t)}(x) \leq \ell_{\mu}(x) + C_{\mu} \min \set{\sqrt{x - \mu}, \sqrt{1 - x - \mu}} \left(1 - \frac{\Phi^2(G)}{2}\right)^t
-	\end{equation*}
-\end{theorem}
-
-\begin{proof}[Proof of Lemma \ref{lem: lt_ub}]
-	Fix $0 \leq \mu \leq \frac{1}{2}$. We will show that for all $\mu \leq x \leq 1 - \mu$
-	\begin{equation}
-	\label{eqn: lt_ub_1}
-	h_q^{(0)}(x) - \ell_{\mu}(x) \leq \max \set{\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} , \frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1 } \min \set{\sqrt{x - \mu},\sqrt{1 - x - \mu}}
-	\end{equation}
-	whence the claim follows by Theorem \ref{thm: lovasz_simonovits_1993}. 
-	
-	We observe that the slope $v(x)$ of each linear segment of the Lovasz-Simonovits curve satisfies
-	\begin{equation}
-	\label{eqn: lovasz_simonovits_slope}
-	-1 \leq v(x) \leq \frac{h_q^{(0)}(\mu)}{\mu}.
-	\end{equation}
-	
-	Note that $\ell_{\mu}(\mu) = h_q^{(0)}(\mu)$, and for $x \geq \mu$, 
-	\begin{equation*}
-	h_q^{(0)}(x) \leq h_q^{(0)}(\mu) + (x - \mu)\frac{h_q^{(0)}(\mu)}{\mu}
-	\end{equation*}
-	by the concavity of $h_0$ along with \eqref{eqn: lovasz_simonovits_slope}. Some algebra then yields
-	\begin{align*}
-	h_q^{(0)}(x) - \ell_{\mu}(x) & \leq h_q^{(0)}(\mu) - \left(\frac{1 - \mu - x}{1 - 2\mu} h_q^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu} h_q^{(0)}(1 - \mu)\right) + \frac{h_q^{(0)}(\mu)}{\mu}(x - \mu) \\
-	& =  \frac{x - \mu}{1 - 2\mu}h_q^{(0)}(\mu) + \frac{h_q^{(0)}(\mu)}{\mu} (x - \mu) - \frac{x - \mu}{1 - 2\mu} h_q^{(0)}(1 - \mu) \\
-	& \leq \sqrt{x - \mu} \left(\frac{h_q^{(0)}(\mu)}{1 - 2\mu} + \frac{h_q^{(0)}(\mu)}{\mu} \right)
-	\end{align*}
-	On the other hand, $\ell_{\mu}(1 - \mu) = h_q^{(0)}(1 - \mu)$, and by the concavity of $h_q^{(0)}$ and \eqref{eqn: lovasz_simonovits_slope},  for $x \leq 1 - \mu$
-	\begin{equation*}
-	h_q^{(0)}(x) \leq h_q^{(0)}(1 - \mu) + (1 - x - \mu).
-	\end{equation*}
-	Similar manipulations to above give the upper bound
-	\begin{align*}
-	h_q^{(0)}(x) - \ell_{\mu}(x) \leq \sqrt{1 - \mu - x}\left(\frac{h_q^{(0)}(1 - \mu) }{1 - 2\mu} + 1\right)
-	\end{align*}
-	and \eqref{eqn: lt_ub_1} follows.
-\end{proof}
-
-\paragraph{Mixing over small sets.}
-
-\begin{lemma}
-	\label{lem: mixing_time_small_sets}
-	Let $0 \leq a \leq 1$, and $t \geq 1$ an integer. Then for any $x \leq as(G)$ or $x \geq 1 - as(G)$,
-	\begin{equation*}
-	h_v^{(t)}(x) \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	First, we deal with the case $x \leq as(G)$. Letting $U_k$ be as in \eqref{eqn: lovasz_simonovits_curve}, we have
-	\begin{equation}
-	\label{eqn: mixing_time_small_sets_1}
-	h_v^{(t)}(x) \leq q_v^{(m)}(U_{k - 1}) + q_v^{(m)}(u_k)
-	\end{equation}
-	
-	We will rely on the key fact that for any $u \neq v, t \geq 1$,
-	\begin{equation}
-	\label{eqn: mixing_time_small_sets_2}
-	q_v^{(t)}(u) \leq \frac{1}{2 \min_{u \in V}\deg(u;G)}
-	\end{equation}
-	
-	On the other hand if $u = v$,
-	\begin{equation}
-	\label{eqn: mixing_time_small_sets_3}
-	q_v^{(m)}(u) \leq \frac{1}{2^t} + \frac{1}{2\min_{u \in V}\deg(u;G)}.
-	\end{equation}
-	Therefore by \eqref{eqn: mixing_time_small_sets_1}, \eqref{eqn: mixing_time_small_sets_2}, and \eqref{eqn: mixing_time_small_sets_3}
-	\begin{equation*}
-	h_v^{(t)}(x) \leq \frac{1}{2^t} + \frac{\abs{U_k}}{2 \min_{u \in V}\deg(u;G)} + \frac{1}{2 \min_{u \in V}\deg(u;G)}.
-	\end{equation*}
-	Since $x \leq a s(G)$, 
-	\begin{equation*}
-	\abs{U_k} \leq \frac{x}{10 \min_{u \in V}(\pi(v))} \leq \frac{9a\min_{u \in V}\deg(u;G)}{10}.
-	\end{equation*}
-	
-	For any $0 \leq b \leq 1$, $x \geq 1 - b$ implies $h_v^{(t)}(x) \leq b$. Taking $b = a s(G)$, the claim is shown.
-\end{proof}
-
-\paragraph{Proof of Proposition \ref{prop: tv_mixing_time}.}
-For any $S \subseteq V$ and any integer $t \geq 0$,
+where we use the standard notation $\pi(S) := \sum_{u \in S} \pi(u)$, and likewise for $q_v^{(t)}(S)$. Moreover, observe that for any $S \subseteq V$ and any integer $t \geq 0$,
 \begin{equation*}
 \max \set{h_v^{(t)}(\pi(S)), h_v^{(t)}(1 - \pi(S))} \geq \abs{q_v^{(t)}(S) - \pi(S)}
 \end{equation*}
-and taking the maximum over all $S \subseteq V$ on both sides, we have
+Therefore, taking the maximum over all $S \subseteq V$ on both sides, we have
 \begin{equation*}
-\max_{0 \leq x \leq 1} h_v^{(t)}(x) \geq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}.
+\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \max_{0 \leq x \leq 1} h_v^{(t)}(x).
+\end{equation*}
+Now, take $z = e_vW^3$. Observe that $h_v^{(t+3)}(x) = h_z^{(t)}(x)$. To prove Lemma \ref{lem: tv_mixing_time}, it is therefore sufficient to show the desired upper bound holds with respect to $h_z^{(t)}(x)$ for all $x \in [0,1]$. 
+
+To do so, we split the interval $[0,1]$--based on a number $\mu = as(G)$ for some $0 < a < 1$ to be specified later--into the subinterval $[\mu, 1 - \mu]$ and the remainder $[0,\mu) \cup (1 - \mu, 1]$. Let $\ell_{\mu}(x)$ be the linear interpolator between $h_z^{(0)}(\mu)$ and $h_z^{(0)}(1 - \mu)$, 
+\begin{equation*}
+\ell_{\mu}(x) = \frac{1 - \mu - x}{1 - 2\mu} h_z^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu}h_z^{(0)}(1 - \mu).
 \end{equation*}
 
-Letting $q = e_v W^3$, observe that $h_v^{(t + 3)}(x) = h_q^{(t)}(x)$. Fix $\mu = as(G)$. Then, for $\mu \leq x \leq 1 - \mu$, by Lemma \ref{lem: lt_ub},
+The following technical Lemma collects the upper bounds which hold over $[\mu, 1 - \mu]$ and $[0,\mu) \cup (1 - \mu, 1]$, respectively:
+\begin{lemma}
+	\label{lem: mixing_all_sets}
+	For any $\mu \leq x \leq 1 - \mu$, 
+	\begin{equation}
+	\label{eqn: mixing_large_sets}
+	h_z^{(t)}(x) \leq \ell_{\mu}(x) + \left(\frac{1}{1 - 2\mu} + \frac{1}{\mu}\right)\left(1 - \frac{\Phi^2(G)}{2}\right)^t.
+	\end{equation}
+	For any $0 < x \leq \mu$ or $1 - \mu \leq x < 1$
+	\begin{equation}
+	\label{eqn: mixing_small_sets}
+	h_z^{(t)}(x) \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
+	\end{equation}
+\end{lemma}
+\noindent Taking Lemma \ref{lem: mixing_all_sets} as given, we have nearly completed our proof. Note that for any $\mu \leq x \leq 1 - \mu$,
 \begin{align*}
-h_v^{(t + 3)}(x) & = h_q^{(t)}(x) \\
-& \leq \max \set{h_q^{(0)}(\mu), h_q^{(0)}(1 - \mu) }  + \left(\frac{1}{1 - 2 \mu} + \frac{1}{2\mu}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t\\
-& \leq \max \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} + \left(\frac{1}{1 - 2a s(G)} + \frac{1}{2 a s(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+\ell_{\mu}(x) & \leq \max\set{h_z^{(t)}(\mu),h_z^{(t)}(1 - \mu)} \\
+& \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
 \end{align*}
-where the last inequality comes from application of Lemma \ref{lem: mixing_time_small_sets} to $h_q^{(t)} = h_v^{(t + 3)}$. 
-
-For $x \leq \mu$ or $x \geq 1 - \mu$, again by Lemma \ref{lem: mixing_time_small_sets},
+with the latter inequality following from \eqref{eqn: mixing_small_sets}. Therefore, for any $x \in [0,1]$,
 \begin{equation*}
-h_v^{(t + 3)}(x) \leq \max \set{as(G), \frac{1}{8} + \frac{1}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}}
+h_z^{(t)}(x) \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} } + \left(\frac{1}{1 - 2as(G)} + \frac{1}{as(G)}\right)\left(1 - \frac{\Phi^2(G)}{2}\right)^t
 \end{equation*}
-and the proof is complete. 
+which is the desired result.
+
+\subsection{Proof of Lemma \ref{lem: mixing_all_sets}}
+
+We first prove \eqref{eqn: mixing_large_sets}, and then \eqref{eqn: mixing_small_sets}.
+\paragraph{Proof of \eqref{eqn: mixing_large_sets}:}
+The desired result is a consequence of Theorem 1.2 of \cite{lovasz1990}. To state this theorem, we introduce the notation
+\begin{equation*}
+C_{\mu} = \max \set{\frac{h_z^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{x - \mu}}, \frac{h_z^{(0)}(x) - \ell_{\mu}(x)}{\sqrt{1 - x - \mu}}: \mu < x < 1 - \mu},
+\end{equation*}
+and then the theorem itself.
+\begin{theorem}[Theorem 1.2 of \cite{lovasz1990}]
+	\label{thm: lovasz_simonovits_1993}
+	For any $0 \leq \mu \leq \frac{1}{2}$, $\mu \leq x \leq 1 - \mu$ and an integer $t \geq 0$,
+	\begin{equation}
+	\label{eqn: lovasz_simonovits_1993}
+	h_z^{(t)}(x) \leq \ell_{\mu}(x) + C_{\mu} \min \set{\sqrt{x - \mu}, \sqrt{1 - x - \mu}} \left(1 - \frac{\Phi^2(G)}{2}\right)^t
+	\end{equation}
+\end{theorem}
+In order to show \eqref{eqn: mixing_large_sets}, we must therefore provide an appropriate bound on the quantity $C_{\mu}$. Precisely, we will show
+\begin{equation}
+\label{eqn: lt_ub_1}
+h_z^{(0)}(x) - \ell_{\mu}(x) \leq \max \set{\frac{h_z^{(0)}(\mu)}{1 - 2\mu} + \frac{h_z^{(0)}(\mu)}{\mu} , \frac{h_z^{(0)}(1 - \mu) }{1 - 2\mu} + 1 } \min \set{\sqrt{x - \mu},\sqrt{1 - x - \mu}}
+\end{equation}
+which will in turn imply
+\begin{align*}
+C_{\mu} & \leq \max \set{\frac{h_z^{(0)}(\mu)}{1 - 2\mu} + \frac{h_z^{(0)}(\mu)}{\mu} , \frac{h_z^{(0)}(1 - \mu) }{1 - 2\mu} + 1 } \\
+& \leq \frac{1}{\mu} + \frac{1}{1 - 2\mu}.
+\end{align*}
+Plugging this upper bound into \eqref{eqn: lovasz_simonovits_1993}, we obtain
+\begin{align*}
+h_z^{(t)}(x) & \leq \ell_{\mu}(x) +  \left(\frac{1}{\mu} + \frac{1}{1 - 2\mu}\right)\min \set{\sqrt{x - \mu}, \sqrt{1 - x - \mu}} \left(1 - \frac{\Phi^2(G)}{2}\right)^t \\
+& \leq \ell_{\mu}(x) +  \left(\frac{1}{\mu} + \frac{1}{1 - 2\mu}\right)\left(1 - \frac{\Phi^2(G)}{2}\right)^t
+\end{align*}
+which is the desired result.
+
+It remains to show \eqref{eqn: lt_ub_1}. To do so, we make use of an equivalent representation of the Lovasz-Simonovits curve $h_z^{(t)}$. Order the elements of $V = \set{u_1, \ldots, u_N}$ ($N$ = $\abs{V}$), such that
+\begin{equation*}
+\frac{q_z^{(t)}(u_1)}{\pi(u_1)} \geq \frac{q_z^{(t)}(u_2)}{\pi(u_2)} \geq \ldots \geq \frac{q_z^{(t)}(u_N)}{\pi(u_N)}
+\end{equation*}
+and let $U_k = \set{u_1, \ldots, u_k}$. Then for any $x$, letting $k$ satisfy $\pi(U_{k - 1}) < x < \pi(U_k)$, it can be shown that\footnote{See \cite{lovasz1990} for a formal justification.},
+\begin{equation}
+\label{eqn: lovasz_simonovits_curve}
+h_z^{(t)}(x) = \sum_{j = 1}^{k - 1} (q_z^{(t)}(u_j) - \pi(u_j)) + \frac{x - \pi(U_{k - 1})}{\pi(u_k)} \left(q_z^{(t)}(u_k) - \pi(u_k) \right).
+\end{equation}
+The representation of the Lovasz-Simonovits curve given by \eqref{eqn: lovasz_simonovits_curve} makes it clear that $h_z^{(t)}(x)$ is a concave, piecewise linear curve. Moreover, we observe that the slope $v(x)$ of each linear segment of the Lovasz-Simonovits curve satisfies
+\begin{equation}
+\label{eqn: lovasz_simonovits_slope}
+-1 \leq v(x) \leq \frac{h_z^{(0)}(\mu)}{\mu}.
+\end{equation}
+Note that $\ell_{\mu}(\mu) = h_z^{(0)}(\mu)$, and for $x \geq \mu$, 
+\begin{equation*}
+h_z^{(0)}(x) \leq h_z^{(0)}(\mu) + (x - \mu)\frac{h_z^{(0)}(\mu)}{\mu}
+\end{equation*}
+by the concavity of $h_0$ along with \eqref{eqn: lovasz_simonovits_slope}. Some algebra then yields
+\begin{align*}
+h_z^{(0)}(x) - \ell_{\mu}(x) & \leq h_z^{(0)}(\mu) - \left(\frac{1 - \mu - x}{1 - 2\mu} h_z^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu} h_z^{(0)}(1 - \mu)\right) + \frac{h_z^{(0)}(\mu)}{\mu}(x - \mu) \\
+& =  \frac{x - \mu}{1 - 2\mu}h_z^{(0)}(\mu) + \frac{h_z^{(0)}(\mu)}{\mu} (x - \mu) - \frac{x - \mu}{1 - 2\mu} h_z^{(0)}(1 - \mu) \\
+& \leq \sqrt{x - \mu} \left(\frac{h_z^{(0)}(\mu)}{1 - 2\mu} + \frac{h_z^{(0)}(\mu)}{\mu} \right)
+\end{align*}
+On the other hand, $\ell_{\mu}(1 - \mu) = h_z^{(0)}(1 - \mu)$, and by the concavity of $h_z^{(0)}$ and \eqref{eqn: lovasz_simonovits_slope},  for $x \leq 1 - \mu$
+\begin{equation*}
+h_z^{(0)}(x) \leq h_z^{(0)}(1 - \mu) + (1 - x - \mu).
+\end{equation*}
+Similar manipulations to above give the upper bound
+\begin{align*}
+h_z^{(0)}(x) - \ell_{\mu}(x) \leq \sqrt{1 - \mu - x}\left(\frac{h_z^{(0)}(1 - \mu) }{1 - 2\mu} + 1\right)
+\end{align*}
+and \eqref{eqn: lt_ub_1} follows.
+
+\paragraph{Proof of \eqref{eqn: mixing_small_sets}:}
+First, we deal with the case $x \leq as(G)$. Letting $U_k$ be as in \eqref{eqn: lovasz_simonovits_curve}, we have
+\begin{equation}
+\label{eqn: mixing_time_small_sets_1}
+h_z^{(t)}(x) \leq q_z^{(t)}(U_{k - 1}) + q_z^{(t)}(u_k)
+\end{equation}
+Recalling that $z = e_vW^3$, we will rely on the key fact that for any $u \neq v, t \geq 1$,
+\begin{equation}
+\label{eqn: mixing_time_small_sets_2}
+q_z^{(t)}(u) \leq \frac{1}{2 \min_{u \in V}\deg(u;G)}
+\end{equation}
+On the other hand if $u = v$,
+\begin{equation}
+\label{eqn: mixing_time_small_sets_3}
+q_z^{(m)}(u) \leq \frac{1}{2^{t + 3}} + \frac{1}{2\min_{u \in V}\deg(u;G)}.
+\end{equation}
+Therefore by \eqref{eqn: mixing_time_small_sets_1}, \eqref{eqn: mixing_time_small_sets_2}, and \eqref{eqn: mixing_time_small_sets_3}
+\begin{equation*}
+h_z^{(t)}(x) \leq \frac{1}{2^{t + 3}} + \frac{\abs{U_k}}{2 \min_{u \in V}\deg(u;G)} + \frac{1}{2 \min_{u \in V}\deg(u;G)}.
+\end{equation*}
+Finally, since $x \leq a s(G)$, 
+\begin{equation*}
+\abs{U_k} \leq \frac{x}{10 \min_{u \in V}(\pi(v))} \leq \frac{9a\min_{u \in V}\deg(u;G)}{10}.
+\end{equation*}
+and the desired result is shown.
+
+Now, we turn to the case where $x \geq 1 - as(G)$. But since $h_z^{(t)}(1) = 0$, and the slope of $h_z$, $v(x')$ is no less than $-1$ for all $x' \in [0,1]$, this implies $h_z^{(t)}(x) \leq 1 - x \leq as(G)$.
+
+\subsection{Proof of Lemma \ref{lem: tv_to_uniform_distance}}
+
+The proof of Lemma \ref{lem: tv_to_uniform_distance} follows from straightforward algebra. Fix $u \in V$ and let $m \geq t + 1$ be arbitrary. The stationarity of $\pi$ gives
+\begin{align}
+\frac{\pi(u) - q_v^{m}(u)}{\pi(u)} & = \sum_{y \in V} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \nonumber \\
+& \overset{\text{(i)}}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
+& \leq \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{2 \pi(u)} \label{eqn: tv_to_uniform_distance_1}
+\end{align}
+where $\text{(i)}$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
+
+Then 
+\begin{align}
+\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) & \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max_{y \neq u} \abs{\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}} \nonumber \\
+& \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \max_{y \neq u}\set{\frac{q^{(1)}(y,u)}{\pi(u)}}} \nonumber \\
+& \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \frac{1}{s(G)}} \label{eqn: tv_to_uniform_distance_3}
+\end{align}
+since for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known \cite{lovasz1990} that the laziness of the random walk guarantees $\norm{q_v^{(m - 1)} - \pi}_{\mathrm{TV}} \leq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}$, and therefore by \eqref{eqn: tv_to_uniform_distance_3} and hypothesis,
+\begin{equation*}
+\sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \leq \frac{1}{14}.
+\end{equation*}
+
+Plugging this in to \eqref{eqn: tv_to_uniform_distance_1} and taking maximum on both sides, we obtain
+\begin{equation}
+d_{\textrm{unif}}(q_v^{(m)}, \pi) \leq \frac{2}{7} + \frac{d_{\textrm{unif}}(q_v^{(m - 1)}, \pi)}{2} \label{eqn: tv_to_uniform_distance_2}
+\end{equation}
+The recurrence relation of \eqref{eqn: tv_to_uniform_distance_2} along with the initial condition $d_{\textrm{unif}}(q_v^{(t)}, \pi) \leq 1$ yields
+\begin{equation*}
+d_{\textrm{unif}}(q_v^{(t + 1)}, \pi) \leq \frac{8}{14} \Rightarrow d_{\textrm{unif}}(q_v^{(t + 2)}, \pi) \leq \frac{10}{28} \Rightarrow  d_{\textrm{unif}}(q_v^{(t + 3)}, \pi) \leq \frac{1}{4}
+\end{equation*}
+and the claim is shown.
+
+\subsection{Proof of Proposition \ref{prop: tv_mixing_time}.}
+\label{sec: proof_of_proposition_tv_mixing_time}
 
 \subsection{Population-level conductance.}
 \label{sec: population_conductance_function}
