@@ -292,7 +292,7 @@ Carnegie Mellon University
 \vspace*{.2in}
 
 \begin{abstract}
-\noindent We analyze Personalized PageRank (PPR), a local spectral method for clustering,
+\noindent We analyze the Personalized PageRank (PPR) algorithm, a local spectral method for clustering,
 which extracts clusters using locally-biased random walks around a user-specified
 seed node.  In contrast to previous work, we adopt a traditional statistical
 learning setup, where we obtain samples from an unknown distribution, and aim to
@@ -303,15 +303,24 @@ clusters. We also provide empirical support for our theory.
 \end{center}
 \section{Introduction}
 \label{sec: introduction}
-
-In this paper, we study the problem of clustering: splitting a given data set
+In this paper, we consider the problem of clustering: splitting a given data set
 into groups that satisfy some notion of within-group similarity and
-between-group difference.  We focus on spectral clustering, a family of powerful
-nonparametric clustering algorithms.  Generally speaking, a spectral algorithm
+between-group difference.  Our particular focus is on
+spectral clustering methods, a family of powerful
+nonparametric clustering algorithms. Roughly speaking, a spectral algorithm
 first constructs a geometric graph $G$, where vertices correspond to samples,
-and edges correspond to proximities between samples. It then estimates a feature
-embedding based on the Laplacian of $G$, and applies a simple clustering
-technique (like k-means clustering) in the embedded feature space.
+and edges correspond to proximities between samples. The algorithm 
+then estimates a feature
+embedding based on (an appropriate) Laplacian matrix of the graph 
+$G$, and applies a simple clustering
+technique (like $k$-means clustering) in the embedded feature space.
+
+% Spectral clustering and density clustering
+%Spectral clustering algorithms, which
+%originated in the early work of Fiedler \cite{fiedler73}, have seen a recent revival 
+%(see for instance the recent review~\cite{XX}) focused mainly on understanding the performance of spectral clustering on the Stochastic Block Model (SBM) and closely related problems.
+%A parallel line of work \cite{shi09,schiebinger15}, has considered spectral partitioning applied to a non-parametric mixture model
+%where once again the clustering goal is to recover the latent labels of a sample $X_1,\ldots,X_n \sim P$. These works proceed by relating the eigenvectors of the graph Laplacian to eigenfunctions of an appropriately defined integral operator, and then using assumptions about the (non-)overlap of the mixture components to show that these eigenfunctions elucidate the latent labels. 
 
 When applied to geometric graphs built from a large number of samples,
 global spectral clustering methods can be computationally cumbersome and   
@@ -319,7 +328,7 @@ insensitive to the local geometry of the underlying distribution
 \citep{leskovec2010,mahoney2012}.  This has led to increased interest in
 local spectral clustering algorithms, which leverage locally-biased spectra
 computed using random walks around some user-specified seed node.  A popular 
-local clustering algorithm is Personalized PageRank (PPR), first introduced by 
+local clustering algorithm is the Personalized PageRank (PPR) algorithm, first introduced by 
 \citet{haveliwala2003}, then further developed by
 several others~\citep{spielman2011,spielman2014,andersen2006,mahoney2012,zhu2013}.
 
@@ -328,7 +337,7 @@ Local spectral clustering techniques have been practically very successful
 many authors to develop supporting theory
 \citep{spielman2013,andersen2009,gharan2012,zhu2013} that gives worst-case
 guarantees on traditional graph-theoretic notions of cluster quality (such as
-conductance).  In this paper, we adopt a more traditional statistical viewpoint,
+conductance).  In this paper, we adopt a classical statistical viewpoint,
 and examine what the output of local clustering on a data set reveals about the
 underlying density of the samples 
 $f$.  In particular, we examine the ability of PPR to recover
@@ -337,10 +346,17 @@ the upper level set $\{x \in \Rd : f(x) \geq \lambda\}$ for some $\lambda > 0$
 (a central object of interest in the statistical clustering literature, dating
 back to the work of \citet{hartigan1981}).   
 
-\paragraph{PPR on a neighborhood graph.} We now describe the clustering
+\section{Background and Related Work}
+We begin by providing some standard background on the PPR algorithm
+and the density clustering setup, before turning our attention to related work
+and a
+detailed summary of our contributions.
+
+\subsection{PPR on a neighborhood graph} 
+We now describe the clustering
 algorithm that will be our focus for the rest of the paper. Let $\Xbf = \{x_1,
 \ldots, x_n\}$ be a sample drawn i.i.d.\ from a distribution $\Pbb$ on $\Rd$,
-with density $f$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
+with density~$f$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
 \emph{$r$-neighborhood graph} of $\Xbf$, an unweighted, undirected graph with
 vertices $V=\Xbf$, and an edge $(x_i,x_j) \in E$ if and only if $\norm{x_i -
 x_j} \leq r$, where $\norm{\cdot}$ is the $\ell_2$ norm. We denote by $\Abf \in
@@ -358,7 +374,7 @@ the solution of the following linear system:
 \end{equation}
 where $\Wbf = (\Ibf{} + \Dbf^{-1}\Abf)/2$ is the lazy random walk matrix over
 $G_{n,r}$ and $e_{v}$ is the indicator vector for node $v$ (that has a 1 in the
-$v$th position and 0 elsewhere). For a level $\beta > 0$ and a target volume
+$v$-th position and 0 elsewhere). For a level $\beta > 0$ and a target volume
 $\vol_0 > 0$, we define a \emph{$\beta$-sweep cut} of $\pbf = (p_u)_{u \in V}$
 as   
 \begin{equation}
@@ -380,7 +396,7 @@ Having computed sweep cuts $S_{\beta}$ over a range \smash{$\beta \in
 algorithms, see, e.g., \citep{zhu2013}.}, we output the cluster estimate
 \smash{$\Cest = S_{\beta^*}$} that has minimum normalized cut.
 %\smash{$\Phi(S_{\beta^*}; G_{n,r})$}. 
-For concreteness, this is summarized in Algorithm \ref{alg: ppr}. 
+For concreteness, the PPR algorithm is summarized in Algorithm~\ref{alg: ppr}. 
 
 \begin{algorithm}
 \caption{PPR on a neighborhood graph}
@@ -395,14 +411,15 @@ $\vol_0 > 0$. \\
     ppr_vector}. 
   \STATE For \smash{$\beta \in (\frac{1}{40}, \frac{1}{11})$} compute sweep cuts 
   $S_{\beta}$ as in \eqref{eqn: sweep_cuts}.
-  \STATE Return as a cluster \smash{$\Cest = S_{\beta^*}$}, where  
+  \STATE Return the cluster \smash{$\Cest = S_{\beta^*}$}, where  
   $$
-  \beta^* = \argmin_{\beta \in (\frac{1}{40}, \frac{1}{11})} \Phi(S_{\beta}; G_{n,r}).
+  \beta^* = \argmin_{\beta \in (\frac{1}{40}, \frac{1}{11})}~ \Phi(S_{\beta}; G_{n,r}).
   $$
 \end{algorithmic}
 \end{algorithm}
 
-\paragraph{Estimation of density clusters.} Let \smash{$\Cbb_f(\lambda)$} denote 
+\subsection{Estimation of density clusters} 
+Let \smash{$\Cbb_f(\lambda)$} denote 
 the connected components of the density upper level set $\{x \in \Rd: f(x) >
 \lambda\}$.  For a given density cluster \smash{$\Cset \in \Cbb_f(\lambda)$}, we
 call $\Cset[\Xbf] = \Cset \cap \Xbf$ the \emph{empirical density cluster}. The
@@ -442,8 +459,48 @@ asymptotically.
   \end{equation}
   with probability tending to 1.
 \end{definition}
+\noindent Consistent cluster recovery roughly ensures that, for a given $\lambda$, the estimated cluster $\Cest$ contains all
+points in a true
+density cluster $\Cset$, and simultaneously does not contain any points in any other density cluster $\Cset'$. 
 
-\paragraph{Summary of results.} A summary of our results (and an outline for this
+With these definitions in place, our broad goal will be to understand the extent to which the PPR algorithm is able to
+recover a cluster which either guarantees low symmetric set difference to a true density cluster, or which consistently estimates
+a true density cluster.
+
+%\subsection{Our Contributions} 
+
+
+\subsection{Related Work and Our Contributions}
+In addition to the background on local spectral
+clustering given previously, a few related lines of work are worth
+highlighting. \citet{shi2009} and \citet{schiebinger2015} examine the consistency of  
+spectral algorithms in recovering the latent labels in certain
+nonparametric mixture models. Their results focus on global rather than local 
+methods, and thus impose global rather than local conditions on the nature
+of the density. Moreover, they do not in general guarantee recovery of density 
+clusters, which is the focus in our work. Perhaps most importantly, these works
+rely on general cluster saliency conditions, which implicitly depend on many
+distinct geometric aspects of the cluster $\Cset$ under consideration. We make
+this dependence more explicit, and in doing so expose the role each geometric
+condition plays in the clustering problem. 
+
+More broadly, density clustering and level set estimation is a well-studied
+problem. \citet{polonik1995, rigollet2009} study density clustering under the 
+symmetric set difference metric, \citet{tsybakov1997, singh2009} describe
+minimax optimal level-set estimators under Hausdorff loss and
+\citet{hartigan1981, chaudhuri2010, balakrishnan2013} consider consistent estimation of the
+cluster tree.
+%, to note but a few works. 
+We emphasize that our goal is not to improve on these
+results, nor to offer a better algorithm for level set estimation; indeed, seen as
+a density clustering algorithm, PPR has none of the optimality guarantees 
+found in the aforementioned works. Instead, our motivation is to start with a 
+widely-used local spectral method, PPR, and to better understand and
+characterize the distinctions between those density clusters which are
+well-conditioned for PPR, and those which are not. 
+
+
+A summary of our results (and an outline for this
 paper) is as follows.
 
 \begin{enumerate}
@@ -470,36 +527,13 @@ paper) is as follows.
   geometric conditions impact density cluster recovery by PPR.
 \end{enumerate}
 
-Our main takeaway: PPR, run on a neighborhood graph, recovers geometrically
-compact high-density clusters. 
-
-\paragraph{Related work.} In addition to the background on local spectral
-clustering given previously, a few related lines of work are worth
-highlighting. \citet{shi2009} and \citet{schiebinger2015} examine the consistency of  
-spectral algorithms in recovering the latent labels in certain
-nonparametric mixture models. Their results focus on global rather than local 
-methods, and thus impose global rather than local conditions on the nature
-of the density. Moreover, they do not in general guarantee recovery of density 
-clusters, which is the focus in our work. Perhaps most importantly, these works
-rely on general cluster saliency conditions, which implicitly depend on many
-distinct geometric aspects of the cluster $\Cset$ under consideration. We make
-this dependence more explicit, and in doing so expose the role each geometric
-condition plays in the clustering problem. 
-
-More broadly, density clustering and level set estimation is a well-studied
-problem. \citet{polonik1995, rigollet2009} study density clustering under the 
-symmetric set difference metric, \citet{tsybakov1997, singh2009} describe
-minimax optimal level-set estimators under Hausdorff loss and
-\citet{hartigan1981, chaudhuri2010, balakrishnan2013} consider consistent estimation of the
-cluster tree.
-%, to note but a few works. 
-Our goal is not to improve on these
-results, nor to offer a better algorithm for level set estimation; indeed, seen as
-a density clustering algorithm, PPR has none of the optimality guarantees 
-found in the aforementioned works. Instead, our motivation is to start with a 
-widely-used local spectral method, PPR, and to better understand and
-characterize the distinctions between those density clusters which are
-well-conditioned for PPR, and those which are not. 
+\noindent At this point we summarize one of our main takeaways: 
+PPR, run on a neighborhood graph, recovers \emph{geometrically
+compact} high-density clusters. Our main theoretical results, make this takeaway 
+precise, and provide concrete ways of quantifying the geometric
+compactness of a density cluster. To complement this, we also provide experimental
+evidence that the PPR algorithm can fail to recover high-density clusters which are not
+geometrically compact.
 
 \section{Estimation of well-conditioned density clusters}
 \label{sec: consistent_cluster_estimation_with_ppr}
