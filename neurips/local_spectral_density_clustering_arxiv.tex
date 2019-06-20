@@ -1795,7 +1795,7 @@ Therefore, taking the maximum over all $S \subseteq V$ on both sides, we have
 \end{equation*}
 Now, take $z = e_vW^3$. Observe that $h_v^{(t+3)}(x) = h_z^{(t)}(x)$. To prove Lemma \ref{lem: tv_mixing_time}, it is therefore sufficient to show the desired upper bound holds with respect to $h_z^{(t)}(x)$ for all $x \in [0,1]$. 
 
-To do so, we split the interval $[0,1]$--based on a number $\mu = as(G)$ for some $0 < a < 1$ to be specified later--into the subinterval $[\mu, 1 - \mu]$ and the remainder $[0,\mu) \cup (1 - \mu, 1]$. Let $\ell_{\mu}(x)$ be the linear interpolator between $h_z^{(0)}(\mu)$ and $h_z^{(0)}(1 - \mu)$, 
+To do so, we split the interval $[0,1]$ into the subinterval $[\mu, 1 - \mu]$ and the remainder $[0,\mu) \cup (1 - \mu, 1]$, where $\mu = as(G)$. Let $\ell_{\mu}(x)$ be the linear interpolator between $h_z^{(0)}(\mu)$ and $h_z^{(0)}(1 - \mu)$, 
 \begin{equation*}
 \ell_{\mu}(x) = \frac{1 - \mu - x}{1 - 2\mu} h_z^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu}h_z^{(0)}(1 - \mu).
 \end{equation*}
