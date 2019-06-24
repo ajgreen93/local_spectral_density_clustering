@@ -85,7 +85,7 @@
 \newcommand{\pbf}{p}        % removed bold font
 \newcommand{\qbf}{\mathbf{q}}
 \newcommand{\ebf}[1]{{e}_{#1}}
-\newcommand{\pibf}{\bm{\pi}}
+\newcommand{\pibf}{\pi}
 
 %%% Matrices (no bold font)
 \newcommand{\Abf}{A}
@@ -832,7 +832,7 @@ Next we give our main result on consistent cluster recovery by PPR.
  \item While taking the radius of the neighborhood graph $r \to 0$ as $n \to
   \infty$ (thereby ensuring that the graph $G_{n,r}$ is sparse) is computationally
   attractive, the presence of a factor of \smash{$\log^2(1/r)/r$} in
-  $\kappa(\Cset)$ unfortunately prevents us from making claims about the
+  $\kappa(\Cset)$ prevents us from making claims about the
   behavior of PPR in this regime. Although the restriction to a kernel
   function fixed in $n$ is standard for spectral clustering theory
   \citep{schiebinger2015,vonluxburg2008}, it is an interesting question whether
@@ -2733,11 +2733,10 @@ Lemma \ref{lem: setup} provides uniform error bounds on $\pbf(x) - \overline{\pi
 
 We turn now to the proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.
 
-\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.}
-~
+%\paragraph{Proof of Theorem \ref{thm: consistent_recovery_of_density_clusters}.}
+%~
 
 In the proof that follows, every inequality will hold with probability tending to one as $n \to \infty$.
-
 Observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds $\alpha \leq \frac{1}{9 \tau_{u}(\theta)}$ and $r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{1}{9 \tau_{u}(\theta)}$. As a result, with probability one as $n \to \infty$, the conditions of Theorem \ref{thm: consistent_recovery_of_density_clusters} subsume the requirements of Lemma \ref{lem: setup}, and by that lemma, the following inequalities hold for each $u \in \Cset[\Xbf]$, $u' \in \Cset'[\Xbf]$:
 \begin{align}
 \pbf(u) & \geq \frac{4}{5} \overline{\pibf}_{n,r}(u) - \frac{2 \Phi_{n,r}(\Csig[\Xbf])}{\alpha \degminwt} \nonumber \\
