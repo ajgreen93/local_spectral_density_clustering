@@ -2507,7 +2507,7 @@ If $r_n^- = r = r_n^+$, \eqref{eqn: graph_to_continuous_conductance} would simpl
 	and the claim is shown.
 \end{proof}
 
-\paragraph{Proof of Lemma \ref{lem: graph_conductance_profile_lb}}
+\paragraph{Proof of Lemma \ref{lem: graph_conductance_profile_lb}:}
 
 By Lemma \ref{lem: stagnating_transportation_maps}, with probability one there exists a sequence of stagnating transportation maps from $\widetilde{\Pbb}$ to $\widetilde{\Pbb}_n$, which we will denote $\seq{T_n}$. 
 
@@ -2658,9 +2658,14 @@ We will require large-sample and asymptotic bounds on several different degree a
 
 \section{Proof of Theorem \ref{thm: misclassification_rate}}
 \label{sec: proof_of_misclassification_rate}
-In this section, we prove both Theorem \ref{thm: misclassification_rate} and the relevant portions of Corollary \ref{cor: appr}.
+In this section, we prove both Theorem \ref{thm: misclassification_rate}.
+The result is in essence a consequence of the bounds in Theorem~\ref{thm: conductance_upper_bound} 
+and Theorem~\ref{thm: mixing_time_upper_bound} bounding the normalized cut and mixing time, together with the result of \citet{zhu2013} relating the quality of the PPR output to these quantities, and the result in Lemma~\ref{lem: ball_bounds_in_probability}
+that allows us to translate the guarantees on the volume to guarantees on the symmetric set difference. 
 
-Lemma \ref{lem: zhu} is a restatement of Lemma 3.4 of \cite{zhu2013}, translated into notation consistent with the rest of this paper. It is stated with respect to an arbitrary $S \subseteq G = (V,E)$, and a good set $S^g \subseteq S$ with $\vol(S^g; G) \geq \vol(S; G)/2$. \footnote{The sweep cuts of Lemma 3.4 of \cite{zhu2013} are stated directly with respect to $\vol(S;G)$, rather than $\vol_0$; this discrepancy leads to the extra factors of $1 - c$ and $1 + c$ which appear in our bounds as opposed to theirs.}
+
+% and the relevant portions of Corollary \ref{cor: appr}.
+We begin with Lemma \ref{lem: zhu}, which is a restatement of Lemma 3.4 of \citet{zhu2013}, translated into notation consistent with the rest of this paper. It is stated with respect to an arbitrary $S \subseteq G = (V,E)$, and a good set $S^g \subseteq S$ with $\vol(S^g; G) \geq \vol(S; G)/2$.\footnote{The sweep cuts of Lemma 3.4 of \cite{zhu2013} are stated directly with respect to $\vol(S;G)$, rather than $\vol_0$; this discrepancy leads to the extra factors of $1 - c$ and $1 + c$ which appear in our bounds as opposed to theirs.}
 
 \begin{lemma}
 	\label{lem: zhu}
@@ -2674,13 +2679,12 @@ Lemma \ref{lem: zhu} is a restatement of Lemma 3.4 of \cite{zhu2013}, translated
 	\vol(S \setminus S_{\beta}; G) & \leq \left(\frac{2\Phi(S;G)}{\alpha (\frac{3}{5} - \beta(1 + c))} + 8\Phi(S;G)\right)\vol(S; G).  \label{eqn: zhu_2}
 	\end{align}
 \end{lemma}
-
-\paragraph{Proof of Theorem \ref{thm: misclassification_rate}.}
-
-Observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds $\alpha \leq \frac{1}{9 \tau_u(\theta)}, r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{1}{9\tau_{\infty}(G[S])}$. Moreover, 
-\begin{enumerate}[\text{(i)}]
+%\paragraph{Proof of Theorem \ref{thm: misclassification_rate}.}
+With this Lemma in place we
+observe that by Theorem \ref{thm: mixing_time_upper_bound} and the upper bounds $\alpha \leq \frac{1}{9 \tau_u(\theta)}, r < \sigma/2d$ given in \eqref{eqn: initialization}, with probability one as $n \to \infty$, $\alpha \leq \frac{1}{9\tau_{\infty}(G[S])}$. Moreover, 
+\begin{enumerate}
 	\item we restrict $v \in \Csig[\Xbf]^g$
-	\item the output of Algorithm \ref{alg: ppr} $\widehat{C} = S_{\beta}$ for some $1/40 < \beta < 1/11$
+	\item the output of Algorithm \ref{alg: ppr} $\widehat{C} = S_{\beta}$, for some $1/40 < \beta < 1/11$
 	\item by Lemma \ref{lem: ball_bounds_in_probability}, $\vol_0 \in [1/2,3/2]\vol_{n,r}(\Csig[\Xbf])$
 	\item the \pprspace vector $\pbf(v,\alpha;G_{n,r})$ is simply an approximate \pprspace vector with $\varepsilon = 0$.
 \end{enumerate}
@@ -2695,7 +2699,7 @@ Noting that
 \abs{\Csig[\Xbf] \setminus \widehat{C}} & \leq \frac{\vol_{n,r}(\Csig[\Xbf] \setminus \widehat{C})}{\degminwt}, \quad \textrm{and} \\
 \abs{\Csig[\Xbf]} & \geq \frac{\vol_{n,r}(\Csig[\Xbf])}{\degmax}
 \end{align*}
-the claim follows in light of \eqref{eqn: min_degree_bound}, \eqref{eqn: min_cluster_degree_bound} and \eqref{eqn: max_degree_bound} from Lemma \ref{lem: ball_bounds_in_probability}.
+the theorem follows in light of \eqref{eqn: min_degree_bound}, \eqref{eqn: min_cluster_degree_bound} and \eqref{eqn: max_degree_bound} from Lemma \ref{lem: ball_bounds_in_probability}.
 
 
 
@@ -2916,8 +2920,6 @@ Let $s_t := q(\Wbf \Ibf{S})^t(\Wbf(\Ibf{S^c}))$ be the soakage vector out of $S 
 \end{lemma}
 \begin{proof}	
 	We show \eqref{eqn: sum_of_soakages}, from which \eqref{eqn: sum_of_soakages_2} is an immediate consequence.
-	
-	
 	To show \eqref{eqn: sum_of_soakages}, we proceed by induction on $T$. When $T = 1$,
 	\begin{equation*}
 	q\Wbf = q\Wbf\Ibf{S} + q\Wbf\Ibf{S^c} =  q\Wbf\Ibf{S} + s_0. 
