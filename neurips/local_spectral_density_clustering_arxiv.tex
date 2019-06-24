@@ -820,20 +820,17 @@ Next we give our main result on consistent cluster recovery by PPR.
   then the output set $\Cest \subseteq \Xbf$ is a consistent estimator for
   $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}. 
 \end{theorem}
-
-\begin{remark}
-  We note that the restriction on $\kappa(\Cset)$ imposed by \eqref{eqn:
+\noindent Some remarks are in order: 
+ \begin{enumerate}  
+ \item We note that the restriction on $\kappa(\Cset)$ imposed by \eqref{eqn:
     kappa_ub} results in a symmetric set difference \smash{$\Delta(\Csig[\Xbf],
     \Cest)$} on the order of $r^d$. In plain terms, we are able to recover a
   density cluster $\Cset$ in the sense of \eqref{eqn:
     consistent_density_cluster_recovery} only when we can guarantee a very small
   fraction of points will be misclassified. This strong condition is the price
-  we pay in order to obtain the uniform bound of \eqref{eqn: ppr_gap}. 
-\end{remark}
-
-\begin{remark}
-  While taking the radius of the neighborhood graph $r \to 0$ as $n \to
-  \infty$ (thereby ensuring $G_{n,r}$ is sparse) is computationally
+  we pay in order to obtain the uniform bound in~\eqref{eqn: ppr_gap}. 
+ \item While taking the radius of the neighborhood graph $r \to 0$ as $n \to
+  \infty$ (thereby ensuring that the graph $G_{n,r}$ is sparse) is computationally
   attractive, the presence of a factor of \smash{$\log^2(1/r)/r$} in
   $\kappa(\Cset)$ unfortunately prevents us from making claims about the
   behavior of PPR in this regime. Although the restriction to a kernel
@@ -841,14 +838,14 @@ Next we give our main result on consistent cluster recovery by PPR.
   \citep{schiebinger2015,vonluxburg2008}, it is an interesting question whether
   PPR exhibits some degeneracy over $r$-neighborhood graphs as $r \to 0$, or if
   this is merely looseness in our upper bounds.  
-\end{remark}
-
+\end{enumerate}
 \sbcomment{You are using $\epsilon$ here and in the future to mean different things. I have
 changed this $\epsilon$ to $\varepsilon$.} 
 
 \subsection{Approximate PPR vector} 
-In practice, exactly solving \eqref{eqn:
-  ppr_vector} may be too computationally expensive. To address this limitation,
+In practice, exactly solving the system of equations~\eqref{eqn:
+  ppr_vector} to compute the PPR vector 
+  may be too computationally expensive. To address this limitation,
 \citet{andersen2006} introduced the \emph{$\varepsilon$-approximate} PPR vector
 (aPPR), which we will denote by \smash{$\pbf^{(\varepsilon)}$}. We refer the
 curious reader to \citet{andersen2006} for a formal algorithmic definition of
@@ -860,11 +857,12 @@ while satisfying the following uniform error bound:
 \textrm{for all $u \in V$}, \quad \pbf(u) - \varepsilon \Dbf_{uu}\leq
 \pbf^{(\varepsilon)}(u) \leq \pbf(u).  
 \end{equation}
-Application of \eqref{eqn: appr_error} within the proofs of Theorems \ref{thm:
+For a sufficiently small choice of $\varepsilon$, the 
+application of \eqref{eqn: appr_error} within the proofs of Theorems \ref{thm:
   misclassification_rate} and \ref{thm: consistent_recovery_of_density_clusters}
 leads to analogous results which hold for \smash{$\pbf^{(\varepsilon)}$}. We
 formally state and prove this in Corollary~\ref{cor: appr} in 
-the appendix. 
+Appendix~\ref{sec:appr}.
 
 \section{Analysis Overview}
 \label{sec: analysis}
@@ -876,7 +874,8 @@ $G_{n,r}$. In doing so, we elaborate on how some of the geometric conditions
 introduced in Section \ref{sec: consistent_cluster_estimation_with_ppr}
 contribute to the difficulty of the clustering problem. 
 
-\paragraph{Normalized cut.} We start with a finite sample upper bound on the
+\subsection{Upper Bound on the Normalized Cut} 
+We start with a finite sample upper bound on the
 normalized cut \eqref{eqn: normalized_cut} of $\Cset_\sigma[\Xbf]$. For
 simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$. 
 
@@ -900,10 +899,8 @@ simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
       c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}} + \epsilon.
   \end{equation}
 \end{theorem}
-
-\begin{remark}
-  \label{rmk: diameter}
-  Observe that the diameter $\rho$ is absent from Theorem \ref{thm:
+\noindent {\bf Remark: } 
+Observe that the diameter $\rho$ is absent from Theorem \ref{thm:
     conductance_upper_bound}, in contrast to the condition number
   $\kappa(\Cset)$, which worsens (increases) as $\rho$ increases. This
   reflects established wisdom regarding spectral partitioning
@@ -913,9 +910,9 @@ simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
   sufficiently well-conditioned to ensure $\Csig[\Xbf]$ has a small normalized
   cut in $G_{n,r}$. This intuition will be supported by simulations in Section
   \ref{sec: experiments}. 
-\end{remark}
 
-\paragraph{Mixing time.} For $S \subseteq V$, denote by $G[S] = (S, E_S)$ the
+\subsection{Upper Bounds on the Mixing Time} 
+For $S \subseteq V$, denote by $G[S] = (S, E_S)$ the
 subgraph induced by $S$ (where the edges are $E_S = E \cap (S \times S)$). Let
 $\Wbf_S$ be the (lazy) random walk matrix over $G[S]$, and write  
 $$
@@ -957,7 +954,9 @@ continuous-space ``ball walk'' over convex sets. To the best of our knowledge, o
 result is the first bound, albeit asymptotic, on the mixing time of random walks
 over neighborhood graphs that is independent of $n$, the number of vertices.   
 
-\begin{remark}
+\vspace{0.2cm}
+
+\noindent {\bf Remark: } 
   The embedding assumption \ref{asmp: embedding} and Lipschitz parameter $L$
   play an important role in proving the upper bound of Theorem \ref{thm:
     mixing_time_upper_bound}. There is some interdependence between $L$ and
@@ -972,7 +971,6 @@ over neighborhood graphs that is independent of $n$, the number of vertices.
   is observed that star-shaped sets as well as half-moon shapes of the type we
   consider in Section \ref{sec: experiments} both satisfy \ref{asmp: embedding}
   for reasonably small values of $L$. 
-\end{remark}
 
 \section{Experiments}
 \label{sec: experiments}
@@ -1130,9 +1128,11 @@ There are an almost limitless number of ways to define what the ``right''
 clustering is. In this paper, we have considered one such notion---density upper
 level sets---and have detailed a set of natural geometric criteria which, when 
 appropriately satisfied, translate to provable bounds on estimation of the
-cluster by PPR. We do not, however, provide theory to show that our geometric
-conditions are required for successful recovery of a density level set. This
-seems to be supported by our empirical results, and it remains a direction for 
+cluster by PPR. We do not, however, provide theory to show that (some variant of) 
+our geometric
+conditions are \emph{required} for successful recovery of a density level set. This
+seems to be supported by our empirical results, and establishing this necessity
+formally is an important direction for 
 future work.  
 
 \section{Acknowledgements}
@@ -2653,16 +2653,8 @@ We will require large-sample and asymptotic bounds on several different degree a
 	The two asymptotic statements \eqref{eqn: min_cluster_degree_bound_asymp} and \eqref{eqn: max_vol_bound_asymp} therefore both follow from the Borel-Cantelli Lemma.
 \end{proof}
 
-Before we proceed to the next subsection, we include a formal statement of our claims regarding the a\pprspace vector. 
-\begin{corollary}
-	\label{cor: appr}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster (with respect to some $\theta$). Choose input parameters $\alpha, r, \vol_0, v$ to be well-initialized in the sense of \eqref{eqn: initialization}, set $\varepsilon = \frac{1}{20 \vol_0}$, and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\varepsilon)}$ rather than the exact \pprspace vector $\pbf$, with resulting output $\Cest$.
-	\begin{enumerate}
-		\item If \ref{asmp: valid_region} holds, then \eqref{eqn: misclassification_rate_ub} is still a valid upper bound for the misclassification error of $\Cest$.
-		\item If \ref{asmp: C'_bounded_density} and \eqref{eqn: kappa_ub} hold, 
-		then $\Cest \subseteq \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
-	\end{enumerate}
-\end{corollary}
+
+
 
 \section{Proof of Theorem \ref{thm: misclassification_rate}}
 \label{sec: proof_of_misclassification_rate}
@@ -2704,10 +2696,6 @@ Noting that
 \abs{\Csig[\Xbf]} & \geq \frac{\vol_{n,r}(\Csig[\Xbf])}{\degmax}
 \end{align*}
 the claim follows in light of \eqref{eqn: min_degree_bound}, \eqref{eqn: min_cluster_degree_bound} and \eqref{eqn: max_degree_bound} from Lemma \ref{lem: ball_bounds_in_probability}.
-
-\paragraph{Proof of Corollary \ref{cor: appr} misclassification rates.}
-
-The choice $\varepsilon = \frac{1}{20 \vol_0}$, along with Lemma~\ref{lem: ball_bounds_in_probability} and the upper bound on $\vol_0$ given by \eqref{eqn: initialization}, together imply that $\varepsilon < \frac{1}{10}\vol_{n,r}(\Csig[\Xbf])$ with probability tending to one as $n \to \infty$. We may therefore apply Lemma \ref{lem: zhu} with respect to $\pbf^{(\varepsilon)}$. All other aspects of the proof of Theorem \ref{thm: misclassification_rate} may be applied exactly as stated.
 
 
 
@@ -2784,7 +2772,23 @@ Then, by Theorem \ref{thm: conductance_upper_bound} and the lower bound $\alpha 
 \end{equation}
 \eqref{eqn: difficulty_bound}, \eqref{eqn: pimin_Dmin_lb} and \eqref{eqn: kappa_ub} together show \eqref{eqn: gap_bounds}.
 
-\paragraph{Proof of Corollary \ref{cor: appr}: consistent cluster estimation.}
+\subsection{The Approximate PPR Vector}
+\label{sec:appr}
+Before we proceed to the next section, we include a formal statement of our claims regarding the a\pprspace vector. 
+\begin{corollary}
+	\label{cor: appr}
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster (with respect to some $\theta$). Choose input parameters $\alpha, r, \vol_0, v$ to be well-initialized in the sense of \eqref{eqn: initialization}, set $\varepsilon = \frac{1}{20 \vol_0}$, and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\varepsilon)}$ rather than the exact \pprspace vector $\pbf$, with resulting output $\Cest$.
+	\begin{enumerate}
+		\item If \ref{asmp: valid_region} holds, then \eqref{eqn: misclassification_rate_ub} is still a valid upper bound for the misclassification error of $\Cest$.
+		\item If \ref{asmp: C'_bounded_density} and \eqref{eqn: kappa_ub} hold, 
+		then $\Cest \subseteq \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
+	\end{enumerate}
+\end{corollary}
+\begin{proof}
+The choice $\varepsilon = \frac{1}{20 \vol_0}$, along with Lemma~\ref{lem: ball_bounds_in_probability} and the upper bound on $\vol_0$ given by \eqref{eqn: initialization}, together imply that $\varepsilon < \frac{1}{10}\vol_{n,r}(\Csig[\Xbf])$ with probability tending to one as $n \to \infty$. We may therefore apply Lemma \ref{lem: zhu} with respect to $\pbf^{(\varepsilon)}$. All other aspects of the proof of Theorem \ref{thm: misclassification_rate} may be applied exactly as stated.
+
+
+%\paragraph{Proof of Corollary \ref{cor: appr}: consistent cluster estimation.}
 
 Using \eqref{eqn: appr_error} with $\varepsilon = \frac{1}{20}\vol_0$ along with \eqref{eqn: lower_bound_PPR_in_cluster} we obtain
 \begin{equation*}
@@ -2794,8 +2798,9 @@ and similar reasoning as used in the proof of Theorem \ref{thm: consistent_recov
 \begin{equation*}
 \frac{\pbf^{(\varepsilon)}(u)}{\deg_{n,r}(u)} \geq \frac{15}{125\vol_0} \geq \frac{1}{11 \vol_0}, \quad \textrm{for all $u \in \Cset[\Xbf]$}.
 \end{equation*}
-
 On the other hand $\pbf^{(\varepsilon)}(u) \leq \pbf(u)$. Therefore $\frac{\pbf^{(\varepsilon)}(u')}{\deg_{n,r}(u')} \leq \frac{8}{375\vol_0}$, and the claim is proved.
+
+\end{proof}
 
 \subsection{Proof of Lemma~\ref{lem: setup}}
 	%The proof of Lemma \ref{lem: setup} is lengthy, but not difficult. 
@@ -2885,6 +2890,8 @@ We state here a number of basic facts which follow from matrix manipulations, wh
 	\pbf_v(u) & = \alpha\sum_{T = 0}^{\infty} (1 - \alpha)^t \left(e_v \Wbf^T\right)(u) \\
 	& = \alpha\sum_{T = 1}^{\infty} (1 - \alpha)^t \left(e_v \Wbf^T\right)(u) \\
 	& \leq \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} \right)(u) \tag{Lemma \ref{lem: sum_of_soakages}}\\
+	\end{align*}
+	\begin{align*}
 	& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf^{T - t - 1} \right)(u)\\
 	& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf^{\Delta} \right)(u) \\
 	& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf^{\Delta} \right)(u) \\
