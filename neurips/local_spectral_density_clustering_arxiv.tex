@@ -22,6 +22,7 @@
 \addtolength{\textheight}{-\footskip}
 \setlength{\oddsidemargin}{0.5cm}
 \setlength{\evensidemargin}{0.5cm}
+\renewcommand{\floatpagefraction}{.8}%
 
 \newtheorem{theorem}{Theorem} 
 \newtheorem{lemma}{Lemma}
@@ -535,18 +536,35 @@ compactness of a density cluster. To complement this, we also provide experiment
 evidence that the PPR algorithm can fail to recover high-density clusters which are not
 geometrically compact.
 
-\section{Estimation of well-conditioned density clusters}
+\section{Main Results}
 \label{sec: consistent_cluster_estimation_with_ppr}
-
-We formalize some geometric conditions, and use these to define a condition
+In this section we present our main results on the accuracy of the PPR algorithm 
+for recovering density clusters. 
+We begin by formally introducing a variety of geometric conditions, 
+and use these to define a condition
 number $\kappa(\Cset)$, which measures the difficulty PPR will have in  
-estimating $\Cset$. (Our theoretical guarantees for PPR will be framed in terms 
-of $\kappa(\Cset)$.)
+estimating a density cluster $\Cset$.
+With this condition in place 
+our first main result (Theorem~\ref{thm: misclassification_rate}) provides a bound
+on the symmetric set difference between the estimated cluster $\Cest$,
+obtained by an appropriately initialized version of the PPR algorithm,
+and
+the target cluster $\Cset$.
+Our next main result (Theorem~\ref{thm: consistent_recovery_of_density_clusters})
+shows that for sufficiently well-conditioned target clusters $\Cset$, the output 
+of the PPR algorithm $\Cest$
+is consistent in the sense defined in Definition~\ref{def: consistent_density_cluster_estimation}.
 
-\paragraph{Geometric conditions on density clusters.} At a high level, for PPR
+\subsection{Preliminaries}%: Geometric Conditions and the Condition Number of a Density Cluster}
+%We formalize some geometric conditions, and use these to define a condition
+%number $\kappa(\Cset)$, which measures the difficulty PPR will have in  
+%estimating $\Cset$. (Our theoretical guarantees for PPR will be framed in terms 
+%of $\kappa(\Cset)$.)
+%\paragraph{Geometric conditions on density clusters.} 
+At a high level, for PPR
 to be successful, the underlying density cluster must be geometrically
-well-conditioned.  At a minimum, we want to avoid sets that contain arbitrarily
-thin bridges or spikes.  Hence, as in \citet{chaudhuri2010}, we consider a
+well-conditioned.  A basic requirement is that we need to avoid clusters which contain arbitrarily
+thin bridges or spikes. As in the work of \citet{chaudhuri2010}, we consider a
 thickened version of \smash{$\Cset \in \Cbb_f(\lambda)$} defined as 
 $\Csig := \set{x \in \Reals^d: \dist(x,\Cset) \leq \sigma}$, which 
 we call the \emph{$\sigma$-expansion} of $\Cset$. Here 
@@ -572,36 +590,48 @@ conditions on $\Csig$.
   \label{asmp: low_noise_density}
   \emph{Low noise density:} There exist $\gamma,c_0 > 0$ such that for 
   $x \in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,   
-  $\inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \dist(x, \Csig)^{\gamma}$.
+  \begin{align*}
+  \inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \dist(x, \Csig)^{\gamma}. 
+  \end{align*}
+  Roughly, 
+  this assumption ensures that the density decays sufficiently quickly as we move away from
+  the target cluster $\Csig$, and is a standard assumption in the level-set estimation literature
+  (see for instance~\cite{singh2009}).
+  
 	
   %%% AJG 5/20: Should I turn this into two conditions?
 \item
   \label{asmp: embedding}
   \emph{Lipschitz embedding:}
-  There exists $g: \Reals^d \to \Reals^d$ with the following properties: i)
-  we have $\Csig = g(\mathcal{K})$, for a convex set $\mathcal{K} \subseteq \Rd$
+  There exists $g: \Reals^d \to \Reals^d$ with the following properties: 
+  \begin{enumerate}
+  \item we have $\Csig = g(\mathcal{K})$, for a convex set $\mathcal{K} \subseteq \Rd$
   with $\mathrm{diam}(\mathcal{K}) = \sup_{x,y \in \mathcal{K}}\norm{x - y} =:
-  \diam < \infty$; ii) $\det(\nabla g (x)) = 1$ for all $x \in \Csig$, where
-  $\nabla g(x)$ is the Jacobian of $g$ evaluated at $x$; and iii) for some $L
+  \diam < \infty$
+  \item $\det(\nabla g (x)) = 1$ for all $x \in \Csig$, where
+  $\nabla g(x)$ is the Jacobian of $g$ evaluated at $x$ and
+  \item for some $L
   \geq 1$,   
   \begin{equation*}
     \frac{1}{L}\norm{x - y} \leq \norm{g(x) - g(y)} \leq L \norm{x - y} ~
     \text{for all $x,y \in \mathcal{K}$}. 
   \end{equation*}
-  Succintly, $\Csig$ is the image of a convex set with finite diameter 
+  \end{enumerate}
+  Succinctly, we assume that $\Csig$ is the image of a convex set with finite diameter 
   under a  measure preserving, bi-Lipschitz transformation. 
 
 \item
   \label{asmp: bounded_volume}
   \emph{Bounded volume:}
-  Let the neighborhood graph radius $0 < r \leq \sigma/2d$ be such that
+  We assume that neighborhood graph radius $0 < r \leq \sigma/2d$ is chosen such that
   \begin{equation*}
     2 \int_{\Csig} \Pbb(B(x,r)) f(x) dx \leq \int_{\Rd} \Pbb(B(x,r)) f(x) dx,
   \end{equation*}
   where $B(x,r)$ is the closed ball of radius $r$ at $x$.
 \end{enumerate}
-
-To motivate these conditions, \citet{zhu2013} show for arbitrary graph $G =
+To motivate these conditions, we provide a brief high-level sketch
+of our analysis (we return to this more formally in Section~\ref{sec: analysis}).
+\citet{zhu2013} show for an arbitrary graph $G =
 (V,E)$ and subset of vertices $S \subseteq V$, the PPR estimate \smash{$\Cest$}
 of subset $S$ satisfies, for a constant $c>0$,
 \begin{equation}
@@ -610,16 +640,18 @@ of subset $S$ satisfies, for a constant $c>0$,
 \cdot \tau_{\infty}(G[S])\bigr) \vol(S;G),
 \end{equation}
 where $\Phi(S;G)$ is the normalized cut of $S$ (as defined in \eqref{eqn:
-  normalized_cut}), and \smash{$\tau_{\infty}(G[S])$} is called the \emph{mixing
+  normalized_cut}), and \smash{$\tau_{\infty}(G[S])$} is  the \emph{mixing
   time} of a random walk over the induced subgraph $G[S]$ (to be defined
 precisely later, in \eqref{eqn: mixing_time}).  The left-hand side in
 \eqref{eqn:  graph_symmetric_set_difference_1} resembles a (degree-weighted) 
 form of the symmetric set difference metric in \eqref{eqn:
-  misclassification_rate}.  As we will show in Section \ref{sec:
+  misclassification_rate}, and our main goal will be to upper bound 
+  this quantity. 
+  Towards this goal, as we will show in Section \ref{sec:
   analysis}, the conditions \ref{asmp: bounded_density}--\ref{asmp:
   bounded_volume} allow us to upper bound the normalized cut 
 \smash{$\Phi(\Csig[\Xbf]; G_{n,r})$}, and the mixing time 
-\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}.\footnote{Informally, assumptions  
+\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. In more detail, assumptions  
 \ref{asmp: cluster_separation}, \ref{asmp: low_noise_density} yield an upper
 bound on \smash{$\cut(\Csig[\Xbf]; G_{n,r})$}, and \ref{asmp: bounded_density}
 yields a lower bound on \smash{$\vol(\Csig[\Xbf]; G_{n,r})$}; together with 
@@ -627,15 +659,17 @@ yields a lower bound on \smash{$\vol(\Csig[\Xbf]; G_{n,r})$}; together with
 the other hand, \ref{asmp: bounded_density}, \ref{asmp: embedding} preclude
 bottlenecks in the induced subgraph \smash{$G_{n,r}[\Csig[\Xbf]]$}, and combined
 with the upper bound on diameter in \ref{asmp: embedding}, this leads to an upper bound on
-the mixing time over this subgraph.}
+the mixing time over this subgraph.
 
-\paragraph{Condition number.} Motivated by \eqref{eqn:
+\subsubsection{Condition number} 
+Motivated by \eqref{eqn:
   graph_symmetric_set_difference_1}, we will define $\kappa(\Cset)$ to be an
 upper bound on the product \smash{$\Phi(\Csig[\Xbf]; G_{n,r}) \cdot
-  \tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. The smaller $\kappa(\Cset)$ is, the
-more success PPR will have in recovering $\Cset$. Let $\theta := (r, \sigma,
+  \tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. Following, the analysis of \citet{zhu2013}
+  we see that the smaller $\kappa(\Cset)$ is, the
+more success PPR will have in recovering the target cluster $\Cset$. We let $\theta := (r, \sigma,
 \lambda, \lambda_{\sigma}, \Lambda_{\sigma}, \gamma, \diam, L)$ contain the
-geometric parameters from \ref{asmp:  bounded_density}--\ref{asmp:
+geometric parameters from Assumptions~\ref{asmp:  bounded_density}--\ref{asmp:
   bounded_volume}.  
 
 \begin{definition}[Well-conditioned density clusters]
@@ -656,17 +690,19 @@ geometric parameters from \ref{asmp:  bounded_density}--\ref{asmp:
     \tau_{u}(\theta)$}, we call $\Cset$ a 
   \emph{$\kappa$-well-conditioned density cluster}.  
 \end{definition}
-
-We note that $\Phibf(\theta)$ and $\taubf(\theta)$ are exactly the upper bounds 
+\noindent The condition number 
+$\kappa(\Cset)$ succinctly captures the role of the various
+geometric parameters. 
+We note in passing that $\Phibf(\theta)$ and $\taubf(\theta)$ are exactly the upper bounds 
 on \smash{$\Phi(\Csig[\Xbf]; G_{n,r})$} and
 \smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$} that we derive in our analysis
 later, in Section \ref{sec: analysis}. 
 
-\paragraph{Well-initialized algorithm.} As is typical in the local clustering
+\subsubsection{Well-initialized algorithm} As is typical in the local clustering
 literature, our algorithmic results will be stated with respect to specific
 ranges of each of the user-specified parameters. In particular, for a
 well-conditioned density cluster $\Cset$ (with respect to some $\theta$), we
-require 
+require that the tuning parameters of Algorithm~\ref{alg: ppr} are chosen as
 \begin{equation}
 \begin{gathered}
 \label{eqn: initialization}
@@ -678,22 +714,22 @@ v \in \Csig[\Xbf]^g, \quad
 \end{equation}
 where \smash{$\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$} will be some large
 (``good'') subset of $\Csig[\Xbf]$. In particular, abbreviating $\vol_{n,r}(S)
-:= \vol(S; G_{n,r})$ for $S \subseteq \Xbf$, we will have
-\smash{$\vol_{n,r}(\Csig[\Xbf]^g) \geq \vol_{n,r}(\Csig[\Xbf])/2$}.  
+:= \vol(S; G_{n,r})$ for $S \subseteq \Xbf$, this good subset has large volume, i.e. 
+$\vol_{n,r}(\Csig[\Xbf]^g) \geq \vol_{n,r}(\Csig[\Xbf])/2$.  
 
 \begin{definition}
 If the input parameters to Algorithm \ref{alg: ppr} satisfy \eqref{eqn:
   initialization} for some well-conditioned density cluster $\Cset$, we
 say the algorithm is \emph{well-initialized}. 
 \end{definition}
-
-In practice it is clearly not feasible to set hyperparameters based on the
+\noindent In practice it is  not feasible to set hyperparameters based on the
 underlying (unknown) density $f$. Typically, one tunes PPR over a range of
-hyperparameters and optimizes for some criterion such as minimum normalized cut;
-it is not obvious how this scheme would affect the performance of PPR in the
-density clustering context.  
+hyperparameters and selects the cluster which has the smallest normalized cut. 
+%it is not obvious how this scheme would affect the performance of PPR in the
+%density clustering context.  
 
-\paragraph{Main theorems.} The results of Section \ref{sec: analysis}, combined 
+\subsection{Cluster Recovery in Symmetric Set Difference}
+The results of Section \ref{sec: analysis}, combined 
 with \eqref{eqn: graph_symmetric_set_difference_1}, give an upper bound on the
 volume of \smash{$\Cest \setminus \Csig[\Xbf]$} and \smash{$\Csig[\Xbf]
   \setminus \Cest$},  
@@ -702,7 +738,7 @@ volume of \smash{$\Cest \setminus \Csig[\Xbf]$} and \smash{$\Csig[\Xbf]
 \vol_{n,r}(\Cest \setminus \Csig[\Xbf]) + \vol_{n,r}(\Csig[\Xbf] \setminus
 \Cest) \leq c \kappa(\Cset) \vol_{n,r}(\Csig[\Xbf]). 
 \end{equation}
-To translate \eqref{eqn: graph_symmetric_set_difference} into meaningful bounds
+To translate the guarantee in~\eqref{eqn: graph_symmetric_set_difference} into meaningful bounds
 on the symmetric set difference metric \smash{$\Delta(\Csig[\Xbf], \Cest)$}, we
 want to preclude vertices $x \in \Xbf$ from having arbitrarily small degree, and
 so we make some regularity assumptions on $\mathcal{X} := \mathrm{supp}(f)$. Let
@@ -717,10 +753,9 @@ of the unit ball $B = B(0,1)$.
   exists some $c > 0$ such that for each $x \in \partial \mathcal{X}$,
   $\nu(B(x,r) \cap \mathcal{X}) \geq c \nu_d r^d$. 
 \end{enumerate}
-Note that the latter condition in \ref{asmp: valid_region} will hold if the
+We note that the latter condition in \ref{asmp: valid_region} will hold if the
 boundary $\partial \mathcal{X}$ is sufficiently regular.  Now we present our
-main bound on the symmetric set difference metric.
-
+first main result: a bound on the symmetric set difference metric.
 \begin{theorem}
   \label{thm: misclassification_rate}
   Fix $\lambda > 0$, let \smash{$\Cset \in \Cbb_f(\lambda)$} be a
@@ -734,13 +769,12 @@ main bound on the symmetric set difference metric.
     \frac{\Lambda_{\sigma}}{\lambda_{\min}}. 
   \end{equation}
 \end{theorem}
+The proof of Theorem \ref{thm: misclassification_rate} is deferred to Appendix~\ref{sec: proof_of_misclassification_rate}.
+This result shows that the symmetric set difference metric \smash{$\Delta(\Csig[\Xbf],
+  \Cest)$} is upper-bounded by a quantity proportional to the difficulty of the clustering problem, as
+measured by the condition number $\kappa(\Cset)$.
 
-The proof of Theorem \ref{thm: misclassification_rate}, along with all other
-proofs in this paper, is deferred to the appendix. Note that this 
-result says the symmetric set difference metric \smash{$\Delta(\Csig[\Xbf],
-  \Cest)$} is proportional to the difficulty of the clustering problem, as
-measured by the condition number $\kappa(\Cset)$. 
-
+\subsection{Consistent Cluster Recovery}
 Neither \eqref{eqn: graph_symmetric_set_difference} nor \eqref{eqn:
   misclassification_rate_ub} imply consistent density cluster estimation in the 
 sense of \eqref{eqn: consistent_density_cluster_recovery}. This notion of
@@ -811,7 +845,9 @@ Next we give our main result on consistent cluster recovery by PPR.
 
 \sbcomment{You are using $\epsilon$ here and in the future to mean different things. I have
 changed this $\epsilon$ to $\varepsilon$.} 
-\paragraph{Approximate PPR vector.}  In practice, exactly solving \eqref{eqn:
+
+\subsection{Approximate PPR vector} 
+In practice, exactly solving \eqref{eqn:
   ppr_vector} may be too computationally expensive. To address this limitation,
 \citet{andersen2006} introduced the \emph{$\varepsilon$-approximate} PPR vector
 (aPPR), which we will denote by \smash{$\pbf^{(\varepsilon)}$}. We refer the
@@ -830,7 +866,7 @@ leads to analogous results which hold for \smash{$\pbf^{(\varepsilon)}$}. We
 formally state and prove this in Corollary~\ref{cor: appr} in 
 the appendix. 
 
-\section{Analysis}
+\section{Analysis Overview}
 \label{sec: analysis}
 
 The primary technical contribution of our work is showing that the geometric
