@@ -1706,9 +1706,9 @@ an upper bound on the ratio of Gamma functions.
 %which implies $2 \frac{\Err_n}{p_V - \Err_n} \leq \epsilon$. 
 
 \section{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
-
-\subsection{Mixing time on graphs}
 \label{sec: mixing_time_on_graphs}
+%\subsection{Mixing time on graphs}
+
 
 We generalize some notation from the main text. For an undirected graph $G = (V,E)$, the lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf{} + \Dbf^{-1} \Abf}{2}$ and stationary distribution $\pi$.  Denote the $m$-step probability distribution of this random walk originating from a particular $v \in V$ as $q^{(m)}: V \times V \to [0,1]$, $q^{(m)}(v,u) = e_v \Wbf^m e_u$. An important intermediate quantity used to bound the relative pointwise mixing time $\tau_{\infty}(G)$ is the total variation distance between the distributions $q_v^{(m)} := q^{(m)}(v,\cdot)$ and $\pi$,
 \begin{equation*}
@@ -2893,8 +2893,6 @@ We state here a number of basic facts which follow from matrix manipulations, wh
 	\pbf_v(u) & = \alpha\sum_{T = 0}^{\infty} (1 - \alpha)^t \left(e_v \Wbf^T\right)(u) \\
 	& = \alpha\sum_{T = 1}^{\infty} (1 - \alpha)^t \left(e_v \Wbf^T\right)(u) \\
 	& \leq \alpha \sum_{T=1}^{\infty} (1 - \alpha)^T \left( \sum_{t = 0}^{T - 1} s_t \Wbf^{T - t - 1} \right)(u) \tag{Lemma \ref{lem: sum_of_soakages}}\\
-	\end{align*}
-	\begin{align*}
 	& = \alpha \sum_{t=0}^{\infty} \sum_{T = t + 1}^{\infty} (1 - \alpha)^T \left( s_t \Wbf^{T - t - 1} \right)(u)\\
 	& = \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t + 1} \left( s_t \Wbf^{\Delta} \right)(u) \\
 	& \leq \alpha \sum_{t=0}^{\infty} \sum_{\Delta = 0}^{\infty} (1 - \alpha)^{\Delta + t } \left( s_t \Wbf^{\Delta} \right)(u) \\
