@@ -1670,17 +1670,17 @@ an upper bound on the ratio of Gamma functions.
 
 \section{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
 
-Denote $\widetilde{G}_{n,r} = G_{n,r}[\Csig[\Xbf]]$; in general, we will use tilde notation to refer to quantities computed over $\Csig$ or over the induced subgraph $\widetilde{G}_{n,r}$. The goal of Theorem \ref{thm: mixing_time_upper_bound} is to show that, for universal constants $c_2, c_3 > 0$, with probability one as $n \to \infty$,
+Denote $\widetilde{G}_{n,r} = G_{n,r}[\Csig[\Xbf]]$; in general, we will use tilde notation to refer to quantities computed over $\Csig$ or over the induced subgraph $\widetilde{G}_{n,r}$. The goal of Theorem \ref{thm: mixing_time_upper_bound} is to show that, for universal constants $c_2, c_3,c_4 > 0$, with probability one
 \begin{equation*}
-\limsup_{n \to \infty} \tau_{\infty}(\widetilde{G}_{n,r}) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{1}{r}\right) + c_3
+\limsup_{n \to \infty} \tau_{\infty}(\widetilde{G}_{n,r}) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{c_4 \Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + c_3
 \end{equation*}
-We follow a two-step approach typically to used to establish upper bounds on the mixing time of Markov chains.
+We follow a two-step approach typically used to establish upper bounds on the mixing time of Markov chains.
 
-In the first step, we relate the mixing time $\tau_{\infty}(G)$ of a generic graph $G = (V,E)$ to expansion properties of subsets $U \subseteq V$. We now build to a formal definition of these expansion properties. First, we recall the the \emph{cut} and \emph{volume} functionals over a graph, and introduce the \emph{degree} functional as well. For $u \in V$, $S \subseteq V$, 
+In the first step, we relate the mixing time $\tau_{\infty}(G)$ of a generic undirected graph $G = (V,E)$ to expansion properties of subsets $U \subseteq V$. We now build to a formal definition of these expansion properties. First, we recall the the \emph{cut} and \emph{volume} functionals over a graph, and introduce the \emph{degree} functional as well. For $u \in V$, $S \subseteq V$, 
 \begin{equation*}
 \cut(S;G) = \sum_{u \in S} \sum_{v \in S^c} \1((u,v) \in E), \quad \deg(u;G) = \sum_{v \in V} \1((u,v) \in E), \quad \vol(S;G) = \sum_{u \in S} \deg(u;G).
 \end{equation*}
-Additionally, we recall the \emph{normalized cut} $\Phi(S;G)$ is defined (as in \eqref{eqn: normalized_cut}) as
+Additionally, we recall the \emph{normalized cut} $\Phi(S;G)$, defined (as in \eqref{eqn: normalized_cut}) as
 \begin{equation*}
 \Phi(S;G) = \frac{\cut(S; G)}{\min\set{\vol(S; G),\vol(S^c; G)}}.
 \end{equation*}
@@ -1703,13 +1703,15 @@ The second step in our approach is to lower bound the local spread and conductan
 \begin{proposition}
 	\label{prop: local_spread_conductance}
 	Under the setup and conditions of Theorem \ref{thm: mixing_time_upper_bound}, with probability one,
-	\begin{equation*}
+	\begin{equation}
+	\label{eqn: local_spread}
 	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}} 
-	\end{equation*}
+	\end{equation}
 	and
-	\begin{equation*}
+	\begin{equation}
+	\label{eqn: conductance}
 	\liminf_{n \to \infty} \Phi(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}}.
-	\end{equation*}
+	\end{equation}
 \end{proposition}
 
 Taking these results as given, the proof of the theorem is more or less complete. We note that since $r$ is fixed, \textcolor{red}{with probability one} $\liminf_{n \to \infty} \min_{u \in \Csig[\Xbf]} \deg(u; \widetilde{G}_{n,r}) = \infty > 10$, and we may therefore apply Proposition \ref{prop: pointwise_mixing_time} with respect to $\widetilde{G}_{n,r}$. Along with Lemma \ref{prop: local_spread_conductance}, this yields
@@ -1721,7 +1723,7 @@ The first term dominates the middle term, and the theorem follows after an appro
 \subsection{Proof of Proposition \ref{prop: pointwise_mixing_time}}
 \label{sec: pointwise_mixing_time}
 
-We first generalize some notation from the main text. For an undirected graph $G = (V,E)$, the lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf{} + \Dbf^{-1} \Abf}{2}$ and stationary distribution $\pi$.  Denote the $t$-step probability distribution of this random walk, originating from a particular $v \in V$, as $q^{(t)}: V \times V \to [0,1]$, $q^{(t)}(v,u) = e_v \Wbf^t e_u$.
+We first generalize some notation from the main text. Let $A$ be the adjacency matrix of an undirected graph $G = (V,E)$, and $D$ the associated diagonal degree matrix. The lazy random walk over $G$ is the Markov chain with transition probabilities given by $\Wbf := \frac{\Ibf{} + \Dbf^{-1} \Abf}{2}$ and stationary distribution $\pi$.  Denote the $t$-step probability distribution of this random walk, originating from a particular $v \in V$, as $q^{(t)}: V \times V \to [0,1]$, $q^{(t)}(v,u) = e_v \Wbf^t e_u$.
 
 Consider the uniform distance\footnote{Note $d_{\textrm{unif}}$ is not formally a distance as it is not symmetric.} between $q_v^{(t)} := q^{(t)}(v,\cdot)$ and $\pi$, given by
 \begin{equation*}
@@ -1751,7 +1753,11 @@ As mentioned, a bound on the total variation distance implies a corresponding bo
 	\end{equation*}
 \end{lemma}
 
-Taking these Lemmas as given, we proceed to prove the proposition. Fix $a = \frac{1}{18}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \log \left(\frac{80}{a s(G)}\right)$. Then,
+\noindent Taking these Lemmas as given, we proceed that show that for
+\begin{equation*}
+\tau_1 = \frac{2}{\Phi^2(G)} \log \left(\frac{1440}{s(G)}\right)\log \left(\frac{14}{s(G)}\right)  + 3 \log \left(\frac{14}{s(G)}\right) + 3
+\end{equation*}
+the uniform distance $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$, which proves the claim of Proposition \ref{prop: pointwise_mixing_time}. Fix $a = \frac{1}{18}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \log \left(\frac{80}{a s(G)}\right)$. Then,
 \begin{equation*}
 \left(1 - \frac{\Phi^2(G)}{2}\right)^{\tau_0} \leq \exp(- \tau_0\Phi^2(G)/2) \leq \frac{as(G)}{80}
 \end{equation*}
@@ -1763,13 +1769,13 @@ It is a well known fact \cite{montenegro2002} that if $\norm{q_v^{(t)} - \pi}_{\
 \begin{equation*}
 \norm{q_v^{(\tau_1)} - \pi}_{\mathrm{TV}} \leq \frac{1}{14 s(G)}
 \end{equation*}
-and so by Lemma \ref{lem: tv_to_uniform_distance}, $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$. 
+and so by Lemma \ref{lem: tv_to_uniform_distance}, $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$. The proof is complete once we have proved Lemmas \ref{lem: tv_mixing_time} and \ref{lem: tv_to_uniform_distance}.
 
 
 \subsection{Proof of Lemma \ref{lem: tv_mixing_time}}
 \label{sec: mixing_time_on_graphs}
 
-We generalize the notation of the previous subsection. For a starting distribution $z$ to be specified later (meaning $\textrm{supp}(z) \subseteq V$ and $\sum_{u \in V}z(u) = 1$), and for $t \geq 0$ an integer, let $q_z^{(t)}$ be the $t$-step probability distribution of the lazy random walk with starting distribution $z$.
+We generalize the notation of the previous subsection. For a starting distribution $z$ to be specified later, and for $t \geq 0$ an integer, let $q_z^{(t)}$ be the $t$-step probability distribution of the lazy random walk with starting distribution $z$.\footnote{We say $z$ is a starting distribution over a graph $G$ when $\textrm{supp}(z) \subseteq V$ and $\sum_{u \in V}z(u) = 1$. Then, $q_z^{(t)} = zW^t$.}
 
 We will find it useful to introduce the \emph{Lovasz-Simonovits curve}, defined as
 $h_z^{(t)}, t \geq 0$, 
@@ -1780,22 +1786,22 @@ where the maximum is over:
 \begin{align*}
 \mathcal{W}_x = \left\{w: V \to [0,1] \Big\vert 0 \leq w(u) \leq 1~~\forall~u,~~\text{and}~~\sum_{u \in V} w(u) \pi(u) = x\right\}.
 \end{align*}
-The utility of the Lovasz-Simonovits curve comes from the following observations:
-first, note that
+The utility of the Lovasz-Simonovits curve is demonstrated by the following observations. First, note that
 \begin{equation*}
 \norm{q_v^{(t)} - \pi}_{\mathrm{TV}} = \sup_{S \subseteq V} \abs{q_v^{(t)}(S) - \pi(S)}
 \end{equation*}
 where we use the standard notation $\pi(S) := \sum_{u \in S} \pi(u)$, and likewise for $q_v^{(t)}(S)$. Moreover, observe that for any $S \subseteq V$ and any integer $t \geq 0$,
-\begin{equation*}
+\begin{equation}
+\label{eqn: lovasz_simonivits_1}
 \max \set{h_v^{(t)}(\pi(S)), h_v^{(t)}(1 - \pi(S))} \geq \abs{q_v^{(t)}(S) - \pi(S)}
-\end{equation*}
-Therefore, taking the maximum over all $S \subseteq V$ on both sides, we have
+\end{equation}
+Therefore, taking the maximum on both sides of \eqref{eqn: lovasz_simonivits_1}  over all $S \subseteq V$, we have
 \begin{equation*}
 \norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \max_{0 \leq x \leq 1} h_v^{(t)}(x).
 \end{equation*}
 Now, take $z = e_vW^3$. Observe that $h_v^{(t+3)}(x) = h_z^{(t)}(x)$. To prove Lemma \ref{lem: tv_mixing_time}, it is therefore sufficient to show the desired upper bound holds with respect to $h_z^{(t)}(x)$ for all $x \in [0,1]$. 
 
-To do so, we split the interval $[0,1]$ into the subinterval $[\mu, 1 - \mu]$ and the remainder $[0,\mu) \cup (1 - \mu, 1]$, where $\mu = as(G)$. Let $\ell_{\mu}(x)$ be the linear interpolator between $h_z^{(0)}(\mu)$ and $h_z^{(0)}(1 - \mu)$, 
+To show this upper bound, we split the interval $[0,1]$ into the subinterval $[\mu, 1 - \mu]$ and the remainder $[0,\mu) \cup (1 - \mu, 1]$, where $\mu = as(G)$. Let $\ell_{\mu}(x)$ be the linear interpolator between $h_z^{(0)}(\mu)$ and $h_z^{(0)}(1 - \mu)$, 
 \begin{equation*}
 \ell_{\mu}(x) = \frac{1 - \mu - x}{1 - 2\mu} h_z^{(0)}(\mu) + \frac{x - \mu}{1 - 2\mu}h_z^{(0)}(1 - \mu).
 \end{equation*}
@@ -1814,7 +1820,7 @@ The following technical Lemma collects the upper bounds which hold over $[\mu, 1
 	h_z^{(t)}(x) \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
 	\end{equation}
 \end{lemma}
-\noindent Taking Lemma \ref{lem: mixing_all_sets} as given, we have nearly completed our proof. Note that for any $\mu \leq x \leq 1 - \mu$,
+\noindent Taking Lemma \ref{lem: mixing_all_sets} as given, we have nearly completed our proof of Lemma \ref{lem: tv_mixing_time}. Note that for any $\mu \leq x \leq 1 - \mu$,
 \begin{align*}
 \ell_{\mu}(x) & \leq \max\set{h_z^{(t)}(\mu),h_z^{(t)}(1 - \mu)} \\
 & \leq \max\set{as(G), \frac{1}{2^t} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V}\deg(u;G)} }
@@ -1929,19 +1935,16 @@ The proof of Lemma \ref{lem: tv_to_uniform_distance} follows from straightforwar
 & \overset{\text{(i)}}{=} \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{\pi(u)} \left(\frac{1}{2} - \pi(u)\right) \nonumber \\
 & \leq \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) + \frac{\pi(u) - q^{(m - 1)}(v,u)}{2 \pi(u)} \label{eqn: tv_to_uniform_distance_1}
 \end{align}
-where $\text{(i)}$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. 
-
-Then 
+where $\text{(i)}$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. Then,
 \begin{align}
 \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) & \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max_{y \neq u} \abs{\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}} \nonumber \\
 & \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \max_{y \neq u}\set{\frac{q^{(1)}(y,u)}{\pi(u)}}} \nonumber \\
 & \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \frac{1}{s(G)}} \label{eqn: tv_to_uniform_distance_3}
 \end{align}
-since for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known \cite{lovasz1990} that the laziness of the random walk guarantees $\norm{q_v^{(m - 1)} - \pi}_{\mathrm{TV}} \leq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}$, and therefore by \eqref{eqn: tv_to_uniform_distance_3} and hypothesis,
+since for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known (see e.g. \cite{lovasz1990}) that the laziness of the random walk guarantees $\norm{q_v^{(m - 1)} - \pi}_{\mathrm{TV}} \leq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}$, and therefore by \eqref{eqn: tv_to_uniform_distance_3} and the hypothesis of Lemma \ref{lem: tv_to_uniform_distance},
 \begin{equation*}
 \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \leq \frac{1}{14}.
 \end{equation*}
-
 Plugging this in to \eqref{eqn: tv_to_uniform_distance_1} and taking maximum on both sides, we obtain
 \begin{equation}
 d_{\textrm{unif}}(q_v^{(m)}, \pi) \leq \frac{2}{7} + \frac{d_{\textrm{unif}}(q_v^{(m - 1)}, \pi)}{2} \label{eqn: tv_to_uniform_distance_2}
@@ -1950,17 +1953,70 @@ The recurrence relation of \eqref{eqn: tv_to_uniform_distance_2} along with the 
 \begin{equation*}
 d_{\textrm{unif}}(q_v^{(t + 1)}, \pi) \leq \frac{8}{14} \Rightarrow d_{\textrm{unif}}(q_v^{(t + 2)}, \pi) \leq \frac{10}{28} \Rightarrow  d_{\textrm{unif}}(q_v^{(t + 3)}, \pi) \leq \frac{1}{4}
 \end{equation*}
-and the claim is shown.
+and the claim is shown. We have proved Lemmas \ref{lem: tv_mixing_time} and \ref{lem: tv_to_uniform_distance}, and therefore Proposition \ref{prop: pointwise_mixing_time}.
 
-\subsection{Proof of Proposition \ref{prop: tv_mixing_time}.}
-\label{sec: proof_of_proposition_tv_mixing_time}
+\subsection{Proof of Proposition \ref{prop: local_spread_conductance}}
 
-\subsection{Population-level conductance.}
-\label{sec: population_conductance_function}
+We first prove \eqref{eqn: local_spread} and then \eqref{eqn: conductance}. First, we introduce some notation. Recall that $\widetilde{G}_{n,r} = G_{n,r}\bigl[\Csig[\Xbf]\bigr]$ denotes the subgraph induced by $\Csig[\Xbf]$. For $S \subseteq \Csig[\Xbf]$ and $u \in \Csig[\Xbf]$, we will write
+\begin{equation*}
+\widetilde{\cut}_{n,r}(S) := \cut(S; \widetilde{G}_{n,r}), \quad \widetilde{\deg}_{n,r}(u) := \deg(u; \widetilde{G}_{n,r}), \quad 
+\widetilde{\vol}_{n,r}(S) := \vol(S; \widetilde{G}_{n,r})
+\end{equation*}
+and let $\widetilde{\pi}_{n,r}(u) = \widetilde{\deg}_{n,r}(u)/\widetilde{\vol}_{n,r}(\Csig[\Xbf])$ be the stationary distribution of the lazy random walk over $\widetilde{G}_{n,r}$. We also let $\widetilde{\Phi}_{n,r}(S) := \Phi(S; \widetilde{G}_{n,r})$ denote the normalized cut functional over $\widetilde{G}_{n,r}$. 
 
-We turn now to lower bounding the conductance over $\widetilde{G}_{n,r} := G_{n,r}[\Csig[\Xbf]]$ (in general, we will use tilde notation to refer to quantities computed over $\Csig$ or over the induced subgraph $\widetilde{G}_{n,r}$). Our first step will be to introduce a population analogue $\widetilde{\Phi}_{\Pbb,r}$ of the conductance, and prove a lower bound on this quantity. Throughout this section, let $\Sset, \Sset_1, \Sset_2 \subseteq \Csig$ be measurable.
+\paragraph{Proof of \eqref{eqn: local_spread}:}
 
-We introduce the \emph{$r$-ball walk}, a Markov chain over $\Csig$ with transition probability at $x \in \Csig$ given by 
+Letting $\degminwt := \min_{u \in \Csig[\Xbf]} \widetilde{\deg}_{n,r}(u)$, we rewrite $s(\widetilde{G}_{n,r}) = \frac{9 \degminwt^2}{10\widetilde{\vol}_{n,r}(\Csig[\Xbf])}$. Then by Lemma \ref{lem: ball_bounds_in_probability}, with probability one
+\begin{equation*}
+\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{36 \lambda_{\sigma} r^d \nu_d}{625 \Pbb(\Csig) \Lambda_{\sigma}} \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}}.
+\end{equation*}
+
+\paragraph{Proof of \eqref{eqn: conductance}:}
+
+Our goal is to show that with probability one
+\begin{equation*}
+\liminf_{n \to \infty} \min_{S \subseteq \Csig[\Xbf]} \widetilde{\Phi}_{n,r}(S) \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}}.
+\end{equation*}
+where we let $S^c = \Csig[\Xbf] \setminus S$. In order to show this bound holds uniformly over all sets $S \subseteq \Csig[\Xbf]$, we will split the analysis into two cases based on the size of $S \subseteq \Csig[\Xbf]$. To do so, we introduce $\mathcal{L}(G) := \set{S \subseteq V: \pi(S) \geq s(G)}$ (where as usual $\pi$ denotes the stationary distribution of a random walk over $G = (V,E)$.)
+
+Lemma \ref{lem: graph_conductance_profile_lb_1} shows that for sets $S \subseteq \Csig[\Xbf]$ not sufficiently large enough to be in $\mathcal{L}(\widetilde{G}_{n,r})$, the graph normalized cut is of constant order. In fact, this statement holds for any graph $G$.
+\begin{lemma}
+	\label{lem: graph_conductance_profile_lb_1}
+	Let $G = (V,E)$ be an arbitrary undirected graph. Then, for non-empty subsets $S \subseteq V$, 
+	\begin{equation*}
+	\min_{S \not\in \mathcal{L}(G)}\Phi(S; G) \geq \frac{1}{10}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	The claim follows by simple manipulations:
+	\begin{align*}
+	\Phi(S;G) & \geq \frac{\cut(S;G)}{\vol(S;G)} \\
+	& \geq \sum_{u \in S} \frac{\deg(u;G) - \abs{S}}{\vol(S;G)} \\
+	& \geq \sum_{u \in S} \frac{\deg(u;G) - \frac{9}{10} \min_{u \in V}\deg(u;G)}{\vol(S;G)} \tag{since $\pi(S) \leq s(G)$}\\ 
+	& \geq \frac{1}{10} \sum_{u \in S} \frac{\deg(u;G)}{\vol(S;G)} = \frac{1}{10}.
+	\end{align*}
+\end{proof}
+
+In Lemma \ref{lem: graph_conductance_profile_lb}, we establish a uniform lower bound on the normalized cut for the remaining sets $S \in \mathcal{L}(\widetilde{G}_{n,r})$. 
+
+\begin{lemma}
+	\label{lem: graph_conductance_profile_lb}
+	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then with probability $1$,
+	\begin{equation}
+	\label{eqn: graph_conductance_profile_lb}
+	\liminf_{n \to \infty} \left\{ \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) \right\} \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}}
+	\end{equation}
+	where $\mathcal{L}(\widetilde{G}_{n,r}) = \set{S \subseteq \Csig[\Xbf]: \widetilde{\pi}_{n,r}(S) \geq s(\widetilde{G}_{n,r})}$.
+\end{lemma}
+ 
+
+Taking Lemma \ref{lem: graph_conductance_profile_lb} as given, Proposition \ref{prop: graph_conductance_profile_lb} then follows from that Lemma, along with Lemma \ref{lem: graph_conductance_profile_lb_1}, in light of the fact $\frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}} < \frac{1}{10}$. We turn now to the proof of Lemma \ref{lem: graph_conductance_profile_lb}.
+
+\subsection{Proof of Lemma \ref{lem: graph_conductance_profile_lb}.}
+
+Let $\Sset \subseteq \Csig$ and $S \subseteq \Csig[\Xbf]$. The proof of \ref{lem: graph_conductance_profile_lb} will essentially follow from a pair of technical results. The first of these will demonstrate that the functional $\widetilde{\Phi}_{n,r}(S)$ can be lower bounded by a population analogue $\widetilde{\Phi}_{\Pbb,r}(\Sset)$, which we term the continuous normalized cut. This lower bound will hold uniformly over sets $S \subseteq \Csig[X]$. The second technical Lemma will build on known continuous space isoperimetric inequalities to lower bound the population-level quantity $\widetilde{\Phi}_{\Pbb,r}(\Sset)$ uniformly over sets $\Sset \subseteq \Csig$.
+
+We will now build slowly toward a formal definition of the continuous normalized cut, before establishing a relation between it and it's discrete counterpart. Let $\Sset, \Sset_1, \Sset_2 \subseteq \Csig$ be measurable. We introduce the \emph{$r$-ball walk}, a Markov chain over $\Csig$ with transition probability at $x \in \Csig$ given by 
 \begin{equation*}
 \widetilde{P}_{\Pbb,r}(x; \Sset) := \frac{\Pbb(\Sset \cap B(x,r))}{\Pbb(\Csig \cap B(x,r))}.
 \end{equation*}
@@ -1982,23 +2038,68 @@ We next introduce the \emph{ergodic flow}, $\widetilde{Q}_{\Pbb,r}$. Let $\Sset_
 \begin{equation*}
 \widetilde{Q}_{\Pbb,r}(\Sset_1, \Sset_2) := \int_{\Sset_1} \widetilde{P}_{\Pbb,r}(x; \Sset_2) d\piwt_{\Pbb,r}(x), 
 \end{equation*}
-the \emph{$\Pbb$-(continuous) normalized cut} by
+the \emph{($\Pbb$) continuous normalized cut} by
 \begin{equation*}
 \widetilde{\Phi}_{\Pbb,r}(\Sset) := \frac{\widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c)}{\min \set{\piwt_{\Pbb,r}(\Sset),\piwt_{\Pbb,r}(\Sset^c)}},
 \end{equation*}
-and the \emph{$\Pbb$-(continuous) conductance} by
-\begin{equation*}
-\widetilde{\Phi}_{\Pbb,r} := \min_{\Sset \in \mathfrak{B}(\Csig)} \widetilde{\Phi}_{\Pbb,r}(\Sset)
-\end{equation*}
-where $\Sset^c = \Csig \setminus \Sset$ and $\mathfrak{B}(\Csig)$ is the Borel $\sigma$-algebra of $\Csig$. 
 
-\begin{proposition}
-	\label{prop: nonuniform_continuous_conductance}
-	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the $\Pbb$-continuous conductance of the $r$-ball walk satisfies
+As the functionals $\widetilde{\Phi}_{n,r}$ and $\widetilde{\Phi}_{\Pbb,r}$ act in the different spaces $\Csig[\Xbf]$ and $\Csig$, respectively, it is not obvious how to relate them. To do so, we introduce transportation maps between the space $\Csig$ and the sample points $\Csig[\Xbf]$. Precisely, define the conditional probability measures
+\begin{equation*}
+\widetilde{\Pbb}(\Sset) = \frac{\Pbb(\Sset)}{\Pbb(\Csig)}, ~ \widetilde{\Pbb}_{n}(\Sset) := \frac{1}{\abs{\Csig[\Xbf]}} \sum_{x_i \in \Csig[\Xbf]} \1(x_i \in \Sset).
+\end{equation*} 
+A measurable map $T: \Csig \to \Csig[\Xbf]$ is said to be a \emph{transportation map} between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ if for any $S \subseteq \Csig[\Xbf]$
+\begin{equation*}
+\widetilde{\Pbb}(T^{-1}(S)) = \widetilde{\Pbb}_n(S).
+\end{equation*}
+where $T^{-1}(S) = \set{x \in \Csig: T(x) \in S}$ is the preimage of $T$. The following result lower bounds $\widetilde{\Phi}_{n,r}(S)$ by $\widetilde{\Phi}_{\Pbb,r}(T^{-1}(S))$, plus some perturbation. The magnitude of this perturbation, and thus the quality of the bound, will be dictated by the \emph{transportation distance} $\norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$, where $\mathrm{Id}(x) = x$ is the identity mapping over $\Csig$. 
+\begin{lemma}
+	\label{lem: graph_to_continuous_conductance}
+	Let $\seq{T_n}$ be a sequence of transportation maps between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$.Then, letting $\Sset =T_n^{-1}(S)$, there exists a constant $c > 0$ fixed in sample size $n$ such that for any $S \in \mathcal{L}(\widetilde{G}_{n,r})$
+	\begin{equation}
+	\label{eqn: graph_to_continuous_conductance}
+	\widetilde{\Phi}_{n,r}(S) \geq \widetilde{\Phi}_{\Pbb,r}(\Sset)\left(1 - c \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}\right)
+	\end{equation}
+\end{lemma}
+
+(We note that hereafter in this section $c$ will represent a constant which may change from line to line, and may depend on the density $f$ and dimension $d$, but not on the sample size $n$). As mentioned previously, Lemma \ref{lem: graph_to_continuous_conductance} is useful only in conjunction with an upper bound on the transportation distance $\norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}$. Proposition 5 of \cite{garciatrillos16} establishes such an upper bound, with respect to transportation maps on measures compactly supported over open connected domains with Lipschitz boundaries. The following result is a restatement of this Proposition with respect to the domain $\Csig$, and the measure $\widetilde{\Pbb}$. Although $\Csig$ is closed rather than open, as $\nu(\partial \Csig) = 0$ we may apply Proposition 5 of \cite{garciatrillos16} to the interior $\Csig^o$ of $\Csig$, and the desired result will hold for any arbitrary extension of $T_n$ to $\Csig$. Let $\widetilde{n} = \abs{\Csig{\Xbf}}$. 
+
+\begin{theorem}[Restatement of Proposition 5 of \cite{garciatrillos16}]
+	\label{thm: stagnating_transportation_maps}
+	With probability one, there exists a sequence of transportation maps $\seq{T_n}$, $T_n: \Csig \to \Csig[\Xbf]$ such that the following statement holds:
+	\begin{equation}
+	\label{eqn: stagnating_transportation_maps}
+	\limsup_{\widetilde{n} \to \infty} \frac{\widetilde{n}^{1/d} \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}}{(\log \widetilde{n})^{p_d}} \leq c
+	\end{equation}
+	where $c$ is constant in $n$ and $p_d = 3/4$ for $d = 2$ and $1/d$ for $d \geq 3$.
+\end{theorem}
+
+The following result then supplies the last step, a uniform lower bound on the continuous normalized cut $\widetilde{\Phi}_{\Pbb,r}(\Sset)$ for all sets $\Sset \subseteq \Csig$. Let the \emph{$\Pbb$-(continuous) conductance} be given by
+\begin{equation*}
+\widetilde{\Phi}_{\Pbb,r} := \min_{\Sset \subseteq \Csig} \widetilde{\Phi}_{\Pbb,r}(\Sset)
+\end{equation*}
+where $\Sset^c = \Csig \setminus \Sset$, and the minimum in the preceding display is taken over measurable sets $\Sset \subseteq \Csig$. 
+\begin{lemma}
+	\label{lem: nonuniform_continuous_conductance}
+	For any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the $\Pbb$-continuous conductance of the $r$-ball walk satisfies
 	\begin{equation*}
 	\widetilde{\Phi}_{\Pbb,r} > \frac{\lambda_{\sigma}^2 r}{2^{13} \Lambda_{\sigma}^2 \rho L \sqrt{d}}.
 	\end{equation*}
-\end{proposition}
+\end{lemma}
+
+With Lemmas \ref{lem: graph_to_continuous_conductance} and \ref{lem: nonuniform_continuous_conductance}, as well as Theorem \ref{thm: stagnating_transportation_maps}, in hand, we proceed to the proof of Lemma \ref{lem: graph_conductance_profile_lb}, which follows straightforwardly:
+\begin{align*}
+\liminf_{n \to \infty} \set{\min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S)} & \geq \liminf_{n \to \infty} \set{ \min_{\Sset \in \Csig} \widetilde{\Phi}_{\Pbb,r}(\Sset)\left(1 - c \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}\right) } \\
+& \geq \liminf_{n \to \infty} \set{ \min_{\Sset \in \Csig} \widetilde{\Phi}_{\Pbb,r}} - \limsup_{n \to \infty} c \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})} \\
+& \geq \frac{\lambda_{\sigma}^2 r}{2^{13} \Lambda_{\sigma}^2 \rho L \sqrt{d}}.
+\end{align*}
+
+It remains to prove Lemmas \ref{lem: graph_to_continuous_conductance} and \ref{lem: nonuniform_continuous_conductance}, which we turn to in the following two subsections.
+
+
+\subsection{Population-level conductance.}
+\label{sec: population_conductance_function}
+
+We turn now to lower bounding the conductance over $\widetilde{G}_{n,r} := G_{n,r}[\Csig[\Xbf]]$ (in general, we will use tilde notation to refer to quantities computed over $\Csig$ or over the induced subgraph $\widetilde{G}_{n,r}$). Our first step will be to introduce a population analogue  of the conductance, and prove a lower bound on this quantity. 
 
 Similar results are already known (see e.g. \cite{kannan04}) when the density $f$ is uniform (or log-concave) and $\Csig$ is itself a convex set -- indeed, in this case stronger versions of it exist, though we will not require them. In \cite{abbasi-yadkori2016a}, a statement of this sort is made with respect to uniform density $f$ and $\Csig$ a biLipschitz deformation of a convex set, but for completeness we produce all proofs here.
 
@@ -2200,13 +2301,6 @@ We now prove the desired result:
 \subsection{Graph conductance and local spread.}
 \label{sec: graph_conductance_and_local_spread}
 
-Recall that $\widetilde{G}_{n,r} = G_{n,r}\bigl[\Csig[\Xbf]\bigr]$ denotes the subgraph induced by $\Csig[\Xbf]$. We denote the graph conductance over $\widetilde{G}_{n,r}$ as $\widetilde{\Phi}_{n,r} := \Phi(G_{n,r}[\Csig[\Xbf]])$. To simplify notation, for $S \subseteq \Csig[\Xbf]$ and $u \in \Csig[\Xbf]$, we will write
-\begin{equation*}
-\widetilde{\cut}_{n,r}(S) := \cut(S; \widetilde{G}_{n,r}), \quad \widetilde{\deg}_{n,r}(u) := \deg(u; \widetilde{G}_{n,r}), \quad 
-\widetilde{\vol}_{n,r}(S) := \vol(S; \widetilde{G}_{n,r})
-\end{equation*}
-and let $\widetilde{\pi}_{n,r}(u) = \widetilde{\deg}_{n,r}(u)/\widetilde{\vol}_{n,r}(\Csig[\Xbf])$ be the stationary distribution of the lazy random walk over $\widetilde{G}_{n,r}$.
-
 \begin{proposition}[Lower bound on graph conductance]
 	\label{prop: graph_conductance_profile_lb}
 	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then, with probability $1$ the following lower bound holds on the graph conductance:
@@ -2215,85 +2309,14 @@ and let $\widetilde{\pi}_{n,r}(u) = \widetilde{\deg}_{n,r}(u)/\widetilde{\vol}_{
 	\end{equation*}
 \end{proposition}
 
-In order to prove Proposition \ref{prop: graph_conductance_profile_lb}, we will need to split the analysis into two cases based on the size of $S \subseteq \Csig[\Xbf]$. For any graph $G = (V,E)$, let $\mathcal{L}(G) = \set{S \subseteq V: \pi(S) \geq s(G)}$ (where as usual $\pi$ denotes the stationary distribution of a random walk over $G$.)
-
-In Lemma \ref{lem: graph_conductance_profile_lb}, we establish a uniform lower bound on the normalized cut of all sets $S \in \mathcal{L}(\widetilde{G}_{n,r})$. 
-
-\begin{lemma}
-	\label{lem: graph_conductance_profile_lb}
-	Let $\Cset$ satisfy Assumption \ref{asmp: bounded_density} for some $\lambda_{\sigma} \leq \Lambda_{\sigma}$ and Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with biLipschitz constant $L$. Then with probability $1$,
-	\begin{equation*}
-	\liminf_{n \to \infty} \left\{ \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) \right\} \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}}
-	\end{equation*}
-	where $\mathcal{L}(\widetilde{G}_{n,r}) = \set{S \subseteq \Csig[\Xbf]: \widetilde{\pi}_{n,r}(S) \geq s(\widetilde{G}_{n,r})}$.
-\end{lemma}
-
-The proof of Lemma \ref{lem: graph_conductance_profile_lb} is nontrivial, and we devote the following subsection to it. 
-
-Lemma \ref{lem: graph_conductance_profile_lb_1} shows that for the remaining small sets, the graph normalized cut is of constant order. 
-\begin{lemma}
-	\label{lem: graph_conductance_profile_lb_1}
-	Let $G = (V,E)$ be an arbitrary undirected graph. Then, for non-empty subsets $S \subseteq V$, 
-	\begin{equation*}
-	\min_{S \not\in \mathcal{L}(G)}\Phi(S; G) \geq \frac{1}{10}.
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	The claim follows by simple manipulations:
-	\begin{align*}
-	\Phi(S;G) & \geq \frac{\cut(S;G)}{\vol(S;G)} \\
-	& \geq \sum_{u \in S} \frac{\deg(u;G) - \abs{S}}{\vol(S;G)} \\
-	& \geq \sum_{u \in S} \frac{\deg(u;G) - \frac{9}{10} \min_{u \in V}\deg(u;G)}{\vol(S;G)} \tag{since $\pi(S) \leq s(G)$}\\ 
-	& \geq \frac{1}{10} \sum_{u \in S} \frac{\deg(u;G)}{\vol(S;G)} = \frac{1}{10}.
-	\end{align*}
-\end{proof}
-
-Proposition \ref{prop: graph_conductance_profile_lb} follows in light of the fact $\frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}} < \frac{1}{10}$.
-
 In Lemma \ref{lem: local_spread_lb}, we lower bound the local spread $s(\widetilde{G}_{n,r})$.
-
-\begin{lemma}
-	\label{lem: local_spread_lb}
-	With probability one, the following bound holds:
-	\begin{equation*}
-	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}} 
-	\end{equation*}
-\end{lemma}
-\begin{proof}
-	Letting $\degminwt := \min_{u \in \Csig[\Xbf]} \widetilde{\deg}_{n,r}(u)$, we rewrite $s(\widetilde{G}_{n,r}) = \frac{9 \degminwt^2}{10\widetilde{\vol}_{n,r}(\Csig[\Xbf])}$. Then by Lemma \ref{lem: ball_bounds_in_probability}, with probability one
-	\begin{equation*}
-	\liminf_{n \to \infty} s(\widetilde{G}_{n,r}) \geq \frac{36 \lambda_{\sigma} r^d \nu_d}{625 \Pbb(\Csig) \Lambda_{\sigma}} \geq \frac{\lambda_{\sigma}^2 \nu_d r^d}{20\Lambda_{\sigma}}.
-	\end{equation*}
-\end{proof}
 
 \subsection{Proof of Lemma \ref{lem: graph_conductance_profile_lb}}
 \label{sec: proof_of_lemma_graph_conductance}
 
-For $\Sset \subseteq \Csig$ measurable, define the conditional probability measures
-\begin{equation*}
-\widetilde{\Pbb}(\Sset) = \frac{\Pbb(\Sset)}{\Pbb(\Csig)}, ~ \widetilde{\Pbb}_{n}(\Sset) := \frac{1}{\abs{\Csig[\Xbf]}} \sum_{x_i \in \Csig[\Xbf]} \1(x_i \in \Sset).
-\end{equation*} 
-A Borel map $T: \Csig \to \Csig[\Xbf]$ is said to be a \emph{transportation map} between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$ if for any $S \subseteq \Csig[\Xbf]$
-\begin{equation*}
-\widetilde{\Pbb}(T^{-1}(S)) = \widetilde{\Pbb}_n(S).
-\end{equation*}
-where $T^{-1}(S) = \set{x \in \Csig: T(x) \in S}$ is the preimage of $T$. 
+For $\Sset \subseteq \Csig$ measurable, 
 
-If a sequence of transportation maps $\seq{T_n}$ satisfies $\lim_{n \to \infty}\norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})} = 0$ (where $\mathrm{Id}$ is the identity mapping), we refer to it as a sequence of \emph{stagnating transportation maps}. Proposition 5 of \cite{garciatrillos16} establishes that, for open connected domains with Lipschitz boundaries, such stagnating transportation maps exist. In particular, as $\Csig[\Xbf]$ consists of $\widetilde{n} := \abs{\Csig[\Xbf]}$ points sampled independently from $\widetilde{\Pbb}$, and $\Csig$ is a connected domain with Lipschitz boundary, the following implication is immediate.
-
-\begin{lemma}
-	\label{lem: stagnating_transportation_maps}
-	With probability one, there exists a sequence of transportation maps $\seq{T_n}$, $T_n: \Csig \to \Csig[\Xbf]$ such that the following statement holds:
-	\begin{equation}
-	\label{eqn: stagnating_transportation_maps}
-	\limsup_{n \to \infty} \frac{\widetilde{n}^{1/d} \norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})}}{(\log \widetilde{n})^{p_d}} \leq C
-	\end{equation}
-	where $\mathrm{Id}(x) = x$ is the identity mapping over $\Csig$, $C$ is a universal constant and $p_d = 3/4$ for $d = 2$ and $1/d$ for $d \geq 3$.
-\end{lemma}
-
-%%% AJG 5/9/19: Need to strengthen this?
-
-Note that although $\Csig$ is closed not open, as $\nu(\partial \Csig) = 0$ we may apply Proposition 5 of \cite{garciatrillos16} to the interior $\Csig^o$ of $\Csig$, and \eqref{eqn: stagnating_transportation_maps} will hold for any arbitrary extension of $T_n$ to $\Csig$.
+If a sequence of transportation maps $\seq{T_n}$ satisfies $\lim_{n \to \infty}\norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})} = 0$ (where $\mathrm{Id}$ is the identity mapping), we refer to it as a sequence of \emph{stagnating transportation maps}. 
 
 \paragraph{Graph cuts to continuous cuts.}
 
@@ -2363,15 +2386,6 @@ Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound} provide the necessary bo
 \end{proof}
 
 Putting Lemmas \ref{lem: volume_bound} and \ref{lem: cut_bound} together yields the following result, a lower bound on graph normalized cut.
-
-\begin{lemma}
-	\label{lem: graph_to_continuous_conductance}
-	Let $\seq{T_n}$ be a sequence of transportation maps from $\widetilde{\Pbb}$ to $\widetilde{\Pbb}_n$, and fix $S \subseteq \Csig[\Xbf]$. Then, letting $\Sset =T_n^{-1}(S)$,
-	\begin{equation}
-	\label{eqn: graph_to_continuous_conductance}
-	\widetilde{\Phi}_{n,r}(S) \geq \frac{\int_{\Csig} \ell_{\Pbb,r_n^-}(x) f(x) \dx}{\int_{\Csig} \ell_{\Pbb,r_n^+}(x) f(x) \dx}  \frac{\min \set{\piwt_{\Pbb,r_n^-}(\Sset), \piwt_{\Pbb,r_n^-}(\Sset^c)} }{\min \set{\piwt_{\Pbb,r_n^+}(\Sset), \piwt_{\Pbb,r_n^+}(\Sset^c)} } \widetilde{\Phi}_{\Pbb,r_n^{-}}(\Sset)
-	\end{equation}
-\end{lemma}
 
 \begin{proof}
 	
