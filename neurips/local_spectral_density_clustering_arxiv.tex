@@ -838,8 +838,6 @@ Next we give our main result on consistent cluster recovery by PPR.
   PPR exhibits some degeneracy over $r$-neighborhood graphs as $r \to 0$, or if
   this is merely looseness in our upper bounds.  
 \end{enumerate}
-\sbcomment{You are using $\epsilon$ here and in the future to mean different things. I have
-changed this $\epsilon$ to $\varepsilon$.} 
 
 \subsection{Approximate PPR vector} 
 In practice, exactly solving the system of equations~\eqref{eqn:
@@ -929,7 +927,7 @@ degree matrix of $G[S]$.) We define the \emph{mixing time} of $G[S]$ as
 \tau_{\infty}(G[S]) = \min\set{ t: \frac{\pi(u) - q_{v}^{(t)}(u)}
   {\pi(u)} \leq \frac{1}{4}, \; \text{for $u,v \in V$}}. 
 \end{equation}
-Next, we give an asymptotic (in the number of vertices $n$) upper bound on
+Next, we give an asymptotic (in the number of samples $n$) upper bound on
 $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.  
 
 \begin{theorem}
@@ -940,11 +938,9 @@ $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
   any \smash{$0 < r < \sigma/2\sqrt{d}$}, with probability 1,
   \begin{equation} 
     \label{eqn: mixing_time_upper_bound}
-    \limsup_{n \to \infty}\tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2
-    \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2}
-    \log^2\left(\frac{1}{r}\right) + c_3,
+    \limsup_{n \to \infty}\tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{c_4 \Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + c_3
   \end{equation}
-  for $c_2,c_3 > 0$ universal constants. 
+  for $c_2,c_3,c_4 > 0$ universal constants. 
 \end{theorem}
 
 The proof of Theorem \ref{thm: mixing_time_upper_bound} relies heavily on
@@ -1053,9 +1049,7 @@ global minimum normalized cut, computed according to the algorithm of
 estimator of \citet{chaudhuri2010}.  We can see the degrading ability of PPR to
 recover density clusters as the two moons become less well-separated. Of 
 particular interest is the fact that PPR fails to recover one of the moons even
-when normalized cut still succeeds in doing so, supporting our claim from Remark
-\ref{rmk: diameter}. Additionally, we note that the Chaudhuri-Dasgupta algorithm 
-succeeds even when both PPR and normalized cut fail.  While our main message was
+when normalized cut still succeeds in doing so. Additionally, we note that the Chaudhuri-Dasgupta algorithm succeeds even when both PPR and normalized cut fail.  While our main message was
 that PPR recovers geometrically well-conditioned density clusters, it would be  
 interesting to establish that it \emph{only} recovers such clusters, a direction
 for future work.   
@@ -1198,9 +1192,9 @@ We fix $\delta \in (0,1]$ and let $\delta' = \delta/3$. We rewrite
 \label{eqn: conductance_representation_1}
 \Phi_{n,r}(\Csig[\Xbf]) = \frac{p_K + \left(\frac{\cut_{n,r}}{{n \choose 2}} - p_K\right)}{p_V + \left(\frac{\min\set{\vol_{n,r}, \vol_{n,r}^c}}{{n \choose 2}} - p_V\right)}.
 \end{equation}
-By a union bound we see that all three bounds in \eqref{eqn: numerator_additive_bound} hold with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this yields the upper bound \sbcomment{Changed $\mathbf{X}$ to $X$}
+By a union bound we see that all three bounds in \eqref{eqn: numerator_additive_bound} hold with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this yields the upper bound
 \begin{equation*}
-\Phi_{n,r}(\Csig[X]) \leq \frac{p_K + \Err_n}{p_V - \Err_n}
+\Phi_{n,r}(\Csig[\Xbf]) \leq \frac{p_K + \Err_n}{p_V - \Err_n}
 \end{equation*}
 for $\Err_n = \sqrt{\frac{\log(1/\delta')}{n}}$.
 Now, some straightforward algebraic manipulations yield,
@@ -1297,7 +1291,7 @@ Taking these two results as given we can now prove each of the two claims~\eqref
 	& = 2 \int_{\Csigr} f(x) \Pbb\bigl(B(x,r) \cap \Csig\bigr) \dx \\
 	& \leq 2 \nu_d r^d \lambda  \int_{\Csigr} f(x) \dx = 2 \nu_d r^d \lambda \Pbb(\Csigr).
 	\end{align*}
-	where the inequality follows from \ref{asmp: cluster_separation}, which implies $f(x) \leq \lambda$ for $x \in \Csig \setminus \Cset$. Then, upper bounding the integral using \sbcomment{I changed the Lemma referenced here. I think it was wrong before} Lemma \ref{lem: expected_number_boundary_points} gives the final result.
+	where the inequality follows from \ref{asmp: cluster_separation}, which implies $f(x) \leq \lambda$ for $x \in \Csig \setminus \Cset$. Then, upper bounding the integral using Lemma \ref{lem: expected_number_boundary_points} gives the final result.
 
 
 %\subsection{Proof of Lemma~\ref{Z}}
@@ -1320,7 +1314,6 @@ The proof of this Lemma relies on certain volume estimates whose statement and p
 	\begin{equation*}
 	\mathcal{T}_{i,k} = \set{x \in \Csigr: t_{i,k} < \frac{\dist(x, \Csig)}{r} \leq t_{i+1,k}}, ~~ \Csigr = \bigcup_{i = 0}^{k-1} \mathcal{T}_{i,k},
 	\end{equation*}
-	\sbcomment{Changed $t_i$ to $t_{i,k}$.}
 	where $t_{i,k} = i/k$ for $i = 0, \ldots, k - 1$. As a result, for any $k \in \mathbb{N}$,
 	\begin{equation}
 	\label{eqn: partition_ub}
@@ -1341,7 +1334,7 @@ The proof of this Lemma relies on certain volume estimates whose statement and p
 	& = \underbrace{\sum_{i = 1}^{k} 
 	\nu_{i,k} \biggl( \left[\lambda_{\sigma} - c_0(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - c_0(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - c_0r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
 	\end{align}
-	\sbcomment{I changed the braces above -- I think they were incorrect earlier} where the second equality comes from rearranging terms in the sum.
+	where the second equality comes from rearranging terms in the sum.
 	
 	% AJG 5/14/19: This argument makes sense, correct?
 	We first consider the term $\Sigma_k$. $\Cset$ has finite diameter by Assumption~\ref{asmp: bounded_density}, as otherwise $\int_{\Csig} f(x) dx = \infty$. Letting $\overline{\Cset}$ be the closure of $\Cset$, we observe that $\overline{\Csig} = \overline{\Cset} + \sigma B$, and moreover for any $\delta > 0$, $\nu(\overline{\Csig} + \delta B) = \nu(\Csig + \delta B)$ (as the boundary $\partial(\Csig + \delta B)$ is Lipschitz and therefore has measure zero). As a result, for each $t_{i,k}, i = 1, \ldots,k$ we may apply Lemma \ref{lem: expansion_volume} to $\overline{\Cset}$ and obtain
@@ -1462,7 +1455,7 @@ As $\bigcup_{i = 1}^{N} \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}} = \bigcu
 	\begin{equation*}
 	\Aset_{\sigma} + \delta B \subset \bigcup_{i =1}^{N} \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}}
 	\end{equation*}
-	and therefore \sbcomment{Added a subscript $\sigma$ on LHS}
+	and therefore 
 	\begin{align*}
 	\nu(\Aset_\sigma + \delta B) & \leq \sum_{i = 1}^{N} \nu\bigl(\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}}\bigr) \\
 	& = \sum_{i = 1}^{N} \nu_d (\sigma + \delta + \epsilon)^d \frac{\nu(\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}})}{\nu(B(x_i, \sigma + \delta + \epsilon))} \\
@@ -1472,7 +1465,7 @@ As $\bigcup_{i = 1}^{N} \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}} = \bigcu
 \end{proof}
 \noindent We require Lemma \ref{lem: covering} to prove Lemma \ref{lem: expansion_volume}.
 \begin{lemma}
-	\label{lem: covering}\sbcomment{Changed $A$ to $\Aset$ in the statement}
+	\label{lem: covering}
 	For $i = 1, \ldots, N$ and  $\Aset_{\sigma}^{\text{(i)}}, \Aset_{\sigma + \delta + \epsilon}^{\text{(i)}}$ as in Lemma \ref{lem: expansion_volume},
 	\begin{equation*}
 	\frac{\nu(\Aset_{\sigma + \delta + \epsilon}^{\text{(i)}})}{\nu(B(x_i, \sigma + \delta + \epsilon))} \leq \frac{\nu(\Aset_{\sigma}^{\text{(i)}})}{\nu(B(x_i, \sigma))}
@@ -2465,10 +2458,10 @@ where the last inequality follows by the hypothesis $\ell_{\nu,r}(u),\ell_{\nu,r
 \end{align*}
 We have completed our proof of Lemma \ref{lem: one_step_distributions}, and therefore (in turn), Lemmas~\ref{lem: uniform_continuous_conductance}, \ref{lem: nonuniform_continuous_conductance}, and \ref{lem: graph_conductance_profile_lb}. As a result, Proposition \ref{prop: local_spread_conductance} is proved, and the proof of Theorem \ref{thm: mixing_time_upper_bound} is complete.
 
-\subsection{Concentration inequalities}
+\section{Probabilistic bounds}
 \label{sec: concentration}
 
-Given a symmetric kernel function $K: \Rd \to \Reals$ with $\sup_{x,y \in \Rd} \abs{K(x,y)} \leq 1$, and independent and identically distributed data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$2$ $U$-statistic} to be 
+Given a symmetric kernel function $K: \Rd \times \Rd \to \Reals$ with $\sup_{x,y \in \Rd} \abs{K(x,y)} \leq 1$, and independent and identically distributed data $\set{x_1, \ldots, x_n}$, we define the \textit{order-$2$ $U$-statistic} to be 
 \begin{equation*}
 U := \frac{1}{ {n \choose 2} } \sum_{1 \leq i < j \leq n} K(x_i,x_j).
 \end{equation*}
@@ -2497,18 +2490,18 @@ We will employ a sharper inequality to bound the sum of independent Bernoulli ra
 	\end{align*}
 \end{lemma}
 
-We will require large-sample and asymptotic bounds on several different degree and volume functionals, which follow from Lemmas \ref{lem: bounded_difference} and \ref{lem: multiplicative_Hoeffding}. Let
+We will require large-sample and asymptotic bounds on several different degree and volume functionals, which follow from Lemmas \ref{lem: bounded_difference} and \ref{lem: multiplicative_Hoeffding}. Let $\Cset' \in \Cbb_f(\lambda)$ be a high-density cluster, with $\sigma$-expansion $\Csig' = \Cset' + \sigma B$, and recall the notation $\widetilde{\deg}_{n,r}(x) = \deg_{n,r}(x,G_{n,r}[\Csig[\Xbf]])$ for $x \in \Csig[\Xbf]$. Then, let
 \begin{alignat*}{2}
 \degminwt & := \min_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}\left[\Csig[\Xbf]\right]),~ && \degmaxwt := \max_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}\left[\Csig[\Xbf]\right]) \\ 
 \degminpr & := \min_{u \in \Csig'[\Xbf]} \deg(u; G_{n,r}),~ && \degmax := \max_{u \in \Csig[\Xbf]} \deg(u; G_{n,r}) \\
 \degmin & := \min_{u \in \Xbf} \deg(u; G_{n,r}).
 \end{alignat*}
-
+We collect the bounds we need in Lemma \ref{lem: ball_bounds_in_probability}.
 \begin{lemma}
 	\label{lem: ball_bounds_in_probability}
 	Under the geometric conditions \ref{asmp: bounded_density}-\ref{asmp: bounded_volume}, for any $\epsilon > 0$, each of the following bounds hold with probability tending to one as $n \to \infty$:
 	\begin{align}
-	\frac{\degminwt}{n} & \geq (1 - \epsilon)\frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_cluster_degree_bound} \\
+	\frac{\degminwt}{n - 1} & \geq (1 - \epsilon)\frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_cluster_degree_bound} \\
 	\frac{\degmax}{n} & \leq (1 + \epsilon)\Lambda_{\sigma} r^d \nu_d \label{eqn: max_degree_bound}\\
 	\frac{\abs{\Csig[\Xbf]}}{n} & \leq (1 + \epsilon)\Pbb(\Csig) \label{eqn: Csig_cardinality_bound}\\
 	\label{eqn: volwt_bound}
@@ -2517,13 +2510,13 @@ We will require large-sample and asymptotic bounds on several different degree a
 	
 	Additionally, with probability one,
 	\begin{align}
-	\liminf_{n \to \infty} \frac{\degminwt}{n} & \geq \frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_cluster_degree_bound_asymp}\\
+	\liminf_{n \to \infty} \frac{\degminwt}{n - 1} & \geq \frac{6}{25} \lambda_{\sigma} r^d \nu_d \label{eqn: min_cluster_degree_bound_asymp}\\
 	\limsup_{n \to \infty} \frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)} & \leq \Pbb(\Csig) \Lambda_{\sigma} \nu_d r^d \label{eqn: max_vol_bound_asymp}
 	\end{align}
 	
 	If additionally \ref{asmp: valid_region} holds: for any $\epsilon > 0$, the following bound holds with probability tending to one as $n \to \infty$:
 	\begin{align}
-	\frac{\degmin}{n} \geq (1 - \epsilon)\frac{6}{25}\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} 
+	\frac{\degmin}{n - 1} \geq (1 - \epsilon)c\lambda_{\min} r^d \nu_d \label{eqn: min_degree_bound} 
 	\end{align}
 	
 	If additionally \ref{asmp: C'_bounded_density} holds (but not necessarily \ref{asmp: valid_region}): for any $\epsilon > 0$, the following bound holds with probability tending to one as $n \to \infty$:
@@ -2533,42 +2526,56 @@ We will require large-sample and asymptotic bounds on several different degree a
 	\end{equation}
 \end{lemma}
 \begin{proof}
-	We note that for any $x \in \Csig \cup \Csig'$, by \ref{asmp: bounded_density} and \ref{asmp: C'_bounded_density} along with Lemma \ref{lem: local_conductance},
+	We first note that \eqref{eqn: Csig_cardinality_bound} follows directly from the law of large numbers. Now, we examine~\eqref{eqn: min_cluster_degree_bound}. Note that for any $x \in \Csig$, by assumption \ref{asmp: bounded_density} and Lemma~\ref{lem: local_conductance},
 	\begin{equation*}
-	\frac{6}{25} \lambda_{\sigma} r^d \nu_d \leq \Pbb(B(x,r))
+	\Ebb(\widetilde{\deg}_{n,r}(x_i)|x_i = x) \geq \frac{6}{25} \lambda_{\sigma}r^d\nu_d,
 	\end{equation*}
-	Then, by Lemma \ref{lem: multiplicative_Hoeffding} along with a union bound
+	Conditional on $x_i = x$, the functional $\widetilde{\deg}_{n,r}(x_i)$ is a sum of $n - 1$ independent Bernoulli random variables. Therefore by Lemma \ref{lem: multiplicative_Hoeffding}
 	\begin{equation*}
-	\Pbb \left(\degminwt \leq n (1 - \epsilon) \frac{6}{25}  \lambda_{\sigma} r^d \nu_d \right) \leq n \exp\set{- \frac{6 n \epsilon^2  \lambda_{\sigma} r^d \nu_d}{50} } \overset{n \to \infty}{\longrightarrow} 0.
+	\Pbb\left(\widetilde{\deg}_{n,r}(x_i) \leq (n-1) (1 - \epsilon) \frac{6}{25}  \lambda_{\sigma} r^d \nu_d \mid x_i = x \right) \leq \exp\set{- \frac{6 n \epsilon^2  \lambda_{\sigma} r^d \nu_d}{50} }
 	\end{equation*}
-	and we have shown \eqref{eqn: min_cluster_degree_bound}. Under \ref{asmp: C'_bounded_density}, the same bound holds for $\degminpr$, and \eqref{eqn: min_cluster_degree_bound_2} follows. \eqref{eqn: min_degree_bound} and \eqref{eqn: max_degree_bound} follow from similar reasoning.
+	Since this holds for all $x \in \Csig$, by the law of total probability it holds unconditionally as well, i.e.
+	\begin{equation*}
+	\Pbb\left(\widetilde{\deg}_{n,r}(x_i) \leq (n - 1) (1 - \epsilon) \frac{6}{25}  \lambda_{\sigma} r^d \nu_d \right) \leq \exp\set{- \frac{6 n \epsilon^2  \lambda_{\sigma} r^d \nu_d}{50} }
+	\end{equation*}
+	Taking a union bound over all $x_i \in \Csig[\Xbf]$ (of which, of course, there are no more $n$), we have
+	\begin{equation*}
+	\Pbb \left(\degminwt \leq (n - 1) (1 - \epsilon) \frac{6}{25}  \lambda_{\sigma} r^d \nu_d \right) \leq n \exp\set{- \frac{6 n \epsilon^2  \lambda_{\sigma} r^d \nu_d}{50} } \overset{n \to \infty}{\longrightarrow} 0.
+	\end{equation*}
+	and we have shown \eqref{eqn: min_cluster_degree_bound}. The equivalent bound \eqref{eqn: max_degree_bound} on maximum degree of vertices $x \in \Csig[\Xbf]$ follows from similar reasoning. Under~\ref{asmp: C'_bounded_density} [or \ref{asmp: valid_region}], equivalent reasoning leads to \eqref{eqn: min_cluster_degree_bound_2}[or \eqref{eqn: min_degree_bound}]. Additionally, taking $\epsilon_n \downarrow 0$ sufficiently slowly so that 
+	\begin{equation*}
+	\sum_{n = 1}^{\infty }n \exp\set{- \frac{6 n \epsilon_n^2  \lambda_{\sigma} r^d \nu_d}{50} } < \infty
+	\end{equation*}
+	application of the Borel-Cantelli Lemma yields~\eqref{eqn: min_cluster_degree_bound_asymp}.
 	
-	\eqref{eqn: Csig_cardinality_bound} follows directly from the law of large numbers.
-	
-	Finally, note that
+	We next prove~\eqref{eqn: volwt_bound}, which is only slightly more involved. Note that
 	\begin{equation*}
 	\vol_{n,r}(\Csig[\Xbf]) = \sum_{i = 1}^{n} \sum_{j \neq i}^{n} \1(x_i \in \Csig) \1(\norm{x_i - x_j} \leq r)
 	\end{equation*}
 	can be rewritten as a U-statistic, and furthermore
 	\begin{equation*}
-	\int_{\Csig} \Pbb(B(x,r)) \dx = \Ebb\left(\1(x_i \in \Csig) \1(\norm{x_i - x_j} \leq r)\right).
+	\Ebb\left(\1(x_i \in \Csig) \1(\norm{x_i - x_j} \leq r)\right) = \int_{\Csig} \Pbb(B(x,r)) \,d\Pbb(x)
 	\end{equation*}
-	
-	Therefore by Lemma \ref{lem: bounded_difference}
+	\noindent so that by Lemma \ref{lem: bounded_difference}
 	\begin{equation}
 	\label{eqn: ball_bounds_in_probability_1}
-	\abs{\vol_{n,r}(\Csig[\Xbf]) - n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx }\leq \frac{3}{20}n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx 
+	\abs{\vol_{n,r}(\Csig[\Xbf]) - n(n-1)\int_{\Csig} \Pbb(B(x,r)) \,d\Pbb(x) }\leq \frac{3}{20}n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx 
 	\end{equation}
-	with probability at least $1 - 2\exp(-\frac{3}{20}n \int_{\Csig} \Pbb(B(x,r) \dx) \to 0$ as $n \to \infty$. Then, application of the triangle inequality to \eqref{eqn: ball_bounds_in_probability_1}, along with the range $\vol_0 \in [3/4,5/4] \cdot n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx$ given by \eqref{eqn: initialization}, yields
+	with probability at least $1 - 2\exp(-\frac{3}{20}n \int_{\Csig} \Pbb(B(x,r) \,d\Pbb(x))$. Assume \eqref{eqn: ball_bounds_in_probability_1} holds; then, since by \eqref{eqn: initialization} the volume estimate $\vol_0$ must lie in $[3/4,5/4] \cdot n(n-1)\int_{\Csig} \Pbb(B(x,r)) \,d\Pbb(x)$, we obtain
 	\begin{equation*}
-	\abs{\vol_{n,r}(\Csig[\Xbf]) - \vol_0} \leq \left(\frac{3}{20} + \frac{1}{4}\right) n(n-1)\int_{\Csig} \Pbb(B(x,r)) \dx \leq \frac{1}{2} \vol_0.
+	\abs{\vol_{n,r}(\Csig[\Xbf]) - \vol_0} \leq \left(\frac{3}{20} + \frac{1}{4}\right) n(n-1)\int_{\Csig} \Pbb(B(x,r)) \,d\Pbb(x) \leq \frac{1}{2} \vol_0.
 	\end{equation*}
+	with probability tending to $0$ as $n \to \infty$. This shows \eqref{eqn: volwt_bound}.
 	
-	By similar reasoning to \eqref{eqn: ball_bounds_in_probability_1}, for any $\epsilon > 0$, letting $\mu = \int_{\Csig} \Pbb(B(x,r) \dx) \geq \Ebb\left(\frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)}\right)$ we have
+	In fact,  for any $\epsilon > 0$, letting $\mu = \int_{\Csig} \Pbb(B(x,r)) \,d\Pbb(x) = \Ebb\left(\frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)}\right)$ we have
 	\begin{equation*}
 	\Pbb\left(\frac{\widetilde{\vol}_{n,r}(\Csig[\Xbf])}{n(n-1)} \geq (1 + \epsilon)\mu \right) \leq \exp(-n\epsilon^2\mu).
 	\end{equation*}
-	The two asymptotic statements \eqref{eqn: min_cluster_degree_bound_asymp} and \eqref{eqn: max_vol_bound_asymp} therefore both follow from the Borel-Cantelli Lemma.
+	Therefore, taking a sequence $\epsilon_n$ such that $\epsilon_n \downarrow 0$ sufficiently slowly so that
+	\begin{equation*}
+	\sum_{n = 1}^{\infty}\exp(-n\epsilon_n^2\mu) < \infty,
+	\end{equation*}
+	the almost-sure bound~\eqref{eqn: max_vol_bound_asymp} follows by the Borel-Cantelli Lemma.
 \end{proof}
 
 
