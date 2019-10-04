@@ -1,0 +1,449 @@
+\documentclass[11pt,twoside]{article}
+\usepackage{fancyhdr}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=blue,bookmarks=false]{hyperref}
+\usepackage{amsfonts,epsfig,graphicx}
+\usepackage{afterpage}
+\usepackage{amsmath,amssymb,amsthm} 
+\usepackage{fullpage}
+\usepackage{epsf} 
+\usepackage{graphics} 
+\usepackage{amsfonts,amsmath}
+\usepackage[sort,numbers]{natbib} 
+\usepackage{psfrag,xspace}
+\usepackage{color,etoolbox}
+
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-6cm}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-4cm}
+\addtolength{\textheight}{-1.1\headheight}
+\addtolength{\textheight}{-\headsep}
+\addtolength{\textheight}{-\footskip}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\renewcommand{\floatpagefraction}{.8}%
+
+\newtheorem{theorem}{Theorem} 
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem*{remark}{Remark}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{xcolor}
+%\usepackage{xr-hyper}
+%\usepackage{hyperref}
+%\usepackage[reqno]{amsmath}
+%\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+%\usepackage[parfill]{parskip}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{bm}
+\usepackage{mathtools}
+
+%%%%%% Begin Alden
+
+
+\newcommand{\diam}{\rho}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\left\{#1\right\}_{n \in \mathbb{N}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\Phibf}{\Phi_{u}}
+\newcommand{\Psibf}{\Psi_{u}}
+\newcommand{\taubf}{\tau_{u}}
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\Err}{\mathrm{Err}}
+\newcommand{\TV}{\mathrm{TV}}
+
+%%% Vectors
+\newcommand{\pbf}{p}        % removed bold font
+\newcommand{\qbf}{\mathbf{q}}
+\newcommand{\ebf}[1]{{e}_{#1}}
+\newcommand{\pibf}{\pi}
+
+%%% Matrices (no bold font)
+\newcommand{\Abf}{A}
+\newcommand{\Xbf}{X}             % removed bold font 
+\newcommand{\Wbf}{W}
+\newcommand{\Lbf}{L}
+\newcommand{\Dbf}{D}
+\newcommand{\Ibf}[1]{I_{#1}}
+
+%%% Probability distributions (and related items)
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Cbb}{\mathbb{C}}
+\newcommand{\Ebb}{\mathbb{E}}
+
+%%% Sets
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Asig}{\Aset_{\sigma}}
+\newcommand{\Csig}{\Cset_{\sigma}}
+\newcommand{\Asigr}{\Aset_{\sigma,\sigma + r}}
+\newcommand{\Csigr}{\Cset_{\sigma,\sigma + r}}
+
+%%% Graph quantities
+\newcommand{\Cest}{\widehat{C}}
+\newcommand{\degminpr}{\deg_{\min}'}
+\newcommand{\degminwt}{\widetilde{\deg}_{\min}}
+\newcommand{\degmaxwt}{\widetilde{\deg}_{\max}}
+\newcommand{\degmax}{\deg_{\max}}
+\newcommand{\piminwt}{\widetilde{\pi}_{\min}}
+\newcommand{\piminpr}{\pibf_{\min}'}
+\newcommand{\degmin}{\deg_{\min}}
+
+%%% Operators
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dt}{\,dt}
+
+%%% Algorithm notation
+\newcommand{\ppr}{{\sc PPR}}
+\newcommand{\pprspace}{{\sc PPR~}}
+
+%%% Tilde notation for quantities over the expansion set 
+\newcommand{\wn}{\widetilde{n}}
+\newcommand{\wX}{\widetilde{\Xbf}}
+\newcommand{\wx}{\widetilde{x}}
+\newcommand{\wz}{\widetilde{z}}
+\newcommand{\wbz}{\widetilde{\bf{z}}}
+\newcommand{\wu}{\widetilde{u}}
+\newcommand{\wPbb}{\widetilde{\Pbb}}
+\newcommand{\wf}{\widetilde{f}}
+\newcommand{\wDbf}{\widetilde{\Dbf}}
+\newcommand{\piwt}{\widetilde{\pi}}
+
+\newcommand{\sbcomment}[1]{{\color{red} \bf{{{{SB --- #1}}}}}}
+
+%\newtheoremstyle{aldenthm}
+%{6pt} % Space above
+%{6pt} % Space below
+%{\itshape} % Body font
+%{} % Indent amount
+%{\bfseries} % Theorem head font
+%{.} % Punctuation after theorem head
+%{.5em} % Space after theorem head
+%{} % Theorem head spec (can be left empty, meaning `normal')
+
+%\theoremstyle{aldenthm}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{definition}{Definition}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proposition}{Proposition}
+%\newtheorem{corollary}{Corollary}
+
+%\newtheoremstyle{aldenrmrk}
+%{6pt} % Space above
+%{6pt} % Space below
+%{} % Body font
+%{} % Indent amount
+%{\itshape} % Theorem head font
+%{.} % Punctuation after theorem head
+%{.5em} % Space after theorem head
+%{} % Theorem head spec (can be left empty, meaning `normal')
+%
+%\theoremstyle{aldenrmrk}
+%\newtheorem{remark}{Remark}
+%%%%%% End Alden
+
+%\title{Local Spectral Clustering of Density Upper Level Sets}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+%
+%\author{
+%Alden Green \And
+%Sivaraman Balakrishnan \And
+%Ryan J. Tibshirani}
+%
+%\begin{document}
+%\maketitle
+%
+%\vspace{0.1in}
+%\begin{abstract}
+
+
+\newcommand{\widgraph}[2]{\includegraphics[keepaspectratio,width=#1]{#2}}
+\newcommand{\Like}{\ensuremath{\mathcal{L}}}
+\newcommand{\Ball}[2]{\mathbb{B}_{#1}(#2)}
+\newcommand{\Complement}[1]{\overline{#1}}
+
+\newcommand{\xsam}{\ensuremath{x}}
+\newcommand{\samind}{\ensuremath{\ell}}
+\newcommand{\Xrv}{\ensuremath{X}}
+\newcommand{\Event}{\ensuremath{\mathcal{E}}}
+\newcommand{\Fevent}{\ensuremath{\mathcal{F}}}
+
+\newcommand{\usedim}{\ensuremath{d}}
+\newcommand{\mubold}{\ensuremath{\boldsymbol{\mu}}}
+\newcommand{\lambold}{\ensuremath{\boldsymbol{\lambda}}}
+\newcommand{\sep}{\ensuremath{\xi}}
+\newcommand{\mixind}{\ensuremath{i}}
+\newcommand{\mixtwo}{\ensuremath{j}}
+\newcommand{\nummix}{\ensuremath{M}}
+\newcommand{\mustar}{\ensuremath{\mu^*}}
+\newcommand{\muboldstar}{\ensuremath{\mubold^*}}
+\newcommand{\muboldt}{\ensuremath{\mubold^t}}
+
+\newcommand{\numobs}{\ensuremath{n}}
+\newcommand{\SamLike}{\ensuremath{\Like_\numobs}}
+\newcommand{\PopLike}{\ensuremath{\Like}}
+\newcommand{\Exs}{\E}
+\newcommand{\thetanew}{\ensuremath{\theta^{\text{\small{new}} }}}
+
+\newcommand{\stepsize}{\ensuremath{s}}
+
+
+\newcommand{\QMAT}{\ensuremath{\mathbf{Q}}} 
+\newcommand{\DMAT}{\ensuremath{\mathbf{D}}} 
+
+\newcommand{\defn}{\ensuremath{: \, =}}
+\newcommand{\muboldtilde}{\ensuremath{\tilde{\mubold}}}
+
+%%% New version of \caption puts things in smaller type, single-spaced 
+%%% and indents them to set them off more from the text.
+\makeatletter
+\long\def\@makecaption#1#2{
+        \vskip 0.8ex
+        \setbox\@tempboxa\hbox{\small {\bf #1:} #2}
+        \parindent 1.5em  %% How can we use the global value of this???
+        \dimen0=\hsize
+        \advance\dimen0 by -3em
+        \ifdim \wd\@tempboxa >\dimen0
+                \hbox to \hsize{
+                        \parindent 0em
+                        \hfil 
+                        \parbox{\dimen0}{\def\baselinestretch{0.96}\small
+                                {\bf #1.} #2
+                                %%\unhbox\@tempboxa
+                                } 
+                        \hfil}
+        \else \hbox to \hsize{\hfil \box\@tempboxa \hfil}
+        \fi
+        }
+\makeatother
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	
+	\begin{center} {\Large{\bf{Local Spectral Clustering of Density Upper Level Sets}}}
+		
+		\vspace*{.3cm}
+		
+		{\large{
+				\begin{center}
+					Alden Green ~~~~~ Sivaraman Balakrishnan~~~~~ Ryan Tibshirani\\
+					\vspace{.2cm}
+				\end{center}
+				
+				
+				\begin{tabular}{c}
+					Department of Statistics and Data Science \\
+					Carnegie Mellon University
+				\end{tabular}
+				
+				\vspace*{.2in}
+				
+				\begin{tabular}{c}
+					\texttt{\{ajgreen,sbalakri,ryantibs\}@andrew.cmu.edu}
+				\end{tabular}
+		}}
+		
+		\vspace*{.2in}
+		
+		\today
+		\vspace*{.2in}
+	
+	\end{center}
+
+\section{Examples}
+\label{sec:examples}
+
+In this section, we demonstrate the implications of our theory, and compare the performance of PPR density clustering to some alternatives, by walking through a series of examples. In all of these examples, the generative model under consideration will be a mixture of uniform distributions, plus some noise distribution. To formally define this model, we specify a support $\mathcal{X}$ and disjoint subsets $\mathcal{C}_1,\ldots,\mathcal{C}_M$ of $\mathcal{X}$, where $M \geq 2$ is the number of mixture components. We sample the background noise uniformly over $\mathcal{C}_0 = \mathcal{X} \setminus \bigcup_{m = 1}^{M} \mathcal{C}_m$, and let $\epsilon \in [0,1]$ be the fraction of background noise. The mixture distribution $\Pbb$ is therefore
+\begin{equation*}
+\Pbb = \frac{1 - \epsilon}{M} \sum_{m = 1}^{M} \Psi_m + \epsilon \Psi_0,
+\end{equation*}
+where $\Psi_m$ is the uniform distribution over $\Cset_m$. 
+
+Note that when $\epsilon$ is sufficiently small, for an appropriate choice of threshold $\lambda$ the density clustering will be $\Cbb_f(\lambda) = \set{\Cset_1,\ldots,\Cset_M}$. In this setup, therefore, estimating a density cluster is equivalent to recovering a mixture component.
+\subsection{1d uniform example.}
+
+We show the performance of our bounds in a mixture of uniforms in $\Reals$, and compare with the bound obtained via a global spectral clustering approach.
+
+\subsection{General uniform example.}
+
+We show the performance of our bounds in a mixture of uniforms in $\Reals^d$, and compare with the bound obtained via a density estimation approach.
+
+\subsection{Lower bound.}
+
+The theory we have developed so far gives tighter guarantees for plug-in density cluster estimators than for PPR. However, in both cases these are merely upper bounds on the clustering error. Now, we provide accompanying lower bounds for the PPR algorithm. These will demonstrate that there exist densities for which consistent estimation of density clusters is still possible, but for which \emph{PPR} will provably fail to recover density clusters (with high probability.) Moreover, they will show that the difficulty function $\kappa(\Cset)$ exhibits the right dependence on (some of) the geometric parameters we have introduced.
+
+Our hard case will be a mixture of $2$-uniforms with background noise. Given $0 < \sigma < \rho$, let $\mathcal{X} = [-1.5\sigma,1.5\sigma] \times [-.5\rho,.5\rho]$, and let $\Cset_1 = [-1.5\sigma,-.5\sigma] \times [.5\rho,1.5\rho]$, $\Cset_2 = [.5\sigma,1.5\sigma] \times [-.5\rho,.5\rho]$, so that the background noise is sampled over $\Cset_0 = [-.5\sigma,.5\sigma] \times [-.5\rho,.5\rho]$. We denote the resulting model by $\Pbb(\sigma,\rho,\epsilon)$ to emphasize the dependence of the distribution on the parameters of interest. 
+
+\section{Technical results.}
+
+\subsection{Lower bound.}
+
+Let $\Sset = [-1.5\sigma,1.5\sigma] \times [-\rho/2,0]$. Let the \emph{cut} and \emph{volume} functionals be defined for $\Aset \subset \Rd$ as follows:
+\begin{equation*}
+\cut_{\Pbb,r}(\Aset) := \int_{\Aset} \int_{\mathcal{X} \setminus \Aset} \1(\norm{x - y} \leq r) \,d\Pbb(x) \,d\Pbb(y), \vol_{\Pbb,r}(\Aset) := \int_{\Aset} \int_{\mathcal{X}} \1(\norm{x - y} \leq r) \,d\Pbb(x) \,d\Pbb(y)
+\end{equation*}
+and the \emph{normalized cut},
+\begin{equation*}
+\Phi_{\Pbb,r}(\Aset) := \frac{\cut_{\Pbb,r}(\Aset)}{\min\{\vol_{\Pbb,r}(\Aset),\vol_{\Pbb,r}(\mathcal{X} \setminus \Aset)\}}.
+\end{equation*}
+
+\textbf{1.} We first upper bound the normalized cut $\Phi_{\Pbb,r}(\Sset)$ and lower bound the normalized cut $\Phi_{\Pbb,r}(\Cset_1)$, using the geometric parameters $\sigma$ and $\rho$, the \textcolor{red}{drop parameter} $\epsilon$, and the radius $r$. Our bounds will be crude, but will display the right dependence on these parameters, and so will be sufficient for our purposes.
+
+We begin with the upper bound on $\Phi_{\Pbb,r}(\Sset)$. Note that only points $x = (x_1,x_2)$ such that $-r < x_2 < 0$ contribute to the cut of $\Sset$. Letting $f$ be the density function of $\Pbb$, we have
+\begin{align*}
+\cut_{\Pbb,r}(\Sset) & \leq \Pbb(\set{x \in \mathcal{X}: -r < x_2 < 0}) \cdot \max_{x \in \mathcal{X}} \Pbb(B(x,r)) \\
+& \leq \frac{3 r}{\rho} \cdot \frac{\nu_d r^d}{\sigma \rho}.
+\end{align*}
+By symmetry, $\vol_{\Pbb,r}(\Sset) = \vol_{\Pbb,r}(\mathcal{X} \setminus \Sset)$, and therefore it is sufficient to lower bound $\vol_{\Pbb,r}(\Sset)$. We have
+\begin{align*}
+\vol_{\Pbb,r}(\Sset) & \geq \Pbb(\set{x \in \Cset_1 \cap \Sset: \dist(x, \partial \Cset_1) > r}) \cdot \frac{\nu_d r^d}{\sigma \rho} \\
+& = \frac{(\sigma - 2r)(\rho - r)}{2 \sigma \rho} \cdot \frac{\nu_d r^d}{\sigma \rho}  \\
+& \geq \frac{3\nu_d r^d}{16\sigma \rho},
+\end{align*}
+where the last inequality follows since $r \leq \sigma/4$ and $\sigma < \rho$. Therefore,
+\begin{equation*}
+\Phi_{\Pbb,r}(\Sset) \leq 16 \frac{r}{\rho}.
+\end{equation*}
+Similar manipulations yield a lower bound on $\Phi_{\Pbb,r}(\Cset_1)$. We use our estimates of the volume of spherical caps from \textcolor{red}{A.6} to obtain a lower bound on $\cut_{\Pbb,r}(\Cset_1)$, 
+\begin{align*}
+\cut_{\Pbb,r}(\Cset_1) & \geq \Pbb(\set{x \in \Cset_1: \dist(x,\Cset_0) < r/32}) \cdot \frac{\nu(\textrm{cap}_{r}(\frac{31r}{32})) \epsilon}{2\rho\sigma} \\
+& \geq \frac{r (1 - \epsilon)}{32 \sigma} \cdot \frac{3 \nu_d r^d \epsilon}{16\rho\sigma}.
+\end{align*}
+and we can immediately upper bound the volume of $\Cset_1$,
+\begin{equation*}
+\vol_{\Pbb,r}(\Cset_1) \leq (1 - \epsilon) \cdot  \frac{(1 - \epsilon)}{\rho \sigma} \nu_d r^d.
+\end{equation*}
+Observe that $\vol_{\Pbb,r}(\mathcal{X} \setminus \Cset_1) \geq \vol_{\Pbb,r}(\Cset_2) = \vol_{\Pbb,r}(\Cset_1)$. Therefore,
+\begin{equation}
+\label{eqn:lb_proof_2}
+\Phi_{\Pbb,r}(\Cset_1) \geq  \frac{\epsilon r}{256 \sigma}.
+\end{equation}
+
+\textbf{2.} The upper bound \eqref{eqn:lb_proof_2} can be extended to hold for all sets $\Aset$ with small symmetric set difference $\Aset \triangle \Cset_1$. Formally,
+\begin{equation}
+\label{eqn:continuity_normalized_cut}
+\Phi_{\Pbb,r}(\Aset) \geq \frac{1}{2\pi} \cdot \frac{\epsilon^2r}{\sigma} \bigl(1 - 4 \cdot \Pbb(\Aset \triangle \Cset_1 )\bigr)
+\end{equation}
+The proof of \eqref{eqn:continuity_normalized_cut} is somewhat involved, and we defer it to the following section.
+
+\textbf{3.} We now convert from population to sample normalized cut. \textit{Claim 1:} There exist constants $c_1,c_2$ which may depend on $(\epsilon, \rho, \sigma)$ such that the following statements holds with respect to $c_1,c_2$: For all $n$ such that
+\begin{equation*}
+c_1 \cdot \left(\frac{\log n}{n}\right)^{1/d} \leq r,
+\end{equation*}
+the sample normalized cut of $\Aset$ is lower bounded
+\begin{equation*}
+\Phi_{n,r}(\Aset) \geq \frac{\Phi_{\Pbb,r}(\Aset)}{4} \quad \textrm{for all $\Aset \subset \Rd$,}
+\end{equation*}  
+and the sample normalized cut of $\Sset$ is upper bounded,
+\begin{equation*}
+\Phi_{n,r}(\Sset) \leq \frac{\Phi_{\Pbb,r}(\Sset)}{2}
+\end{equation*}
+with probability at least $1 - \frac{c_2}{n}$. 
+
+\textbf{4.}
+
+We prove this claim in a following section.
+
+\subsubsection{Proof of \eqref{eqn:continuity_normalized_cut}}
+To prove \eqref{eqn:continuity_normalized_cut}, we will need to upper bound the cut of $\Aset$, and lower bound the volume. We begin by upper bounding the cut, which will be the more difficult of the two. To obtain the desired result, we will need to discretize $\Aset$. For simplicity, without loss of generality assume $\rho$ and $\sigma$ are constant multiples of $r$. For $i = 0,\ldots,\frac{6\sigma}{r} - 1$ and $j = 0,\ldots, \frac{2\rho}{r} - 1$, let
+\begin{equation*}
+B_{ij} = \left[\frac{-3\sigma + ir}{2}, \frac{-3\sigma + (i + 1)r}{2}\right] \times \left[\frac{-\rho + jr}{2}, \frac{-\rho + (j + 1)r}{2}\right] 
+\end{equation*}
+and let $\mathfrak{B} = \set{B_{ij}}$ be the collection of all such boxes. Our discrete version of $\mathcal{A}$ will be a subsets of $\mathfrak{B}$,
+\begin{equation*}
+\overline{\mathcal{A}} := \set{B_{ij} \in \mathfrak{B}: \Pbb(B_{ij} \cap \mathcal{A}) \geq \frac{\Pbb(B_{ij})}{2}}.
+\end{equation*}
+(Note that $\mathcal{C}_1 = \bigcup \overline{\Cset}_1$ where $\overline{\Cset}_1 = \set{B_{ij}: i \in 0,\ldots,\frac{2\sigma}{r} - 1 }$, and is therefore effectively already discretized.)
+The discretization of $\Aset$ is useful for several reasons. First, we use it to lower bound the cut of the continuous set $\Aset$. Define the boundary of the discretized set $\overline{\mathcal{A}}$ to be 
+\begin{equation*}
+\overline{\partial \Aset} = \set{B_{ij} \in \overline{\mathcal{A}}: \exists B_{lk} \in \mathfrak{B} ~\textrm{such that}~\abs{l - i} + \abs{k - j} = 1, B_{lk} \not\in \overline{\mathcal{A}}}.
+\end{equation*}
+All boxes in the boundary $\overline{\partial \Aset}$ contribute substantially to the cut of $\Aset$,
+\begin{equation}
+\label{eqn:lb_proof}
+\cut_{\Pbb,r}(\mathcal{\Aset}) \geq \sum_{B_{ij} \in \overline{\partial\mathcal{A}}} \frac{\Pbb(B_{ij}) \cdot \min_{k,l} \Pbb(B_{kl})}{4}
+\end{equation}
+Moreover, the symmetric set difference $\Aset \triangle \Cset_1$ can be related to the symmetric set difference $\overline{\Aset} \triangle \overline{\Cset}_1$,
+\begin{equation}
+\label{eqn:lb_proof_1}
+\Pbb(\Aset \triangle \Cset_1) \geq \sum_{B \in \overline{\Aset} \triangle \overline{\Cset}_1} \frac{\Pbb(B_{ij})}{2}.
+\end{equation}
+Next, divide $\mathcal{X}$ into rectangles horizontally, $\mathfrak{R}_j = \set{B_{ij}: i = 0,\ldots,\frac{6\sigma}{r} - 1}$. We divide our analysis into cases. For each $j$, one of
+\begin{enumerate}[(i)]
+	\item $\overline{\Aset} \cap \mathfrak{R}_j = \emptyset$, and therefore $(\overline{\Aset} \triangle \overline{\Cset}_1) \cap \mathfrak{R}_j = \overline{\Cset}_1 \cap \mathfrak{R}_j$, or
+	\item $\overline{\Aset} \cap \mathfrak{R}_j = \mathfrak{R}_j$, and therefore $(\overline{\Aset} \triangle \overline{\Cset}_1) \cap \mathfrak{R}_j \supset \overline{\Cset}_2 \cap \mathfrak{R}_j$, or
+	\item $\overline{\partial\mathcal{A}} \cap \mathfrak{R}_j \neq \emptyset$.
+\end{enumerate}
+occurs. Moreover, (a) for every row $\mathfrak{R}_j$, $\abs{\overline{\Cset}_1 \cap \mathfrak{R}_j} =  \abs{\overline{\Cset}_2 \cap \mathfrak{R}_j} = \frac{2\sigma}{r}$, and (b) for every $B_{ij} \in \overline{\Cset}_1 \cup \overline{\Cset}_2$, the probability
+\begin{equation*}
+\Pbb(B_{ij}) \geq  \frac{r^2(1 - \epsilon)}{4\rho \sigma}.
+\end{equation*}
+Therefore, letting $J_1 = \set{j: \textrm{(i) occurs}}$, and similarly $J_2 = \set{j: \textrm{(ii) occurs}}$ and  $J_3 = \set{j: \textrm{(iii) occurs}}$, we have from \eqref{eqn:lb_proof_1} that
+\begin{align*}
+\Pbb(\Aset \triangle \Cset_1) & \geq \sum_{j = 0}^{\frac{2\rho}{r} - 1} \sum_{B \in (\overline{\Aset} \triangle \overline{\Cset}_1) \cap \mathfrak{R}_j} \frac{\Pbb(B_{ij})}{2} \\
+& \geq \left(\abs{J_1} + \abs{J_2}\right) \cdot \frac{\sigma}{r} \cdot \frac{r^2(1 - \epsilon)}{4\rho \sigma} \\
+& = \left(\frac{2\rho}{r} - \abs{J_3}\right) \frac{r(1 - \epsilon)}{4\rho}
+\end{align*}
+Rearranging, we obtain
+\begin{equation*}
+\abs{J_3} \geq \frac{2\rho}{r}\left(1 - \frac{2\Pbb(\Aset \triangle \Cset_1)}{1 - \epsilon}\right) \geq \frac{2\rho}{r}\left(1 - 4\Pbb(\Aset \triangle \Cset_1)\right)
+\end{equation*}
+since \textcolor{red}{$\epsilon < 1/2$.} From \eqref{eqn:lb_proof} and the prior inequality, we have
+\begin{align}
+\cut_{\Pbb,r}(\Aset) & \geq \sum_{j = 0}^{\frac{2\rho}{r} - 1} \sum_{B_{ij}} \frac{\Pbb(B_{ij}) \cdot \min_{k,l} \Pbb(B_{kl})}{4} \nonumber \\
+& \geq \abs{J_3} \frac{r^4\epsilon^2}{16\rho^2\sigma^2} \nonumber \\
+& \geq \frac{\epsilon r}{2\sigma} \cdot \frac{r^2 \epsilon}{\rho\sigma} \cdot \bigl(1 - 4\Pbb(\Aset \triangle \Cset_1)\bigr) \label{eqn:lb_proof_3}
+\end{align}
+
+We provide the following very crude upper bound on $\vol_{\Pbb,r}(\Aset)$,
+\begin{equation*}
+\vol_{\Pbb,r}(\Aset) \leq \vol_{\Pbb,r}(\mathcal{X}) \leq \frac{\pi r^2}{\rho \sigma},
+\end{equation*}
+which along with~\eqref{eqn:lb_proof_3} results in an upper bound on the normalized cut of $\Aset$,
+\begin{equation*}
+\Phi_{\Pbb,r}(\Aset) \leq \frac{1}{2\pi} \cdot \frac{\epsilon^2r}{\sigma} \bigl(1 - 4 \cdot \Pbb(\Aset \triangle \Cset_1 )\bigr).
+\end{equation*}
+
+\subsubsection{Proof of Claim 1.}
+\end{document}
