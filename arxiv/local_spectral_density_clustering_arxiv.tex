@@ -1001,12 +1001,12 @@ For some universal constant $c > 0$, the following statements each hold with hig
 	\begin{equation*}
 	\epsilon < c\frac{b\sigma^2}{\rho^2 \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2\sigma}\right)}
 	\end{equation*}
-	then $\Delta(\widehat{C}, \mathcal{C}^{(1)}[\Xbf]) \leq b \cdot  \vol_{n,r}(\mathcal{C}^{(1)}[\Xbf])$.
+	then $\Delta(\widehat{C}, \Csig^{(1)}[\Xbf]) \leq b \cdot  \vol_{n,r}(\Csig^{(1)}[\Xbf])$.
 	\item If the user-specified parameters are given as in Theorem~\ref{thm:ppr_lb}, and 
 	\begin{equation*}
 	\epsilon > c\left({\frac{\sigma}{\rho}} \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\right)^{1/4}
 	\end{equation*}
-	then $\Delta(\widehat{C}, \mathcal{C}^{(1)}[\Xbf]) \geq \frac{1}{8} \vol_{n,r}(\mathcal{C}^{(1)}[\Xbf])$.
+	then $\Delta(\widehat{C}, \Csig^{(1)}[\Xbf]) \geq \frac{1}{8} \vol_{n,r}(\Csig^{(1)}[\Xbf])$.
 \end{itemize}
 
 Jointly, these upper and lower bounds give a relatively precise characterization of what it means for a density cluster to be well- or poorly-geometrically conditioned for recovery using PPR.
@@ -1103,10 +1103,7 @@ global minimum normalized cut, computed according to the algorithm of
 estimator of \citet{chaudhuri2010}.  We can see the degrading ability of PPR to
 recover density clusters as the two moons become less well-separated. Of 
 particular interest is the fact that PPR fails to recover one of the moons even
-when normalized cut still succeeds in doing so. Additionally, we note that the Chaudhuri-Dasgupta algorithm succeeds even when both PPR and normalized cut fail.  While our main message was
-that PPR recovers geometrically well-conditioned density clusters, it would be  
-interesting to establish that it \emph{only} recovers such clusters, a direction
-for future work.   
+when normalized cut still succeeds in doing so. Additionally, we note that the Chaudhuri-Dasgupta algorithm succeeds even when both PPR and normalized cut fail.  This supports our main message, which is that PPR recovers only geometrically well-conditioned density clusters.
 
 \begin{figure}
   \centering
