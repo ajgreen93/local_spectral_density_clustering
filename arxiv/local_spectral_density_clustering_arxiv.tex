@@ -469,8 +469,7 @@ a true density cluster.
 \subsection{Related Work and Our Contributions}
 In addition to the background on local spectral
 clustering given previously, a few related lines of work are worth
-highlighting. In the stochastic block model (SBM), arguably one of the simplest models of network formation, edges between nodes independently occur with probability based on a latent community membership. The ability of spectral algorithms to perform clustering -- community detection-- in this context is well-understood. \sbcomment{Add reference to McSherry -- spectral partitioning...} In particular, \citet{rohe2011} upper bound the fraction of nodes misclassified by a spectral algorithm for the high-dimensional (large number of blocks) SBM,  \citet{lei2015} extend these results to the sparse (low average degree) regime, and \citet{balakrishnan2011} analyze the misclassification rate when the block model exhibits some hierarchical structure
-\sbcomment{add reference to Cris Moore, Newman et. al., and Liza Levina, Bickel, Sarkar have a recent paper that looks at this same hierarchical model}. The framework we consider, where nodes correspond to data points sampled from an underlying density, and edges between nodes are formed based on geometric proximity, is quite different than the SBM, and therefore so is our analysis.
+highlighting. In the stochastic block model (SBM), arguably one of the simplest models of network formation, edges between nodes independently occur with probability based on a latent community membership. The ability of spectral algorithms to perform clustering -- community detection-- in this context is well-understood, dating back to \citet{mcsherry2001} who gives conditions under which the entire community structure can be recovered. In more recent work, \citet{rohe2011} upper bound the fraction of nodes misclassified by a spectral algorithm for the high-dimensional (large number of blocks) SBM and \citet{lei2015} extend these results to the sparse (low average degree) regime. Relatedly, \citet{clauset08,balakrishnan2011,li2018}, analyze the misclassification rate when the block model exhibits some hierarchical structure. The framework we consider, where nodes correspond to data points sampled from an underlying density, and edges between nodes are formed based on geometric proximity, is quite different than the SBM, and therefore so is our analysis.
 
 The study of spectral algorithms on neighborhood graphs has focused on establishing consistency results-- that is, asymptotic convergence of eigenvalues and eigenvectors of matrices to eigenvalues and eigenfunctions of limiting operators. \citet{koltchinskii2000} establish convergence of spectral projections of the adjacency matrix to a limiting integral operator, with similar results obtained using simplified proofs in \citet{rosasco10}. \citet{vonluxburg2008} studies convergence of eigenvectors of the Laplacian matrix for a neighborhood of fixed radius. \citet{belkin07} and \citet{garciatrillos18} extend these results to the regime where the radius $r \to 0$ as $n \to \infty$. 
 
@@ -485,12 +484,15 @@ distinct geometric aspects of the cluster $\Cset$ under consideration. We make
 this dependence more explicit, and in doing so expose the role each geometric
 condition plays in the clustering problem. 
 
-A substantial portion of our technical effort involves estimating graph-theoretic connectivity properties of empirical density clusters in the neighborhood graph $G_{n,r}$. In particular, we prove an upper bound on the mixing time of a random walk run only over the subset of nodes in $G_{n,r}$ which fall within a density cluster $\Cset$. To do so, we rely on a series of seminal works upper bounding the mixing time of \emph{geometric random walks} (see \citet{vempala2005} for a comprehensive review.)  This study was initiated by \citet{dyer1991}, who used geometric random walks as a fundamental subroutine to efficiently compute volumes of high-dimensional convex bodies. These results are improved in \citet{lovasz1990,kannan97,kannan06}, who show, inter alia, that the bounds on mixing time can be sharpened by avoiding so-called ``start-penalties''. As we discuss further in the sequel, these improvements are crucial to our work. Following the work of \citet{abbasi-yadkori2016,abbasi-yadkori2016a}, we extend these results to hold for Lipschitz deformations of convex sets. Additionally, we relate the mixing time of these (continuous-space) geometric random walks to the mixing time of random walks over (discrete) neighborhood graphs. \sbcomment{Refer to and add a couple of lines about the paper of Zhu et al.}
+Our analysis naturally builds on a few of the aforementioned theoretical analyses of PPR. For an arbitrary graph $G$ and subset $S \subset G$, \citet{andersen2006} relate the quality of the PPR cluster $\hat{C}$ to the normalized cut functional $\Phi(S;G)$. While this analysis is tight, it fails to account for improvements possible when the cluster $S$ is additionally assumed to be internally well-connected, which is intuitively a more favorable case for clustering. Building on this intuition, \citet{zhu2013} assume that the subgraph $G[S]$ is internally well-connected-- measured by a functional such as mixing time of a random walk over $G[S]$-- and prove upper bounds on $\vol(\widehat{C} \vartriangle S;G)$. Both of these analyzes hold with respect to a approximate form of PPR (APPR) which can be efficiently computed.
+
+
+We apply these results to our setting by estimating these functionals in the particular case of $G = G_{n,r}$ and $S = \mathcal{C}[X]$. In particular, we prove an upper bound on the mixing time of a random walk run only over the subset of nodes in $G_{n,r}$ which fall within a density cluster $\Cset$. To do so, we rely on a series of seminal works upper bounding the mixing time of \emph{geometric random walks} (see \citet{vempala2005} for a comprehensive review.)  This study was initiated by \citet{dyer1991}, who used geometric random walks as a fundamental subroutine to efficiently compute volumes of high-dimensional convex bodies. These results are improved in \citet{lovasz1990,kannan97,kannan06}, who show, inter alia, that the bounds on mixing time can be sharpened by avoiding so-called ``start-penalties''. As we discuss further in the sequel, these improvements are crucial to our work. Following the work of \citet{abbasi-yadkori2016,abbasi-yadkori2016a}, we extend these results to hold for Lipschitz deformations of convex sets. Additionally, we relate the mixing time of these (continuous-space) geometric random walks to the mixing time of random walks over (discrete) neighborhood graphs. 
 
 Finally, it is worth mentioning that density clustering and level set estimation are well-studied problems. \citet{polonik1995, rigollet2009} study density clustering under the 
 symmetric set difference metric, \citet{tsybakov1997, singh2009} describe
 minimax optimal level-set estimators under Hausdorff loss and
-\citet{hartigan1981, chaudhuri2010, balakrishnan2013} \sbcomment{Add reference to Kpotufe, von Luxburg} consider consistent estimation of the
+\citet{hartigan1981, chaudhuri2010, balakrishnan2013,kpotufe11} consider consistent estimation of the
 cluster tree.
 %, to note but a few works. 
 We emphasize that our goal is not to improve on these
@@ -719,7 +721,7 @@ hyperparameters and selects the cluster which has the smallest normalized cut.
 We now present our first main result: a bound on the volume of the symmetric set difference between the estimated cluster $\widehat{C}$ and empirical cluster $\Csig[\Xbf]$. 
 In this theorem, and hereafter, we let 
 $c, c_i > 0$ represent universal constants, and 
-$c_i(\Pbb,r)$ represent constants which depend only on $\Pbb$ and $r$ but not on the sample size $n$; where possible, we keep track of all constants in our proofs.
+$c(\Pbb,r), c_i(\Pbb,r) > 0$ represent constants which may depend on $\Pbb,\lambda$ and $r$ but not on the sample size $n$; where possible, we keep track of all constants in our proofs.
 \begin{theorem}
   \label{thm:volume_ssd}
   Fix $\lambda > 0$ and let \smash{$\Cset \in \Cbb_f(\lambda)$} be a
@@ -728,23 +730,19 @@ $c_i(\Pbb,r)$ represent constants which depend only on $\Pbb$ and $r$ but not on
   there exists a set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ of large volume 
   with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \frac{1}{2}\vol(\Csig[\Xbf];G_{n,r})$ such that the following statement holds: let Algorithm~\ref{alg: ppr} be run with any seed node $v \in \Csig[\Xbf]^g$. Then, for any $n$ large enough so that
   \begin{equation*}
-  n \geq \max\left\{(\log n)^{\max\{\frac{3}{d},1\}}\left(\frac{1}{c_2(\Pbb,r)}\right)^d, c_3(\Pbb,r)\right\},
+  n \geq c_1(\Pbb,r)\cdot (\log n)^{\max\{\frac{3}{d},1\}}
   \end{equation*}
   the volume of the symmetric set difference is upper bounded
   \begin{equation}
     \label{eqn:volume_ssd}
     \Delta(\Csig[\Xbf], \Cest) \leq c \cdot \kappa(\Cset) \cdot \vol_{n,r}(\Csig[\Xbf]),
   \end{equation}
-  with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-(c_1(\Pbb,r) + c_6(\Pbb,r))n}$. 
+  with probability at least $1 - \frac{c_2(\Pbb,r)}{n}$. 
 \end{theorem}
-\sbcomment{At this point not sure why you need so many different constants. I would in general assume that $d$ is a constant. Can you not just write for 
-$n \geq c_1(\Pbb,r)  (\log n)^{\max\{\frac{3}{d},1\}}$, with probability at least $1 - c_2(\Pbb,r)/n$ blah...?}
-The proof of Theorem \ref{thm:volume_ssd} is deferred to Appendix~\ref{sec:proof_of_volume_ssd}. 
-This result shows that the volume of the symmetric set difference \smash{$\Delta(\Csig[\Xbf],
+The proof of Theorem \ref{thm:volume_ssd} is deferred to Appendix~\ref{sec:proof_of_volume_ssd}. We reiterate that the primary technical work involved in proving Theorem~\ref{thm:volume_ssd} involves showing that $\tau_{u}$ and $\phi_u$ are valid upper bounds on the normalized cut and mixing time; once this is established, the result follows more or less straightforwardly from~\citet{zhu2013}.
+This result establishes that the volume of the symmetric set difference \smash{$\Delta(\Csig[\Xbf],
   \Cest)$} is upper-bounded by a quantity proportional to the difficulty of the clustering problem, as
-measured by the condition number $\kappa(\Cset)$.
-\sbcomment{Not completely clear what you are doing above Zhu et. al. Perhaps emphasize again that the technical work is in showing that $\tau_u$ and $\phi_u$ are valid upper bounds on the normalized cut and mixing time, and once
-this is established the result follows from Zhu et al.? (unless I am missing something) }
+measured by the condition number $\kappa(\Cset)$. 
 
 \subsection{Consistent Cluster Recovery}
 The bound on symmetric set difference \eqref{eqn:volume_ssd} does not imply consistent density cluster estimation in the sense of \eqref{eqn: consistent_density_cluster_recovery}. This notion of consistency requires a uniform bound over 
@@ -777,16 +775,19 @@ Next we give our main result on consistent cluster recovery by PPR.
   Fix $\lambda > 0$, let $\Cset \in \Cbb_f(\lambda)$ be a
   $\kappa$-well-conditioned density cluster for some $\sigma > 0$, and
   additionally assume $f$ satisfies \ref{asmp: C'_bounded_density}. If Algorithm
-  \ref{alg: ppr} is well-initialized and if 
+  \ref{alg: ppr} is well-initialized with respect to $\Cset$ and if 
   %, there exists a universal constant $c >  0$ and constants in sample size $c_1(\Pbb,r)$-$c_6(\Pbb,r)$ such that if  
   \begin{equation}
     \label{eqn: kappa_ub}
     \kappa(\Cset) \leq c \frac{(\lambda_{\sigma} r^d
       \nu_d)^2}{\vol_{\Pbb,r}(\Csig)}, 
   \end{equation}
-  then $\Cest$ satisfies~\eqref{eqn: consistent_density_cluster_recovery} with respect to $\Cset$ with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-(c_1(\Pbb,r) + c_6(\Pbb,r))n}$. Therefore, $\Cest$ is a consistent estimator of $\Cset$ in the sense of Definition \ref{def: consistent_density_cluster_estimation}. 
+  then the following statement holds: there exists a set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ of large volume 
+  with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \frac{1}{2}\vol(\Csig[\Xbf];G_{n,r})$ such that if Algorithm~\ref{alg: ppr} is run with any seed node $v \in \Csig[\Xbf]^g$,  then for any $n$ large enough so that
+  \begin{equation*}
+  n \geq c_1(\Pbb,r)\cdot (\log n)^{\max\{\frac{3}{d},1\}}
+  \end{equation*}$\Cest$ satisfies~\eqref{eqn: consistent_density_cluster_recovery} with respect to $\Cset$ with probability at least $1 - \frac{c_2(\Pbb,r)}{n}$. Therefore, $\Cest$ is a consistent estimator of $\Cset$ in the sense of Definition \ref{def: consistent_density_cluster_estimation}. 
 \end{theorem}
-\sbcomment{Same suggestion about removing unnecessary constants in the statement of the theorem. You can leave them in the proof.}
 \noindent Some remarks are in order: 
  \begin{enumerate}  
  \item We note that the restriction on $\kappa(\Cset)$ imposed by \eqref{eqn:
@@ -824,10 +825,22 @@ while satisfying the following uniform error bound:
 \end{equation}
 For a sufficiently small choice of $\varepsilon$, the 
 application of \eqref{eqn: appr_error} within the proofs of Theorems \ref{thm:volume_ssd} and \ref{thm: consistent_recovery_of_density_clusters}
-leads to analogous results which hold for \smash{$\pbf^{(\varepsilon)}$}. We
-formally state and prove this in Corollary~\ref{cor: appr} in 
-Appendix~\ref{sec:appr}.
-\sbcomment{Maybe we should discuss approximate PPR briefly in the Background section -- and just state the corollary here (not in a separate section).}
+leads to analogous results which hold for \smash{$\pbf^{(\varepsilon)}$}.
+
+\begin{corollary}
+	\label{cor: appr}
+	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster for some $\sigma > 0$. Choose input parameters $r, \alpha, v, (L,U)$ to be well-initialized in the sense of \eqref{eqn: initialization}, additionally set 
+	\begin{equation}
+	\label{eqn: appr_parameter}
+	\varepsilon = \frac{1}{25}\vol_{\Pbb,r}(\Csig)
+	\end{equation}
+	and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\varepsilon)}_v$ rather than the exact \pprspace vector $\pbf_v$, with resulting output $\Cest$. Then
+	\begin{enumerate}
+		\item The upper bound on symmetric set difference metric $\Delta(\Cest,\Csig[\Xbf])$ given by \eqref{eqn:volume_ssd} is still valid.
+		\item If \ref{asmp: C'_bounded_density} and \eqref{eqn: kappa_ub} hold, 
+		then $\Cest \subseteq \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
+	\end{enumerate}
+\end{corollary}
 
 \section{Analysis Overview}
 \label{sec: analysis}
@@ -848,14 +861,14 @@ simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
   \label{thm: conductance_upper_bound}
   Fix $\lambda > 0$, and assume $\Cset \in \Cbb_f(\lambda)$ satisfies
   Assumptions \ref{asmp: bounded_density}--\ref{asmp: low_noise_density}, 
-  \ref{asmp: bounded_volume} for some $\sigma > 0$. Then there exists a universal constant $c_1 > 0$ and a constant in sample size $c_1(\Pbb,r)$ such that
+  \ref{asmp: bounded_volume} for some $\sigma > 0$. Then
   \begin{equation}
     \label{eqn: conductance_additive_error_bound}
     \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c_1 \frac{d}{\sigma}
     \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
       c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}}
   \end{equation}
-  with probability at least $1 - 3\exp\{-nc_1(\Pbb,r)\}$. 
+  with probability at least $1 - 3\exp\{-nc_3(\Pbb,r)\}$. 
 \end{theorem}
 \noindent {\bf Remark: } 
 Observe that the diameter $\rho$ is absent from Theorem \ref{thm:
@@ -894,18 +907,17 @@ $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
   \label{thm: mixing_time_upper_bound}
   Fix $\lambda > 0$, and assume that \smash{$\Cset \in \Cbb_f(\lambda)$}
   satisfies Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding}
-  for some $\sigma > 0$. Additionally assume that the radius $0 < r < \sigma/2\sqrt{d}$. Then there exist universal constants $c_2$ and $c_3$, and constants in sample size $c_2(\Pbb,r)$ - $c_6(\Pbb,r)$ such that the following statement holds: for any
+  for some $\sigma > 0$. Additionally assume that the radius $0 < r < \sigma/2\sqrt{d}$. Then the following statement holds: for any
   \begin{equation*}
-  n \geq \max\left\{(\log n)^{\max\{\frac{3}{d},1\}}\left(\frac{1}{c_2(\Pbb,r)}\right)^d, c_3(\Pbb,r)\right\}
+  n \geq c_1(\Pbb,r)\cdot(\log n)^{\max\{\frac{3}{d},1\}}
   \end{equation*}
   the mixing time $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$ satisfies
   \begin{equation} 
     \label{eqn: mixing_time_upper_bound}
     \tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{ \Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + c_3
   \end{equation}
-  with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-c_6(\Pbb,r)n}$.
+  with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$.
 \end{theorem}
-\sbcomment{Same comment about constants.}
 The proof of Theorem \ref{thm: mixing_time_upper_bound} relies heavily on
 analogous mixing time bounds developed for the mixing time of a
 continuous-space ``ball walk'' over convex sets. To the best of our knowledge, our
@@ -947,8 +959,18 @@ The density function $f$ of $\Pbb$ is simply
 \label{eqn:lb_density}
 f(x) = \frac{1}{\rho\sigma}\left(\frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(1)}) + \frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(2)}) + \frac{\epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(0)})  \right)
 \end{equation}
-so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, $\mathbb{C}_{f}(\lambda) = \set{\mathcal{C}_{\sigma}^{(1)}, \mathcal{C}_{\sigma}^{(2)}}$. 
-\sbcomment{Maybe a figure would be helpful.}
+so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, $\mathbb{C}_{f}(\lambda) = \set{\mathcal{C}_{\sigma}^{(1)}, \mathcal{C}_{\sigma}^{(2)}}$. Figure~\ref{fig:fig0} shows $f$ for two different choices of $\epsilon, \sigma$ and $\rho$. 
+
+\begin{figure}[tb]
+	\centering
+	
+	\includegraphics[width=0.4\textwidth]{lower_bound_plots/lower_bound_1}
+	\includegraphics[width=0.4\textwidth]{lower_bound_plots/lower_bound_2}
+	
+	\caption{\it\small The density $f$ given by~\eqref{eqn:lb_density}, for two different choices of $\epsilon$ and $\sigma$. Left: $\epsilon = .3,\sigma = .1$; Right: $\epsilon = .2,\sigma = .2$. In both $\rho = 1$. } 
+	\label{fig:fig0}
+	
+\end{figure}
 
 \subsection{Lower bound for PPR.}
 
@@ -969,17 +991,16 @@ As the following theorem demonstrates, even when Algorithm~\ref{alg: ppr} is rea
 	\label{eqn:ppr_lb}
 	\frac{\sigma \rho}{r^2}\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{n^2} \geq \frac{1}{4} -  c \frac{\sqrt{\frac{\sigma}{\rho}}}{\epsilon^2} \sqrt{ \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}
 	\end{equation}
-	with probability at least $1 - c_1(\Pbb,r) n \exp\set{-c_2(\Pbb,r)n}$, where $c$ is a universal constant and $c_1(\Pbb,r),c_2(\Pbb,r)$ are constants which do not depend on $n$.
+	with probability at least $1 - c_1(\Pbb,r) n \exp\set{-c_2(\Pbb,r)n}$.
 	Consequently, if
 	\begin{equation*} 
 	\epsilon^2 > \frac{c}{8} \sqrt{\frac{\sigma}{\rho}} \cdot \sqrt{ \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}
 	\end{equation*}
 	then with high probability $\frac{\sigma \rho}{r^2}\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{n^2}$ is at least $1/8$. 
 \end{theorem}
-\sbcomment{Same comment about eliminating constants.}
-Note that the factor of $\frac{\sigma\rho}{r^2}$ on the left hand side of \eqref{eqn:ppr_lb} is a constant multiple of $(1/\vol_{\Pbb,r}(\Csig^{(1)}))$; hence the left hand side is directly comparable to $\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{\vol_{n,r}(\Csig^{(1)}[\Xbf])}$, \sbcomment{Isn't there something strange about this comment -- where the factor of $n^2$ go?} which is the quantity we upper bound in Theorem~\ref{thm:volume_ssd}.
+Note that the factor of $\frac{\sigma\rho}{r^2}$ on the left hand side of \eqref{eqn:ppr_lb} is a constant multiple of $(1/\vol_{\Pbb,r}(\Csig^{(1)}))$; hence the left hand side is directly comparable to $\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{\vol_{n,r}(\Csig^{(1)}[\Xbf])}$, which is the quantity we upper bound in Theorem~\ref{thm:volume_ssd}.
 
-Theorem~\ref{thm:ppr_lb} is stated with respect to a particular hard case, where the density clusters are rectangular subsets of $\Reals^2$. Although we picked this setting to make the theorem statement simple, our results are easily generalized to $\Reals^d$ and to non-rectangular clusters. Additionally, although we state our lower bound with respect to PPR run on neighborhood graph, the conclusion is likely to hold for a much broader class of spectral clustering algorithms. In the proof of Theorem~\ref{thm:ppr_lb}, we rely heavily on the fact that when $\epsilon^2$ is sufficiently greater than $\frac{\sigma}{\rho}$, the normalized cut of $\Cset_1$ will be much larger than that of $\mathcal{L}$. In this case, not merely PPR but any algorithm which approximates the minimum normalized cut is unlikely to recover $\Cset_1$. In particular, local spectral clustering algorithms based on truncated random walks \citet{spielman2013}, global spectral clustering algorithms \citet{shi00}, and $p$-Laplacian based spectral embeddings \citet{hein2010} all have provable upper bounds on the normalized cut of cluster they output, and thus we expect that all the aforementioned approaches would fail to estimate $\Csig^{(1)}[\Xbf]$.
+Theorem~\ref{thm:ppr_lb} is stated with respect to a particular hard case, where the density clusters are rectangular subsets of $\Reals^2$. Although we picked this setting to make the theorem statement simple, our results are easily generalized to $\Reals^d$ and to non-rectangular clusters. Additionally, although we state our lower bound with respect to PPR run on neighborhood graph, the conclusion is likely to hold for a much broader class of spectral clustering algorithms. In the proof of Theorem~\ref{thm:ppr_lb}, we rely heavily on the fact that when $\epsilon^2$ is sufficiently greater than $\frac{\sigma}{\rho}$, the normalized cut of $\Csig^{(1)}$ will be much larger than that of $\mathcal{L}$. In this case, not merely PPR but any algorithm which approximates the minimum normalized cut is unlikely to recover $\Csig^{(1)}$. In particular, local spectral clustering algorithms based on truncated random walks \citet{spielman2013}, global spectral clustering algorithms \citet{shi00}, and $p$-Laplacian based spectral embeddings \citet{hein2010} all have provable upper bounds on the normalized cut of cluster they output, and thus we expect that all the aforementioned approaches would fail to estimate $\Csig^{(1)}$. 
 
 \subsection{Comparison with upper bound.}
 
@@ -997,11 +1018,14 @@ To better digest the implications of Theorem~\ref{thm:ppr_lb}, we apply our uppe
 %Technically, this density does not fit nicely into the setup of Theorem~\textcolor{red}{1}, because the sets $\Cset_{\sigma}^{(m)}$ ($ m = 1,2$) play the role of both the $\sigma$-expanded sets and the density clusters themselves. However, this truly is only a technical objection. One could modify the distribution $\Pbb$ by adding a small amount of mass to the $\sigma$-interior $\Cset^{(m)} = \set{x \in \Cset_{\sigma}^{(m)}: \dist(x,\partial\Cset_{\sigma}) \geq \sigma}$. Appropriately choosing a threshold $\lambda > \frac{(1 - \epsilon)}{2\rho\sigma}$, the resulting $\lambda$-density clusters would be $\Cbb_f(\lambda) = \set{\Cset^{(1)},\Cset^{(2)}}$, and their $\sigma$-expansions would resemble the rectangles $\Csig^{(1)}, \Csig^{(2)}$ except with slightly rounded corners. 
 %Alternatively, one could directly modify Lemma~\textcolor{red}{6} -- an auxiliary Lemma, used in the proof of Theorem~\textcolor{red}{3}, which establishes an upper bound on the Lebesgue measure of $\Csig + B(0,r)$ -- to hold under the assumption $\Csig$ is a rectangle of width $\sigma$ rather than a $\sigma$-expansion. The proof of this Lemma is the only time we use the fact that $\Csig$ is a $\sigma$-expansion of a density cluster. \textcolor{red}{(Ryan and Siva.)}
 
-\begin{remark}Technically, the rectangles $\Csig^{(1)}$ and $\Csig^{(2)}$ are not $\sigma$-expansions due to their sharp corners. To fix this, one can 
+\vspace{0.2cm}
+
+\textbf{Remark:}~~Technically, the rectangles $\Csig^{(1)}$ and $\Csig^{(2)}$ are not $\sigma$-expansions due to their sharp corners. To fix this, one can 
 %either modify the upper bound (specifically, Lemma~\ref{lem: expansion_volume} in the proof of Theorem~\ref{thm: conductance_upper_bound}) to hold with respect to rectangles of width $\sigma$, or 
 change the sets $\Csig^{(1)}$ and $\Csig^{(2)}$ to be rectangles with rounded corners. With some additional bookkeeping, using rounded rectangles does not change our lower bound significantly so we ignore this technicality in our 
 subsequent discussion.
-\end{remark}
+
+\vspace{0.2cm}
 
 If the user-specified parameters are initialized according to~\eqref{eqn: initialization}, we may apply Theorem~\ref{thm:volume_ssd}. This implies that there exists a set $\Csig^{(1)}[\Xbf] \subset \Csig^{(1)}$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any seed node $v \in \Csig^{(1)}[\Xbf]$, the estimated cluster $\widehat{C}$ output by Algorithm 1 satisfies the following upper bound:
 \begin{equation*}
@@ -1029,17 +1053,15 @@ For some universal constant $c > 0$, the following statements each hold with hig
 
 Jointly, these upper and lower bounds give a relatively precise characterization of what it means for a density cluster to be well- or poorly-geometrically conditioned for recovery using PPR.
 
-\begin{remark}
-	It is worth pointing out that the above conclusions are reliant on specific (albeit reasonable) ranges and choices of input parameters, which in some instances differ between the upper and lower bounds. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. 
-\end{remark}
+\vspace{0.2cm}
+
+\textbf{Remark:}~~It is worth pointing out that the above conclusions are reliant on specific (albeit reasonable) ranges and choices of input parameters, which in some instances differ between the upper and lower bounds. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. 
 
 %It is worth pointing out that both our lower and upper bounds are stated with respect to specific choices of the input parameters to Algorithm~\ref{alg: ppr}, and that these choices are in fact different in the case of the teleportation parameter $\alpha$ and sweep cut range $(L,U)$. At a high level, we do not believe this substantially weakens the takeaway messages of our work: if a density cluster $\mathcal{C}$ is geometrically well-conditioned, then a reasonable initialization of PPR will recover $\Csig[\Xbf]$ with low error, whereas if it is geometrically poorly-conditioned, then a different but also reasonable initialization of PPR will fail to recover $\Csig[\Xbf]$. Of course, it would be more satisfying if both our upper and lower bounds could be stated with respect to the same choices of these input parameters. Unfortunately, it is not at all obvious how to prove such a claim, as to the best of our knowledge all existing work on PPR assumes similar initialization conditions to the ones we assume; effectively, that the algorithm is well-initialized with respect to the set $S \subset G$ one is interested in recovering. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. Even so, we reiterate our belief that in tandem our upper and lower bounds represent a substantial step forward in characterizing the behavior of local clustering algorithms in a statistical context \textcolor{red}{(Ryan and Siva)}.
 
-\begin{remark}
-	We also note that our lower bound is of course specific to the PPR algorithm. As mentioned previously, density clustering is a well-studied problem, and in particular under our assumptions classical plug-in density cluster estimators can consistently recover the $\sigma$-expansion $\Csig$ of a density cluster $\Cset$, even when $\epsilon$ is large compared to $\frac{\sigma}{\rho}$ \sbcomment{small?}. That PPR has difficulty recovering density clusters which can be easily estimated by standard plug-in approaches is not surprising, nor is it a knock on PPR. Rather, it simply reflects that while classical density clustering approaches are specifically designed to identify high-density regions regardless of their geometry, PPR considers geometry as well as density when deciding upon the optimal cluster.
-\end{remark}
+\vspace{0.2cm}
 
-\sbcomment{Sometimes you make remarks in a remark environment (so it is italicized) and sometimes not. Can you use the same format throughout? I have a preference for \emph{not} italicizing. }
+\textbf{Remark:}~~We also note that our lower bound is of course specific to the PPR algorithm. As mentioned previously, density clustering is a well-studied problem, and in particular under our assumptions classical plug-in density cluster estimators can consistently recover the $\sigma$-expansion $\Csig$ of a density cluster $\Cset$, even when $\epsilon$ is large compared to $\frac{\sigma}{\rho}$. That PPR has difficulty recovering density clusters which can be easily estimated by standard plug-in approaches is not surprising, nor is it a knock on PPR. Rather, it simply reflects that while classical density clustering approaches are specifically designed to identify high-density regions regardless of their geometry, PPR considers geometry as well as density when deciding upon the optimal cluster.
 
 \section{Experiments}
 \label{sec: experiments}
@@ -1086,7 +1108,6 @@ settings to the appendix.
   \label{fig:fig1}
 %  \end{adjustbox}
 \end{figure}
-
 \paragraph{Validating theoretical bounds.}  We investigate the tightness of
 Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
   mixing_time_upper_bound} via simulation. Figure \ref{fig:fig1} compares our
@@ -1242,7 +1263,7 @@ Taking Lemma~\ref{lem: expected_density_cut} and \eqref{eqn: conductance_upper_b
 \begin{equation*}
 \Phi_{n,r}(\Csig[\Xbf]) \leq \frac{(1 + \delta)\cut_{\Pbb,r}(\Csig)}{(1 - \delta)\vol_{\Pbb,r}(\Csig)} \leq \frac{25(1 + \delta)d \nu_d r \lambda \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right)}{3(1 - \delta) \sigma \lambda_{\sigma}^2}.
 \end{equation*}
-Plugging in $\delta = \frac{1}{2}$, the theorem is satisfied by choosing constants $c_1 = 50$ and $c_1(\Pbb,r) = \frac{1}{4}(\cut_{\Pbb,r}(\Csig))^2$. 
+Plugging in $\delta = \frac{1}{2}$, the theorem is satisfied by choosing constants $c_1 = 50$ and $c_3(\Pbb,r) = \frac{1}{4}(\cut_{\Pbb,r}(\Csig))^2$. 
 
 \subsection{Proof of Lemma~\ref{lem: expected_density_cut}}
 We write $\Pbb(\Aset) = \int_{\Aset} f(x) dx$ for measurable $\Aset \subseteq \Rd$.
@@ -1718,9 +1739,9 @@ The following proposition establishes an upper bound on the mixing time $\tau_{\
 The second step in our approach is to lower bound the local spread and conductance over the neighborhood graph $\widetilde{G}_{n,r}$. In the following result we give lower bounds for both quantities. 
 \begin{proposition}
 	\label{prop: local_spread_conductance}
-	Under the setup and conditions of Theorem \ref{thm: mixing_time_upper_bound}, there exist constants $c_2(\Pbb,r)$, $c_3(\Pbb,r)$, and $c_4(\Pbb,r)$ independent of $n$ such that the following statement holds true: for any $n$ such that
+	Under the setup and conditions of Theorem \ref{thm: mixing_time_upper_bound}, there exist constants $c_5(\Pbb,r)$,$c_6(\Pbb,r)$, and $c_7(\Pbb,r)$ independent of $n$ such that the following statement holds true: for any $n$ such that
 	\begin{equation*}
-	n \geq \max\left\{(\log n)^{\max\{\frac{3}{d},1\}}\left(\frac{1}{c_2(\Pbb,r)}\right)^d, c_3(\Pbb,r)\right\}
+	n \geq \max\left\{(\log n)^{\max\{\frac{3}{d},1\}}\left(\frac{1}{c_{5}(\Pbb,r)}\right)^d, c_{6}(\Pbb,r)\right\}
 	\end{equation*}
 	the following inequalities:
 	\begin{equation}
@@ -1737,7 +1758,7 @@ The second step in our approach is to lower bound the local spread and conductan
 	\label{eqn: conductance}
 	\Phi(\widetilde{G}_{n,r}) \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{14} \rho L \sqrt{d}},
 	\end{equation}
-	hold with probability at least $1 - \frac{c_3(\Pbb,r)}{n} - 2n\exp\set{-\frac{2\lambda_{\sigma} \nu_d r^d n}{1875}} - 2\exp\set{-\frac{2}{25}n(\widetilde{\vol}_{\Pbb,r}(\Csig))^2}$.
+	hold with probability at least $1 - \frac{c_{7}(\Pbb,r)}{n} - 2n\exp\set{-\frac{2\lambda_{\sigma} \nu_d r^d n}{1875}} - 2\exp\set{-\frac{2}{25}n(\widetilde{\vol}_{\Pbb,r}(\Csig))^2}$.
 \end{proposition}
 
 Taking these results as given, the proof of Theorem \ref{thm: mixing_time_upper_bound} is more or less complete. Since the condition $\min_{u \in \Csig[\Xbf]} \deg(u;\widetilde{G}_{n,r}) \geq 10$ is satisfied, we may apply Proposition \ref{prop: pointwise_mixing_time} and obtain
@@ -1747,7 +1768,7 @@ Taking these results as given, the proof of Theorem \ref{thm: mixing_time_upper_
 & \leq \frac{2^{29}\Lambda_{\sigma}^4\rho^2L^2 d^3}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{28800\Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + 3 \log^2\left(\frac{280\Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + 3 \\
 & \leq \frac{2^{34}\Lambda_{\sigma}^4\rho^2L^2 d^3}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + 3
 \end{align*}
-whereupon the theorem follows after an appropriate choice of universal constants $c_2 = 2^{34}, c_3 = 3$, $c_4(\Pbb,r) := \frac{2\lambda_{\sigma} \nu_d r^d}{1875}$ and $c_5(\Pbb,r) := \frac{2}{25}(\widetilde{\vol}_{\Pbb,r}(\Csig))^2$. In the rest of this section we proceed to proving Propositions \ref{prop: pointwise_mixing_time} and \ref{prop: local_spread_conductance}.
+whereupon the theorem follows after an appropriate choice of universal constants $c_2 = 2^{34}, c_3 = 3$, and constants $c_{4}(\Pbb,r) := c_7(\Pbb,r) + \frac{7500}{\lambda_{\sigma}\nu_dr^d} + 25(\widetilde{\vol}_{\Pbb,r}(\Csig))^2$ and $c_1(\Pbb,r) = \frac{1}{c_5(\Pbb,r)^d} + c_6(\Pbb,r)$. In the rest of this section we proceed to proving Propositions \ref{prop: pointwise_mixing_time} and \ref{prop: local_spread_conductance}.
 
 \subsection{Proof of Proposition \ref{prop: pointwise_mixing_time}}
 \label{sec: pointwise_mixing_time}
@@ -2010,7 +2031,7 @@ Applying Lemma~\ref{lem:ball_bounds_in_probability} with $\delta = 1/5$, we have
 \end{equation*} 
 with probability at least $1 - 2n\exp\set{-\frac{2\lambda_{\sigma} \nu_d r^d n}{1875}}$, and therefore for any  
 \begin{equation*}
-n \geq \frac{53}{\lambda_\sigma \nu_dr^d} =: c_3(\Pbb,r)
+n \geq \frac{53}{\lambda_\sigma \nu_dr^d} =: c_{6}(\Pbb,r)
 \end{equation*}
 the minimum degree $\widetilde{d}_{\min} \geq 10$. 
 
@@ -2025,7 +2046,7 @@ with probability at least $1 - 2n\exp\set{-\frac{2\lambda_{\sigma} \nu_d r^d n}{
 
 \paragraph{Proof of \eqref{eqn: conductance}:}
 
-Roughly, our goal is to show that for sufficiently large $n$, with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$
+Roughly, our goal is to show that for sufficiently large $n$, with probability at least $1 - \frac{c_{7}(\Pbb,r)}{n}$
 \begin{equation*}
 \min_{S \subseteq \Csig[\Xbf]} \widetilde{\Phi}_{n,r}(S) \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{14} \rho L \sqrt{d}}.
 \end{equation*}
@@ -2054,16 +2075,16 @@ In Lemma \ref{lem: graph_conductance_profile_lb}, we establish a uniform lower b
 
 \begin{lemma}
 	\label{lem: graph_conductance_profile_lb}
-	Under the setup and conditions of Theorem \ref{thm: mixing_time_upper_bound}, there exist constants $c_2(\Pbb,r)$ and $c_4(\Pbb,r)$ independent of $n$ such that the following statement holds true: for any $n$ such that
+	Under the setup and conditions of Theorem \ref{thm: mixing_time_upper_bound}, there exist constants $c_{5}(\Pbb,r)$ and $c_{7}(\Pbb,r)$ independent of $n$ such that the following statement holds true: for any $n$ such that
 	\begin{equation*}
-	\frac{n}{(\log n)^{\max\{\frac{3}{d},1\}}} \geq \left(\frac{1}{c_1}\right)^d
+	\frac{n}{(\log n)^{\max\{\frac{3}{d},1\}}} \geq \left(\frac{1}{c_5(\Pbb,r)}\right)^d
 	\end{equation*}
 	the following upper bound holds
 	\begin{equation}
 	\label{eqn: graph_conductance_profile_lb}
 	\min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) \geq \frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{14} \rho L \sqrt{d}},
 	\end{equation}
-	with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$. 
+	with probability at least $1 - \frac{c_{7}(\Pbb,r)}{n}$. 
 \end{lemma}
 
 The desired upper bound on graph conductance \eqref{eqn: conductance} follows from Lemma \ref{lem: graph_conductance_profile_lb}, along with Lemma \ref{lem: graph_conductance_profile_lb_1}, in light of the fact $\frac{\lambda_{\sigma}^2 r}{\Lambda_{\sigma}^2 2^{13} \rho L \sqrt{d}} < \frac{1}{10}$. We turn now to the proof of Lemma \ref{lem: graph_conductance_profile_lb}.
@@ -2115,10 +2136,10 @@ Using the change of variables formula with an appropriate choice of $g$, after s
 
 \begin{lemma}
 	\label{lem: graph_to_continuous_conductance}
-	Let $T:\Csig \to \Csig[\Xbf]$ be a transportation map between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$. Suppose $\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} < \min \set{s(\widetilde{G}_{n,r}),r, \lambda_{\sigma}/(2^{d+1}d\Lambda_{\sigma}r)}$. Then there exists a constant $c_7(\Pbb,r) > 0$ which does not depend on the sample size $n$, such that for all $S \in \mathcal{L}(\widetilde{G}_{n,r})$, 
+	Let $T:\Csig \to \Csig[\Xbf]$ be a transportation map between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$. Suppose $\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} < \min \set{s(\widetilde{G}_{n,r}),r, \lambda_{\sigma}/(2^{d+1}d\Lambda_{\sigma}r)}$. Then there exists a constant $c_{9}(\Pbb,r) > 0$ which does not depend on the sample size $n$, such that for all $S \in \mathcal{L}(\widetilde{G}_{n,r})$, 
 	\begin{equation}
 	\label{eqn: graph_to_continuous_conductance}
-	\widetilde{\Phi}_{n,r}(S) \geq \widetilde{\Phi}_{\Pbb,r}(T^{-1}(S)) - \frac{c_7(\Pbb,r)\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} }{s(\widetilde{G}_{n,r}) - c_7(\Pbb,r) \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}  }
+	\widetilde{\Phi}_{n,r}(S) \geq \widetilde{\Phi}_{\Pbb,r}(T^{-1}(S)) - \frac{c_{9}(\Pbb,r)\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} }{s(\widetilde{G}_{n,r}) - c_{9}(\Pbb,r) \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}  }
 	\end{equation}
 \end{lemma}
 
@@ -2126,11 +2147,11 @@ Clearly, Lemma \ref{lem: graph_to_continuous_conductance} is useful only when co
 
 \begin{theorem}[Restatement of Proposition 5 of \cite{garciatrillos16}]
 	\label{thm: stagnating_transportation_maps}
-	There exists constants $c_2(\Pbb,r)$ and $c_3(\Pbb,r)$ which do not depend on the sample size such that for any $\delta > 0$, the following statement holds: for any $n$ such that
+	There exists constants $c_5(\Pbb,r)$ and $c_{7}(\Pbb,r)$ which do not depend on the sample size such that for any $\delta > 0$, the following statement holds: for any $n$ such that
 	\begin{equation*}
-	\frac{n}{(\log n)^{\max\{\frac{3}{d},1\}}} \geq \left(\frac{1}{c_2(\Pbb,r)\delta}\right)^{d}
+	\frac{n}{(\log n)^{\max\{\frac{3}{d},1\}}} \geq \left(\frac{1}{c_5(\Pbb,r)\delta}\right)^{d}
 	\end{equation*}
-	then with probability at least $1 - \frac{c_3(\Pbb,r)}{n}$ there exists a transportation map $T_n$ between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$
+	then with probability at least $1 - \frac{c_{7}(\Pbb,r)}{n}$ there exists a transportation map $T_n$ between $\widetilde{\Pbb}$ and $\widetilde{\Pbb}_n$
 	which satisfies
 	\begin{equation*}
 	\norm{\mathrm{Id} - T_n}_{L^{\infty}(\widetilde{\Pbb})} \leq \delta.
@@ -2149,23 +2170,23 @@ Lemma~\ref{lem: graph_to_continuous_conductance} and Theorem~\ref{thm: stagnatin
 \end{lemma}
 With Lemmas \ref{lem: graph_to_continuous_conductance} and \ref{lem: nonuniform_continuous_conductance}, as well as Theorem \ref{thm: stagnating_transportation_maps}, in hand, we proceed to the proof of Lemma \ref{lem: graph_conductance_profile_lb}. Fix
 \begin{equation*}
-\delta = \min\set{\frac{\lambda_{\sigma}^2\nu_dr^d}{40\Lambda_{\sigma}},r, \lambda_{\sigma}/(2^{d+1}d\Lambda_{\sigma}r),\frac{\widetilde{\Phi}_{\Pbb,r} \lambda_{\sigma}^2\nu_dr^d}{40(2c_7(\Pbb,r) + \widetilde{\Phi}_{\Pbb,r}) \Lambda_{\sigma}}};
+\delta = \min\set{\frac{\lambda_{\sigma}^2\nu_dr^d}{40\Lambda_{\sigma}},r, \lambda_{\sigma}/(2^{d+1}d\Lambda_{\sigma}r),\frac{\widetilde{\Phi}_{\Pbb,r} \lambda_{\sigma}^2\nu_dr^d}{40(2c_{9}(\Pbb,r) + \widetilde{\Phi}_{\Pbb,r}) \Lambda_{\sigma}}};
 \end{equation*}
 and suppose $n$ is large enough so that $\norm{\mathrm{Id} - T_n}_{L^{\infty}(\Pbb)} \leq \delta$ for the optimal transportation map $T_n$.
 By \eqref{eqn: local_spread}, $\delta \leq s(\widetilde{G}_{n,r})$ . Therefore, we may apply Lemma~\ref{lem: graph_to_continuous_conductance} and obtain
 \begin{align*}
-\min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) & \geq \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{\Pbb,r}(T_n^{-1}(S)) - \frac{c_7(\Pbb,r) \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} }{s(\widetilde{G}_{n,r}) - c_7(\Pbb,r)\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}} \\
-& \geq  \widetilde{\Phi}_{\Pbb,r} -  \frac{c_7(\Pbb,r) \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} }{s(\widetilde{G}_{n,r}) - c_7(\Pbb,r)\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}} \\
+\min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{n,r}(S) & \geq \min_{S \in \mathcal{L}(\widetilde{G}_{n,r})} \widetilde{\Phi}_{\Pbb,r}(T_n^{-1}(S)) - \frac{c_{9}(\Pbb,r) \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} }{s(\widetilde{G}_{n,r}) - c_{9}(\Pbb,r)\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}} \\
+& \geq  \widetilde{\Phi}_{\Pbb,r} -  \frac{c_{9}(\Pbb,r) \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})} }{s(\widetilde{G}_{n,r}) - c_{9}(\Pbb,r)\norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}} \\
 & \geq \frac{\widetilde{\Phi}_{\Pbb,r}}{2},
 \end{align*}
-where the last inequality follows since $\delta < \frac{\widetilde{\Phi}_{\Pbb,r}\cdot s(\widetilde{G}_{n,r})}{2c_7(\Pbb,r) + \widetilde{\Phi}_{\Pbb,r}}$. Then, Lemma~\ref{lem: nonuniform_continuous_conductance} yields the desired result. It remains to prove Lemmas \ref{lem: graph_to_continuous_conductance} and \ref{lem: nonuniform_continuous_conductance}, which we do in the following two subsections.
+where the last inequality follows since $\delta < \frac{\widetilde{\Phi}_{\Pbb,r}\cdot s(\widetilde{G}_{n,r})}{2c_{9}(\Pbb,r) + \widetilde{\Phi}_{\Pbb,r}}$. Then, Lemma~\ref{lem: nonuniform_continuous_conductance} yields the desired result. It remains to prove Lemmas \ref{lem: graph_to_continuous_conductance} and \ref{lem: nonuniform_continuous_conductance}, which we do in the following two subsections.
 
 \subsection{Proof of Lemma \ref{lem: graph_to_continuous_conductance}}
 Let $S \subseteq \Csig[\Xbf]$ belong to $\mathcal{L}(\widetilde{G}_{n,r})$, and denote $\Sset := T^{-1}(S)$. Further let $\varDelta := \norm{\mathrm{Id} - T}_{L^{\infty}(\widetilde{\Pbb})}$, and $r^{+} := r + \varDelta$ and $r^{-} := r - \varDelta$. Our goal is to lower bound
 \begin{equation*}
-\frac{\widetilde{\cut}_{n,r}(S,S^c)}{\widetilde{\vol}_{n,r}(S)} \geq \widetilde{\Phi}_{\Pbb,r}(\Sset) - \frac{c_7(\Pbb,r)\varDelta}{s(\widetilde{G}_{n,r}) - c_7(\Pbb,r) \varDelta}
+\frac{\widetilde{\cut}_{n,r}(S,S^c)}{\widetilde{\vol}_{n,r}(S)} \geq \widetilde{\Phi}_{\Pbb,r}(\Sset) - \frac{c_{9}(\Pbb,r)\varDelta}{s(\widetilde{G}_{n,r}) - c_{9}(\Pbb,r) \varDelta}
 \end{equation*}
-for some constant $c_7(\Pbb,r) > 0$. We first state the relationships between the discrete functionals $\widetilde{\cut}_{n,r}$ and $\widetilde{\vol}_{n,r}$, and the continuous functionals $\widetilde{Q}_{\Pbb,r}$ and $\widetilde{\pi}_{\Pbb,r}$, alluded to in the previous section.
+for some constant $c_{9}(\Pbb,r) > 0$. We first state the relationships between the discrete functionals $\widetilde{\cut}_{n,r}$ and $\widetilde{\vol}_{n,r}$, and the continuous functionals $\widetilde{Q}_{\Pbb,r}$ and $\widetilde{\pi}_{\Pbb,r}$, alluded to in the previous section.
 \begin{lemma}
 	\label{lem: cut_volume}
 	For any set $S \subseteq \Csig[\Xbf]$ and $\mathcal{S} = T^{-1}(S)$, 
@@ -2182,35 +2203,35 @@ for some constant $c_7(\Pbb,r) > 0$. We first state the relationships between th
 To make use of Lemma \ref{lem: cut_volume}, we provide deviation inequalities on $\int_{\Csig} \ell_{\Pbb,r^+}(x) \,d\Pbb(x)$, $\int_{\Csig} \ell_{\Pbb,r^-}(x) \,d\Pbb(x)$, $\widetilde{Q}_{\Pbb,r^-}(\Sset, \Sset^c)$, and $\widetilde{\pi}_{\Pbb,r^+}(\Sset)$ in terms of the transportation distance $\varDelta$.
 \begin{lemma}
 	\label{lem: deviation_transportation_distance}
-	Suppose $\Delta \leq r$. Then there exist constants $c_8(\Pbb,r),c_9(\Pbb,r) \geq 0$ which do not depend on the sample size $n$, such that for every $\Sset \subseteq \Csig$,
+	Suppose $\Delta \leq r$. Then there exist constants $c_{10}(\Pbb,r),c_{11}(\Pbb,r) \geq 0$ which do not depend on the sample size $n$, such that for every $\Sset \subseteq \Csig$,
 	\begin{align*}
-	\int_{\Csig} \ell_{\Pbb,r^+}(x) \,d\Pbb(x) & \leq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) + c_8(\Pbb,r) \varDelta \\
-	\int_{\Csig} \ell_{\Pbb,r^-}(x) \,d\Pbb(x) & \geq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) - c_8(\Pbb,r) \varDelta \\
-	\widetilde{Q}_{\Pbb,r^-}(\Sset, \Sset^c) & \geq \widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c) - c_9(\Pbb,r) \varDelta \\
-	\widetilde{\pi}_{\Pbb,r^+}(\Sset) & \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + c_9(\Pbb,r) \varDelta.
+	\int_{\Csig} \ell_{\Pbb,r^+}(x) \,d\Pbb(x) & \leq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) + c_{10}(\Pbb,r) \varDelta \\
+	\int_{\Csig} \ell_{\Pbb,r^-}(x) \,d\Pbb(x) & \geq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) - c_{10}(\Pbb,r) \varDelta \\
+	\widetilde{Q}_{\Pbb,r^-}(\Sset, \Sset^c) & \geq \widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c) - c_{11}(\Pbb,r) \varDelta \\
+	\widetilde{\pi}_{\Pbb,r^+}(\Sset) & \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + c_{11}(\Pbb,r) \varDelta.
 	\end{align*}
 \end{lemma}
 
 The combination of Lemmas \ref{lem: cut_volume} and \ref{lem: deviation_transportation_distance} brings us close to our goal, as demonstrated by the following manipulations:
 \begin{align}
 \frac{\widetilde{\cut}_{n,r}(S,S^c)}{\widetilde{\vol}_{n,r}(S)} & \geq \frac{\widetilde{Q}_{\Pbb,r^-}(\Sset,\Sset^c)}{\widetilde{\pi}_{\Pbb,r^+}(\Sset)} \frac{\int_{\Csig} \ell_{\Pbb,r^-}(x) \,d\Pbb(x)}{\int_{\Csig} \ell_{\Pbb,r^+}(x) \,d\Pbb(x)} \tag{Lemma \ref{lem: cut_volume}} \\
-& \geq \frac{\widetilde{Q}_{\Pbb,r}(\Sset,\Sset^c) - c_9(\Pbb,r) \varDelta }{\widetilde{\pi}_{\Pbb,r^+}(\Sset) + c_9(\Pbb,r) \varDelta} \left(1 - \frac{2 c_8(\Pbb,r) \varDelta}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right) \tag{Lemma \ref{lem: deviation_transportation_distance} } \\
-& \geq \frac{\widetilde{Q}_{\Pbb,r}(\Sset,\Sset^c)}{\widetilde{\pi}_{\Pbb,r}(\Sset)} - \left(\frac{2c_9(\Pbb,r)}{\widetilde{\pi}_{\Pbb,r}(\Sset)} + \frac{2c_8(\Pbb,r)}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right)\varDelta \label{eqn: proof_of_lemma_graph_to_continuous_1}
+& \geq \frac{\widetilde{Q}_{\Pbb,r}(\Sset,\Sset^c) - c_{11}(\Pbb,r) \varDelta }{\widetilde{\pi}_{\Pbb,r^+}(\Sset) + c_{11}(\Pbb,r) \varDelta} \left(1 - \frac{2 c_{10}(\Pbb,r) \varDelta}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right) \tag{Lemma \ref{lem: deviation_transportation_distance} } \\
+& \geq \frac{\widetilde{Q}_{\Pbb,r}(\Sset,\Sset^c)}{\widetilde{\pi}_{\Pbb,r}(\Sset)} - \left(\frac{2c_{11}(\Pbb,r)}{\widetilde{\pi}_{\Pbb,r}(\Sset)} + \frac{2c_{10}(\Pbb,r)}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right)\varDelta \label{eqn: proof_of_lemma_graph_to_continuous_1}
 \end{align}
 where the last line follows from some basic algebra. The following result relates the unknown stationary distribution $\widetilde{\pi}_{\Pbb,r}(\Sset)$ to $\widetilde{\pi}_{n,r}(S)$.
 \begin{lemma}
 	\label{lem: continuous_pi_lb}
-	Suppose $\varDelta \leq \lambda_{\sigma}/(2^{d+1}d\Lambda_{\sigma}r)$. Then there exists a constant $c_{10}(\Pbb,r) > 0$ which does not depend on the sample size $n$ such that for every $S \subseteq \Csig[\Xbf]$,
+	Suppose $\varDelta \leq \lambda_{\sigma}/(2^{d+1}d\Lambda_{\sigma}r)$. Then there exists a constant $c_{12}(\Pbb,r) > 0$ which does not depend on the sample size $n$ such that for every $S \subseteq \Csig[\Xbf]$,
 	\begin{equation*}
-	\widetilde{\pi}_{\Pbb,r}(\Sset) \geq \widetilde{\pi}_{n,r}(S) - c_{10}(\Pbb,r) \varDelta
+	\widetilde{\pi}_{\Pbb,r}(\Sset) \geq \widetilde{\pi}_{n,r}(S) - c_{12}(\Pbb,r) \varDelta
 	\end{equation*}
 \end{lemma}
 Combining this result with~\eqref{eqn: proof_of_lemma_graph_to_continuous_1}, we obtain
 \begin{align*}
-\frac{\widetilde{\cut}_{n,r}(S,S^c)}{\widetilde{\vol}_{n,r}(S)} & \geq \widetilde{\Phi}_{\Pbb,r}(\Sset) - \left(\frac{2c_9(\Pbb,r)}{\widetilde{\pi}_{n,r}(S) - c_{10}(\Pbb,r)\varDelta} + \frac{2c_8(\Pbb,r)}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right)\varDelta \\
-& \geq \widetilde{\Phi}_{\Pbb,r}(\Sset) - \left(\frac{2c_9(\Pbb,r)}{s(\widetilde{G}_{n,r}) - c_{10}(\Pbb,r)\varDelta} + \frac{2c_8(\Pbb,r)}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right)\varDelta
+\frac{\widetilde{\cut}_{n,r}(S,S^c)}{\widetilde{\vol}_{n,r}(S)} & \geq \widetilde{\Phi}_{\Pbb,r}(\Sset) - \left(\frac{2c_{11}(\Pbb,r)}{\widetilde{\pi}_{n,r}(S) - c_{12}(\Pbb,r)\varDelta} + \frac{2c_{10}(\Pbb,r)}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right)\varDelta \\
+& \geq \widetilde{\Phi}_{\Pbb,r}(\Sset) - \left(\frac{2c_{11}(\Pbb,r)}{s(\widetilde{G}_{n,r}) - c_{12}(\Pbb,r)\varDelta} + \frac{2c_{10}(\Pbb,r)}{\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x)}\right)\varDelta
 \end{align*}
-where the latter inequality follows as we assumed $S \in \mathcal{L}(\widetilde{G}_{n,r})$. Choosing the constant $c_7(\Pbb,r)$ in Lemma \ref{lem: graph_to_continuous_conductance} to be $c_7(\Pbb,r) = \max\set{2c_8(\Pbb,r)/\bigl(\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x) \bigr) + 2c_9(\Pbb,r), c_{10}(\Pbb,r)}f$, we achieve our desired result. It remains to show Lemmas~\ref{lem: cut_volume}, \ref{lem: deviation_transportation_distance}, and \ref{lem: continuous_pi_lb}, which we now turn to.
+where the latter inequality follows as we assumed $S \in \mathcal{L}(\widetilde{G}_{n,r})$. Choosing the constant $c_{9}(\Pbb,r)$ in Lemma \ref{lem: graph_to_continuous_conductance} to be $c_{9}(\Pbb,r) = \max\set{2c_{10}(\Pbb,r)/\bigl(\int_{\Csig}\ell_{\Pbb,r}(x)\,d\Pbb(x) \bigr) + 2c_{11}(\Pbb,r), c_{12}(\Pbb,r)}f$, we achieve our desired result. It remains to show Lemmas~\ref{lem: cut_volume}, \ref{lem: deviation_transportation_distance}, and \ref{lem: continuous_pi_lb}, which we now turn to.
 
 \paragraph{Proof of Lemma~\ref{lem: cut_volume}: }
 
@@ -2258,25 +2279,25 @@ and therefore
 A first-order Taylor expansion of $(r + \varDelta)^d$ results in the upper bound $(r + \varDelta)^d \leq r^d + d\varDelta(r + \varDelta)^{d - 1}$, and similarly $(r - \varDelta)^d \geq r^d - d\varDelta(r + \varDelta)^{d - 1}$. Plugging these bounds into~\eqref{eqn: deviation_transportation_distance_2} yields
 \begin{align}
 \int_{\Csig} \int_{\mathcal{R}(x)} \,d\Pbb(y) \,d\Pbb(x)  & \leq \Pbb(\Csig) \Lambda_{\sigma} \nu_d \bigl( 2d(r + \Delta)^{d - 1}\varDelta \bigr) \tag{1st-order Taylor expansion of $(r + \Delta)^d$ } \\
-& \leq \Pbb(\Csig) \Lambda_{\sigma} \nu_d  2^{d}d r^{d-1}\varDelta =: c_8(\Pbb,r) \varDelta. \label{eqn: deviation_transportation_distance_1}
+& \leq \Pbb(\Csig) \Lambda_{\sigma} \nu_d  2^{d}d r^{d-1}\varDelta =: c_{10}(\Pbb,r) \varDelta. \label{eqn: deviation_transportation_distance_1}
 \end{align}
 where the second line follows from the condition $\Delta \leq r$. Using~\eqref{eqn: deviation_transportation_distance_1}, we proceed to obtain each of the four bounds stated in Lemma~\ref{lem: deviation_transportation_distance}. First, as $\ell_{\Pbb,r^{+}}(x) \leq 1$ for all $x \in \Csig$, we have
 \begin{align*}
 \int_{\Csig} \ell_{\Pbb,r^+}(x) \,d\Pbb(x) & \leq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) + \int_{\Csig} \int_{\mathcal{R}(x)} \,d\Pbb(y) \,d\Pbb(x) \\
-& \leq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) + c_8(\Pbb,r)\varDelta.
+& \leq \int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) + c_{10}(\Pbb,r)\varDelta.
 \end{align*}
 An equivalent bound for $\int_{\Csig} \ell_{\Pbb,r^-}(x) \,d\Pbb(x)$ is obtained by similar reasoning. We now lower bound $\widetilde{Q}_{\Pbb,r^{-}}(\Sset, \Sset^c)$,
 \begin{align*}
 \widetilde{Q}_{\Pbb,r^{-}}(\Sset, \Sset^c) & = \int_{\Sset} \widetilde{P}_{\Pbb,r^-}(x; \Sset) \,d\widetilde{\pi}_{\Pbb,r}(x) \\
 & = \frac{\int_{\Sset} \Pbb(\Sset^c \cap B(x,r^-)) d\Pbb(x)}{\int_{\Csig} \Pbb(\Csig \cap B(x,r^-)) d\Pbb(x)} \\
 & \geq \frac{\int_{\Sset} \Pbb(\Sset^c \cap B(x,r)) d\Pbb(x) - \int_{\Csig} \int_{\mathcal{R}(x)} \,d\Pbb(y) \,d\Pbb(x)}{\int_{\Csig} \Pbb(\Csig \cap B(x,r)) d\Pbb(x)} \\
-& \geq \widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c) - \frac{c_8(\Pbb,r) \varDelta}{\int_{\Csig}\ell_{\Pbb,r}(x) \,d\Pbb(x)} =:\widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c) - c_9(\Pbb,r) \varDelta.
+& \geq \widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c) - \frac{c_{10}(\Pbb,r) \varDelta}{\int_{\Csig}\ell_{\Pbb,r}(x) \,d\Pbb(x)} =:\widetilde{Q}_{\Pbb,r}(\Sset, \Sset^c) - c_{11}(\Pbb,r) \varDelta.
 \end{align*}
 Finally, we upper bound $\widetilde{\pi}_{\Pbb,r^{+}}(\Sset)$,
 \begin{align*}
 \widetilde{\pi}_{\Pbb,r^{+}}(\Sset) & = \frac{\int_{\Sset} \ell_{\Pbb,r^+}(x) \,d\Pbb(x)}{\int_{\Csig} \ell_{\Pbb,r^+}(x) \,d\Pbb(x)} \\
 & \leq \frac{\int_{\Sset} \ell_{\Pbb,r}(x) \,d\Pbb(x) + \int_{\Sset} \int_{\mathcal{R}(x)} \,d\Pbb(y) \,d\Pbb(x)}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x)} \\
-& \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + c_9(\Pbb,r)\varDelta.
+& \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + c_{11}(\Pbb,r)\varDelta.
 \end{align*}
 
 \paragraph{Proof of Lemma~\ref{lem: continuous_pi_lb}: }
@@ -2284,11 +2305,11 @@ The proof of Lemma~\ref{lem: continuous_pi_lb} will not be too different from th
 \begin{align*}
 \widetilde{\pi}_{n,r}(S) & = \frac{\int_{\Sset}\int_{\Csig} \1(\norm{x - y} \leq r) \,d\widetilde{\Pbb}_n(y) \,d\widetilde{\Pbb}_n(x)}{\int_{\Csig}\int_{\Csig} \1(\norm{x - y} \leq r) \,d\widetilde{\Pbb}_n(y) \,d\widetilde{\Pbb}_n(x)} \\
 & \leq \frac{\int_{\Sset} \ell_{\Pbb,r^+}(x) \,d\Pbb(x) }{\int_{\Csig}\ell_{\Pbb,r^-}(x) \,d\Pbb(x)} \\
-& \leq \frac{\int_{\Sset} \ell_{\Pbb,r}(x) \,d\Pbb(x) + c_8(\Pbb,r)\varDelta}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) - c_8(\Pbb,r)\varDelta} \\
-& \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + \frac{2c_8(\Pbb,r)\varDelta}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) - c_8(\Pbb,r)\varDelta} \\
-& \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + \frac{4c_8(\Pbb,r)\varDelta}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x)} =: \widetilde{\pi}_{\Pbb,r}(\Sset) + c_{10}(\Pbb,r) \varDelta.
+& \leq \frac{\int_{\Sset} \ell_{\Pbb,r}(x) \,d\Pbb(x) + c_{10}(\Pbb,r)\varDelta}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) - c_{10}(\Pbb,r)\varDelta} \\
+& \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + \frac{2c_{10}(\Pbb,r)\varDelta}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x) - c_{10}(\Pbb,r)\varDelta} \\
+& \leq \widetilde{\pi}_{\Pbb,r}(\Sset) + \frac{4c_{10}(\Pbb,r)\varDelta}{\int_{\Csig} \ell_{\Pbb,r}(x) \,d\Pbb(x)} =: \widetilde{\pi}_{\Pbb,r}(\Sset) + c_{12}(\Pbb,r) \varDelta.
 \end{align*}
-where the last inequality follows from the assumption $\varDelta \leq \lambda_{\sigma}/(2^{d + 1} dr\Lambda_{\sigma})$, which implies $c_8(\Pbb,r)\varDelta \leq \int_{\Csig}\ell_{\Pbb,r}(x) \,d\Pbb(x) / 2$.
+where the last inequality follows from the assumption $\varDelta \leq \lambda_{\sigma}/(2^{d + 1} dr\Lambda_{\sigma})$, which implies $c_{10}(\Pbb,r)\varDelta \leq \int_{\Csig}\ell_{\Pbb,r}(x) \,d\Pbb(x) / 2$.
 
 \subsection{Proof of Lemma \ref{lem: nonuniform_continuous_conductance}. }
 We recall that our goal is to lower bound the continuous conductance $\widetilde{\Phi}_{\Pbb,r}$. Results along these lines are already known (see e.g. \cite{kannan04}) when the density $f$ is uniform (or log-concave) and $\Csig$ is itself a convex set -- indeed, in this case stronger versions of it exist, though we will not require them. In \cite{abbasi-yadkori2016a}, a statement of this sort is made with respect to uniform density $f$ and $\Csig$ a Lipschitz deformation of a convex set, but for completeness we produce all proofs here.
@@ -2502,19 +2523,27 @@ First, we verify that the conditions of Lemma~\ref{lem:zhu} are met when $S = \m
 \begin{equation*}
 \alpha < \frac{1}{9\tau_{u}(\theta)} \leq \frac{1}{9\tau_\infty(G_{n,r}(\Cset_{\sigma}[\Xbf])}
 \end{equation*}
-with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-c_6(\Pbb,r)n}$. Since we use an exact PPR vector $p_v = p_v^{(0)}$ to construct the sweep cut sets in Algorithm~\ref{alg: ppr}, we may apply Lemma~\ref{lem:zhu}. By this Lemma, there exists a set $\Csig[\Xbf]^g \subset \Csig[\Xbf]$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}(\frac{1}{100},\frac{2}{5})$, the sweep cut $S_{v,\beta}$ of $p(\alpha, v; G_{n,r})$ satisfies
+with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$. Since we use an exact PPR vector $p_v = p_v^{(0)}$ to construct the sweep cut sets in Algorithm~\ref{alg: ppr}, we may apply Lemma~\ref{lem:zhu}. By this Lemma, there exists a set $\Csig[\Xbf]^g \subset \Csig[\Xbf]$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}(\frac{1}{100},\frac{2}{5})$, the sweep cut $S_{v,\beta}$ of $p(\alpha, v; G_{n,r})$ satisfies
 \begin{align}
 \vol_{n,r}(\Csig[\Xbf] \vartriangle S_{\beta,v}) & \leq \left(218\frac{\Phi_{n,r}(\Csig[\Xbf])}{\alpha}\right) \vol_{n,r}(\Csig[\Xbf]) \nonumber \\
 & \leq 2180 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf]) \label{eqn:volume_ssd_pf1}
 \end{align}
 where the latter inequality holds with probability at least $1 - 3\exp\set{-c_1(\Pbb,r)n}$, and follows from Theorem~\ref{thm: conductance_upper_bound} and the lower bound $\alpha \geq \frac{1}{10 \tau_u(\theta)}$ given in \eqref{eqn: initialization}. 
 
-Now we show that we can apply~\eqref{eqn:volume_ssd_pf1} to the cluster estimate $\Cest$ output by Algorithm~\ref{alg: ppr}. Observe that $\Cest$ is itself a sweep cut; precisely $\Cest = S_{\beta,v}$ for some $\beta \in \left(\frac{1}{50},\frac{1}{5}\right)\cdot\frac{1}{2{n \choose 2}\vol_{\Pbb,r}(\Csig)}$. Moreover, applying  Lemma~\ref{lem:ball_bounds_in_probability} with $\delta = 1/2$,
+Now we show that we can apply~\eqref{eqn:volume_ssd_pf1} to the cluster estimate $\Cest$ output by Algorithm~\ref{alg: ppr}. Observe that $\Cest$ is itself a sweep cut as $\Cest = S_{\beta,v}$ for some $\beta \in \left(\frac{1}{50},\frac{1}{5}\right)\cdot\frac{1}{2{n \choose 2}\vol_{\Pbb,r}(\Csig)}$. Moreover, applying  Lemma~\ref{lem:ball_bounds_in_probability} with $\delta = 1/2$,
 \begin{equation}
 \label{eqn:volume_ssd_pf2}
 \frac{1}{2}\vol_{\Pbb,r}(\Csig) \leq \frac{\vol_{n,r}(\Csig[\Xbf])}{2{n \choose 2}} \leq \frac{3}{2}\vol_{\Pbb,r}(\Csig)
 \end{equation}
-with probability at least $1 - 2\exp\{-\frac{1}{4} n \vol_{\Pbb,r}(\Csig)^2\}$. Therefore, conditional on \eqref{eqn:volume_ssd_pf2} the cluster estimate $\Cest = S_{\beta,v}$ for some $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}\left(\frac{1}{100},\frac{2}{5}\right)$, and therefore the upper bound \eqref{eqn:volume_ssd_pf1} holds with respect to $\vol_{n,r}(\widehat{C} \vartriangle \Csig[\Xbf])$. This completes the proof of Theorem~\ref{thm:volume_ssd}.
+with probability at least $1 - 2\exp\{-\frac{1}{4} n \vol_{\Pbb,r}(\Csig)^2\}$. Therefore, conditional on \eqref{eqn:volume_ssd_pf2} the cluster estimate $\Cest = S_{\beta,v}$ for some $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}\left(\frac{1}{100},\frac{2}{5}\right)$, and therefore the upper bound \eqref{eqn:volume_ssd_pf1} holds with respect to $\vol_{n,r}(\widehat{C} \vartriangle \Csig[\Xbf])$. To summarize, we have shown that when
+\begin{equation*}
+n \geq c_1(\Pbb,r)(\log(n))^{\max\{\frac{3}{d},1\}}
+\end{equation*}
+then
+\begin{equation*}
+\vol_{n,r}(\Csig[\Xbf] \vartriangle \widehat{C}) \leq  2180 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf])
+\end{equation*} 
+with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 3\exp\set{-(c_3(\Pbb,r) + \frac{1}{4}\vol_{\Pbb,r}(\Csig)^2)n}$. Since $c_3(\Pbb,r) \leq \vol_{\Pbb,r}(\Csig)^2$, letting $c_2(\Pbb,r) := c_4(\Pbb,r) + \frac{6}{c_3(\Pbb,r)}$ we have proved Theorem~\ref{thm:volume_ssd}.
 
 \section{Proof of Theorem~\ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
@@ -2524,7 +2553,7 @@ As a reminder, to prove Theorem~\ref{thm: consistent_recovery_of_density_cluster
 \label{eqn: PPR_gap}
 \max_{u' \in \Cset'[\Xbf]} \frac{p_v(u')}{\deg_{n,r}(u')} \leq \frac{1}{100 {n \choose 2} \vol_{\Pbb,r}(\Csig)} < \frac{1}{10 {n \choose 2} \vol_{\Pbb,r}(\Csig)} \leq \min_{u \in \Cset[\Xbf]} \frac{p_v(u)}{\deg_{n,r}(u)}
 \end{equation}
-with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-(c_1(\Pbb,r) + c_6(\Pbb,r))n}$. 
+with probability at least $1 - \frac{c_2(\Pbb,r)}{n}$. 
 
 To show this, we first establish in Lemma~\ref{lem: setup} that when Algorithm \ref{alg: ppr} is properly initialized, the resulting PPR vector is large for every vertex $u \in \Cset$, and small for every vertex $u' \in \Cset'$. Let $\overline{\pibf}_{n,r}: \Csig[\Xbf] \to [0,1]$ be the vector given by\footnote{Note that $\overline{\pibf}_{n,r}$ is distinct from $\widetilde{\pibf}_{n,r}$, as we normalize by $\vol_{n,r}(\Csig[\Xbf])$ rather than $\widetilde{\vol}_{n,r}(\Csig[\Xbf])$.} 
 \begin{equation*}
@@ -2552,7 +2581,7 @@ We immediately note that by assumption, Algorithm \ref{alg: ppr} is well-initial
 \begin{equation*}
 \alpha < \frac{1}{9\tau_{u}(\theta)} \leq \frac{1}{(9 \tau_{\infty}(G_{n,r}[\Csig[\Xbf]]))}
 \end{equation*}
-holds with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-c_6(\Pbb,r)n}$ by Theorem~\ref{thm: mixing_time_upper_bound}.
+holds with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$.
 Therefore, all the conditions of Lemma \ref{lem: setup} are met. 
 
 We now collect the estimates on graph functionals we will use to complete the proof of Theorem~\ref{thm: consistent_recovery_of_density_clusters}. 
@@ -2561,7 +2590,7 @@ We now collect the estimates on graph functionals we will use to complete the pr
 	\begin{equation*}
 	\Phi(\Csig[\Xbf]; G_{n,r}) \leq \Phibf(\theta) 
 	\end{equation*}
-	with probability at least $1 - 3\exp\{-nc_1(\Pbb,r)^2\}$. By \eqref{eqn: initialization}, $\alpha \geq 1/(10 \taubf(\theta))$ and therefore $2 \Phi(\Csig[\Xbf]; G_{n,r})/\alpha \leq 20 \kappa(\Cset)$.
+	with probability at least $1 - 3\exp\{-nc_1(\Pbb,r)\}$. By \eqref{eqn: initialization}, $\alpha \geq 1/(10 \taubf(\theta))$ and therefore $2 \Phi(\Csig[\Xbf]; G_{n,r})/\alpha \leq 20 \kappa(\Cset)$.
 	\item By Lemma~\ref{lem:ball_bounds_in_probability}, for any $\delta \in (0,1)$,
 	\begin{equation*}
 	\degminwt \geq \frac{6}{25}(1 - \delta) \lambda_{\sigma} r^d \nu_d n,
@@ -2598,29 +2627,13 @@ where the last inequality follows by choosing $\delta = 1/2$ and \eqref{eqn: kap
 & \leq \frac{20\kappa(\Cset)}{\left((1 - \delta)\lambda_{\sigma}\nu_dr^dn\right)^2} \nonumber \\
 & \leq \frac{1}{100{n \choose 2}\vol_{\Pbb,r}(\Csig)} \label{eqn:consistent_recovery_of_density_clusters_pf1}
 \end{align}
-where the last inequality again follows by choosing $\delta = 1/2$ and \eqref{eqn: kappa_ub}. We have shown~\eqref{eqn: PPR_gap} and therefore proved Theorem~\ref{thm: consistent_recovery_of_density_clusters}. 
+where the last inequality again follows by choosing $\delta = 1/2$ and \eqref{eqn: kappa_ub}. We have shown~\eqref{eqn: PPR_gap} and therefore proved Theorem~\ref{thm: consistent_recovery_of_density_clusters} (choosing $c_2(\Pbb,r) = c_4(\Pbb,r) + \frac{6}{c_3(\Pbb,r)} + \frac{900}{\lambda_{\sigma}\nu_dr^d} + \frac{1}{4}\vol_{\Pbb,r}(\Csig)^2$).
 
 We defer the proof of Lemma \ref{lem: setup}, and first extend Theorems~\ref{thm:volume_ssd} and \ref{thm: consistent_recovery_of_density_clusters} to apply with respect to the aPPR vector.
 
-\subsection{The Approximate PPR Vector}
+\subsection{Proof of Corollary~\ref{cor: appr}.}
 \label{sec:appr}
-We are now in a position to formally state and prove our claims regarding the a\pprspace vector. 
-\begin{corollary}
-	\label{cor: appr}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster (with respect to some $\theta$). Choose input parameters $r, \alpha, v, (L,U)$ to be well-initialized in the sense of \eqref{eqn: initialization}, additionally set 
-	\begin{equation}
-	\label{eqn: appr_parameter}
-	\varepsilon = \frac{1}{25}\vol_{\Pbb,r}(\Csig)
-	\end{equation}
-	and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\varepsilon)}_v$ rather than the exact \pprspace vector $\pbf_v$, with resulting output $\Cest$. Then
-	\begin{enumerate}
-		\item The upper bound on symmetric set difference metric $\Delta(\Cest,\Csig[\Xbf])$ given by \eqref{eqn:volume_ssd} is still valid.
-		\item If \ref{asmp: C'_bounded_density} and \eqref{eqn: kappa_ub} hold, 
-		then $\Cest \subseteq \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
-	\end{enumerate}
-\end{corollary}
-\begin{proof}
-To prove the first claim, we must show that the conditions of Lemma~\ref{lem:zhu} are still met when we use the approximate PPR vector $p^{(\varepsilon)}_v$ rather than the exact PPR vector $p_v$. In particular, we must show that $\varepsilon \leq \frac{1}{20}\vol_{n,r}(\Csig)$. However by Lemma~\ref{lem:ball_bounds_in_probability},
+To prove the first claim of Corollary~\ref{cor: appr}, we must show that the conditions of Lemma~\ref{lem:zhu} are still met when we use the approximate PPR vector $p^{(\varepsilon)}_v$ rather than the exact PPR vector $p_v$. In particular, we must show that $\varepsilon \leq \frac{1}{20}\vol_{n,r}(\Csig)$. However by Lemma~\ref{lem:ball_bounds_in_probability},
 \begin{equation}
 \label{eqn:appr_pf1}
 \vol_{n,r}(\Csig[\Xbf]) \geq (1 - \delta)\vol_{\Pbb,r}(\Csig)
@@ -2638,8 +2651,6 @@ and therefore by \eqref{eqn: lower_bound_PPR_in_cluster}, for every $u \in \Cset
 p^{(\varepsilon)}_v(u) \geq \left\{\frac{4}{5} - \frac{1}{25(1 - \delta)}\right\} \overline{\pi}_{n,r}(u) - \frac{20 \Phi_{n,r}(\Csig[\Xbf])/\alpha}{\degminwt}.
 \end{equation*}
 \noindent Using the arguments given in the proof of Theorem~\ref{thm: consistent_recovery_of_density_clusters}, and choosing the universal constant in \eqref{eqn: kappa_ub} to be sufficiently small, the upper bound in \eqref{eqn:consistent_recovery_of_density_clusters_pf1} follows.
-
-\end{proof}
 
 \subsection{Proof of Lemma~\ref{lem: setup}}
 
