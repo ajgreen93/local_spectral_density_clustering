@@ -27,8 +27,9 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}
 \newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}
-\newtheorem*{remark}{Remark}
+\newtheorem{remark}{Remark}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -72,7 +73,8 @@
 \newcommand{\Reals}{\mathbb{R}}
 \newcommand{\Rd}{\Reals^d}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\newcommand{\1}{\mathbf{1}}
+\usepackage{bbm}
+\newcommand{\1}{\mathbbm{1}}
 \newcommand{\Phibf}{\Phi_{u}}
 \newcommand{\Psibf}{\Psi_{u}}
 \newcommand{\taubf}{\tau_{u}}
@@ -80,15 +82,15 @@
 \newcommand{\Err}{\mathrm{Err}}
 \newcommand{\TV}{\mathrm{TV}}
 
-%%% Vectors
+%%% Vectors (no bold font)
 \newcommand{\pbf}{p}        % removed bold font
-\newcommand{\qbf}{\mathbf{q}}
+\newcommand{\qbf}{q}
 \newcommand{\ebf}[1]{{e}_{#1}}
 \newcommand{\pibf}{\pi}
 
 %%% Matrices (no bold font)
-\newcommand{\Abf}{A}
-\newcommand{\Xbf}{X}             % removed bold font 
+\newcommand{\Abf}{A}       % removed bold font 
+\newcommand{\Xbf}{X}             
 \newcommand{\Wbf}{W}
 \newcommand{\Lbf}{L}
 \newcommand{\Dbf}{D}
@@ -269,7 +271,7 @@
 
 {\large{
 \begin{center}
-Alden Green~~~~~ Sivaraman Balakrishnan~~~~~ Ryan Tibshirani\\
+Alden Green~~~~~ Sivaraman Balakrishnan~~~~~ Ryan J. Tibshirani\\
 \vspace{.2cm}
 \end{center}
 
@@ -282,7 +284,7 @@ Carnegie Mellon University
 \vspace*{.2in}
 
 \begin{tabular}{c}
-\texttt{\{ajgreen,sbalakri,ryantibs\}@andrew.cmu.edu}
+\texttt{\{ajgreen,sbalakri,ryantibs\}@stat.cmu.edu}
 \end{tabular}
 }}
 
@@ -292,94 +294,89 @@ Carnegie Mellon University
 \vspace*{.2in}
 
 \begin{abstract}
-\noindent We analyze the Personalized PageRank (PPR) algorithm, a local spectral method for clustering,
-which extracts clusters using locally-biased random walks around a user-specified
-seed node.  In contrast to previous work, we adopt a classical statistical
-learning setup, where we obtain samples from an unknown distribution, and aim to
-identify connected regions of high-density (density clusters).  We prove that
-PPR, run on a neighborhood graph, extracts sufficiently salient density
-clusters. We also show a surprising converse result, that PPR can fail 
-to recover geometrically poorly conditioned density clusters, even asymptotically. Finally, we provide empirical support to illustrate our theoretical results.
+We analyze the Personalized PageRank (PPR) algorithm, a local spectral method
+for clustering, which extracts clusters using locally-biased random walks around
+a given seed node.  In contrast to previous work, we adopt a classical
+statistical learning setup, where we obtain samples from an unknown
+distribution, and aim to identify connected regions of high-density (density
+clusters).  We prove that PPR, run on a neighborhood graph, extracts
+sufficiently salient density clusters, that satisfy a set of natural geometric
+conditions. We also show a converse result, that PPR can fail to recover
+geometrically poorly-conditioned density clusters, even asymptotically. Finally,
+we provide empirical support our theory.
 \end{abstract}
 \end{center}
+
 \section{Introduction}
 \label{sec: introduction}
+
 In this paper, we consider the problem of clustering: splitting a given data set
 into groups that satisfy some notion of within-group similarity and
-between-group difference.  Our particular focus is on
-spectral clustering methods, a family of powerful
-nonparametric clustering algorithms. Roughly speaking, a spectral algorithm
-first constructs a geometric graph $G$, where vertices correspond to samples,
-and edges correspond to proximities between samples. The algorithm 
-then estimates a feature
-embedding based on (an appropriate) Laplacian matrix of the graph 
-$G$, and applies a simple clustering
-technique (like $k$-means clustering) in the embedded feature~space.
+between-group difference.  Our particular focus is on spectral clustering
+methods, a family of powerful nonparametric clustering algorithms. Roughly
+speaking, a spectral algorithm first constructs a geometric graph $G$, where
+vertices correspond to samples, and edges correspond to proximities between
+samples. The algorithm then estimates a feature embedding based on (an
+appropriate) Laplacian matrix of $G$, and applies a simple clustering technique
+(like $k$-means clustering) in the embedded feature space.
 
-% Spectral clustering and density clustering
-%Spectral clustering algorithms, which
-%originated in the early work of Fiedler \cite{fiedler73}, have seen a recent revival 
-%(see for instance the recent review~\cite{XX}) focused mainly on understanding the performance of spectral clustering on the Stochastic Block Model (SBM) and closely related problems.
-%A parallel line of work \cite{shi09,schiebinger15}, has considered spectral partitioning applied to a non-parametric mixture model
-%where once again the clustering goal is to recover the latent labels of a sample $X_1,\ldots,X_n \sim P$. These works proceed by relating the eigenvectors of the graph Laplacian to eigenfunctions of an appropriately defined integral operator, and then using assumptions about the (non-)overlap of the mixture components to show that these eigenfunctions elucidate the latent labels. 
-
-When applied to geometric graphs built from a large number of samples,
-global spectral clustering methods can be computationally cumbersome and   
-insensitive to the local geometry of the underlying distribution
+When applied to geometric graphs built from a large number of samples, global
+spectral clustering methods can be computationally cumbersome and insensitive to
+the local geometry of the underlying distribution
 \citep{leskovec2010,mahoney2012}.  This has led to increased interest in
-\emph{local} spectral clustering algorithms, which leverage locally-biased spectra
-computed using random walks around some user-specified seed node.  A popular 
-local clustering algorithm is the Personalized PageRank (PPR) algorithm, first introduced by 
-\citet{haveliwala2003}, then further developed by
-several others~\citep{spielman2011,spielman2014,andersen2006,mahoney2012,zhu2013}.
+\emph{local} spectral clustering algorithms, which leverage locally-biased
+spectra computed using random walks around some user-specified seed node.  A
+popular local clustering algorithm is the Personalized PageRank (PPR) algorithm,
+first introduced by \citet{haveliwala2003}, and then further developed by
+several others
+\citep{spielman2011,spielman2014,andersen2006,mahoney2012,zhu2013}.  
 
 Local spectral clustering techniques have been practically very successful
-\citep{leskovec2010,andersen2012,gleich2012,mahoney2012,wu2012}, leading 
+\citep{leskovec2010,andersen2012,gleich2012,mahoney2012,wu2012}, which has led
 many authors to develop supporting theory
 \citep{spielman2013,andersen2009,gharan2012,zhu2013} that gives worst-case
 guarantees on traditional graph-theoretic notions of cluster quality (such as
-conductance).  In this paper, we adopt a classical statistical viewpoint,
-and examine what the output of local clustering on a data set reveals about the
-underlying density $f$ of the samples.  In particular, we examine the ability of PPR to recover
-\emph{density clusters} of $f$, defined as the connected components of
-the upper level set $\{x \in \Rd : f(x) \geq \lambda\}$ for some $\lambda > 0$
-(a central object of interest in the statistical clustering literature, dating
-back to the work of \citet{hartigan1981}).   
+conductance).  In this paper, we adopt a classical statistical viewpoint, and
+examine what the output of local clustering on a data set reveals about the
+underlying density $f$ of the samples.  In particular, we examine the ability of
+PPR to recover \emph{density clusters} of $f$, defined as the connected
+components of the upper level set $\{x \in \Rd : f(x) \geq \lambda\}$ for some
+$\lambda > 0$ (an object of central interest in the statistical clustering
+literature, dating back to the work of \citet{hartigan1981}). 
 
-\section{Background and Related Work}
+\section{Background and related work}
+
 We begin by providing some standard background on the PPR algorithm
 and the density clustering setup, before turning our attention to related work
-and a
-detailed summary of our contributions.
+and a detailed summary of our contributions.
 
 \subsection{PPR on a neighborhood graph} 
-We now describe the clustering
-algorithm that will be our focus for the rest of the paper. Let $\Xbf = \{x_1,
-\ldots, x_n\}$ be a sample drawn i.i.d.\ from a distribution $\Pbb$ on $\Rd$,
-with density~$f$.  For a radius $r > 0$, we define $G_{n,r}=(V,E)$ to be the
-\emph{$r$-neighborhood graph} of $\Xbf$, an unweighted, undirected graph with
-vertices $V=\Xbf$, and an edge $(x_i,x_j) \in E$ if and only if $\norm{x_i -
-x_j} \leq r$, where $\norm{\cdot}$ is the Euclidean norm. We denote by $\Abf \in
-\Reals^{n \times n}$ the adjacency matrix, with entries $\Abf_{uv} = 1$ if
-$(u,v) \in E$ and $0$ otherwise.  We also denote by $\Dbf$ the diagonal degree
-matrix, with entries $\Dbf_{uu} := \sum_{v \in V} \Abf_{uv}$, and by $\Ibf{}$ the $n
-\times n$ identity matrix.
 
-Next, we define the PPR vector $\pbf_v = \pbf(v,\alpha;G_{n,r})$, based on
-a seed node $v \in V$ and a teleportation parameter $\alpha \in [0,1]$, to be 
-the solution of the following linear system:
+Let $\Xbf = \{x_1,\ldots, x_n\}$ be a sample drawn i.i.d.\ from a distribution
+$\Pbb$ on $\Rd$, with density $f$.  For a radius $r > 0$, we define
+$G_{n,r}=(V,E)$ to be the \emph{$r$-neighborhood graph} of $\Xbf$, an
+unweighted, undirected graph with vertices $V=\Xbf$, and an edge $(x_i,x_j) \in
+E$ if and only if $\norm{x_i - x_j} \leq r$, where $\norm{\cdot}$ is the
+Euclidean norm. We denote by $\Abf \in \Reals^{n \times n}$ the adjacency
+matrix, with entries $\Abf_{uv} = 1$ if $(u,v) \in E$ and $0$ otherwise.  We
+also denote by $\Dbf$ the diagonal degree matrix, with entries $\Dbf_{uu} :=
+\sum_{v \in V} \Abf_{uv}$, and by $\Ibf{}$ the $n \times n$ identity matrix.
+
+First, we define the PPR vector $\pbf_v = \pbf(v,\alpha;G_{n,r})$, based on 
+a given seed node $v \in V$ and a teleportation parameter $\alpha \in [0,1]$, to
+be the solution of the following linear system:
 \begin{equation}
 \label{eqn: ppr_vector}
 \pbf_v = \alpha \ebf{v} + (1 - \alpha) \pbf \Wbf,
 \end{equation}
 where $\Wbf = (\Ibf{} + \Dbf^{-1}\Abf)/2$ is the lazy random walk matrix over
-$G_{n,r}$ and $e_{v}$ is the indicator vector for node $v$ (that has a 1 in the
-$v$-th position and 0 elsewhere). 
+$G_{n,r}$ and $e_{v}$ is the indicator vector for node $v$ (that has a 1 in
+position $v$ and 0 elsewhere).  
 
-\subsubsection{Sweep cut}
-\label{subsection: sweep_cut}
-We employ the sweep cut method to obtain a local cluster from the PPR embedding $\pbf_v$. In more detail, for a level $\beta > 0$, we define a \emph{$\beta$-sweep cut} of $\pbf_v = (\pbf_v(u))_{u \in V}$
-as   
+%\subsubsection{Sweep cut}
+%\label{subsection: sweep_cut}
+Next, we define a \emph{$\beta$-sweep cut} of $\pbf_v = (\pbf_v(u))_{u \in V}$,
+for a given level $\beta > 0$, as    
 \begin{equation}
 \label{eqn: sweep_cuts}
 S_{\beta,v} := \set{u \in V: \frac{\pbf_v(u)}{\Dbf_{uu}} > \beta}.
@@ -388,29 +385,28 @@ We will use the normalized cut metric to determine which sweep cut $S_{\beta}$
 is the best cluster estimate. For a set $S \subseteq V$ with complement $S^c = V
 \setminus S$, we define \smash{$\cut(S;G_{n,r}) := \sum_{u \in S, v \in S^c}
 \Abf_{uv}$}, and \smash{$\vol(S; G_{n,r}) := \sum_{u \in S} \Dbf_{uu}$}.  We
-define the \emph{normalized cut} of $S$ as
+then define the \emph{normalized cut} of $S$ as
 \begin{equation}
 \label{eqn: normalized_cut}
 \Phi(S; G_{n,r}) := \frac{\cut(S;G_{n,r})}{\min \set{\vol(S; G_{n,r}), \vol(S^c; G_{n,r})}}.
 \end{equation}
-Having computed sweep cuts $S_{\beta}$ over a range \smash{$\beta \in  
-(L, U)$} (where the range $(L,U)$ is also a user-specified parameter), we output the cluster estimate
-\smash{$\Cest = S_{\beta^*}$} that has minimum normalized cut.
-%\smash{$\Phi(S_{\beta^*}; G_{n,r})$}. 
-For concreteness, the PPR algorithm is summarized in Algorithm~\ref{alg: ppr}. 
+Having computed sweep cuts $S_{\beta}$ over \smash{$\beta \in (L, U)$} (where
+the range $(L,U)$ is user-specified), we output the cluster estimate
+\smash{$\Cest = S_{\beta^*}$} with minimum normalized cut.  For concreteness,
+the PPR algorithm is summarized in Algorithm~\ref{alg: ppr}.   
 
 \begin{algorithm}
 \caption{PPR on a neighborhood graph}
 \label{alg: ppr}	
 {\bfseries Input:} data $\Xbf=\{x_1,\ldots,x_n\}$, radius $r > 0$, teleportation
 parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, sweep cut range $(L,U)$. \\     
-{\bfseries Output:} cluster $\Cest \subseteq V$.
+{\bfseries Output:} cluster estimate $\Cest \subseteq V$.
 \begin{algorithmic}[1]
   \STATE Form the neighborhood graph $G_{n,r}$.
-  \STATE Compute the PPR vector $\pbf_v=\pbf(v, \alpha; G_{n,r})$ as in \eqref{eqn: 
-    ppr_vector}. 
-  \STATE For \smash{$\beta \in (L,U)$} compute sweep cuts 
-  $S_{\beta}$ as in \eqref{eqn: sweep_cuts}.
+  \STATE Compute the PPR vector $\pbf_v=\pbf(v, \alpha; G_{n,r})$ as in
+  \eqref{eqn: ppr_vector}.  
+  \STATE For \smash{$\beta \in (L,U)$}, compute sweep cuts $S_{\beta}$ as in
+  \eqref{eqn: sweep_cuts}. 
   \STATE Return the cluster \smash{$\Cest = S_{\beta^*}$}, where  
   $$
   \beta^* = \argmin_{\beta \in (L,U)}~ \Phi(S_{\beta}; G_{n,r}).
@@ -419,35 +415,43 @@ parameter $\alpha \in [0,1]$, seed $v \in \Xbf$, sweep cut range $(L,U)$. \\
 \end{algorithm}
 
 \subsection{Estimation of density clusters} 
-Let \smash{$\Cbb_f(\lambda)$} denote 
-the connected components of the density upper level set $\{x \in \Rd: f(x) >
-\lambda\}$.  For a given density cluster \smash{$\Cset \in \Cbb_f(\lambda)$}, we
-call $\Cset[\Xbf] = \Cset \cap \Xbf$ the \emph{empirical density cluster}. The size of the symmetric set difference between estimated and empirical cluster is 
-a commonly used metric to quantify cluster estimation error
-\citep{korostelev1993,polonik1995,rigollet2009}. We will consider a related metric, the volume of the symmetric set difference, which weights points according to their degree in $G_{n,r}$. 
-\begin{definition}
-	\label{def:volume_symmetric_set_difference}
-	For an estimator $\widehat{C} \subseteq \Xbf$ and a set $\mathcal{S} \subseteq \Rd$, the symmetric set difference is 
-	\begin{equation*}
-	\widehat{C} \vartriangle \mathcal{S}[\Xbf] := \bigl(\widehat{C} \cap \setminus \mathcal{S}[\Xbf]\bigr) \cup \bigl(\Xbf\setminus\widehat{C} \cap \mathcal{S}[\Xbf]\bigr).
-	\end{equation*}
-	We will measure the discrepancy of $\widehat{C}$ to the set $\mathcal{S}[\Xbf]$ by the volume of the symmetric set difference,
-	\begin{equation*}
-	\Delta(\widehat{C}, \mathcal{S}[\Xbf]) := \vol(\widehat{C} \vartriangle \mathcal{S}[\Xbf]; G_{n,r})
-	\end{equation*}
-\end{definition}
-However, the symmetric set difference does not measure whether \smash{$\Cest$} 
-can distinguish any two distinct clusters \smash{$\Cset,\Cset' \in
-\Cbb_f(\lambda)$}. We therefore also study a second notion of cluster
-estimation, first introduced by \citet{hartigan1981}, and defined
-asymptotically. 
 
-\begin{definition}[Consistent density cluster estimation]
+Let \smash{$\Cbb_f(\lambda)$} denote the connected components of the density
+upper level set $\{x \in \Rd: f(x) > \lambda\}$.  For a given density cluster
+\smash{$\Cset \in \Cbb_f(\lambda)$}, we call $\Cset[\Xbf] = \Cset \cap \Xbf$ the
+\emph{empirical density cluster}. The size of the symmetric set difference
+between estimated and empirical cluster is a commonly used metric to quantify
+cluster estimation error \citep{korostelev1993,polonik1995,rigollet2009}. We
+will consider a related metric, the volume of the symmetric set difference,
+which weights points according to their degree in $G_{n,r}$.
+\begin{definition}
+  \label{def:volume_symmetric_set_difference}
+  For an estimator \smash{$\Cest \subseteq \Xbf$} and a set 
+  $\mathcal{S} \subseteq \Rd$, their symmetric set difference is 
+  $$
+  \Cest \vartriangle \mathcal{S}[\Xbf] :=
+    \bigl(\Cest \setminus \mathcal{S}[\Xbf]\bigr) \cup
+    \bigl(\mathcal{S}[\Xbf] \setminus \Cest\bigr).
+  $$
+  Furthermore, we denote the volume of the symmetric set difference by 
+  $$
+  \Delta(\Cest, \mathcal{S}[\Xbf]) := \vol(\Cest \vartriangle \mathcal{S}[\Xbf];
+  G_{n,r}). 
+  $$
+\end{definition}
+
+Note that the symmetric set difference does not measure whether \smash{$\Cest$}
+can (perfectly) distinguish any two distinct clusters \smash{$\Cset,\Cset' \in 
+  \Cbb_f(\lambda)$}. We therefore also study a second notion of cluster 
+estimation, first introduced by \citet{hartigan1981}, and defined
+asymptotically.  
+
+\begin{definition}
   \label{def: consistent_density_cluster_estimation}
-  For an estimator \smash{$\Cest \subseteq \Xbf$} and cluster 
-  \smash{$\Cset \in \Cbb_f(\lambda)$}, we say \smash{$\Cest$} is a consistent 
-  estimator of $\Cset$ if for all \smash{$\Cset' \in \Cbb_f(\lambda)$} with
-  $\Cset \not= \Cset'$, the following holds as $n \to \infty$: 
+  For an estimator \smash{$\Cest \subseteq \Xbf$} and cluster \smash{$\Cset \in
+    \Cbb_f(\lambda)$}, we call \smash{$\Cest$} \emph{consistent} for
+  \smash{$\Cset$} if for all \smash{$\Cset' \in \Cbb_f(\lambda)$} with  
+  \smash{$\Cset \not= \Cset'$}, the following holds as $n \to \infty$: 
   \begin{equation}
     \label{eqn: consistent_density_cluster_recovery}
     \Cset[\Xbf] \subseteq \Cest \quad \text{and} \quad
@@ -455,121 +459,170 @@ asymptotically.
   \end{equation}
   with probability tending to 1.
 \end{definition}
-\noindent Consistent cluster recovery roughly ensures that, for a given density threshold $\lambda$, the estimated cluster $\Cest$ contains all
-points in a true
-density cluster $\Cset \in \Cbb_f(\lambda)$, and simultaneously does not contain any points in any other density cluster $\Cset' \in \Cbb_f(\lambda)$. 
 
-With these definitions in place, our broad goal will be to understand the extent to which the PPR algorithm is able to
-recover a cluster which either guarantees low symmetric set difference to a true density cluster, or which consistently estimates
-a true density cluster.
+Consistent cluster recovery roughly ensures that, for a given 
+threshold $\lambda>0$, the estimated cluster \smash{$\Cest$} contains all points
+in a true density cluster $\Cset \in \Cbb_f(\lambda)$, and simultaneously does 
+not contain any points in any other density cluster $\Cset' \in
+\Cbb_f(\lambda)$. 
 
-%\subsection{Our Contributions} 
+With these definitions in place, our broad goal will be to understand the extent
+to which the PPR algorithm is able to recover a cluster which either guarantees
+a low symmetric set difference to a true density cluster, or which consistently
+estimates a true density cluster.
 
+\subsection{Related work}
 
-\subsection{Related Work and Our Contributions}
-In addition to the background on local spectral
-clustering given previously, a few related lines of work are worth
-highlighting. In the stochastic block model (SBM), arguably one of the simplest models of network formation, edges between nodes independently occur with probability based on a latent community membership. The ability of spectral algorithms to perform clustering -- community detection-- in this context is well-understood, dating back to \citet{mcsherry2001} who gives conditions under which the entire community structure can be recovered. In more recent work, \citet{rohe2011} upper bound the fraction of nodes misclassified by a spectral algorithm for the high-dimensional (large number of blocks) SBM and \citet{lei2015} extend these results to the sparse (low average degree) regime. Relatedly, \citet{clauset08,balakrishnan2011,li2018}, analyze the misclassification rate when the block model exhibits some hierarchical structure. The framework we consider, where nodes correspond to data points sampled from an underlying density, and edges between nodes are formed based on geometric proximity, is quite different than the SBM, and therefore so is our analysis.
+In addition to the background on local spectral clustering given above, a
+few related lines of work are worth highlighting. In the stochastic block model
+(SBM), arguably one of the simplest models of network formation, edges between
+nodes independently occur with probability based on a latent community
+membership. In the SBM, the ability of spectral algorithms to perform
+clustering---or community detection---is well-understood, dating 
+back to \citet{mcsherry2001} who gives conditions under which the entire
+community structure can be recovered. In more recent work, \citet{rohe2011}
+upper bound the fraction of nodes misclassified by a spectral algorithm for the
+high-dimensional (large number of blocks) SBM, and \citet{lei2015} extend these
+results to the sparse (low average degree) regime. Relatedly,
+\citet{clauset08,balakrishnan2011,li2018}, analyze the misclassification rate
+when the block model exhibits some hierarchical structure. The framework we
+consider, in which nodes correspond to data points sampled from an underlying 
+density, and edges between nodes are formed based on geometric proximity, is
+quite different than the SBM, and therefore so is our analysis.
 
-The study of spectral algorithms on neighborhood graphs has focused on establishing consistency results-- that is, asymptotic convergence of eigenvalues and eigenvectors of matrices to eigenvalues and eigenfunctions of limiting operators. \citet{koltchinskii2000} establish convergence of spectral projections of the adjacency matrix to a limiting integral operator, with similar results obtained using simplified proofs in \citet{rosasco10}. \citet{vonluxburg2008} studies convergence of eigenvectors of the Laplacian matrix for a neighborhood of fixed radius. \citet{belkin07} and \citet{garciatrillos18} extend these results to the regime where the radius $r \to 0$ as $n \to \infty$. 
+In general, the study of spectral algorithms on neighborhood graphs has been
+focused on establishing asymptotic convergence of eigenvalues and eigenvectors
+of certain sample objects to the eigenvalues and eigenfunctions of corresponding
+limiting operators. \citet{koltchinskii2000} establish convergence of spectral
+projections of the adjacency matrix to a limiting integral operator, with
+similar results obtained using simplified proofs in
+\citet{rosasco10}. \citet{vonluxburg2008} studies convergence of eigenvectors of
+the Laplacian matrix for a neighborhood of fixed radius. \citet{belkin07} and
+\citet{garciatrillos18} extend these results to the regime where the radius $r
+\to 0$ as $n \to \infty$.
 
+These results are of fundamental importance; however, the behavior of the
+spectra of these continuum operators can in general be hard to grasp. Therefore,
+further work relating this spectra to the geometry of the unlerlying
+distribution $\Pbb$ is of interest. In this spirit,
+\citet{shi2009,schiebinger2015,garciatrillos19} examine the ability of spectral
+algorithms to recover the latent labels in certain geometrically
+well-conditioned nonparametric mixture models. Their results focus on global
+rather than local methods, and thus impose global rather than local conditions
+on the nature of the density. Moreover, they do not in general guarantee
+recovery of density clusters, which is the focus in our work. Perhaps most
+importantly, these works rely on general cluster saliency conditions, which
+implicitly depend on many distinct geometric aspects of the cluster $\Cset$
+under consideration. We make this dependence more explicit, and in doing so
+expose the role each geometric condition plays in the clustering problem.
 
-These results are of fundamental importance; however, the behavior of the spectra of these continuum operators can in general be hard to grasp. Therefore, further work relating this spectra to the geometry of the distribution $\Pbb$ is of interest. In this spirit, \citet{shi2009,schiebinger2015,garciatrillos19} examine the ability of  
-spectral algorithms to recover the latent labels in certain geometrically well-conditioned nonparametric mixture models. Their results focus on global rather than local 
-methods, and thus impose global rather than local conditions on the nature
-of the density. Moreover, they do not in general guarantee recovery of density 
-clusters, which is the focus in our work. Perhaps most importantly, these works
-rely on general cluster saliency conditions, which implicitly depend on many
-distinct geometric aspects of the cluster $\Cset$ under consideration. We make
-this dependence more explicit, and in doing so expose the role each geometric
-condition plays in the clustering problem. 
+Our analysis naturally builds on a few of the aforementioned theoretical
+analyses of PPR. For an arbitrary graph $G$ and subset $S \subseteq G$,
+\citet{andersen2006} relate the quality of the PPR cluster \smash{$\Cest$} to
+the normalized cut functional $\Phi(S;G)$. While this analysis is tight in a
+worst-case sense, it fails to account for possible improvements when the cluster
+$S$ is additionally assumed to be internally well-connected, which is an
+intuitively more favorable case for clustering. Building on this intuition,  
+\citet{zhu2013} assume that the subgraph $G[S]$ is internally
+well-connected---as measured by a functional such as mixing time of a random
+walk over $G[S]$---and prove upper bounds on \smash{$\vol(\Cest \vartriangle
+  S;G)$}. Both of these analyses also hold with respect to an approximate form 
+of PPR  (APPR), which can be efficiently computed. 
 
-Our analysis naturally builds on a few of the aforementioned theoretical analyses of PPR. For an arbitrary graph $G$ and subset $S \subset G$, \citet{andersen2006} relate the quality of the PPR cluster $\hat{C}$ to the normalized cut functional $\Phi(S;G)$. While this analysis is tight, it fails to account for improvements possible when the cluster $S$ is additionally assumed to be internally well-connected, which is intuitively a more favorable case for clustering. Building on this intuition, \citet{zhu2013} assume that the subgraph $G[S]$ is internally well-connected-- measured by a functional such as mixing time of a random walk over $G[S]$-- and prove upper bounds on $\vol(\widehat{C} \vartriangle S;G)$. Both of these analyzes hold with respect to a approximate form of PPR (APPR) which can be efficiently computed.
+We apply these results to our setting by carefully analyzing the normalized cut
+and mixing time functionals in the particular case of $G = G_{n,r}$ and $S =
+\Cset[X]$. One of our main challenges is to prove an upper bound on the mixing 
+time of a random walk run only over the subset of nodes in $G_{n,r}$ which fall
+within a density cluster $\Cset$. To do so, we rely on a series of seminal works
+upper bounding the mixing time of \emph{geometric random walks} (see 
+\citet{vempala2005} for a comprehensive review.)  This study was initiated by
+\citet{dyer1991}, who used geometric random walks as a fundamental subroutine to
+efficiently compute volumes of high-dimensional convex bodies. These results are
+improved in \citet{lovasz1990,kannan97,kannan06}, who show, inter alia, that the
+bounds on mixing time can be sharpened by avoiding so-called
+``start-penalties''. As we discuss further in what follows, these improvements
+are crucial to our work. Following the work of
+\citet{abbasi-yadkori2016,abbasi-yadkori2016a}, we extend these results to hold
+for Lipschitz deformations of convex sets. Additionally, we relate the mixing
+time of these (continuous-space) geometric random walks to the mixing time of
+random walks over (discrete) neighborhood graphs.
 
+Finally, it is worth mentioning that density clustering and level set estimation
+are themselves very well-studied problems in statistics. \citet{polonik1995,
+  rigollet2009} study density clustering under the symmetric set difference
+metric, \citet{tsybakov1997,singh2009} describe minimax optimal level-set
+estimators under Hausdorff loss and
+\citet{hartigan1981,chaudhuri2010,balakrishnan2013,kpotufe11} consider
+consistent estimation of the cluster tree. We emphasize that our goal is
+not to improve on these results, nor to offer a better algorithm for level set
+estimation; indeed, seen as a density clustering algorithm, PPR has none 
+of the optimality guarantees found in the aforementioned works. Instead, our
+motivation is to start with a widely-used local spectral method, PPR, and to
+better understand and characterize the distinctions between those density 
+clusters which are well-conditioned for PPR, and those which are not.  
 
-We apply these results to our setting by estimating these functionals in the particular case of $G = G_{n,r}$ and $S = \mathcal{C}[X]$. In particular, we prove an upper bound on the mixing time of a random walk run only over the subset of nodes in $G_{n,r}$ which fall within a density cluster $\Cset$. To do so, we rely on a series of seminal works upper bounding the mixing time of \emph{geometric random walks} (see \citet{vempala2005} for a comprehensive review.)  This study was initiated by \citet{dyer1991}, who used geometric random walks as a fundamental subroutine to efficiently compute volumes of high-dimensional convex bodies. These results are improved in \citet{lovasz1990,kannan97,kannan06}, who show, inter alia, that the bounds on mixing time can be sharpened by avoiding so-called ``start-penalties''. As we discuss further in the sequel, these improvements are crucial to our work. Following the work of \citet{abbasi-yadkori2016,abbasi-yadkori2016a}, we extend these results to hold for Lipschitz deformations of convex sets. Additionally, we relate the mixing time of these (continuous-space) geometric random walks to the mixing time of random walks over (discrete) neighborhood graphs. 
+\subsection{Summary of results}
 
-Finally, it is worth mentioning that density clustering and level set estimation are well-studied problems. \citet{polonik1995, rigollet2009} study density clustering under the 
-symmetric set difference metric, \citet{tsybakov1997, singh2009} describe
-minimax optimal level-set estimators under Hausdorff loss and
-\citet{hartigan1981, chaudhuri2010, balakrishnan2013,kpotufe11} consider consistent estimation of the
-cluster tree.
-%, to note but a few works. 
-We emphasize that our goal is not to improve on these
-results, nor to offer a better algorithm for level set estimation; indeed, seen as
-a density clustering algorithm, PPR has none of the optimality guarantees 
-found in the aforementioned works. Instead, our motivation is to start with a 
-widely-used local spectral method, PPR, and to better understand and
-characterize the distinctions between those density clusters which are
-well-conditioned for PPR, and those which are not. 
-
-
-Specifically, a summary of our results (and an outline for this
-paper) is as follows.
+A summary of our results (and an outline for this paper) is as follows. 
 
 \begin{enumerate}
-\item In Section \ref{sec: consistent_cluster_estimation_with_ppr}, we introduce
+\item In Section \ref{sec: consistent_cluster_estimation_with_ppr}, we introduce 
   a set of natural geometric conditions on the density cluster $\Cset$
   %formalize a measure of difficulty based on these geometric conditions, 
-  and show that when Algorithm \ref{alg: ppr} is properly initialized, the size of
-  the symmetric set difference of \smash{$\Cest$} and a thickened version of the
-  density cluster $\Csig$ can be bounded in a meaningful way.
-  % this difficulty measure.  
+  and show that if Algorithm~\ref{alg: ppr} is properly initialized, then the size of
+  the symmetric set difference between \smash{$\Cest$} and a thickened version
+  of the density cluster $\Csig$ can be bounded in a meaningful way based on the
+  geometric parameters. 
 	
 \item We further show in Section \ref{sec:
-    consistent_cluster_estimation_with_ppr} that if the density cluster 
-  $\Cset$ is particularly well-conditioned, Algorithm \ref{alg: ppr}
-  will consistently estimate a density cluster in a strong sense (see~\eqref{eqn: consistent_density_cluster_recovery}). 
+    consistent_cluster_estimation_with_ppr} that if the density cluster  
+  $\Cset$ is particularly well-conditioned, then Algorithm~\ref{alg: ppr} 
+  will consistently estimate a density cluster in the strong sense of
+  \eqref{eqn: consistent_density_cluster_recovery}.   
 	
-\item In Section \ref{sec: analysis}, we detail some of the analysis required to
-  prove our main results, and expose the roles that various geometric quantities play 
-  in the difficulty of the clustering problem. 
+\item In Section \ref{sec: analysis}, we detail some of the analysis required to 
+  prove our main results, and expose the roles that various geometric quantities 
+  play in the difficulty of the clustering problem.  
   
-\item In Section \ref{sec:lower_bound}, we provide an accompanying lower bound, demonstrating that when the cluster $\Cset$ is sufficiently poorly conditioned, it will not be recovered by Algorithm~\ref{alg: ppr}.
+\item In Section \ref{sec:lower_bound}, we provide an accompanying lower bound,
+  which demonstrates that when the cluster $\Cset$ is sufficiently poorly
+  conditioned, it will not be recovered by Algorithm~\ref{alg: ppr}. 
 	
 \item In Section \ref{sec: experiments}, we empirically investigate the
-  tightness of our analysis, and provide examples showing how violations of our
+  tightness of our analysis, and provide examples showing how violations of our  
   geometric conditions impact density cluster recovery by PPR.
 \end{enumerate}
 
-\noindent At this point we summarize one of our main takeaways: 
-PPR, run on a neighborhood graph, recovers only \emph{geometrically
-compact} high-density clusters. Our main theoretical results, makes this takeaway 
-precise, and provides concrete ways of quantifying the geometric
-compactness of a density cluster. 
+One of our main takeaways can be paraphrased as follows: PPR, run on a
+neighborhood graph, recovers only \emph{geometrically compact} high-density
+clusters. Our theoretical results make this takeaway precise, and provide a 
+concrete way of quantifying the geometric compactness of a density 
+cluster.  
 
-\section{Main Results}
+\section{Main results}
 \label{sec: consistent_cluster_estimation_with_ppr}
-In this section we present our main results on the accuracy of the PPR algorithm 
-for recovering density clusters. 
-We begin by formally introducing a variety of geometric conditions, 
-and use these to define a condition
-number $\kappa(\Cset)$, which measures the difficulty PPR will have in  
-estimating a density cluster $\Cset$.
-With this condition in place 
-our first main result (Theorem~\ref{thm:volume_ssd}) provides a bound
-on the symmetric set difference between the estimated cluster $\Cest$,
-obtained by an appropriately initialized version of the PPR algorithm,
-and
-the target cluster $\Cset$.
-Our next main result (Theorem~\ref{thm: consistent_recovery_of_density_clusters})
-shows that for sufficiently well-conditioned target clusters $\Cset$, the output 
-of the PPR algorithm $\Cest$
-is consistent in the sense defined in Definition~\ref{def: consistent_density_cluster_estimation}.
 
-\subsection{Preliminaries}%: Geometric Conditions and the Condition Number of a Density Cluster}
-%We formalize some geometric conditions, and use these to define a condition
-%number $\kappa(\Cset)$, which measures the difficulty PPR will have in  
-%estimating $\Cset$. (Our theoretical guarantees for PPR will be framed in terms 
-%of $\kappa(\Cset)$.)
-%\paragraph{Geometric conditions on density clusters.} 
-At a high level, for PPR
-to be successful, the underlying density cluster must be geometrically
-well-conditioned.  A basic requirement is that we need to avoid clusters which contain arbitrarily
-thin bridges or spikes. As in the work of \citet{chaudhuri2010}, we consider a
-thickened version of \smash{$\Cset \in \Cbb_f(\lambda)$} defined as 
-$\Csig := \set{x \in \Reals^d: \dist(x,\Cset) \leq \sigma}$, which 
-we call the \emph{$\sigma$-expansion} of $\Cset$. Here 
+In this section, we present our main results on accuracy of the PPR algorithm
+for recovering density clusters.  We begin by formally introducing various
+geometric conditions, and use these to define a condition number
+$\kappa(\Cset)$, which measures the difficulty PPR will have in estimating a
+density cluster $\Cset$. With this condition in place our first main result
+(Theorem~\ref{thm: volume_ssd}) provides a bound on the symmetric set difference
+between the estimated cluster $\Cest$, obtained by an appropriately initialized 
+version of the PPR algorithm, and the target cluster $\Cset$.  Our next main
+result (Theorem~\ref{thm: consistent_recovery_of_density_clusters}) shows that
+for sufficiently well-conditioned target clusters $\Cset$, the output of the PPR
+algorithm $\Cest$ is consistent in the sense of Definition~\ref{def:
+consistent_density_cluster_estimation}.
+
+\subsection{Preliminaries}
+
+At a high level, for PPR to be successful, the underlying density cluster must
+be geometrically well-conditioned.  A basic requirement is that we need to avoid
+clusters which contain arbitrarily thin bridges or spikes. As in the work of
+\citet{chaudhuri2010}, we consider a thickened version of \smash{$\Cset \in
+\Cbb_f(\lambda)$} defined as $\Csig := \set{x \in \Reals^d: \dist(x,\Cset) \leq
+\sigma}$, which we call the \emph{$\sigma$-expansion} of $\Cset$. Here
 \smash{$\dist(x,\Cset) := \inf_{y \in \Cset} \norm{y - x}$}.  We now list our
 conditions on $\Csig$.
 
@@ -578,80 +631,80 @@ conditions on $\Csig$.
   \label{asmp: bounded_density}
   \emph{Bounded density within cluster:} There exist constants
   $0<\lambda_{\sigma}< \Lambda_{\sigma}<\infty$ such that 
-  $\lambda_{\sigma} \leq \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x)
-  \leq \Lambda_{\sigma}$. 
+  $$
+  \lambda_{\sigma} \leq \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x)
+  \leq \Lambda_{\sigma}.
+  $$
 
-    
 \item 
   \label{asmp: low_noise_density}
-  \emph{Low noise density:} There exists $c_0 > 0$ and $\gamma \in [0,1]$ such that for any $x \in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,   
-  \begin{align*}
-  \inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \dist(x, \Csig)^{\gamma}. 
-  \end{align*}
-  Roughly, 
-  this assumption ensures that the density decays sufficiently quickly as we move away from
-  the target cluster $\Csig$, and is a standard assumption in the level-set estimation literature
-  (see for instance~\cite{singh2009}).
+  \emph{Low noise density:} There exists constants $c_0 > 0$ and $\gamma \in
+  [0,1]$ such that for any $x \in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,     
+  $$
+  \inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \cdot \dist(x, \Csig)^{\gamma}.  
+  $$
+  Roughly, this assumption ensures that the density decays sufficiently quickly
+  as we move away from the target cluster $\Csig$, and is a standard assumption
+  in the level-set estimation literature (see for instance \citet{singh2009}).
   
 \item
   \label{asmp: embedding}
   \emph{Lipschitz embedding:}
   There exists $g: \Reals^d \to \Reals^d$ with the following properties: 
   \begin{enumerate}
-  \item we have $\Csig = g(\mathcal{K})$, for a convex set $\mathcal{K} \subseteq \Rd$
-  with $\mathrm{diam}(\mathcal{K}) = \sup_{x,y \in \mathcal{K}}\norm{x - y} =:
-  \diam < \infty$
-  \item $\det(\nabla g (x)) = 1$ for all $x \in \Csig$, where
-  $\nabla g(x)$ is the Jacobian of $g$ evaluated at $x$ and
-  \item for some $L
-  \geq 1$,   
-  \begin{equation*}
+  \item we have $\Csig = g(\mathcal{K})$, for a convex set $\mathcal{K}
+    \subseteq \Rd$ with $\mathrm{diam}(\mathcal{K}) = \sup_{x,y \in
+      \mathcal{K}}\norm{x - y} =: \diam < \infty$;
+  \item $\det(\nabla g (x)) = 1$ for all $x \in \Csig$, where $\nabla g(x)$ is
+    the Jacobian of $g$ evaluated at $x;$ and 
+  \item for some $L \geq 1$,   
+    $$
     \norm{g(x) - g(y)} \leq L \norm{x - y} ~
     \text{for all $x,y \in \mathcal{K}$}. 
-  \end{equation*}
+    $$
   \end{enumerate}
-  Succinctly, we assume that $\Csig$ is the image of a convex set with finite diameter 
-  under a  measure preserving, Lipschitz transformation. 
+  Succinctly, we assume that $\Csig$ is the image of a convex set with finite
+  diameter under a measure preserving, Lipschitz transformation. 
 
 \item
   \label{asmp: bounded_volume}
   \emph{Bounded volume:}
-  For a set $\mathcal{S} \subseteq \Reals^d$, define the $\Pbb$-weighted volume of $\mathcal{S}$ to be
+  For a set $\mathcal{S} \subseteq \Reals^d$, define a $\Pbb$-weighted volume of 
+  $\mathcal{S}$ to be  
   \begin{equation}
   \label{eqn:volume}
-  \vol_{\Pbb,r}(\mathcal{S}) := \int_{\mathcal{S}} \Pbb(B(x,r)) \,d\Pbb(x).
+  \vol_{\Pbb,r}(\mathcal{S}) := \int_{\mathcal{S}} \Pbb(B(x,r)) f(x) \, dx.
   \end{equation}
-  where $B(x,r)$ is the closed ball of radius $r$ centered at $x$.
-  
-  We assume that the neighborhood graph radius $0 < r \leq \sigma/2d$ is chosen such that
-  \begin{equation*}
-  \vol_{\Pbb,r}(\mathcal{S}) \leq \frac{1}{2}\vol_{\Pbb,r}(\Reals^d).
-  \end{equation*}
-  
- 
+  where $B(x,r)$ is the closed ball of radius $r$ centered at $x$. We assume
+  that the radius of the neighborhood graph $0 < r \leq \sigma/(2d)$ is chosen 
+  such that  
+  $$
+  \vol_{\Pbb,r}(\Cset_\sigma) \leq \frac{1}{2} \vol_{\Pbb,r}(\Reals^d). 
+  $$
 \end{enumerate}
 
-To motivate these conditions, we provide a brief high-level sketch
-of our analysis (we return to this more formally in Section~\ref{sec: analysis}). 
-\citet{zhu2013} show for an arbitrary graph $G =
-(V,E)$ and subset of vertices $S \subseteq V$, the PPR estimate \smash{$\Cest$}
-of subset $S$ satisfies, for a constant $c>0$,
+To motivate these conditions, we now give a brief high-level sketch
+of our analysis (which we will return to more formally in Section~\ref{sec:  
+  analysis}).  \citet{zhu2013} show that for an arbitrary graph $G = (V,E)$ and
+subset of vertices $S \subseteq V$, the PPR algorithm (properly initialized
+within $S$) will output an estimate \smash{$\Cest$} of $S$ satisfying, for a
+constant $M>0$, 
 \begin{equation}
 \label{eqn: graph_symmetric_set_difference_1}
-\vol(\Cest \vartriangle S; G) \leq c \bigl( \Phi(S,G)
-\cdot \tau_{\infty}(G[S])\bigr),
+\vol(\Cest \vartriangle S; G) \leq M \cdot \Phi(S,G) \cdot \tau_{\infty}(G[S]),    
 \end{equation}
 where $\Phi(S;G)$ is the normalized cut of $S$ (as defined in \eqref{eqn:
   normalized_cut}), and \smash{$\tau_{\infty}(G[S])$} is  the \emph{mixing
   time} of a random walk over the induced subgraph $G[S]$ (to be defined
 precisely later, in \eqref{eqn: mixing_time}).  The left-hand side in
-\eqref{eqn: graph_symmetric_set_difference_1} is precisely
-the volume of the symmetric set difference, and our main goal is therefore to upper bound the graph functionals $\Phi$ and $\tau_{\infty}$.
-  Towards this goal, as we will show in Section \ref{sec:
-  analysis}, the conditions \ref{asmp: bounded_density}--\ref{asmp:
+\eqref{eqn: graph_symmetric_set_difference_1} is one of our principle metrics
+of interest, the volume of the symmetric set difference, and our main goal will 
+therefore be to upper bound the graph functionals $\Phi$ and $\tau_{\infty}$.
+Towards this goal, as we will show in Section
+\ref{sec: analysis}, the conditions \ref{asmp: bounded_density}--\ref{asmp: 
   bounded_volume} allow us to upper bound the normalized cut 
 \smash{$\Phi(\Csig[\Xbf]; G_{n,r})$}, and the mixing time 
-\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. In more detail, assumption 
+\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. Specifically, assumption 
 \ref{asmp: low_noise_density} yields an upper
 bound on \smash{$\cut(\Csig[\Xbf]; G_{n,r})$}, and \ref{asmp: bounded_density}
 yields a lower bound on \smash{$\vol(\Csig[\Xbf]; G_{n,r})$}; together with 
@@ -662,153 +715,196 @@ with the upper bound on diameter in \ref{asmp: embedding}, this leads to an uppe
 the mixing time over this subgraph.
 
 \subsubsection{Condition number} 
-Motivated by \eqref{eqn:
-  graph_symmetric_set_difference_1}, we will define $\kappa(\Cset)$ to be an
-upper bound on the product \smash{$\Phi(\Csig[\Xbf]; G_{n,r}) \cdot
-  \tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. Following, the analysis of \citet{zhu2013}
-  we see that the smaller $\kappa(\Cset)$ is, the
-more success PPR will have in recovering the target cluster $\Cset$.
 
-\begin{definition}[Well-conditioned density clusters]
+We will define the condition number $\kappa(\Cset)$ of a cluster $\Cset$ in 
+terms of a suitable upper bound---expressed in terms of the geometric parameters
+from \ref{asmp: bounded_density}--\ref{asmp: bounded_volume}---on the product of
+normalized cut and mixing time, \smash{$\Phi(\Csig[\Xbf]; G_{n,r}) \cdot
+  \tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. Following \eqref{eqn:
+  graph_symmetric_set_difference_1}, we see that the smaller the condition
+number $\kappa(\Cset)$ is, the more success PPR will have in recovering the
+target $\Cset$.  
+
+\begin{definition}
   \label{def:well_conditioned_density_cluster}
-  For $\lambda > 0$ and \smash{$\Cset \in \Cbb_f(\lambda)$}, let $\Cset$ satisfy 
-  \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} for some $\sigma > 0$. Then, for universal constants $c_1, c_2, c_3 > 0$ to be specified
-  later, we set 
+  For $\lambda > 0$ and \smash{$\Cset \in \Cbb_f(\lambda)$}, let $\Cset$ satisfy  
+  \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} for some $\sigma >
+  0$. Then, for universal constants $c_1, c_2, c_3 > 0$ to be specified later
+  (in Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
+    mixing_time_upper_bound}), define
   \begin{equation}
-    \label{eqn: condition_number_1}
+    \label{eqn: condition_number}
     \Phibf(\Cset) 
     := c_1 r \frac{d}{\sigma} \frac{\lambda}{\lambda_{\sigma}}
     \frac{(\lambda_{\sigma} - c_0 \frac{r^{\gamma}}{\gamma +
-        1})}{\lambda_{\sigma}},~  
+        1})}{\lambda_{\sigma}}, \quad
     \taubf(\Cset) := c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2
-      L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2r}\right) + c_3,
+      L^2}{\lambda_{\sigma}^4 r^2}
+    \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2r}\right) + c_3.
   \end{equation}
-  and letting \smash{$\kappa(\Cset) := \Phi_{u}(\Cset) \cdot
-    \tau_{u}(\Cset)$}, we call $\Cset$ a 
-  \emph{$\kappa$-well-conditioned density cluster}.  
+  Letting \smash{$\kappa(\Cset) := \Phibf(\Cset) \cdot \taubf(\Cset)$},
+  we call $\kappa(\Cset)$ the \emph{condition number} of $\Cset$.  We also call
+  the set $\Cset$ a \emph{$\kappa$-well-conditioned} density cluster.  
 \end{definition}
-\noindent The condition number 
-$\kappa(\Cset)$ succinctly captures the role of the various
-geometric parameters. 
-We note in passing that $\Phibf(\Cset)$ and $\taubf(\Cset)$ are exactly the upper bounds 
-on \smash{$\Phi(\Csig[\Xbf]; G_{n,r})$} and
-\smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$} that we derive in our analysis
-later, in Section \ref{sec: analysis}. 
 
-\subsubsection{Well-initialized algorithm} As is typical in the local clustering
-literature, our algorithmic results will be stated with respect to specific
-ranges of each of the user-specified parameters. In particular, for a
-well-conditioned density cluster $\Cset$, we require that some of the tuning parameters of Algorithm~\ref{alg: ppr} are chosen to fall within specific ranges,
+The condition number $\kappa(\Cset)$ succinctly captures the role of the various 
+geometric parameters.  We note in passing that $\Phibf(\Cset)$ and
+$\taubf(\Cset)$ are exactly the upper bounds  on \smash{$\Phi(\Csig[\Xbf];
+  G_{n,r})$} and \smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$} that we derive in
+our analysis later, in Section \ref{sec: analysis}. 
+
+\subsubsection{Well-initialized algorithm} 
+
+As is typical in the local clustering literature, our algorithmic results will
+be stated with respect to specific ranges of each of the user-specified
+parameters. In particular, for a well-conditioned density cluster $\Cset$, we
+require that some of the tuning parameters of Algorithm~\ref{alg: ppr} are
+chosen to fall within specific ranges,
+
 \begin{equation}
 \begin{gathered}
 \label{eqn: initialization}
 0 < r \leq \frac{\sigma}{2d}, \quad 
-\alpha \in [1/10, 1/9) \cdot \frac{1}{\taubf(\theta)}, \\
-(L,U) \subseteq (1/50,1/5) \cdot \frac{1}{2{n \choose 2}\vol_{\Pbb,r}(\Csig)}.
+\alpha \in {\textstyle [\frac{1}{10}, \frac{1}{9})} \cdot
+\frac{1}{\taubf(\theta)}, \\ 
+(L,U) \subseteq {\textstyle(\frac{1}{50},\frac{1}{5})} \cdot 
+\frac{1}{2{n \choose 2} \vol_{\Pbb,r}(\Csig)}.  
 \end{gathered}
 \end{equation}
 
 \begin{definition}
 If the input parameters to Algorithm \ref{alg: ppr} satisfy \eqref{eqn:
-  initialization} for some well-conditioned density cluster $\Cset$, we
+  initialization} (for some well-conditioned density cluster $\Cset$), then we  
 say the algorithm is \emph{well-initialized}. 
 \end{definition}
-\noindent In practice it is  not feasible to set hyperparameters based on the
-underlying (unknown) density $f$. Typically, one tunes PPR over a range of
-hyperparameters and selects the cluster which has the smallest normalized cut. 
 
-\subsection{Cluster Recovery in Symmetric Set Difference}
-We now present our first main result: a bound on the volume of the symmetric set difference between the estimated cluster $\widehat{C}$ and empirical cluster $\Csig[\Xbf]$. 
-In this theorem, and hereafter, we let 
-$c, c_i > 0$ represent universal constants, and 
-$c(\Pbb,r), c_i(\Pbb,r) > 0$ represent constants which may depend on $\Pbb,\lambda$ and $r$ but not on the sample size $n$; where possible, we keep track of all constants in our proofs.
+In practice of course, it is not feasible to set tuning parameters based on the 
+underlying (unknown) density $f$. Typically, one runs PPR over some range of
+tuning parameter values and selects the cluster which has the smallest
+normalized cut.     
+
+\subsection{Cluster recovery in symmetric set difference}
+
+We now present our first main result: a bound on the volume of the symmetric set
+difference between the estimated cluster \smash{$\Cest$} and empirical cluster 
+$\Csig[\Xbf]$. In this theorem, and hereafter, we let $c, c_i > 0$ denote
+universal constants, and $b,b_i > 0$ denote constants which may depend on  
+$\Pbb,\lambda,r,d$ and so on, but \emph{not} on the sample size 
+$n$.  % where possible, we keep track of all constants in our proofs. 
+
 \begin{theorem}
-  \label{thm:volume_ssd}
-  Fix $\lambda > 0$ and let \smash{$\Cset \in \Cbb_f(\lambda)$} be a
-  $\kappa$-well-conditioned density cluster for some $\sigma > 0$. If Algorithm \ref{alg: ppr} is \emph{well-initialized} with respect to $\Cset$, then 
-  %there exists a universal constant $c > 0$, constants in sample size $c_1(\Pbb,r)$ - $c_6(\Pbb,r)$, and 
-  there exists a set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ of large volume 
-  with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \frac{1}{2}\vol(\Csig[\Xbf];G_{n,r})$ such that the following statement holds: let Algorithm~\ref{alg: ppr} be run with any seed node $v \in \Csig[\Xbf]^g$. Then, for any $n$ large enough so that
-  \begin{equation*}
-  n \geq c_1(\Pbb,r)\cdot (\log n)^{\max\{\frac{3}{d},1\}}
-  \end{equation*}
-  the volume of the symmetric set difference is upper bounded
+  \label{thm: volume_ssd}
+  Fix $\lambda,\sigma > 0$, let \smash{$\Cset \in \Cbb_f(\lambda)$} be a   
+  $\kappa$-well-conditioned density cluster, and assume Algorithm \ref{alg: ppr}
+  is well-initialized with respect to $\Cset$. There exists a set $\Csig[\Xbf]^g 
+  \subseteq \Csig[\Xbf]$ of large volume, \smash{$\vol(\Csig[\Xbf]^g; G_{n,r})
+    \geq \vol(\Csig[\Xbf];G_{n,r})/2$}, such that the following holds: if 
+  Algorithm~\ref{alg: ppr} is run with any seed node $v \in \Csig[\Xbf]^g$, then
+  for 
+  $$
+  n \geq b_1 (\log n)^{\max\{\frac{3}{d},1\}},
+  $$
+  the PPR estimated cluster \smash{$\Cest$} satisfies
   \begin{equation}
-    \label{eqn:volume_ssd}
-    \Delta(\Csig[\Xbf], \Cest) \leq c \cdot \kappa(\Cset) \cdot \vol_{n,r}(\Csig[\Xbf]),
+    \label{eqn: volume_ssd}
+    \Delta(\Cest, \Csig[\Xbf]) \leq c \cdot \kappa(\Cset) \cdot
+    \vol_{n,r}(\Csig[\Xbf]),  
   \end{equation}
-  with probability at least $1 - \frac{c_2(\Pbb,r)}{n}$. 
+  with probability at least $1 - b_2/n$. 
 \end{theorem}
-The proof of Theorem \ref{thm:volume_ssd} is deferred to Appendix~\ref{sec:proof_of_volume_ssd}. We reiterate that the primary technical work involved in proving Theorem~\ref{thm:volume_ssd} involves showing that $\tau_{u}$ and $\phi_u$ are valid upper bounds on the normalized cut and mixing time; once this is established, the result follows more or less straightforwardly from~\citet{zhu2013}.
-This result establishes that the volume of the symmetric set difference \smash{$\Delta(\Csig[\Xbf],
-  \Cest)$} is upper-bounded by a quantity proportional to the difficulty of the clustering problem, as
-measured by the condition number $\kappa(\Cset)$. 
 
-\subsection{Consistent Cluster Recovery}
-The bound on symmetric set difference \eqref{eqn:volume_ssd} does not imply consistent density cluster estimation in the sense of \eqref{eqn: consistent_density_cluster_recovery}. This notion of consistency requires a uniform bound over 
-the PPR vector $\pbf_v$: as an example, suppose that we were able to show that for all \smash{$\Cset'
-  \in \Cbb_f(\lambda), \Cset' \neq \Cset$}, and each $u \in \Cset, w \in
-\Cset'$,  
+The proof of Theorem \ref{thm: volume_ssd}, as with all results in this paper,
+is deferred to the appendix.  We reiterate that the primary technical 
+work involved in proving Theorem~\ref{thm: volume_ssd} involves showing that
+$\Phibf(\Cset)$ and $\taubf(\Cset)$ in \eqref{eqn: condition_number} are
+valid upper bounds on the normalized cut and mixing time; once this has been 
+established, the result follows more or less straightforwardly
+from \citet{zhu2013}.  
+% This result establishes that the volume of the symmetric
+% set difference \smash{$\Delta(\Cest, \Csig[\Xbf])$} is upper-bounded by a  
+% quantity proportional to the difficulty of the clustering problem, as measured 
+% by the condition number $\kappa(\Cset)$. 
+
+\subsection{Consistent cluster recovery}
+
+The bound on symmetric set difference \eqref{eqn: volume_ssd} does not imply 
+consistent density cluster estimation in the sense of \eqref{eqn:
+  consistent_density_cluster_recovery}. This notion of consistency requires a
+uniform bound over the PPR vector $\pbf_v$: as an example, suppose that we were
+able to show that for all \smash{$\Cset' \in \Cbb_f(\lambda), \Cset' \neq
+  \Cset$}, and each $u \in \Cset, w \in \Cset'$,  
 \begin{equation}
 \label{eqn: ppr_gap}
-\frac{\pbf_v(w)}{D_{ww}} \leq \frac{1}{100 {n \choose 2} \vol_{\Pbb,r}(\Csig)} < \frac{1}{10 {n \choose 2} \vol_{\Pbb,r}(\Csig)} \leq \frac{\pbf_v(u)}{D_{uu}}.
+\frac{\pbf_v(w)}{D_{ww}} \leq \frac{1}{100 {n \choose 2} \vol_{\Pbb,r}(\Csig)} <
+\frac{1}{10 {n \choose 2} \vol_{\Pbb,r}(\Csig)} \leq \frac{\pbf_v(u)}{D_{uu}}. 
 \end{equation}
-Then, any $(L,U)$ satisfying~\eqref{eqn: initialization} and any sweep cut $S_{\beta}$ for $\beta \in (L,U)$ will fulfill both conditions
-laid out in \eqref{eqn: consistent_density_cluster_recovery}. In Theorem
-\ref{thm: consistent_recovery_of_density_clusters}, we show that a sufficiently
-small upper bound on $\kappa(\Cset)$ ensures that with high probability the uniform bound~\eqref{eqn: ppr_gap} is satisfied, and hence implies \smash{$\Cest$} will be a consistent  
-estimator. We will need one additional regularity condition, to preclude arbitrarily low degree
-vertices for points $x \in \Cset'[\Xbf]$. 
+Then, any $(L,U)$ satisfying~\eqref{eqn: initialization} and any sweep cut
+$S_{\beta}$ for $\beta \in (L,U)$ will fulfill both conditions laid out in
+\eqref{eqn: consistent_density_cluster_recovery}. In Theorem 
+\ref{thm: consistent_recovery_of_density_clusters}, we show that a sufficiently 
+small upper bound on $\kappa(\Cset)$ ensures that with high probability the
+uniform bound~\eqref{eqn: ppr_gap} is satisfied, and hence implies
+\smash{$\Cest$} will be a consistent  estimator. We will need one additional 
+regularity condition, to preclude arbitrarily low degree vertices for points $x
+\in \Cset'[\Xbf]$.  
+
 \begin{enumerate}[label=(A\arabic*)]
-  \setcounter{enumi}{6}
+  \setcounter{enumi}{4}
 \item 
   \label{asmp: C'_bounded_density}
-  \emph{Bounded density in other clusters:} Letting $\sigma,\lambda_{\sigma}$ be 
+  \emph{Bounded density in other clusters:} Letting $\sigma,\lambda_{\sigma}$ be   
   as in \ref{asmp: bounded_density}, for each $\Cset' \in \Cbb_f(\lambda)$ and
-  for all $x \in \Csig'$, $\lambda_{\sigma} \leq f(x)$. 
+  for all $x \in \Csig'$, it holds that $\lambda_{\sigma} \leq f(x)$. 
 \end{enumerate}
 
 Next we give our main result on consistent cluster recovery by PPR.
 
 \begin{theorem}
   \label{thm: consistent_recovery_of_density_clusters}
-  Fix $\lambda > 0$, let $\Cset \in \Cbb_f(\lambda)$ be a
-  $\kappa$-well-conditioned density cluster for some $\sigma > 0$, and
-  additionally assume $f$ satisfies \ref{asmp: C'_bounded_density}. If Algorithm
-  \ref{alg: ppr} is well-initialized with respect to $\Cset$ and if 
-  %, there exists a universal constant $c >  0$ and constants in sample size $c_1(\Pbb,r)$-$c_6(\Pbb,r)$ such that if  
+  Under the assumptions of Theorem \ref{thm: volume_ssd}, additionally assume 
+  \ref{asmp: C'_bounded_density}, and 
   \begin{equation}
     \label{eqn: kappa_ub}
     \kappa(\Cset) \leq c \frac{(\lambda_{\sigma} r^d
-      \nu_d)^2}{\vol_{\Pbb,r}(\Csig)}, 
+      \nu_d)^2}{\vol_{\Pbb,r}(\Csig)}.
   \end{equation}
-  then the following statement holds: there exists a set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ of large volume 
-  with $\vol(\Csig[\Xbf]^g; G_{n,r}) \geq \frac{1}{2}\vol(\Csig[\Xbf];G_{n,r})$ such that if Algorithm~\ref{alg: ppr} is run with any seed node $v \in \Csig[\Xbf]^g$,  then for any $n$ large enough so that
-  \begin{equation*}
-  n \geq c_1(\Pbb,r)\cdot (\log n)^{\max\{\frac{3}{d},1\}}
-  \end{equation*}$\Cest$ satisfies~\eqref{eqn: consistent_density_cluster_recovery} with respect to $\Cset$ with probability at least $1 - \frac{c_2(\Pbb,r)}{n}$. Therefore, $\Cest$ is a consistent estimator of $\Cset$ in the sense of Definition \ref{def: consistent_density_cluster_estimation}. 
+  There exists a set $\Csig[\Xbf]^g \subseteq \Csig[\Xbf]$ of large volume, 
+  \smash{$\vol(\Csig[\Xbf]^g; G_{n,r}) \geq
+    \frac{1}{2}\vol(\Csig[\Xbf];G_{n,r})$}, such that if Algorithm~\ref{alg:
+    ppr} is run with any seed node $v \in \Csig[\Xbf]^g$, then for
+  $$
+  n \geq b_1 (\log n)^{\max\{\frac{3}{d},1\}},
+  $$
+  the PPR estimated cluster \smash{$\Cest$} satisfies \eqref{eqn:
+    consistent_density_cluster_recovery} with probability at least $1-b_2/n$.
 \end{theorem}
-\noindent Some remarks are in order: 
- \begin{enumerate}  
- \item We note that the restriction on $\kappa(\Cset)$ imposed by \eqref{eqn:
-    kappa_ub} results in an upper bound on the symmetric set difference metric \smash{$\Delta(\Csig[\Xbf],
-    \Cest)$} on the order of $r^d$. In plain terms, we are able to recover a
-  density cluster $\Cset$ in the sense of \eqref{eqn:
-    consistent_density_cluster_recovery} only when we can guarantee a very small
-  fraction of points will be misclassified. This strong condition is the price
-  we pay in order to obtain the uniform bound in~\eqref{eqn: ppr_gap}. 
- \item While taking the radius of the neighborhood graph $r \to 0$ as $n \to
-  \infty$ (thereby ensuring that the graph $G_{n,r}$ is sparse) is computationally
-  attractive, the presence of a factor of \smash{$\log^2(1/r)/r$} in
-  $\kappa(\Cset)$ prevents us from making claims about the
-  behavior of PPR in this regime. Although the restriction to a kernel
-  function fixed in $n$ is common in spectral clustering theory
-  \citep{schiebinger2015,vonluxburg2008}, it is an interesting question whether
-  PPR exhibits some degeneracy over $r$-neighborhood graphs as $r \to 0$, or if
-  this is merely looseness in our upper bounds.  
-\end{enumerate}
+
+Some remarks are in order.
+
+\begin{remark}
+We note that the restriction on $\kappa(\Cset)$ imposed by \eqref{eqn: 
+    kappa_ub} results in an upper bound on the symmetric set difference metric
+  \smash{$\Delta(\Cest, \Csig[\Xbf])$} on the order of $r^d$. In plain terms, we 
+  are able to recover a  density cluster $\Cset$ in the strong sense of
+  \eqref{eqn: consistent_density_cluster_recovery} only when we can guarantee a
+  very small fraction of points will be misclassified. This strong condition is
+  the price we pay in order to obtain the uniform bound in~\eqref{eqn: ppr_gap}.  
+\end{remark}
+
+\begin{remark}
+  Letting the radius of the neighborhood graph shrink, $r \to 0$ as $n \to  
+  \infty$, would be computationally attractive (it would ensure that the graph 
+  $G_{n,r}$ is sparse), but the presence of a factor of \smash{$\log^2(1/r)/r$}
+  in $\kappa(\Cset)$ prevents us from making claims about the behavior of PPR in
+  this regime. Although the restriction to a kernel function fixed in $n$ is
+  common in spectral clustering theory \citep{schiebinger2015,vonluxburg2008},
+  it is an interesting question whether PPR exhibits some degeneracy over 
+  neighborhood graphs such that $r \to 0$, or if this is merely looseness in our  
+  upper bounds.
+\end{remark}
 
 \subsection{Approximate PPR vector} 
+
 In practice, exactly solving the system of equations~\eqref{eqn:
   ppr_vector} to compute the PPR vector 
   may be too computationally expensive. To address this limitation,
@@ -824,77 +920,87 @@ while satisfying the following uniform error bound:
 \pbf^{(\varepsilon)}(u) \leq \pbf(u).  
 \end{equation}
 For a sufficiently small choice of $\varepsilon$, the 
-application of \eqref{eqn: appr_error} within the proofs of Theorems \ref{thm:volume_ssd} and \ref{thm: consistent_recovery_of_density_clusters}
+application of \eqref{eqn: appr_error} within the proofs of Theorems
+\ref{thm: volume_ssd} and \ref{thm: consistent_recovery_of_density_clusters}  
 leads to analogous results which hold for \smash{$\pbf^{(\varepsilon)}$}.
 
 \begin{corollary}
-	\label{cor: appr}
-	Fix $\lambda > 0$, and let $\Cset \in \Cbb_f(\lambda)$ be a $\kappa$-well-conditioned cluster for some $\sigma > 0$. Choose input parameters $r, \alpha, v, (L,U)$ to be well-initialized in the sense of \eqref{eqn: initialization}, additionally set 
-	\begin{equation}
-	\label{eqn: appr_parameter}
-	\varepsilon = \frac{1}{25}\vol_{\Pbb,r}(\Csig)
-	\end{equation}
-	and modify Algorithm \ref{alg: ppr} to compute the a\pprspace vector $\pbf^{(\varepsilon)}_v$ rather than the exact \pprspace vector $\pbf_v$, with resulting output $\Cest$. Then
-	\begin{enumerate}
-		\item The upper bound on symmetric set difference metric $\Delta(\Cest,\Csig[\Xbf])$ given by \eqref{eqn:volume_ssd} is still valid.
-		\item If \ref{asmp: C'_bounded_density} and \eqref{eqn: kappa_ub} hold, 
-		then $\Cest \subseteq \Xbf$ is a consistent estimator for $\Cset$, in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
-	\end{enumerate}
+  \label{cor: appr}
+  Under the assumptions of Theorem \ref{thm: volume_ssd}, consider instead of
+  Algorithm \ref{alg: ppr}, using the approximate PPR vector from
+  \citet{andersen2006} satisfying \eqref{eqn: appr_error}, and forming the 
+  corresponding cluster estimate \smash{$\Cest$} in the same manner.  Then 
+  provided we take 
+  \begin{equation}
+    \label{eqn: appr_parameter}
+    \varepsilon = \frac{1}{25} \vol_{\Pbb,r}(\Csig),
+  \end{equation}
+  the upper bound on symmetric set difference in \eqref{eqn: volume_ssd} still
+  holds. Further, under the assumptions of Theorem \ref{thm:
+    consistent_recovery_of_density_clusters}, the estimator \smash{$\Cest$} is
+  still consistent, in the sense of Definition \ref{def:
+    consistent_density_cluster_estimation}.  
 \end{corollary}
 
-\section{Analysis Overview}
+\section{Analysis overview}
 \label{sec: analysis}
 
-One of the primary technical contributions of our work is showing that the geometric
-conditions \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} translate to 
-meaningful bounds on the normalized cut and mixing time of $\Csig[\Xbf]$ in
-$G_{n,r}$. In doing so, we elaborate on how some of the geometric conditions
-introduced in Section~\ref{sec: consistent_cluster_estimation_with_ppr}
-contribute to the difficulty of the clustering problem. 
+The primary technical contribution in our work is to show that the
+geometric assumptions \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} 
+translate to  meaningful bounds on the normalized cut and mixing time of 
+$\Csig[\Xbf]$ in the neighborhood graph $G_{n,r}$. In doing so, we elucidate 
+how these geometric conditions contribute to the difficulty of the clustering 
+problem.   
 
-\subsection{Upper Bound on the Normalized Cut} 
-We start with a finite sample upper bound on the
-normalized cut \eqref{eqn: normalized_cut} of $\Cset_\sigma[\Xbf]$. For
-simplicity, we write $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$. 
+\subsection{Upper bound on normalized cut} 
+
+We start with a finite-sample upper bound on the normalized cut \eqref{eqn:
+  normalized_cut} of $\Cset_\sigma[\Xbf]$. For simplicity, we write
+$\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.  
 
 \begin{theorem}
   \label{thm: conductance_upper_bound}
-  Fix $\lambda > 0$, and assume $\Cset \in \Cbb_f(\lambda)$ satisfies
-  Assumptions \ref{asmp: bounded_density}--\ref{asmp: low_noise_density}, 
-  \ref{asmp: bounded_volume} for some $\sigma > 0$. Then
+  Fix $\lambda,\sigma>0$, and assume $\Cset \in \Cbb_f(\lambda)$ satisfies    
+  Assumptions \ref{asmp: bounded_density}, \ref{asmp: low_noise_density}, and   
+  \ref{asmp: bounded_volume}. Then
   \begin{equation}
     \label{eqn: conductance_additive_error_bound}
     \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq c_1 \frac{d}{\sigma}
     \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
-      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}}
+      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}},
   \end{equation}
-  with probability at least $1 - 3\exp\{-nc_3(\Pbb,r)\}$. 
+  with probability at least $1 - 3\exp\set{-b n}$. 
 \end{theorem}
-\noindent {\bf Remark: } 
-Observe that the diameter $\rho$ is absent from Theorem \ref{thm:
-    conductance_upper_bound}, in contrast to the condition number
-  $\kappa(\Cset)$, which worsens (increases) as $\rho$ increases. This
-  reflects established wisdom regarding spectral partitioning
-  algorithms more generally \citep{guattery1995, hein2010}, albeit newly applied
-  to the density clustering setting. It suggests that if the diameter $\rho$ is
-  large, PPR may fail to recover $\Csig[\Xbf]$ even when $\Cset$ is
-  sufficiently well-conditioned to ensure $\Csig[\Xbf]$ has a small normalized
-  cut in $G_{n,r}$. This intuition will be supported by simulations in Section
-  \ref{sec: experiments}. 
 
-\subsection{Upper Bounds on the Mixing Time} 
+\begin{remark}
+  Observe that the diameter $\rho$ is absent from Theorem \ref{thm:
+    conductance_upper_bound}, in contrast to ultimate bound in Theorem    
+  \ref{thm: volume_ssd} (where the diameter enters through the condition number 
+  $\kappa(\Cset)$, which worsens (increases) as $\rho$ increases. This reflects
+  (what may be regarded as) established wisdom regarding spectral partitioning
+  algorithms more generally \citep{guattery1995, hein2010}, albeit newly applied
+  to the density clustering setting: if the diameter $\rho$ is large, then PPR
+  may fail to recover $\Csig[\Xbf]$ even when $\Cset$ is sufficiently
+  well-conditioned to ensure that $\Csig[\Xbf]$ has a small normalized cut in 
+  $G_{n,r}$. This will be supported by simulations in Section \ref{sec:
+    experiments}.   
+\end{remark}
+
+\subsection{Upper bound on mixing time} 
+
 For $S \subseteq V$, denote by $G[S] = (S, E_S)$ the
-subgraph induced by $S$ (where the edges are $E_S = E \cap (S \times S)$). Let
-$\Wbf_S$ be the (lazy) random walk matrix over $G[S]$, and write  
+subgraph induced by $S$ (where $E_S = E \cap (S \times S)$). Let 
+$\Wbf_S$ be the lazy random walk matrix over $G[S]$, and write  
 $$
 q_{v}^{(t)}(u) = e_v\Wbf_S^t e_u
 $$
-for the $t$-step transition probability of the lazy random walk over $G[S]$
-originating at $v \in V$. Also write \smash{$\pi = (\pi(u))_{u \in S}$}
-for the stationary distribution of this random walk.(As
-$\Wbf_S$ is the transition matrix of a lazy random walk, 
-it is well-known that a unique stationary distribution exists and is given by 
-\smash{$\pi(u) = \deg(u;G[S])/\vol(S; G[S])$}, where we write $\deg(u;G[S]) = \sum_{w \in S} \1((u,w) \in E_S)$ for the degree of $u$ in $G[S]$.) We define the \emph{mixing time} of $G[S]$ as
+for the $t$-step transition probability of the random walk over $G[S]$
+originating at $v \in V$. Also let \smash{$\pi = (\pi(u))_{u \in S}$} be 
+the stationary distribution of this random walk. (As $\Wbf_S$ is the transition 
+matrix of a lazy random walk, it is well-known that a unique stationary
+distribution exists and is given by  \smash{$\pi(u) = \deg(u;G[S])/\vol(S;
+  G[S])$}, where we write $\deg(u;G[S]) = \sum_{w \in S} \1((u,w) \in E_S)$ for
+the degree of $u$ in $G[S]$.) We define the \emph{mixing time} of $G[S]$ as 
 \begin{equation}
 \label{eqn: mixing_time}
 \tau_{\infty}(G[S]) = \min\set{ t: \frac{\pi(u) - q_{v}^{(t)}(u)}
@@ -905,30 +1011,30 @@ $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
 
 \begin{theorem}
   \label{thm: mixing_time_upper_bound}
-  Fix $\lambda > 0$, and assume that \smash{$\Cset \in \Cbb_f(\lambda)$}
-  satisfies Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding}
-  for some $\sigma > 0$. Additionally assume that the radius $0 < r < \sigma/2\sqrt{d}$. Then the following statement holds: for any
-  \begin{equation*}
-  n \geq c_1(\Pbb,r)\cdot(\log n)^{\max\{\frac{3}{d},1\}}
-  \end{equation*}
-  the mixing time $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$ satisfies
+  Fix $\lambda, \sigma > 0$, and assume \smash{$\Cset \in \Cbb_f(\lambda)$} 
+  satisfies Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding}.
+  Also assume that \smash{$0 < r \leq \sigma/(2\sqrt{d})$}. Then for
+  $$
+  n \geq b_1 (\log n)^{\max\{\frac{3}{d},1\}},
+  $$
+  the mixing time satisfies
   \begin{equation} 
     \label{eqn: mixing_time_upper_bound}
-    \tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{ \Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + c_3
+    \tau_{\infty}(G_{n,r}[\Csig[\Xbf]]) \leq c_2 \frac{\Lambda_{\sigma}^4 d^3 
+      \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log^2\left(\frac{
+        \Lambda_{\sigma}}{\lambda_{\sigma}^2 r}\right) + c_3, 
   \end{equation}
-  with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$.
+  with probability at least $1 - b_2/n$.
 \end{theorem}
 The proof of Theorem \ref{thm: mixing_time_upper_bound} relies heavily on
-analogous mixing time bounds developed for the mixing time of a
-continuous-space ``ball walk'' over convex sets. To the best of our knowledge, our
-result is the first bound on the mixing time of random walks
-over neighborhood graphs that is independent of $n$, the number of vertices.   
+analogous mixing time bounds developed for a continuous-space ``ball walk'' over
+convex sets. To the best of our knowledge, our result is the first bound on the
+mixing time of random walks over neighborhood graphs that is independent of $n$,
+the number of vertices.    
 
-\vspace{0.2cm}
-
-\noindent {\bf Remark: } 
+\begin{remark}
   The embedding assumption \ref{asmp: embedding} and Lipschitz parameter $L$
-  play an important role in proving the upper bound of Theorem \ref{thm:
+  play an important role in proving the upper bound in Theorem \ref{thm:
     mixing_time_upper_bound}. There is some interdependence between $L$ and
   $\sigma,\rho$, which might lead one to hope that \ref{asmp: embedding} is
   non-essential. However, it is not possible to eliminate condition \ref{asmp:
@@ -941,127 +1047,212 @@ over neighborhood graphs that is independent of $n$, the number of vertices.
   is observed that star-shaped sets as well as half-moon shapes of the type we
   consider in Section \ref{sec: experiments} both satisfy \ref{asmp: embedding}
   for reasonably small values of $L$. 
-  
-\section{Lower bound.}
+\end{remark}
+
+\section{Negative result}
 \label{sec:lower_bound}
 
-To show a lower bound for density clustering using PPR, we exhibit a hard case: that is, a distribution $\Pbb$ for which PPR is unlikely to recover a density cluster. Let $\mathcal{C}_{\sigma}^{(0)}$, $\mathcal{C}_{\sigma}^{(1)}$, and $\mathcal{C}_{\sigma}^{(2)}$ be rectangles in $\Reals^2$, 
-\begin{equation*}
-\mathcal{C}_{\sigma}^{(0)} = \biggl[-\frac{\sigma}{2}, \frac{\sigma}{2}\biggr] \times \biggl[-\frac{\rho}{2}, \frac{\rho}{2}\biggr], \quad \mathcal{C}_{\sigma}^{(1)} = \mathcal{C}_{\sigma}^{(0)} - \set{(\sigma,0)}, \quad \mathcal{C}_{\sigma}^{(2)} = \mathcal{C}_{\sigma}^{(0)} + \set{(\sigma,0)} \tag{$0 < \sigma < \rho$}
-\end{equation*}
-and let $\mathbb{P}$ be the mixture distribution over $\mathcal{X} = \mathcal{C}_{\sigma}^{(0)} \cup \mathcal{C}_{\sigma}^{(1)} \cup \mathcal{C}_{\sigma}^{(2)}$ given by
-\begin{equation*}
-\mathbb{P} = \frac{1 - \epsilon}{2} \Psi_1 + \frac{1 - \epsilon}{2} \Psi_2 + \frac{\epsilon}{2} \Psi_0,
-\end{equation*}
-where $\Psi_m$ is the uniform distribution over $\Csig^{(m)}$ for $m = 0,1,2$. 
+In this section, we exhibit a hard case for density clustering using PPR, that 
+is, a distribution $\Pbb$ for which PPR is unlikely to recover a density
+cluster. Let \smash{$\Cset^{(0)}, \Cset^{(1)}, \Cset^{(2)}$} be rectangles in
+$\Reals^2$,    
+$$
+\Cset^{(0)} = \biggl[-\frac{\sigma}{2}, \frac{\sigma}{2}\biggr] \times 
+\biggl[-\frac{\rho}{2}, \frac{\rho}{2}\biggr], \quad 
+\Cset^{(1)} = \Cset^{(0)} - \set{(\sigma,0)}, \quad
+\Cset^{(2)} = \Cset^{(0)} + \set{(\sigma,0)},
+$$
+where $0 < \sigma < \rho$, and let $\Pbb$ be the mixture distribution over
+\smash{$\mathcal{X} = \Cset^{(0)} \cup \Cset^{(1)} \cup \Cset^{(2)}$} given by   
+$$
+\Pbb = \frac{1 - \epsilon}{2} \Psi_1 + \frac{1 - \epsilon}{2} \Psi_2 +
+\frac{\epsilon}{2} \Psi_0, 
+$$
+where $\Psi_k$ is the uniform distribution over $\Cset^{(k)}$ for $k = 0,1,2$.  
 The density function $f$ of $\Pbb$ is simply
 \begin{equation}
 \label{eqn:lb_density}
-f(x) = \frac{1}{\rho\sigma}\left(\frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(1)}) + \frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(2)}) + \frac{\epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(0)})  \right)
+f(x) = \frac{1}{\rho\sigma}\left(\frac{1 - \epsilon}{2}\1(x \in
+  \Cset^{(1)}) + \frac{1 - \epsilon}{2}\1(x \in \Cset^{(2)}) +
+  \frac{\epsilon}{2}\1(x \in \Cset^{(0)})  \right), 
 \end{equation}
-so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, $\mathbb{C}_{f}(\lambda) = \set{\mathcal{C}_{\sigma}^{(1)}, \mathcal{C}_{\sigma}^{(2)}}$. Figure~\ref{fig:fig0} shows $f$ for two different choices of $\epsilon, \sigma$ and $\rho$. 
+so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, we have 
+\smash{$\Cbb_f(\lambda) = \set{\Cset^{(1)}, \Cset^{(2)}}$}. Figure~\ref{fig:
+  hard_case} visualizes the density $f$ for two different choices of $\epsilon,
+\sigma, \rho$.  
 
 \begin{figure}[tb]
-	\centering
-	
-	\includegraphics[width=0.4\textwidth]{lower_bound_plots/lower_bound_1}
-	\includegraphics[width=0.4\textwidth]{lower_bound_plots/lower_bound_2}
-	
-	\caption{\it\small The density $f$ given by~\eqref{eqn:lb_density}, for two different choices of $\epsilon$ and $\sigma$. Left: $\epsilon = .3,\sigma = .1$; Right: $\epsilon = .2,\sigma = .2$. In both $\rho = 1$. } 
-	\label{fig:fig0}
-	
+  \centering
+  \includegraphics[width=0.495\textwidth]{lower_bound_plots/lower_bound_1}
+  \includegraphics[width=0.495\textwidth]{lower_bound_plots/lower_bound_2}
+  \caption{\it\small The density $f$ in \eqref{eqn:lb_density}, for
+    $\rho=1$, and two different choices of $\epsilon$ and $\sigma$. Left:
+    $\epsilon = 0.3$ and $\sigma = 0.1$; right: $\epsilon = 0.2$ and 
+    $\sigma = 0.2$.} 
+  \label{fig: hard_case}
 \end{figure}
 
-\subsection{Lower bound for PPR.}
+\subsection{Lower bound on symmetric set difference}
 
-As the following theorem demonstrates, even when Algorithm~\ref{alg: ppr} is reasonably initialized, if the density cluster $\mathcal{C}_{\sigma}^{(1)}$ is sufficiently geometrically ill-conditioned the cluster estimator $\widehat{C}$ will fail to recover $\mathcal{C}_{\sigma}^{(1)}$. Let
+As the following theorem demonstrates, even when Algorithm~\ref{alg: ppr} is
+reasonably initialized, if the density cluster \smash{$\Cset^{(1)}$} is 
+sufficiently geometrically ill-conditioned (in words, tall and thin) the cluster 
+estimator $\Cest$ will fail to recover \smash{$\Cset^{(1)}$}. Let  
 \begin{equation}
 \label{eqn:lower_set}
 \mathcal{L} = \set{(x_1,x_2) \in \mathcal{X}: x_2 < 0}.
 \end{equation}
+
 \begin{theorem}
-	\label{thm:ppr_lb}
-	Suppose $r < \frac{1}{40}\rho \wedge \frac{1}{4}\sigma$,  $\alpha = 65 \Phi_{\Pbb}(\mathcal{L})$, and $(L,U) = (0,1)$ are inputs to Algorithm~\ref{alg: ppr}. Then, for any
-	\begin{equation}
-	\label{eqn:lb_sample_size}
-	n \geq \max\set{\frac{64}{\epsilon^2 \rho \sigma \pi r^2}, \frac{8}{\epsilon}}
-	\end{equation}
-	the following statement holds: there exists a set $C^{g} \subset \Xbf$ with $\vol(C^g \cap \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \geq \frac{1}{10}\vol_{n,r}(\mathcal{C}_{\sigma}^{(1)}[\Xbf])$ such that for any seed node $v \in C^g$, the estimator $\widehat{C}$ computed by Algorithm~\ref{alg: ppr} has symmetric set difference with $\Csig^{(1)}[\Xbf]$ of volume at least
-	\begin{equation}
-	\label{eqn:ppr_lb}
-	\frac{\sigma \rho}{r^2}\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{n^2} \geq \frac{1}{4} -  c \frac{\sqrt{\frac{\sigma}{\rho}}}{\epsilon^2} \sqrt{ \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}
-	\end{equation}
-	with probability at least $1 - c_1(\Pbb,r) n \exp\set{-c_2(\Pbb,r)n}$.
-	Consequently, if
-	\begin{equation*} 
-	\epsilon^2 > \frac{c}{8} \sqrt{\frac{\sigma}{\rho}} \cdot \sqrt{ \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}
-	\end{equation*}
-	then with high probability $\frac{\sigma \rho}{r^2}\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{n^2}$ is at least $1/8$. 
+  \label{thm:ppr_lb}
+  Assume Algorithm~\ref{alg: ppr} is initialized using inputs $r < 
+  \min\set{\frac{1}{40}\rho, \frac{1}{4}\sigma}$, $\alpha = 65  
+  \Phi_{\Pbb}(\mathcal{L})$, and $(L,U) = (0,1)$.  Then, for any 
+  $$
+  n \geq \max\set{\frac{64}{\epsilon^2 \rho \sigma \pi r^2},
+    \frac{8}{\epsilon}}, 
+  $$
+  there exists a set $\Cset[X]^g$ of large volume, \smash{$\vol(\Cset[X]^g \cap 
+    \Cset^{(1)}[\Xbf]) \geq \frac{1}{10}\vol_{n,r}(\Cset^{(1)}[\Xbf])$}, such
+  that for any seed node $v \in \Cset[X]^g$, the PPR estimated cluster
+  \smash{$\Cest$} satisfies    
+  \begin{equation}
+    \label{eqn:ppr_lb}
+    \frac{\sigma \rho}{r^2 n^2} \cdot \vol_{n,r}(\Cest \vartriangle
+    \Cset^{(1)}[\Xbf]) \geq \frac{1}{4} -  c
+    \frac{\sqrt{\sigma/\rho}}{\epsilon^2} \sqrt{ \log\left(\frac{\rho \sigma}
+        {\epsilon^2 r^2}\right) \frac{\sigma}{r}},   
+  \end{equation}
+  with probability at least $1 - b_1 n \exp\set{-b_2 n}$.  Consequently, if
+  $$
+  \epsilon^2 > \frac{c}{8} \sqrt{\frac{\sigma}{\rho}} \cdot \sqrt{ 
+    \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}, 
+  $$
+  then with high probability \smash{$\frac{\sigma
+    \rho}{r^2 n^2} \cdot \vol_{n,r}(\Cest \vartriangle \Cset^{(1)}[\Xbf]) 
+  \geq 1/8$}.    
 \end{theorem}
-Note that the factor of $\frac{\sigma\rho}{r^2}$ on the left hand side of \eqref{eqn:ppr_lb} is a constant multiple of $(1/\vol_{\Pbb,r}(\Csig^{(1)}))$; hence the left hand side is directly comparable to $\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{\vol_{n,r}(\Csig^{(1)}[\Xbf])}$, which is the quantity we upper bound in Theorem~\ref{thm:volume_ssd}.
 
-Theorem~\ref{thm:ppr_lb} is stated with respect to a particular hard case, where the density clusters are rectangular subsets of $\Reals^2$. Although we picked this setting to make the theorem statement simple, our results are easily generalized to $\Reals^d$ and to non-rectangular clusters. Additionally, although we state our lower bound with respect to PPR run on neighborhood graph, the conclusion is likely to hold for a much broader class of spectral clustering algorithms. In the proof of Theorem~\ref{thm:ppr_lb}, we rely heavily on the fact that when $\epsilon^2$ is sufficiently greater than $\frac{\sigma}{\rho}$, the normalized cut of $\Csig^{(1)}$ will be much larger than that of $\mathcal{L}$. In this case, not merely PPR but any algorithm which approximates the minimum normalized cut is unlikely to recover $\Csig^{(1)}$. In particular, local spectral clustering algorithms based on truncated random walks \citet{spielman2013}, global spectral clustering algorithms \citet{shi00}, and $p$-Laplacian based spectral embeddings \citet{hein2010} all have provable upper bounds on the normalized cut of cluster they output, and thus we expect that all the aforementioned approaches would fail to estimate $\Csig^{(1)}$. 
+Note that $\vol_{n,r}(\Cset^{(1)})$ for large enough $n$ will be of the order
+$n^2 r^2/(\sigma\rho)$, and therefore the quantity \smash{$\frac{\sigma
+    \rho}{r^2 n^2} \cdot \vol_{n,r}(\Cest \vartriangle \Cset^{(1)}[\Xbf])$} in 
+\eqref{eqn:ppr_lb} is comparable to \smash{$\vol_{n,r}(\Cest
+  \vartriangle \Cset^{(1)}[\Xbf]) / \vol_{n,r}(\Cset^{(1)}[\Xbf])$}, which
+corresponds to the quantity we upper bound in Theorem~\ref{thm: volume_ssd}.   
 
-\subsection{Comparison with upper bound.}
+Theorem~\ref{thm:ppr_lb} is stated with respect to a particular hard case, where
+the density clusters are rectangular subsets of $\Reals^2$.  We chose this
+setting to make the theorem simple to state, and our results are generalizable
+to $\Reals^d$ and to non-rectangular clusters.  Moreover, although we state
+our lower bound with respect to PPR run on neighborhood graph, the conclusion is
+likely to hold for a much broader class of spectral clustering algorithms. In
+the proof of Theorem~\ref{thm:ppr_lb}, we rely heavily on the fact that when
+$\epsilon^2$ is sufficiently greater than $\sigma/\rho$, the normalized cut of
+$\Cset^{(1)}$ will be much larger than that of $\mathcal{L}$. In this case, not
+merely PPR but any algorithm that approximates the minimum normalized cut is
+unlikely to recover $\Cset^{(1)}$. In particular, local spectral clustering
+algorithms based on truncated random walks \citet{spielman2013}, global spectral
+clustering algorithms \citet{shi00}, and $p$-Laplacian based spectral embeddings
+\citet{hein2010} all have provable upper bounds on the normalized cut of cluster
+they output, and thus we expect that they would all fail to estimate
+$\Cset^{(1)}$.
 
-To better digest the implications of Theorem~\ref{thm:ppr_lb}, we apply our upper bound to the density function $f$ given in \eqref{eqn:lb_density}. Observe that $\Csig^{(1)}$ satisfies each of the assumptions~\ref{asmp: bounded_density}-\ref{asmp: bounded_volume}. In particular
+\subsection{Comparison with previous upper bound}
+
+To better digest the implications of Theorem~\ref{thm:ppr_lb}, we translate the
+results of our upper bound in Theorem~\ref{thm: volume_ssd} to the density $f$
+given in \eqref{eqn:lb_density}. Observe that $\Cset^{(1)}$ satisfies each of
+the Assumptions~\ref{asmp: bounded_density}--\ref{asmp: bounded_volume}:
+
 \begin{enumerate}[label=(A\arabic*)]
-	\item The density $f(x) = \frac{1 - \epsilon}{2 \rho \sigma}$ for all $x \in \Csig^{(1)}$.
-	\item The density $f(x) = \frac{\epsilon}{\rho\sigma}$ for all $x$ such that $0 < \dist(x,\Csig^{(1)}) \leq \sigma$. Therefore for all such $x$,
-	\begin{equation*}
-	\inf_{x' \in \Csig^{(1)}} f(x') - f(x)  > \left\{\frac{1 - \epsilon}{2} - \epsilon \right\} \frac{1}{\rho \sigma}.
-	\end{equation*}
-	\item The set $\Csig^{(1)}$ is itself convex, and has diameter $\rho$.
-	\item By symmetry, $\vol_{\Pbb,r}(\Csig^{(1)}) = \vol_{\Pbb,r}(\Csig^{(2)})$ and therefore $\vol_{\Pbb,r}(\Csig^{(1)}) \leq \frac{1}{2}\vol_{\Pbb,r}(\Reals^d)$. 
+\item The density $f(x) = \frac{1 - \epsilon}{2 \rho \sigma}$ for all $x \in
+  \Cset^{(1)}$.  
+\item The density $f(x) = \frac{\epsilon}{\rho\sigma}$ for all $x$ such
+  that $0 < \dist(x,\Cset^{(1)}) \leq \sigma$. Therefore for all such $x$, 
+  $$
+  \inf_{x' \in \Cset^{(1)}} f(x') - f(x)  = \left\{\frac{1 - \epsilon}{2} -
+    \epsilon \right\} \frac{1}{\rho \sigma},
+  $$
+  which meets the decay requirement with exponent $\gamma=0$. 
+\item The set $\Cset^{(1)}$ is itself convex, and has diameter $\rho$.
+\item By symmetry, \smash{$\vol_{\Pbb,r}(\Cset^{(1)}) =
+    \vol_{\Pbb,r}(\Cset^{(2)})$}, and therefore
+  \smash{$\vol_{\Pbb,r}(\Cset^{(1)}) \leq \frac{1}{2}\vol_{\Pbb,r}(\Reals^d)$}.   
 \end{enumerate}
 
-%Technically, this density does not fit nicely into the setup of Theorem~\textcolor{red}{1}, because the sets $\Cset_{\sigma}^{(m)}$ ($ m = 1,2$) play the role of both the $\sigma$-expanded sets and the density clusters themselves. However, this truly is only a technical objection. One could modify the distribution $\Pbb$ by adding a small amount of mass to the $\sigma$-interior $\Cset^{(m)} = \set{x \in \Cset_{\sigma}^{(m)}: \dist(x,\partial\Cset_{\sigma}) \geq \sigma}$. Appropriately choosing a threshold $\lambda > \frac{(1 - \epsilon)}{2\rho\sigma}$, the resulting $\lambda$-density clusters would be $\Cbb_f(\lambda) = \set{\Cset^{(1)},\Cset^{(2)}}$, and their $\sigma$-expansions would resemble the rectangles $\Csig^{(1)}, \Csig^{(2)}$ except with slightly rounded corners. 
-%Alternatively, one could directly modify Lemma~\textcolor{red}{6} -- an auxiliary Lemma, used in the proof of Theorem~\textcolor{red}{3}, which establishes an upper bound on the Lebesgue measure of $\Csig + B(0,r)$ -- to hold under the assumption $\Csig$ is a rectangle of width $\sigma$ rather than a $\sigma$-expansion. The proof of this Lemma is the only time we use the fact that $\Csig$ is a $\sigma$-expansion of a density cluster. \textcolor{red}{(Ryan and Siva.)}
+\begin{remark}
+Technically, the rectangles $\Cset^{(0)},\Cset^{(1)},\Cset^{(2)}$ are not
+$\sigma$-expansions due to their sharp corners. To fix this, one can   
+%either modify the upper bound (specifically, Lemma~\ref{lem: expansion_volume}
+%in the proof of Theorem~\ref{thm: conductance_upper_bound}) to hold with
+%respect to rectangles of width $\sigma$, or  
+simply modify these sets to have appropriately rounded corners, and our lower
+bound arguments do not need to change significantly, subject to some
+additional bookkeeping.  Thus we ignore this technicality in our subsequent
+discussion. 
+\end{remark}
+ 
+If the user-specified parameters are initialized according to~\eqref{eqn:
+  initialization}, we may apply Theorem~\ref{thm: volume_ssd}. This implies that 
+there exists a set $\Cset^{(1)}[\Xbf] \subseteq \Cset^{(1)}$ with
+\smash{$\vol_{n,r}(\Cset[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Cset[\Xbf])$} such
+that for any seed node $v \in \Cset^{(1)}[\Xbf]$, and for large enough $n$, the
+PPR estimated cluster $\Cest$ satisfies with high probability
+$$
+\vol_{n,r}(\Cest \vartriangle \Cset^{(1)}[\Xbf]) \leq c \cdot
+\kappa(\Cset^{(1)}) \cdot \vol_{n,r}(\Cset^{(1)}[\Xbf]), 
+$$
+where the condition number may be taken to be
+$$
+\kappa(\Cset^{(1)}) = c_1 \frac{\epsilon}{\sigma} 
+\left(\frac{\rho^2}{r} \log^2\left(\frac{1}{r}\right) \right) + c_2. 
+$$
+for universal constants $c_1,c_2>0$. To facilitate comparisons between our upper
+and lower bounds, assume $\sigma/4 \leq \rho/40$ and set $r = \sigma/4$.  Then
+the following statements each hold with high probability. 
 
-\vspace{0.2cm}
-
-\textbf{Remark:}~~Technically, the rectangles $\Csig^{(1)}$ and $\Csig^{(2)}$ are not $\sigma$-expansions due to their sharp corners. To fix this, one can 
-%either modify the upper bound (specifically, Lemma~\ref{lem: expansion_volume} in the proof of Theorem~\ref{thm: conductance_upper_bound}) to hold with respect to rectangles of width $\sigma$, or 
-change the sets $\Csig^{(1)}$ and $\Csig^{(2)}$ to be rectangles with rounded corners. With some additional bookkeeping, using rounded rectangles does not change our lower bound significantly so we ignore this technicality in our 
-subsequent discussion.
-
-\vspace{0.2cm}
-
-If the user-specified parameters are initialized according to~\eqref{eqn: initialization}, we may apply Theorem~\ref{thm:volume_ssd}. This implies that there exists a set $\Csig^{(1)}[\Xbf] \subset \Csig^{(1)}$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any seed node $v \in \Csig^{(1)}[\Xbf]$, the estimated cluster $\widehat{C}$ output by Algorithm 1 satisfies the following upper bound:
-\begin{equation*}
-\vol_{n,r}(\widehat{C} \vartriangle \Csig^{(1)}[\Xbf]) \leq c \cdot \kappa(\Cset^{(1)}) \cdot \vol_{n,r}(\Csig^{(1)}[\Xbf])
-\end{equation*}
-where the condition number is given by
-\begin{equation*}
-\kappa(\Cset^{(1)}) = c \frac{\epsilon}{\sigma}\left(\frac{\rho^2}{r}\log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2r}\right) + c\right).
-\end{equation*}
-
-To facilitate comparisons between our upper and lower bounds, assume $\frac{1}{4}\sigma \leq \frac{1}{40}\rho$ and set $r = \frac{1}{4}\sigma$. 
-For some universal constant $c > 0$, the following statements each hold with high probability:
 \begin{itemize}
-	\item If the user-specified parameters satisfy~\eqref{eqn: initialization}, and additionally for some $b > 0$
-	\begin{equation*}
-	\epsilon < c\frac{b\sigma^2}{\rho^2 \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2\sigma}\right)}
-	\end{equation*}
-	then $\Delta(\widehat{C}, \Csig^{(1)}[\Xbf]) \leq b \cdot  \vol_{n,r}(\Csig^{(1)}[\Xbf])$.
-	\item If the user-specified parameters are given as in Theorem~\ref{thm:ppr_lb}, and 
-	\begin{equation*}
-	\epsilon > c\left({\frac{\sigma}{\rho}} \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\right)^{1/4}
-	\end{equation*}
-	then $\Delta(\widehat{C}, \Csig^{(1)}[\Xbf]) \geq \frac{1}{8} \vol_{n,r}(\Csig^{(1)}[\Xbf])$.
+\item If the user-specified parameters satisfy~\eqref{eqn: initialization}, and
+  for some $c > 0$
+  $$
+  \epsilon < c \left(\frac{\sigma}{\rho \log(1/\sigma)}\right)^2,
+  $$
+  then \smash{$\Delta(\Cest, \Cset^{(1)}[\Xbf]) \leq c \cdot
+    \vol_{n,r}(\Cset^{(1)}[\Xbf])$}.
+
+\item If the user-specified parameters are as in Theorem~\ref{thm:ppr_lb},
+  and for some $c>0$
+  $$
+  \epsilon > c \left({\frac{\sigma}{\rho}} \log^2 \left(\frac{\rho}
+      {\epsilon^2 \sigma}\right)\right)^{1/4},
+  $$
+  then \smash{$\Delta(\Cest, \Cset^{(1)}[\Xbf]) \geq \frac{1}{8}
+    \vol_{n,r}(\Cset^{(1)}[\Xbf])$}. 
 \end{itemize}
 
-Jointly, these upper and lower bounds give a relatively precise characterization of what it means for a density cluster to be well- or poorly-geometrically conditioned for recovery using PPR.
+Jointly, these upper and lower bounds give a relatively precise characterization
+of what it means for a density cluster to be well- or poorly-geometrically
+conditioned for recovery using PPR. 
 
-\vspace{0.2cm}
+\begin{remark}
+It is worth pointing out that the above conclusions are reliant on specific
+(albeit reasonable) ranges and choices of input parameters, which in some
+instances differ between the upper and lower bounds. We suspect that our lower
+bound continues to hold even when choosing input parameters as dictated by our
+upper bound, but do not pursue the details.
+\end{remark}
 
-\textbf{Remark:}~~It is worth pointing out that the above conclusions are reliant on specific (albeit reasonable) ranges and choices of input parameters, which in some instances differ between the upper and lower bounds. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. 
-
-%It is worth pointing out that both our lower and upper bounds are stated with respect to specific choices of the input parameters to Algorithm~\ref{alg: ppr}, and that these choices are in fact different in the case of the teleportation parameter $\alpha$ and sweep cut range $(L,U)$. At a high level, we do not believe this substantially weakens the takeaway messages of our work: if a density cluster $\mathcal{C}$ is geometrically well-conditioned, then a reasonable initialization of PPR will recover $\Csig[\Xbf]$ with low error, whereas if it is geometrically poorly-conditioned, then a different but also reasonable initialization of PPR will fail to recover $\Csig[\Xbf]$. Of course, it would be more satisfying if both our upper and lower bounds could be stated with respect to the same choices of these input parameters. Unfortunately, it is not at all obvious how to prove such a claim, as to the best of our knowledge all existing work on PPR assumes similar initialization conditions to the ones we assume; effectively, that the algorithm is well-initialized with respect to the set $S \subset G$ one is interested in recovering. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. Even so, we reiterate our belief that in tandem our upper and lower bounds represent a substantial step forward in characterizing the behavior of local clustering algorithms in a statistical context \textcolor{red}{(Ryan and Siva)}.
-
-\vspace{0.2cm}
-
-\textbf{Remark:}~~We also note that our lower bound is of course specific to the PPR algorithm. As mentioned previously, density clustering is a well-studied problem, and in particular under our assumptions classical plug-in density cluster estimators can consistently recover the $\sigma$-expansion $\Csig$ of a density cluster $\Cset$, even when $\epsilon$ is large compared to $\frac{\sigma}{\rho}$. That PPR has difficulty recovering density clusters which can be easily estimated by standard plug-in approaches is not surprising, nor is it a knock on PPR. Rather, it simply reflects that while classical density clustering approaches are specifically designed to identify high-density regions regardless of their geometry, PPR considers geometry as well as density when deciding upon the optimal cluster.
+\begin{remark}
+It is not hard to show that, in the example under consideration, classical
+plug-in density cluster estimators can consistently recover the
+$\sigma$-expansion $\Csig$ of a density cluster $\Cset$, even if $\epsilon$ is
+large compared to $\sigma/\rho$. That PPR has trouble recovering density
+clusters here (where standard plug-in approaches do not) is not meant to
+be a knock on PPR. Rather, it simply reflects that while classical density
+clustering approaches are specifically designed to identify high-density regions
+regardless of their geometry, PPR relies on geometry as well as density when
+forming the output cluster. 
+\end{remark}
 
 \section{Experiments}
 \label{sec: experiments}
@@ -1073,44 +1264,24 @@ settings to the appendix.
 
 \begin{figure}[tb]
   \centering
-  % \begin{adjustbox}{minipage=\linewidth}
-  %   \begin{subfigure}{.33\linewidth}
   \includegraphics[width=0.32\textwidth]{example1plots/sample2}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.33\linewidth}
   \includegraphics[width=0.32\textwidth]{example1plots/sample1}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.33\linewidth}
   \includegraphics[width=0.32\textwidth]{example1plots/sigma_normalized_cut_plot}
-  % \caption{}
-  % \end{subfigure}
-  
-  % \begin{subfigure}{.33\linewidth}
   \includegraphics[width=0.32\textwidth]{example1plots/sigma_mixing_time_plot}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.33\linewidth}
   \includegraphics[width=0.32\textwidth]{example1plots/diameter_normalized_cut_plot}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.33\linewidth}
   \includegraphics[width=0.32\textwidth]{example1plots/diameter_mixing_time_plot}
-  % \caption{}
-  % \end{subfigure}
   \caption{\it\small Top left and top middle: samples from a geometrically
     well- and poor-conditioned cluster. The points in $\Cset$ are colored in 
     red, points in $\Csig \setminus \Cset$ are colored in yellow, and the
     remaining points in blue. Other panels: empirical normalized cut and mixing
     time, as a function of $\sigma$ or $\rho$, versus their theoretical upper
     bounds.} 
-  \label{fig:fig1}
-%  \end{adjustbox}
+  \label{fig:bounds}
 \end{figure}
+
 \paragraph{Validating theoretical bounds.}  We investigate the tightness of
 Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
-  mixing_time_upper_bound} via simulation. Figure \ref{fig:fig1} compares our
+  mixing_time_upper_bound} via simulation. Figure \ref{fig:bounds} compares our
 upper bounds with the actual empirically-computed quantities \eqref{eqn:
   normalized_cut} and \eqref{eqn: mixing_time}, as we vary the diameter $\rho$
 and thickness $\sigma$ of a cluster $\Cset$. The top left and top middle panels
@@ -1130,80 +1301,43 @@ appear to match, this gap between theory and empirical results seems largest
 when $\sigma $ and $\rho$ are approximately equal. As the ratio $\rho/\sigma$
 grows, the slopes of empirical and theoretical curves become more similar.
 
-\paragraph{Empirical behavior of PPR.} In Figure \ref{fig:fig2}, to drive home
-the main implications of Theorems \ref{thm:volume_ssd} and
-\ref{thm: consistent_recovery_of_density_clusters}, we show the
-behavior of PPR, normalized cut, and the density clustering algorithm of
-\citet{chaudhuri2010} on the well known ``two moons'' dataset (with added 2d 
-Gaussian noise), considered a prototypical success story for spectral clustering
-algorithms. The first column shows the empirical density clusters $\Cset[\Xbf]$
-and $\Cset'[\Xbf]$ for a particular threshold $\lambda$ of the density function; the 
-second column shows the cluster recovered by PPR; the third column shows the
-global minimum normalized cut, computed according to the algorithm of
-\citet{szlam2010}; and the last column shows a cut of the density cluster tree
-estimator of \citet{chaudhuri2010}.  We can see the degrading ability of PPR to
-recover density clusters as the two moons become less well-separated. Of 
-particular interest is the fact that PPR fails to recover one of the moons even
-when normalized cut still succeeds in doing so. Additionally, we note that the Chaudhuri-Dasgupta algorithm succeeds even when both PPR and normalized cut fail.  This supports our main message, which is that PPR recovers only geometrically well-conditioned density clusters.
+\paragraph{Empirical behavior of PPR.} In Figure \ref{fig:moons}, to drive home 
+the implications of Theorems \ref{thm: volume_ssd} and \ref{thm:
+consistent_recovery_of_density_clusters}, we show the behavior of PPR,
+normalized cut, and the density clustering algorithm of \citet{chaudhuri2010} on
+the well-known ``two moons'' dataset (with added 2d Gaussian noise), considered
+a prototypical success story for spectral clustering algorithms. The first
+column shows the empirical density clusters $\Cset[\Xbf]$ and $\Cset'[\Xbf]$ for
+a particular threshold $\lambda$ of the density function; the second column
+shows the cluster recovered by PPR; the third column shows the global minimum
+normalized cut, computed according to the algorithm of \citet{szlam2010}; and
+the last column shows a cut of the density cluster tree estimator of
+\citet{chaudhuri2010}.  We can see the degrading ability of PPR to recover
+density clusters as the two moons become less well-separated. Of particular
+interest is the fact that PPR fails to recover one of the moons even when
+normalized cut still succeeds in doing so. Additionally, we note that the
+Chaudhuri-Dasgupta algorithm succeeds even when both PPR and normalized cut
+fail.  This supports our main message, which is that PPR recovers only
+geometrically well-conditioned density clusters.
 
 \begin{figure}
   \centering
-  % \begin{adjustbox}{minipage=\linewidth}
-  %   \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth,scale = .5]{example2plots/row1_true_density_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row1_ppr_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row1_conductance_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row1_density_cluster}
-  % \caption{}
-  % \end{subfigure}
-  
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row2_true_density_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row2_ppr_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row2_conductance_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row2_density_cluster}
-  % \caption{}
-  % \end{subfigure}
-  
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row3_true_density_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row3_ppr_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row3_conductance_cluster}
-  % \caption{}
-  % \end{subfigure}
-  % \begin{subfigure}{.24\linewidth}
   \includegraphics[width=0.24\textwidth]{example2plots/row3_density_cluster}
-  % \caption{}
-  % \end{subfigure}
   \caption{\it\small True density (column 1), PPR (column 2), normalized
     cut (column 3) and estimated density (column 4) clusters for 3 different 
     simulated data sets. Seed node for PPR denoted by a black cross.} 
-  \label{fig:fig2}
-  %\end{adjustbox}
+  \label{fig:moons}
 \end{figure}
 
 \section{Discussion}
@@ -1213,10 +1347,17 @@ There are an almost limitless number of ways to define what the ``right''
 clustering is. In this paper, we have considered one such notion---density upper
 level sets---and have detailed a set of natural geometric criteria which, when 
 appropriately satisfied, translate to provable bounds on estimation of the
-cluster by PPR. We have also exhibited a hard case, showing that when a density cluster is sufficiently geometrically ill-conditioned, PPR may fail to recover it. Finally, we have empirically demonstrated the tightness of our analysis for reasonable sample sizes. 
+cluster by PPR. We have also exhibited a hard case, showing that when a density
+cluster is sufficiently geometrically ill-conditioned, PPR can fail to recover
+it. Finally, we have empirically demonstrated the tightness of our analysis for
+reasonable sample sizes.  
 
-\section{Acknowledgements}
-SB is grateful to Peter Bickel, Martin Wainwright and Larry Wasserman for helpful and inspiring conversations. This work was supported in part by the NSF grant DMS-1713003.
+\section*{Acknowledgements}
+
+SB is grateful to Peter Bickel, Martin Wainwright, and Larry Wasserman for
+helpful and inspiring conversations. RJT thanks Terrence Tao for that time we
+hung out recently, and shared tips on how we each cope with massive fame.
+This work was supported in part by the NSF grant DMS-1713003. 
 
 \appendix
 
@@ -1253,7 +1394,7 @@ We note that as a consequence of~\ref{asmp: bounded_volume} we have that $\vol_{
 The following result provides upper and lower bounds on the expected values $\cut_{\Pbb,r}(\Csig)$ and $\vol_{\Pbb,r}(\Csig)$ respectively:
 \begin{lemma}
 	\label{lem: expected_density_cut}\label{lem: expected_density_volume}
-	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
 	\begin{align}
 	\cut_{\Pbb,r}(\Csig) &\leq \frac{4 d \nu_d r^{d+1} \lambda}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig), \label{eqn:claim_one} \\
 	\vol_{\Pbb,r}(\Csig) &\geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig).\label{eqn:claim_two}
@@ -1274,7 +1415,7 @@ and the bulk of our technical effort will be devoted to showing the following up
 %Lemma \ref{lem: expected_number_boundary_points} involves the bulk of the technical effort required to prove Theorem \ref{thm: conductance_upper_bound}; it will be necessary to bound the expected cut size of $\Csig[\Xbf]$ in $G_{n,r}$. 
 \begin{lemma}
 	\label{lem: expected_number_boundary_points}
-	Under the conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+	Under the conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
 	\begin{equation*}
 	\Pbb(\Csigr) \leq \frac{2dr}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
 	\end{equation*}	
@@ -1362,7 +1503,7 @@ The proof of this Lemma relies on certain volume estimates whose statement and p
 	& \overset{\text{(i)}}{\leq} c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{2 d r u^{1/\gamma}}{\sigma}\right) du \nonumber \\
 	& = c_0\nu(\Csig) r^\gamma \left(1 + \gamma \frac{2 d r}{(\gamma + 1)\sigma}\right). \label{eqn: Sigmak_integral}
 	\end{align}
-	where $\text{(i)}$ follows from the upper bound in Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma / 2d$. 
+	where $\text{(i)}$ follows from the upper bound in Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma/(2d)$. 
 	
 	An upper bound on $\xi$ follows from largely the same logic, although it does not involve integration:
 	\begin{align}
@@ -1596,7 +1737,7 @@ an upper bound on the ratio of Gamma functions.
 %
 %\begin{lemma}
 %	\label{lem: expected_density_cut}
-%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
 %	\begin{equation*}
 %	\cut_{\Pbb,r}(\Csig) \leq \frac{4 d \nu_d r^{d+1} \lambda}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
 %	\end{equation*}
@@ -1607,7 +1748,7 @@ an upper bound on the ratio of Gamma functions.
 %
 %\begin{lemma}
 %	\label{lem: expected_density_volume}
-%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/2d$,
+%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
 %	\begin{equation*}
 %	\vol_{\Pbb,r}(\Csig) \geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig)
 %	\end{equation*}
@@ -1687,7 +1828,7 @@ an upper bound on the ratio of Gamma functions.
 %\end{equation}
 %Assume (\ref{eqn: numerator_additive_bound}) holds with respect to $\delta'$, keeping in mind that this will happen with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this means
 %\begin{equation*}
-%\Phi_{n,r}(\Csig[\mathbf{X}]) \leq \frac{\cut_{\Pbb,r}(\Csig) + \Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n}
+%\Phi_{n,r}(\Csig[\Xbf]) \leq \frac{\cut_{\Pbb,r}(\Csig) + \Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n}
 %\end{equation*}
 %for $\Err_n = \sqrt{\frac{\log(1/\delta')}{n}}$.
 %Now, some straightforward algebraic manipulations yield
@@ -1815,7 +1956,7 @@ Recall that by assumption, $\min_{u \in V} \deg(u;G) \geq 10$. Moreover note tha
 \begin{equation*}
 \norm{q_v^{(\tau_0 + 3)} - \pi}_{\mathrm{TV}} \leq \max \set{\frac{1}{20}, \frac{1}{8} + \frac{1}{20} + \frac{1}{20}} + \left(\frac{1}{as(G)}\right) \frac{as(G)}{80} \leq \frac{1}{4}.
 \end{equation*}
-It is a well known fact (see e.g.~\cite{montenegro2002}) that if $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{4}$, then for any $0 < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{\mathrm{TV}} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log(\frac{14}{s(G)})$, 
+It is a well-known fact (see e.g.~\cite{montenegro2002}) that if $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{4}$, then for any $0 < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{\mathrm{TV}} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log(\frac{14}{s(G)})$, 
 \begin{equation*}
 \norm{q_v^{(\tau_1)} - \pi}_{\mathrm{TV}} \leq \frac{s(G)}{14}
 \end{equation*}
@@ -1848,7 +1989,7 @@ where we use the standard notation $\pi(S) := \sum_{u \in S} \pi(u)$, and likewi
 \begin{equation*}
 \norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \max_{0 \leq x \leq 1} h_v^{(t)}(x).
 \end{equation*}
-Now, take $z = e_vW^3$, and trivially observe that $h_v^{(t+3)}(x) = h_z^{(t)}(x)$. To prove Lemma \ref{lem: tv_mixing_time}, it is therefore sufficient to show the desired upper bound -- the right hand side of~\eqref{eqn: tv_mixing_time}-- holds with respect to $h_z^{(t)}(x)$ for all $x \in [0,1]$, and all starting distributions $z = e_vW^3$. 
+Now, take $z = e_vW^3$, and trivially observe that $h_v^{(t+3)}(x) = h_z^{(t)}(x)$. To prove Lemma \ref{lem: tv_mixing_time}, it is therefore sufficient to show the desired upper bound -- the right-hand side of~\eqref{eqn: tv_mixing_time}-- holds with respect to $h_z^{(t)}(x)$ for all $x \in [0,1]$, and all starting distributions $z = e_vW^3$. 
 
 Let $\mu = as(G)$, and note under the condition $a < 1/4$, $\mu < 1 - \mu$. To show the desired upper bound, we split the interval $[0,1]$ into the subinterval $[\mu, 1 - \mu]$ and the remainder $[0,\mu) \cup (1 - \mu, 1]$. Let $\ell_{\mu}(x)$ be the linear interpolator between $h_z^{(0)}(\mu)$ and $h_z^{(0)}(1 - \mu)$, 
 \begin{equation*}
@@ -2001,7 +2142,7 @@ where $\text{(i)}$ follows from $q^{(1)}(u,u) = \frac{1}{2}$. Then,
 & \overset{(ii)}{\leq} \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \max \set{1, \frac{1}{2 \pi(u) \min_{u' \in V} \deg(u';G) }} \nonumber \\
 & \leq \norm{q_v^{(m-1)} - \pi}_{\mathrm{TV}} \frac{1}{s(G)} \label{eqn: tv_to_uniform_distance_3}
 \end{align}
-where $(ii)$ follows from the fact that for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well known (see e.g. \cite{lovasz1990}) that the laziness of the random walk guarantees $\norm{q_v^{(m - 1)} - \pi}_{\mathrm{TV}} \leq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}$, and therefore by \eqref{eqn: tv_to_uniform_distance_3} and the hypothesis of Lemma \ref{lem: tv_to_uniform_distance},
+where $(ii)$ follows from the fact that for $y \neq u$, $q^{(1)}(y,u) \leq 1/\left(2 \min_{u \in V} \deg(u; G)\right)$. As $m - 1 \geq t$, it is well-known (see e.g. \cite{lovasz1990}) that the laziness of the random walk guarantees $\norm{q_v^{(m - 1)} - \pi}_{\mathrm{TV}} \leq \norm{q_v^{(t)} - \pi}_{\mathrm{TV}}$, and therefore by \eqref{eqn: tv_to_uniform_distance_3} and the hypothesis of Lemma \ref{lem: tv_to_uniform_distance},
 \begin{equation*}
 \sum_{y \neq u} \left(\pi(y) - q^{(m-1)}(v,y)\right) \left(\frac{q^{(1)}(y,u) - \pi(u)}{\pi(u)}\right) \leq \frac{1}{14}.
 \end{equation*}
@@ -2327,7 +2468,7 @@ where the minimum is over measurable sets $\Sset \subseteq \Csig$.
 
 \begin{lemma}
 	\label{lem: uniform_continuous_conductance}
-	Let $\Csig$ satisfy Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with Lipschitz constant $L$. Then, for any $0 < r < \frac{\sigma}{2\sqrt{d}}$, the uniform conductance $\widetilde{\Phi}_{\nu,r}$ satisfies
+	Let $\Csig$ satisfy Assumption \ref{asmp: embedding} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \Csig$ with Lipschitz constant $L$. Then, for any $0 < r \leq \frac{\sigma}{2\sqrt{d}}$, the uniform conductance $\widetilde{\Phi}_{\nu,r}$ satisfies
 	\begin{equation*}
 	\widetilde{\Phi}_{\nu,r} > \frac{r}{2^{13} \rho L \sqrt{d}}.
 	\end{equation*}
@@ -2389,7 +2530,7 @@ With an isoperimetric inequality in hand, the next step towards showing a lower 
 	\end{equation*}
 	where $\norm{P - Q}_{\mathrm{TV}}$ is the total variation distance between probabilities $P$ and $Q$. 
 \end{lemma}
-For the moment, we will take Lemma \ref{lem: one_step_distributions} as given and prove Lemma \ref{lem: uniform_continuous_conductance}, before returning to prove Lemma \ref{lem: one_step_distributions}. Deriving a lower bound on conductance from a isoperimetric inequality (i.e Lemma \ref{lem: nonconvex_isoperimetry}) along with a bound on the one-step distributions is standard. Let $\Sset_1 \cup \Sset_2 = \Csig$ be an arbitrary partition of $\Csig$, and let $\ell = 6/25$. Note by Lemma \ref{lem: local_conductance}, as $r < \sigma/(2\sqrt{d})$ $\ell \nu_d r^d  \leq \ell_{\nu,r}(x)$ for all $x \in \Csig$. We will show that 
+For the moment, we will take Lemma \ref{lem: one_step_distributions} as given and prove Lemma \ref{lem: uniform_continuous_conductance}, before returning to prove Lemma \ref{lem: one_step_distributions}. Deriving a lower bound on conductance from a isoperimetric inequality (i.e., Lemma \ref{lem: nonconvex_isoperimetry}) along with a bound on the one-step distributions is standard. Let $\Sset_1 \cup \Sset_2 = \Csig$ be an arbitrary partition of $\Csig$, and let $\ell = 6/25$. Note by Lemma \ref{lem: local_conductance}, as $r \leq \sigma/(2\sqrt{d})$, $\ell \nu_d r^d  \leq \ell_{\nu,r}(x)$ for all $x \in \Csig$. We will show that 
 \begin{equation}
 \label{eqn: uniform_continuous_conductance_1}
 \int_{\Sset_1} \widetilde{P}_{\nu,r}(x; \Sset_2) d \widetilde{\pi}_{\nu,r}(x) \geq \frac{\sqrt{2} r \ell^4}{48 \rho L \sqrt{d}} \min\set{\widetilde{\pi}_{\nu,r}(\Sset_1), \widetilde{\pi}_{\nu,r}(\Sset_2)}.
@@ -2503,10 +2644,10 @@ where the last inequality follows by the hypothesis $\ell_{\nu,r}(u),\ell_{\nu,r
 \end{align*}
 We have completed our proof of Lemma \ref{lem: one_step_distributions}, and therefore (in turn), Lemmas~\ref{lem: uniform_continuous_conductance}, \ref{lem: nonuniform_continuous_conductance}, and \ref{lem: graph_conductance_profile_lb}. As a result, Proposition \ref{prop: local_spread_conductance} is proved, and the proof of Theorem \ref{thm: mixing_time_upper_bound} is complete.
 
-\section{Proof of Theorem~\ref{thm:volume_ssd}}
+\section{Proof of Theorem~\ref{thm: volume_ssd}}
 \label{sec:proof_of_volume_ssd}
 
-In this section, we prove Theorem \ref{thm:volume_ssd}. The theorem is a consequence of Lemma 3.4 in \citet{zhu2013}, which relates the quality of the PPR output to normalized cut and mixing time. 
+In this section, we prove Theorem \ref{thm: volume_ssd}. The theorem is a consequence of Lemma 3.4 in \citet{zhu2013}, which relates the quality of the PPR output to normalized cut and mixing time. 
 \begin{lemma}[Lemma 3.4 of \citet{zhu2013}.]
 	\label{lem:zhu}
 	Let $G = (V,E)$ be a undirected, unweighted graph, let $A \subseteq V$, and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{v,\beta}$ is
@@ -2518,10 +2659,10 @@ In this section, we prove Theorem \ref{thm:volume_ssd}. The theorem is a consequ
 	\end{equation*}
 \end{lemma}
 
-\paragraph{Proof of Theorem~\ref{thm:volume_ssd}.}
-First, we verify that the conditions of Lemma~\ref{lem:zhu} are met when $S = \mathcal{C}_{\sigma}[\Xbf]$, $G = G_{n,r}$, and the user-specified parameters satisfy the initialization conditions~\eqref{eqn: initialization}. By Theorem~\ref{thm: mixing_time_upper_bound} and \eqref{eqn: initialization}, the teleportation parameter $\alpha$ is upper bounded
+\paragraph{Proof of Theorem~\ref{thm: volume_ssd}.}
+First, we verify that the conditions of Lemma~\ref{lem:zhu} are met when $S = \Cset_{\sigma}[\Xbf]$, $G = G_{n,r}$, and the user-specified parameters satisfy the initialization conditions~\eqref{eqn: initialization}. By Theorem~\ref{thm: mixing_time_upper_bound} and \eqref{eqn: initialization}, the teleportation parameter $\alpha$ is upper bounded
 \begin{equation*}
-\alpha < \frac{1}{9\tau_{u}(\theta)} \leq \frac{1}{9\tau_\infty(G_{n,r}(\Cset_{\sigma}[\Xbf])}
+\alpha < \frac{1}{9\taubf(\theta)} \leq \frac{1}{9\tau_\infty(G_{n,r}(\Cset_{\sigma}[\Xbf])}
 \end{equation*}
 with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$. Since we use an exact PPR vector $p_v = p_v^{(0)}$ to construct the sweep cut sets in Algorithm~\ref{alg: ppr}, we may apply Lemma~\ref{lem:zhu}. By this Lemma, there exists a set $\Csig[\Xbf]^g \subset \Csig[\Xbf]$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}(\frac{1}{100},\frac{2}{5})$, the sweep cut $S_{v,\beta}$ of $p(\alpha, v; G_{n,r})$ satisfies
 \begin{align}
@@ -2535,15 +2676,15 @@ Now we show that we can apply~\eqref{eqn:volume_ssd_pf1} to the cluster estimate
 \label{eqn:volume_ssd_pf2}
 \frac{1}{2}\vol_{\Pbb,r}(\Csig) \leq \frac{\vol_{n,r}(\Csig[\Xbf])}{2{n \choose 2}} \leq \frac{3}{2}\vol_{\Pbb,r}(\Csig)
 \end{equation}
-with probability at least $1 - 2\exp\{-\frac{1}{4} n \vol_{\Pbb,r}(\Csig)^2\}$. Therefore, conditional on \eqref{eqn:volume_ssd_pf2} the cluster estimate $\Cest = S_{\beta,v}$ for some $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}\left(\frac{1}{100},\frac{2}{5}\right)$, and therefore the upper bound \eqref{eqn:volume_ssd_pf1} holds with respect to $\vol_{n,r}(\widehat{C} \vartriangle \Csig[\Xbf])$. To summarize, we have shown that when
+with probability at least $1 - 2\exp\{-\frac{1}{4} n \vol_{\Pbb,r}(\Csig)^2\}$. Therefore, conditional on \eqref{eqn:volume_ssd_pf2} the cluster estimate $\Cest = S_{\beta,v}$ for some $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}\left(\frac{1}{100},\frac{2}{5}\right)$, and therefore the upper bound \eqref{eqn:volume_ssd_pf1} holds with respect to $\vol_{n,r}(\Cest \vartriangle \Csig[\Xbf])$. To summarize, we have shown that when
 \begin{equation*}
 n \geq c_1(\Pbb,r)(\log(n))^{\max\{\frac{3}{d},1\}}
 \end{equation*}
 then
 \begin{equation*}
-\vol_{n,r}(\Csig[\Xbf] \vartriangle \widehat{C}) \leq  2180 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf])
+\vol_{n,r}(\Csig[\Xbf] \vartriangle \Cest) \leq  2180 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf])
 \end{equation*} 
-with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 3\exp\set{-(c_3(\Pbb,r) + \frac{1}{4}\vol_{\Pbb,r}(\Csig)^2)n}$. Since $c_3(\Pbb,r) \leq \vol_{\Pbb,r}(\Csig)^2$, letting $c_2(\Pbb,r) := c_4(\Pbb,r) + \frac{6}{c_3(\Pbb,r)}$ we have proved Theorem~\ref{thm:volume_ssd}.
+with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 3\exp\set{-(c_3(\Pbb,r) + \frac{1}{4}\vol_{\Pbb,r}(\Csig)^2)n}$. Since $c_3(\Pbb,r) \leq \vol_{\Pbb,r}(\Csig)^2$, letting $c_2(\Pbb,r) := c_4(\Pbb,r) + \frac{6}{c_3(\Pbb,r)}$ we have proved Theorem~\ref{thm: volume_ssd}.
 
 \section{Proof of Theorem~\ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
@@ -2579,7 +2720,7 @@ To show this, we first establish in Lemma~\ref{lem: setup} that when Algorithm \
 
 We immediately note that by assumption, Algorithm \ref{alg: ppr} is well-initialized, and therefore the seed node $v$ is chosen in $\Csig[\Xbf]^g$. Since we additionally assume $\Cset$ is a $\kappa$-well-conditioned density cluster, we have that $r < \sigma/(2d) < \sigma$, and the upper bound 
 \begin{equation*}
-\alpha < \frac{1}{9\tau_{u}(\theta)} \leq \frac{1}{(9 \tau_{\infty}(G_{n,r}[\Csig[\Xbf]]))}
+\alpha < \frac{1}{9\taubf(\theta)} \leq \frac{1}{(9 \tau_{\infty}(G_{n,r}[\Csig[\Xbf]]))}
 \end{equation*}
 holds with probability at least $1 - \frac{c_4(\Pbb,r)}{n}$.
 Therefore, all the conditions of Lemma \ref{lem: setup} are met. 
@@ -2629,7 +2770,7 @@ where the last inequality follows by choosing $\delta = 1/2$ and \eqref{eqn: kap
 \end{align}
 where the last inequality again follows by choosing $\delta = 1/2$ and \eqref{eqn: kappa_ub}. We have shown~\eqref{eqn: PPR_gap} and therefore proved Theorem~\ref{thm: consistent_recovery_of_density_clusters} (choosing $c_2(\Pbb,r) = c_4(\Pbb,r) + \frac{6}{c_3(\Pbb,r)} + \frac{900}{\lambda_{\sigma}\nu_dr^d} + \frac{1}{4}\vol_{\Pbb,r}(\Csig)^2$).
 
-We defer the proof of Lemma \ref{lem: setup}, and first extend Theorems~\ref{thm:volume_ssd} and \ref{thm: consistent_recovery_of_density_clusters} to apply with respect to the aPPR vector.
+We defer the proof of Lemma \ref{lem: setup}, and first extend Theorems~\ref{thm: volume_ssd} and \ref{thm: consistent_recovery_of_density_clusters} to apply with respect to the aPPR vector.
 
 \subsection{Proof of Corollary~\ref{cor: appr}.}
 \label{sec:appr}
@@ -2804,9 +2945,9 @@ To prove Theorem~\ref{thm:ppr_lb}, we will proceeding according to the following
 \begin{enumerate}
 	\item We study the spectral partitioning properties of PPR on an arbitrary graph $G$, and show that when suitably initialized inside a subset $S \subset V$, the normalized cut of the PPR sweep cut is upper bounded by (a function of) $\Phi(S)$. 
 	\item We specialize to the graph $G = G_{n,r}$ and the subset $\mathcal{L}[\Xbf] \subset \Xbf$, and show that the normalized cut $\Phi_{n,r}(\mathcal{L}[\Xbf])$ is small (with high probability) when the diameter $\rho$ is large.
-	\item We reason that for the input parameters given in Theorem~\ref{thm:ppr_lb}, the output of Algorithm~\ref{alg: ppr} $\widehat{C}$ must therefore also have small normalized cut.
+	\item We reason that for the input parameters given in Theorem~\ref{thm:ppr_lb}, the output of Algorithm~\ref{alg: ppr} $\Cest$ must therefore also have small normalized cut.
 	\item On other hand, we show that when the noise parameter $\epsilon$ is not too small, the empirical density cluster $\Csig^{(1)}[\Xbf]$ will have large normalized cut $\Phi_{n,r}(\Csig^{(1)}[\Xbf])$. In fact, we generalize this to hold for any set $A \subset \Xbf$ for which the symmetric set distance metric $\Delta(A,\Cset_1[\Xbf])$ is small.
-	\item We conclude that the symmetric set distance metric $\Delta(\widehat{C},\Csig^{(1)}[\Xbf])$ must not be small.
+	\item We conclude that the symmetric set distance metric $\Delta(\Cest,\Csig^{(1)}[\Xbf])$ must not be small.
 \end{enumerate}
 
 We devote the subsequent sections to proving each of the aforementioned steps.
@@ -2874,7 +3015,7 @@ Theorem~\ref{thm:mixing_time_PPR} implies that if the PPR random walk is not wel
 	L_{K_0}(k) + C(K_0) \cdot \sqrt{\overline{k}} \geq h(k).
 	\end{equation*}
 	
-	Now, we proceed with the inductive step. By the definition of $L_{K_0}$, the inequality~\eqref{eqn:mixing_time_PPR} holds when $k = K_0$ or $k = 2m - K_0$. We will additionally show that~\eqref{eqn:mixing_time_PPR} holds for every $k_j = \vol(S_j), j = 1,2,\ldots,n$ such that $k_j \in [K_0, 2m - K_0]$. Once this is shown, the concavity of the expression on the right hands side of~\eqref{eqn:mixing_time_PPR} implies that the inequality holds for all $k \in [K_0,2m - K_0]$.
+	Now, we proceed with the inductive step. By the definition of $L_{K_0}$, the inequality~\eqref{eqn:mixing_time_PPR} holds when $k = K_0$ or $k = 2m - K_0$. We will additionally show that~\eqref{eqn:mixing_time_PPR} holds for every $k_j = \vol(S_j), j = 1,2,\ldots,n$ such that $k_j \in [K_0, 2m - K_0]$. Once this is shown, the concavity of the expression on the right-hand side of~\eqref{eqn:mixing_time_PPR} implies that the inequality holds for all $k \in [K_0,2m - K_0]$.
 	
 	By Lemma 5 of \citet{andersen2006}, we have that
 	\begin{align}
@@ -3048,7 +3189,7 @@ We arrive now at the main result of this section. It is similar in form to Theor
 
 \subsubsection{Improved Local Partitioning with PPR.}
 
-As in \citet{andersen2006}, the mixing time results of the previous section lead to an upper bound on the normalized cut $\Phi(\widehat{C};G)$. First, we restate a theorem of \citet{andersen2006} which lower bounds the probability mass $p(v,\alpha;G)(C)$ as a function of the normalized cut $\Phi(C)$. 
+As in \citet{andersen2006}, the mixing time results of the previous section lead to an upper bound on the normalized cut $\Phi(\Cest;G)$. First, we restate a theorem of \citet{andersen2006} which lower bounds the probability mass $p(v,\alpha;G)(C)$ as a function of the normalized cut $\Phi(C)$. 
 
 \begin{theorem}
 	\label{thm:acl_3}
@@ -3108,9 +3249,9 @@ Then, Lemma~\ref{lem:graph_functional_concentration} implies that the graph func
 \end{align}
 with probability at least $1 - 3\exp\{-\frac{1}{25}n(\cut_{\Pbb,r}(\mathcal{L}))^2\}$. 
 
-\subsection{Normalized cut of $\widehat{C}$.}
+\subsection{Normalized cut of $\Cest$.}
 
-To upper bound $\Phi_{n,r}(\widehat{C})$, we need to show that the conditions of Theorem~\ref{thm:conductance_ppr} are met with respect to the graph $G = G_{n,r}$ and subset $C = \mathcal{L}[\Xbf]$. To do, we require the following inequalities, which are satisfied with probability at least $1 - 2n\exp\set{-\frac{\pi\epsilon r^2\delta^2n}{8 \rho \sigma(1 + \frac{\delta}{3})}} - 6 \exp\set{-n\delta^2(\cut_{\Pbb,r}(\mathcal{L}[\Xbf]))^2}$: 
+To upper bound $\Phi_{n,r}(\Cest)$, we need to show that the conditions of Theorem~\ref{thm:conductance_ppr} are met with respect to the graph $G = G_{n,r}$ and subset $C = \mathcal{L}[\Xbf]$. To do, we require the following inequalities, which are satisfied with probability at least $1 - 2n\exp\set{-\frac{\pi\epsilon r^2\delta^2n}{8 \rho \sigma(1 + \frac{\delta}{3})}} - 6 \exp\set{-n\delta^2(\cut_{\Pbb,r}(\mathcal{L}[\Xbf]))^2}$: 
 \begin{itemize}
 	\item For any $r \in (0,\frac{1}{4}\sigma)$ and any $x \in \mathcal{X}$,
 	\begin{equation*}
@@ -3124,16 +3265,16 @@ To upper bound $\Phi_{n,r}(\widehat{C})$, we need to show that the conditions of
 We now condition on these inequalities, and letting $\delta = \frac{2}{67}$ we verify that under the setup of Theorem~\ref{thm:ppr_lb}, each of the conditions of Theorem~\ref{thm:conductance_ppr} are met:
 \begin{itemize}
 	\item $\vol(\mathcal{L}[X]) \leq \frac{(1 + \delta)}{2(1 - \delta)}\vol(G_{n,r}) \leq \frac{2}{3}\vol(G_{n,r})$ since $\delta < 1/7$,
-	\item $\abs{\mathcal{L}[X]} \geq \frac{n(1 - \delta)}{2} \geq \frac{2(1 + \delta)}{(1 - \delta)\epsilon} \geq \frac{d_{\max}}{d_{\min}}$ and $\frac{d_{\max}}{2d_{\min}^2} \leq \frac{8(1 + \delta)}{(1 - \delta)^2 \epsilon^2 \rho \sigma \pi r^2} \cdot \frac{1}{n} \leq \frac{1}{10}$ by \eqref{eqn:lb_sample_size},
+	\item $\abs{\mathcal{L}[X]} \geq \frac{n(1 - \delta)}{2} \geq \frac{2(1 + \delta)}{(1 - \delta)\epsilon} \geq \frac{d_{\max}}{d_{\min}}$ and $\frac{d_{\max}}{2d_{\min}^2} \leq \frac{8(1 + \delta)}{(1 - \delta)^2 \epsilon^2 \rho \sigma \pi r^2} \cdot \frac{1}{n} \leq \frac{1}{10}$ by the assumed lower bound on the sample size,
 	\item $\Phi_{n,r}(\mathcal{L}[X]) \leq \frac{4r}{\rho} \leq \frac{1}{10}$, by assumption on $r$ and $\rho$, and
 	\item $60\Phi_{n,r}(\mathcal{L}[X]) \leq \frac{60(1 + \delta)}{1 - \delta}\Phi_{\Pbb,r}(\mathcal{L}) \leq \alpha \leq \frac{65(1 + \delta)}{1 - \delta}\Phi_{n,r}(\mathcal{L}[X]) \leq 70\Phi_{n,r}(\mathcal{L}[X])$ since $\delta < 2/67$. 
 \end{itemize}
 
 We may therefore apply Theorem~\ref{thm:conductance_ppr}, which allow us to upper bound the minimum conductance sweep cut $\min_{\beta \in (0,1)}\Phi(S_{\beta,v};G)$ or equivalently the output of Algorithm~\ref{alg: ppr}.
 
-To be precise, we have that there exists a set $\mathcal{L}[\Xbf]^g \subset \mathcal{L}[\Xbf]$ with $\vol_{n,r}(\mathcal{L}[\Xbf]^g) \geq \frac{5}{6} \vol_{n,r}(\mathcal{L}[\Xbf])$, such that the following statement holds for any $v \in \mathcal{L}[\Xbf]^g$: when Algorithm~\ref{alg: ppr} is run with inputs $\Xbf, r < \frac{1}{4}\sigma,\alpha = 65 \Phi_{\Pbb,r}(\mathcal{L}[\Xbf]),v \in \mathcal{L}[\Xbf]^g$ and $(L,U) = (0,1)$, the resulting PPR cluster estimate $\widehat{C}$ satisfies
+To be precise, we have that there exists a set $\mathcal{L}[\Xbf]^g \subset \mathcal{L}[\Xbf]$ with $\vol_{n,r}(\mathcal{L}[\Xbf]^g) \geq \frac{5}{6} \vol_{n,r}(\mathcal{L}[\Xbf])$, such that the following statement holds for any $v \in \mathcal{L}[\Xbf]^g$: when Algorithm~\ref{alg: ppr} is run with inputs $\Xbf, r < \frac{1}{4}\sigma,\alpha = 65 \Phi_{\Pbb,r}(\mathcal{L}[\Xbf]),v \in \mathcal{L}[\Xbf]^g$ and $(L,U) = (0,1)$, the resulting PPR cluster estimate $\Cest$ satisfies
 \begin{align}
-\Phi_{n,r}(\widehat{C}) & \leq \sqrt{11200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi_{n,r}(\mathcal{L[X]})} \nonumber \\
+\Phi_{n,r}(\Cest) & \leq \sqrt{11200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi_{n,r}(\mathcal{L[X]})} \nonumber \\
 & \leq \sqrt{89600\left\{\log\left(\frac{\rho \sigma}{\epsilon^2 \pi r^2}\right) + \log 20\right\} \frac{r}{\rho}} \label{eqn:lb_pf4} 
 \end{align}
 with probability at least $1 - 2n\exp\set{-\frac{\pi\epsilon r^2 n}{8978 \rho \sigma}} - 6 \exp\set{-\frac{1}{1123}(\cut_{\Pbb,r}(\mathcal{L}))^2n}$ (where the latter inequality follows from \eqref{eqn:lb_pf2} and Lemma~\ref{lem:graph_functional_concentration}.)
@@ -3145,7 +3286,7 @@ The precise statement we will prove is contained in the following Lemma.
 	\label{lem:normalized_cut_lb}
 	The normalized cut $\Phi_{n,r}(A)$ is upper bounded
 	\begin{equation*}
-	\Phi_{n,r}(A) \geq \frac{1}{12\pi} \left(1 - 4\frac{\sigma \rho}{r^2 n^2} \vol_{n,r}(A \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma}
+	\Phi_{n,r}(A) \geq \frac{1}{12\pi} \left(1 - 4\frac{\sigma \rho}{r^2 n^2} \vol_{n,r}(A \vartriangle \Cset_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma}
 	\end{equation*}
 	uniformly over all $A \subset X$ with probability at least $1 - \exp\set{-2n\delta^2(\vol_{\Pbb,r}(\mathcal{X}))^2} - \frac{12\sigma \rho}{r^2} \exp\set{-\frac{\delta^2\epsilon r^2 n}{\rho \sigma(3 + \delta)}} - \frac{2\rho}{r}\exp\set{-\frac{\delta^2\pi r^3n}{2\sigma\rho^2(3 + \delta)}}$.
 \end{lemma}
@@ -3159,7 +3300,7 @@ The precise statement we will prove is contained in the following Lemma.
 	
 	We turn to lower bounding $\cut_{n,r}(A)$. We will approximate the cut of $A$ by discretizing the space $\mathcal{X}$ into bins, relate the cut of $A$ to the boundary of the binned set $\overline{A}$, and then lower bound the size of the boundary of $\overline{A}$.
 	
-	Let $(k_1,k_2)$ for $k_1 \in \bigl[\frac{6\sigma}{r}\bigr], k_2 \in \bigl[\frac{2\rho}{r}\bigr]$ be the upper right hand corner of the cube
+	Let $(k_1,k_2)$ for $k_1 \in \bigl[\frac{6\sigma}{r}\bigr], k_2 \in \bigl[\frac{2\rho}{r}\bigr]$ be the upper right  corner of the cube
 	\begin{equation*}
 	Q_{(k_1,k_2)} = \biggl[-\frac{3\sigma}{2} + \frac{(k_1 - 1)}{2}r, -\frac{3\sigma}{2} + \frac{k_1}{2}r\biggr] \times \biggl[-\frac{\rho}{2} + \frac{(k_2 - 1)}{2}r, -\frac{\rho}{2} + \frac{k_2}{2}r\biggr]
 	\end{equation*}
@@ -3171,7 +3312,7 @@ The precise statement we will prove is contained in the following Lemma.
 	\begin{equation*}
 	\partial \overline{A} := \set{Q_{(k_1,k_2)} \in \overline{A}: \exists (\ell_1,\ell_2) \in \Bigl[\frac{3\sigma}{r}\Bigr] \times \Bigl[\frac{\rho}{r}\Bigr]~~\textrm{such that}~~Q_{(\ell_1,\ell_2)} \not\in \overline{A}, \norm{k - \ell}_1 = 1}.
 	\end{equation*}
-	be the boundary set of $\overline{A}$ in $\overline{Q}$. Intuitively, every point $x_i \in A$ in the boundary set of $\overline{A}$ will have many edges to $X\setminus A$. Formally, letting $Q_{\min} := \min_{Q \in \overline{Q}} \mathbb{P}_n(Q)$, we have
+	be the boundary set of $\overline{A}$ in $\overline{Q}$. Intuitively, every point $x_i \in A$ in the boundary set of $\overline{A}$ will have many edges to $X\setminus A$. Formally, letting $Q_{\min} := \min_{Q \in \overline{Q}} \Pbb_n(Q)$, we have
 	\begin{equation}
 	\label{eqn:normalized_cut_lb_pf1}
 	\cut_{n,r}(A) \geq \cut_{n,r}(A \cap \set{x_i \in \overline{A}}) \geq \frac{1}{4} \abs{\partial \overline{A}} Q_{\min}^2,
@@ -3210,9 +3351,9 @@ The precise statement we will prove is contained in the following Lemma.
 	\begin{align*}
 	\min_{Q \in \overline{Q}} \Pbb(Q) \geq \frac{\epsilon r^2}{\rho \sigma}.
 	\end{align*}
-	and the expected volume of $\mathcal{C}_{\sigma}^{(1)}[\Xbf] \cap R_k$ and $\mathcal{C}_{\sigma}^{(2)}[\Xbf] \cap R_k$,
+	and the expected volume of $\Cset_{\sigma}^{(1)}[\Xbf] \cap R_k$ and $\Cset_{\sigma}^{(2)}[\Xbf] \cap R_k$,
 	\begin{equation}
-	\vol_{\Pbb,r}(\mathcal{C}_{\sigma}^{(1)} \cap R_k) = \vol_{\Pbb,r}(\mathcal{C}_{\sigma}^{(2)} \cap R_k) \geq \frac{\pi r^3}{2 \sigma \rho^2} \label{eqn:normalized_cut_lb_pf5}
+	\vol_{\Pbb,r}(\Cset_{\sigma}^{(1)} \cap R_k) = \vol_{\Pbb,r}(\Cset_{\sigma}^{(2)} \cap R_k) \geq \frac{\pi r^3}{2 \sigma \rho^2} \label{eqn:normalized_cut_lb_pf5}
 	\end{equation}
 	
 	Since $Q_{\min}$ and $R_{\min}$ are obtained by taking the minimum of functionals over a fixed number of sets in $n$, they concentrate tightly around their means. Specifically, note that the total number of cubes is $\abs{\overline{Q}} = \frac{12 \sigma \rho}{r^2}$, and the total number of horizontal slices is $\frac{2\rho}{r}$. Along with \eqref{eqn:normalized_cut_lb_pf3} and \eqref{eqn:normalized_cut_lb_pf5}, by Lemma~\ref{lem:bernstein_union} 
@@ -3221,7 +3362,7 @@ The precise statement we will prove is contained in the following Lemma.
 	\end{equation*}
 	with probability at least $1 - \frac{12\sigma \rho}{r^2} \exp\set{-\frac{\delta^2\epsilon r^2 n}{\rho \sigma(3 + \delta)}} - \frac{2\rho}{r}\exp\set{-\frac{\delta^2\pi^2 r^6n}{4\sigma^2\rho^4}}$. Combining these lower bounds with \eqref{eqn:normalized_cut_lb_pf4} and \eqref{eqn:normalized_cut_lb_pf3}, we obtain
 	\begin{equation*}	
-	\Phi_{n,r}(A) \geq \frac{(1 - \delta)^2}{2(1 + \delta)\pi} \left(1 - 2 \frac{\sigma \rho}{(1 - \delta) r^2 n^2} \vol_{n,r}(A \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma},
+	\Phi_{n,r}(A) \geq \frac{(1 - \delta)^2}{2(1 + \delta)\pi} \left(1 - 2 \frac{\sigma \rho}{(1 - \delta) r^2 n^2} \vol_{n,r}(A \vartriangle \Cset_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma},
 	\end{equation*}
 	and plugging in $\delta = 1/2$ yields the claim of Lemma~\ref{lem:normalized_cut_lb}.
 \end{proof}
@@ -3229,17 +3370,17 @@ The precise statement we will prove is contained in the following Lemma.
 \paragraph{Conclusion.}
 Combining \eqref{eqn:lb_pf4} and Lemma~\ref{lem:normalized_cut_lb}, we have that there exists a set $\mathcal{L}[\Xbf]^g \subset \mathcal{L}[\Xbf]$ with $\vol_{n,r}(\mathcal{L}[\Xbf]^g) \geq \frac{5}{6}\vol_{n,r}(\mathcal{L}[\Xbf])$ such that for any seed node $v \in \mathcal{L}[\Xbf]^g$, the following bounds hold:
 \begin{equation*}
-\frac{1}{12\pi} \left(1 - 4\frac{\sigma \rho}{r^2 n^2} \vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma} \leq \Phi_{n,r}(\widehat{C}) \leq \sqrt{89600\left\{\log\left(\frac{\rho \sigma}{\epsilon^2 \pi r^2}\right) + \log 20\right\} \frac{r}{\rho}},
+\frac{1}{12\pi} \left(1 - 4\frac{\sigma \rho}{r^2 n^2} \vol_{n,r}(\Cest \vartriangle \Cset_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma} \leq \Phi_{n,r}(\Cest) \leq \sqrt{89600\left\{\log\left(\frac{\rho \sigma}{\epsilon^2 \pi r^2}\right) + \log 20\right\} \frac{r}{\rho}},
 \end{equation*}
-Finally, we show that the volume of $\mathcal{L}[\Xbf]^g$ is sufficiently large to ensure that it includes many points in $\mathcal{C}_{\sigma}^{(1)}[\Xbf]$:
+Finally, we show that the volume of $\mathcal{L}[\Xbf]^g$ is sufficiently large to ensure that it includes many points in $\Cset_{\sigma}^{(1)}[\Xbf]$:
 \begin{align*}
-\vol_{n,r}(\mathcal{L}[\Xbf]^g \cap \mathcal{C}_{\sigma}^{(1)}[\Xbf]) & \geq  \vol_{n,r}(\mathcal{L}[\Xbf]^g) - \vol_{n,r}((\mathcal{L}[\Xbf]^g \cap (\mathcal{C}_{\sigma}^{(0)} \cup \mathcal{C}_{\sigma}^{(2)})[\Xbf])[\Xbf]) \\
-& \geq \frac{5}{6}\vol_{n,r}(\mathcal{L}[\Xbf]) - \vol_{n,r}((\mathcal{L} \cap (\mathcal{C}_{\sigma}^{(0)} \cup \mathcal{C}_{\sigma}^{(1)})[\Xbf])[\Xbf]) \\
-& \geq \frac{5}{6}\vol_{n,r}((\mathcal{L} \cap \mathcal{C}_{\sigma}^{(1)})[\Xbf]) - \frac{1}{6}\vol_{n,r}(\mathcal{L}[\Xbf]) \\
+\vol_{n,r}(\mathcal{L}[\Xbf]^g \cap \Cset_{\sigma}^{(1)}[\Xbf]) & \geq  \vol_{n,r}(\mathcal{L}[\Xbf]^g) - \vol_{n,r}((\mathcal{L}[\Xbf]^g \cap (\Cset_{\sigma}^{(0)} \cup \Cset_{\sigma}^{(2)})[\Xbf])[\Xbf]) \\
+& \geq \frac{5}{6}\vol_{n,r}(\mathcal{L}[\Xbf]) - \vol_{n,r}((\mathcal{L} \cap (\Cset_{\sigma}^{(0)} \cup \Cset_{\sigma}^{(1)})[\Xbf])[\Xbf]) \\
+& \geq \frac{5}{6}\vol_{n,r}((\mathcal{L} \cap \Cset_{\sigma}^{(1)})[\Xbf]) - \frac{1}{6}\vol_{n,r}(\mathcal{L}[\Xbf]) \\
 & \geq \left(\frac{5}{6}(1 - \delta) - \frac{1}{2}(1 + \delta)\right)\vol_{\Pbb,r}( \mathcal{L} \cap \Csig^{(1)}) \\
-& \geq \frac{(1 - \delta)}{2}\left(\frac{5}{6}(1 - \delta) - \frac{1}{2}(1 + \delta)\right)\vol_{n,r}(\mathcal{C}_{\sigma}^{(1)}[\Xbf])
+& \geq \frac{(1 - \delta)}{2}\left(\frac{5}{6}(1 - \delta) - \frac{1}{2}(1 + \delta)\right)\vol_{n,r}(\Cset_{\sigma}^{(1)}[\Xbf])
 \end{align*}
-where the final two inequalities follow from Lemma~\ref{lem:graph_functional_concentration} and hold with probability at least $1 - 3\exp\set{-n\delta^2(\vol_{\Pbb,r}( \mathcal{L} \cap \Csig^{(1)}))^2}$. Setting $\delta = 1/13$, we have that $\vol_{n,r}(\mathcal{L}[\Xbf]^g \cap \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \geq \frac{1}{10}\vol_{n,r}(\mathcal{C}_{\sigma}^{(1)}[\Xbf])$.
+where the final two inequalities follow from Lemma~\ref{lem:graph_functional_concentration} and hold with probability at least $1 - 3\exp\set{-n\delta^2(\vol_{\Pbb,r}( \mathcal{L} \cap \Csig^{(1)}))^2}$. Setting $\delta = 1/13$, we have that $\vol_{n,r}(\mathcal{L}[\Xbf]^g \cap \Cset_{\sigma}^{(1)}[\Xbf]) \geq \frac{1}{10}\vol_{n,r}(\Cset_{\sigma}^{(1)}[\Xbf])$.
 
 \section{Bounding the misclassification rate.}
 \label{sec: proof_of_misclassification_rate}
@@ -3355,7 +3496,7 @@ To apply~\eqref{eqn:zhu_3} and~\eqref{eqn:zhu_4} when $G = G_{n,r}$ and $A = \Cs
 	with probability at least $1 - \frac{c_4(\Pbb,r)}{n} - 2n\exp\set{-c_5(\Pbb,r)n} - 2\exp\set{-c_6(\Pbb,r)n}$. 
 	\item  By Theorem~\ref{thm: conductance_upper_bound}, 
 	\begin{equation*}
-	\Phi_{n,r}(\Csig[\Xbf]) \leq \Phi_{u}(\Csig) 
+	\Phi_{n,r}(\Csig[\Xbf]) \leq \Phibf(\Csig) 
 	\end{equation*}
 	with probability at least $1 - 3\exp\{-nc_1(\Pbb,r)^2\}$. 
 	\item By Lemma~\ref{lem:ball_bounds_in_probability},
@@ -3372,7 +3513,7 @@ To apply~\eqref{eqn:zhu_3} and~\eqref{eqn:zhu_4} when $G = G_{n,r}$ and $A = \Cs
 	& \geq \frac{\lambda_{\sigma}}{\Lambda_{\sigma}\abs{\Csig[\Xbf]}}\left(\frac{(1 - \delta)6}{(1+\delta)25} - \frac{(1 + \delta)}{50}\right). \label{eqn:misclassification_rate_pf1}
 	\end{align}
 \end{itemize}
-We assume these high probability bounds are satisfied with $\delta = \frac{1}{2}$ and move on to upper bounding $\Delta_{\textrm{mc}}(\widehat{C}_{\textrm{un}}, \Csig[\Xbf])$. 
+We assume these high probability bounds are satisfied with $\delta = \frac{1}{2}$ and move on to upper bounding $\Delta_{\textrm{mc}}(\Cest_{\textrm{un}}, \Csig[\Xbf])$. 
 
 \paragraph{Upper bound on misclassification rate.}
 Since $\alpha \leq \frac{1}{9\tau_{\infty}(\widetilde{G}_{n,r})}$, we may apply Lemma~\ref{cor:zhu} to the graph $G_{n,r}$ and subset $\Csig[\Xbf]$. Combined with the inequalities we've already derived, this implies the following: there exists a subset $\Csig[\Xbf]^g \subset \Csig[\Xbf]$ with $\vol_{n,r}(\Csig[\Xbf]) \leq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that the following bounds hold,
@@ -3453,7 +3594,7 @@ Additionally, let $\widetilde{\vol}_{\Pbb,r}(\mathcal{S}) := \frac{1}{2{n \choos
 	(1 - \delta) \Pbb(\Csig) \leq \abs{\Csig[\Xbf]} \leq (1 + \delta) \Pbb(\Csig).
 	\end{equation}
 	
-	\noindent The following statements hold for any $0 < r < \frac{\sigma}{2\sqrt{d}}$:
+	\noindent The following statements hold for any $0 < r \leq \frac{\sigma}{2\sqrt{d}}$:
 	
 	\noindent Assuming $\Csig$ satisfies~\ref{asmp: bounded_density}, with probability at least $1 - 2n\exp\set{-\frac{2 \delta^2 \lambda_{\sigma} \nu_d r^d n}{75(1 + \frac{\delta}{3})}}$,
 	\begin{equation}
@@ -3502,7 +3643,7 @@ Additionally, let $\widetilde{\vol}_{\Pbb,r}(\mathcal{S}) := \frac{1}{2{n \choos
 
 In Section \ref{sec: experimental_setting}, we detail the experimental settings of Section \ref{sec: experiments} in the main text, and include an additional figure. 
 
-\subsection{Experimental settings for Figure \ref{fig:fig1}}
+\subsection{Experimental settings for Figure \ref{fig:bounds}}
 We sample points according to the density function $q$, where for $x \in \Rd$
 \begin{equation}
 q(x) :=
@@ -3517,12 +3658,12 @@ where $\lambda = \frac{150}{81} \sigma^{\gamma}$ and $\eta = \frac{15}{81} \sigm
 
 In the top-left and top-middle, we show draws of $n = 20000$ samples from two different density functions. In the top-left panel, $\sigma = \rho = 3.2$, while in the top-middle panel $\sigma = .1$ and $\rho = 3.2$. (For both, $d = 2$).
 
-The remaining four panels (top-right and the bottom row) in Figure \ref{fig:fig1} show the change in normalized cut and mixing time, respectively, as the parameters $\sigma$ (top-right and bottom-left) and $\rho$ (bottom-middle and bottom-right) are varied. In the top-right and bottom-left panels $\sigma = .1 \cdot \sqrt{2}^j, j = 1,\ldots,10$, and $\rho$ is fixed at $3.2$. In the bottom-middle and bottom-right panels, $\rho = .1 \cdot \sqrt{2}^j, j = 1,\ldots,10$ and $\sigma$ is fixed at $.1$.
+The remaining four panels (top-right and the bottom row) in Figure \ref{fig:bounds} show the change in normalized cut and mixing time, respectively, as the parameters $\sigma$ (top-right and bottom-left) and $\rho$ (bottom-middle and bottom-right) are varied. In the top-right and bottom-left panels $\sigma = .1 \cdot \sqrt{2}^j, j = 1,\ldots,10$, and $\rho$ is fixed at $3.2$. In the bottom-middle and bottom-right panels, $\rho = .1 \cdot \sqrt{2}^j, j = 1,\ldots,10$ and $\sigma$ is fixed at $.1$.
 For each panel, the solid lines show, up to constants, the theoretical upper bound, given by Theorem \ref{thm: conductance_upper_bound} for the top-right and bottom-left panels and Theorem \ref{thm: mixing_time_upper_bound} for the bottom-middle and bottom-right panels. The dashed lines show the computed empirical value, averaged over $m$ trials ($m = 100$ for the normalized cut, dashed lines in the top-right and bottom-left panels, and $m = 20$ for the mixing time, dashed lines in the bottom-middle and bottom-right panels). For each trial across all parameters, $r$, the neighborhood graph radius, is set throughout to be as small as possible such that the resulting graph is connected, for computational efficiency. Green lines correspond to dimension $d = 2$, whereas purple/pink lines correspond to $d = 3$. 
 
-\subsection{Experimental settings for Figure \ref{fig:fig2}}
+\subsection{Experimental settings for Figure \ref{fig:moons}}
 
-To form each of the three rows in Figure \ref{fig:fig2}, 800 points are independently sampled following a 'two moons plus Gaussian noise model'. Formally, the (respective) generative models for the data are
+To form each of the three rows in Figure \ref{fig:moons}, 800 points are independently sampled following a 'two moons plus Gaussian noise model'. Formally, the (respective) generative models for the data are
 \begin{align}
 Z & \sim \textrm{Bern}(1/2), \theta \sim \textrm{Unif}(0, \pi) \\
 X(Z,\theta) & = 
@@ -3542,11 +3683,11 @@ for $I_d$ the $d \times d$ identity matrix. The first column consists of the emp
 
 \subsection{Performance of \pprspace with high-dimensional noise.}
 
-Figure \ref{fig:fig3} is similar to Figure \ref{fig:fig2} of the main text, with parameters
+Figure \ref{fig:moons_hd} is similar to Figure \ref{fig:moons} of the main text, with parameters
 \begin{equation*}
 \mu_1 = (-.5, -.025),~ \mu_2 = (0,.025),~ \epsilon \sim N(0, I_{10}).
 \end{equation*}
-The gray dots in $(a)$ (as in the left-hand column of Figure \ref{fig:fig2} in the main text) represent observations in low-density regions. While the \pprspace sweep cut $(b)$ has relatively high symmetric set difference with the chosen density cut, it still recovers $C[\Xbf]$ in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
+The gray dots in $(a)$ (as in the left-hand column of Figure \ref{fig:moons} in the main text) represent observations in low-density regions. While the \pprspace sweep cut $(b)$ has relatively high symmetric set difference with the chosen density cut, it still recovers $C[\Xbf]$ in the sense of Definition \ref{def: consistent_density_cluster_estimation}.
 
 \begin{figure}
 	\centering
@@ -3568,7 +3709,7 @@ The gray dots in $(a)$ (as in the left-hand column of Figure \ref{fig:fig2} in t
 			\caption{}
 		\end{subfigure}
 		\caption{}
-		\label{fig:fig3}
+		\label{fig:moons_hd}
 	\end{adjustbox}
 \end{figure}
 
