@@ -2619,17 +2619,94 @@ an upper bound on the ratio of Gamma functions.
 \section{Proof of Theorem~\ref{thm: volume_ssd}}
 \label{sec:proof_of_volume_ssd}
 
-In this section, we prove Theorem \ref{thm: volume_ssd}. The theorem is a consequence of Lemma 3.4 in \citet{zhu2013}, which relates the quality of the PPR output to normalized cut and mixing time. 
-\begin{lemma}[Lemma 3.4 of \citet{zhu2013}.]
+In this section, we prove Theorem \ref{thm: volume_ssd}. To do so, we apply the following Lemma, which upper bounds the volume of the symmetric set difference in terms of normalized cut and mixing time on an arbitrary graph $G$. 
+It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except with tighter constants.
+\begin{lemma}
 	\label{lem:zhu}
-	Let $G = (V,E)$ be a undirected, unweighted graph, let $A \subseteq V$, and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{\beta,v}$ is
+	Let $G = (V,E)$ be a undirected, unweighted, connected graph and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{\beta,v}$ is
 	\begin{equation*}
-	S_{\beta,v} = \set{u \in V: \frac{p_v^{(\varepsilon)}(u)}{\deg(u;G)} \geq \beta}
-	\end{equation*} Suppose $\alpha \leq \frac{1}{9 \tau_{\infty}(G[S])}$,  $\varepsilon \leq \frac{1}{20\vol(A;G)}$. Then there exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A^g;G)$ such that for any $v \in A^g$ and $\beta \in \frac{1}{\vol(A;G)}(\frac{1}{100},\frac{2}{5})$ the sweep cut $S_{\beta,v}$ satisfies
+	S_{\beta,v} = \set{u \in V: \frac{p_v^{(\varepsilon)}(u)}{\deg(u;G)} \geq \beta}.
+	\end{equation*} 
+	For some $A \subseteq V$, suppose that 
 	\begin{equation*}
-	\vol(A \vartriangle S_{\beta,v};G) \leq \left(218\frac{\Phi(A;G)}{\alpha}\right) \vol(A;G)
+	\alpha \leq \min\Bigl\{\frac{1}{15}, \frac{1}{5\tau_{\infty}(G[A])}\Bigr\},~~ \beta, \varepsilon \leq \frac{1}{4\vol(A;G)}.
+	\end{equation*}
+	Then there exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A^g;G)$ such that for any $v \in A^g$, the sweep cut $S_{\beta,v}$ satisfies
+	\begin{equation*}
+	\vol(A \vartriangle S_{\beta,v};G) \leq \left(\frac{3}{\beta} + \frac{200}{9\vol(A;G)}\right) \frac{\Phi(A;G)}{\alpha}
 	\end{equation*}
 \end{lemma}
+\begin{proof}
+	We adopt the notation $\wt{p}_v$ for the (exact) PPR vector computed over the subgraph $G[A]$, and 
+	\begin{equation*}
+	\wt{\pi}(u) = \frac{\deg(u;G[A])}{\vol(A;G[A])}
+	\end{equation*}
+	for the stationary distribution of a random walk over $G[A]$. The proof of this Lemma proceeds along very similar lines to that of~\textcolor{red}{(Zhu 2013 Lemma 3.4)}. We directly use the following three inequalities, derived in that work:
+	\begin{itemize}
+		\item \textcolor{red}{(Zhu 2013 Lemma 3.2.)} For any seed node $v \in A$, the following inequalities hold for every $u \in A$:
+		\begin{equation}
+		\label{pf:zhu1}
+		\wt{p}_v(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr) \cdot \wt{\pi}(u)
+		\end{equation}
+		\item \textcolor{red}{(Zhu 2013 Corollary 3.3)} For any seed node $v \in A$, there exists a non-negative distribution vector $\ell$ supported on $A$ for which
+		\begin{equation}
+		\label{pf:zhu2}
+		p_v(u) \geq \wt{p}_v(u) - \wt{p}_{\ell}(u) - \varepsilon \cdot \deg(u;G),
+		\end{equation}
+		and $\|\ell\|_1 \leq 2\frac{\Phi(A;G)}{\alpha}$.
+		\item \textcolor{red}{(Zhu 2013 Lemma 3.1, Anderson 2007 Theorem 5.1)} There exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A;G)$ such that for every seed node $v \in A^g$, it holds that
+		\begin{equation}
+		\label{pf:zhu3}
+		\sum_{u \neq A} p_v(u) \leq 2\frac{\Phi(A;G)}{\alpha}.
+		\end{equation}
+	\end{itemize}
+	From~\eqref{pf:zhu1}-\eqref{pf:zhu3}, we can upper bound the volumes of $S_{\beta,v} \setminus A$ and $A \setminus S_{\beta,v}$. First of all, observe that any $u \in S_{\beta,v} \setminus A$, $p_v^{(\varepsilon)}(u) > \beta \cdot \deg(u;G)$. Summing up over all such vertices, from~\eqref{pf:zhu3} we may conclude that
+	\begin{equation}
+	\label{pf:zhu3.5}
+	\vol(S_{\beta,v} \setminus A; G) \leq \frac{1}{\beta} \sum_{u \not\in A}p_v^{(\varepsilon)}(u) \leq 2\frac{\Phi(A;G)}{\beta \cdot \alpha}.
+	\end{equation} 
+	Next, from~\eqref{pf:zhu1} and~\eqref{pf:zhu2} we obtain a lower bound on $p_v^{(\varepsilon)}(u)$ for any $u \in A$:
+	\begin{equation*}
+	p_v^{(\varepsilon)}(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr) \cdot \wt{\pi}(u) - \wt{p}_{\ell}(u) - \varepsilon \cdot \deg(u;G).
+	\end{equation*}
+	If additionally $u \not\in S_{\beta,v}$ then $p_v(u) < \beta \deg(u;G)$, and thus for all $u \in A \setminus S_{\beta,v}$ it must be that
+	\begin{equation}
+	\label{pf:zhu4}
+	\frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr)\wt{\pi}(u) - (\varepsilon + \beta)\deg(u;G) \leq \wt{p}_{\ell}(u).
+	\end{equation}
+	Let us restrict our attention for the moment to those vertices $u \in A$ with sufficiently large degree in $G[A]$. Defining
+	\begin{equation*}
+	A^{\mathrm{int}} := \Bigl\{u \in A: \deg(u;G[A]) > \bigl(1 - \alpha \cdot \beta \cdot \vol(A;G)\bigr) \deg(u;G) \Bigr\},
+	\end{equation*}
+	we note that for any $u \in A^{\mathrm{int}}$,
+	\begin{equation*}
+	\wt{\pi}(u) > \frac{(1 - \alpha \beta \vol(A;G))\deg(u;G)}{\vol(A;G)},
+	\end{equation*}
+	plugging this in to~\eqref{pf:zhu4}, we have that
+	\begin{equation*}
+	\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \cdot \deg(u;G) \leq \wt{p}_{\ell}(u)
+	\end{equation*}
+	for any $u \in A^{\mathrm{int}} \setminus S_{\beta,v}$. Summing over all such u, we obtain
+	\begin{equation*}
+	\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \cdot \vol(A^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \sum_{u \in A^{\mathrm{int}} \setminus S_{\beta,v}} \wt{p}_{\ell}(u) \leq 2\frac{\Phi(A;G)}{\alpha}
+	\end{equation*}
+	where the second upper bound follows from the upper bound on $\|\ell\|_1$, since $\sum_{u \in A} \wt{p}_{\ell}(u) = \|\ell\|_1$. 
+	Then, from the assumed upper bounds on $\alpha, \beta$ and $\varepsilon$ we obtain the inequality
+	\begin{equation*}
+	\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \geq \frac{9}{100\vol(A;G)}.
+	\end{equation*}
+	We conclude that
+	\begin{equation}
+	\label{pf:zhu5}
+	\vol(A^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \frac{200\Phi(A;G)}{9\alpha}.
+	\end{equation}
+	Otherwise $u \in A \setminus A^{\mathrm{int}}$, and so $\mathrm{cut}(u, A^C;G[A]) \geq \alpha \cdot \beta \cdot \vol(A;G) \cdot \deg(u;G)$. Summing over all such vertices, we obtain
+	\begin{equation}
+	\label{pf:zhu6}
+	\vol(A \setminus A^{\mathrm{int}};G) \leq \frac{\Phi(A;G)}{\alpha \cdot \beta}.
+	\end{equation} 
+	The claim follows upon summing the upper bounds in~\eqref{pf:zhu3.5}, \eqref{pf:zhu5} and~\ref{pf:zhu6}.
+	\end{proof}
 
 \paragraph{Proof of Theorem~\ref{thm: volume_ssd}.}
 First, we verify that the conditions of Lemma~\ref{lem:zhu} are met when $S = \Cset_{\sigma}[\Xbf]$, $G = G_{n,r}$, and the user-specified parameters satisfy the initialization conditions~\eqref{eqn: initialization}. By Theorem~\ref{thm: mixing_time_upper_bound} and \eqref{eqn: initialization}, the teleportation parameter $\alpha$ is upper bounded
