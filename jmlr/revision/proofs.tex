@@ -1,0 +1,656 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{xr}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\externaldocument{local_spectral_clustering_jmlr_revision_2} 
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Proofs for ``Geometry of Local Spectral Clustering''}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+The proofs of our major theorems all consist of at most three modular parts.
+\begin{enumerate}
+	\item~\textbf{Fixed graph results.} Analysis which holds with respect to an arbitrary graph $G$, and are stated with respect to functionals (i.e. normalized cut, conductance, and local spread) of $G$;
+	\item~\textbf{Finite-sample bounds.} For the specific choice of $G = G_{n,r}$, we relate the aforementioned functionals to their population analogues. This proves~\textcolor{red}{(?)} 
+	\item~\textbf{Population functionals.} (In the case of density clustering only.) When the candidate cluster is a $\lambda$-density cluster, we bound the population functionals by a function of $\lambda$, as well as the other relevant parameters introduced in Section~\textcolor{red}{(?)}. This proves~\textcolor{red}{(?)}
+\end{enumerate}
+The first three sections of this appendix will correspond to each of these three parts. In Section~\ref{sec:pf_major_theorems}, we will combine these parts to prove the major theorems of our main text, \textcolor{red}{(...)}. Finally, in Section~\ref{sec:appr_misclassification_error} we derive upper bounds for the aPPR vector, and in Section~\ref{sec:experimental_details} we give relevant details regarding our experiments.
+
+\section{Fixed graph results}
+In this section, we give all results that hold with respect to an arbitrary graph $G$. For the convenience of the reader, we begin by reviewing some notation from the main text, and also introduce some new notation. 
+
+\paragraph{Notation.}
+The graph $G = (V,E)$ is an undirected and connected but otherwise arbitrary graph, defined over vertices $V = \{1,\ldots,n\}$ with $m = |E|$ total edges. The adjacency matrix of $G$ is $A$, the degree matrix is $D$, and the lazy random walk matrix over $G$ is $W = (I + D^{-1}A)/2$. If the lazy random walk originates at a node $v$, the distribution of the lazy random walk $q_v^{(t)} := q(v,t;G)$ after $t$ steps is $q_v^{(t)} := e_v W^t$, with stationary distribution $\pi := \lim_{t \to \infty} q_v^{(t)}$ with entries $\pi(u) = \deg(u;G)/\vol(u;G)$. 
+
+The PPR vector $p_v = p(v,\alpha;G)$ is defined as the solution to~\textcolor{red}{(?)}
+
+Given a distribution $q$ (by distribution we mean a vector with non-negative entries; for instance, $q = q_v^{(t)}$ for $t \in \mathbb{N}$, $q = p_v$, or $q = \pi$) and $\beta \in (0,1)$, the $\beta$-sweep cut of $q$ is
+\begin{equation*}
+S_{\beta}(q) = \set{u: \frac{q(u)}{\deg(u;G)} > \beta};
+\end{equation*} 
+in the special case where $q = p_v$ we write $S_{\beta,v}$ for $S_{\beta}(p_v)$. The argument of $S_{\beta}(\cdot)$ will usually be clear from context, in which case we will drop it and simply write $S_{\beta}$. For $j = 1,\ldots,n$, let $\beta_j$ be the smallest value of $\beta \in (0,1)$ such that the sweep cut $S_{\beta_j}$ contains at least $j$ vertices. For notational ease, we will write $S_j := S_{\beta_j}$, and $S_0 = \emptyset$. We adopt the 
+
+We now introduce a function $h_q(\cdot): [0,2m] \to [0,1]$ to measure the extent to which a distribution $q$ is mixed. To do so, we first define a piecewise linear function $q[\cdot]: [0,2m] \to [0,1]$. Letting $q(S) := \sum_{u \in S} q(u)$, we take $q[\vol(S_j)] = q(S_j)$ for each sweep cut $S_j$, and then extend $q[\cdot]$ by piecewise linear interpolation to be defined everywhere on its domain. Then the mixedness of $q$ is measured by
+\begin{equation*}
+h_q(k) := q[k] - \frac{k}{2m}.
+\end{equation*}
+Note that $h_{\pi} = 0$. By construction both $q[\cdot]$ and $h_q(\cdot)$ are concave functions, which will be an important fact later on.  
+
+% For a connected subset of the vertices $C \subseteq V$, the subgraph induced by $C$ is $G[C] = (C, E \cap (C \times C))$. The lazy random walk matrix over $C$ is $W_C = (I_C + D^{-1}_C A_C)/2$ (where for a matrix $M \in \Reals^{n \times n}$ we write $M_C$ for the submatrix of $M$ induced by $C$), the vector  
+%\begin{equation}
+%\label{eqn:lazy_random_walk}
+%q_{v}^{(t)}(u) = e_vW_C^t e_u
+%\end{equation}
+%denotes the probability that after $t$-steps the lazy random walk originating at $v$ arrives at $u$. The stationary distribution of this random walk is $\pi_C$. 
+
+The conductance of the vertex set $V$ is abbreviated as $\Psi(G) := \Psi(V;G)$, and likewise for the local spread $s(G) := s(V;G)$. Finally, for convenience we introduce the following functionals:
+\begin{equation*}
+\begin{aligned}
+& d_{\max}(C; G) := \max_{u \in C} \deg(u; G), && d_{\min}(C; G) := \min_{u \in C} \deg(u;G) \\
+& d_{\max}(G) := d_{\max}(V;G),~~ && d_{\min}(G) := d_{\min}(V; G)
+\end{aligned}
+\end{equation*}
+
+
+In the following subsections we establish: (1) an upper bound on the misclassification error of PPR in terms of $\alpha$ and $\Phi(C;G)$ (Lemma~\ref{lem:zhu}); (2) upper bounds on the mixedness of $q_v^{(t)}$ (as a function of $t$) and $p_v$ (as a function of $\alpha$), which will be helpful in the proofs of Proposition~\ref{prop:pointwise_mixing_time} and Theorem~\ref{thm:ppr_lb}; (3) an upper bound on $\tau_{\infty}(G)$ in terms of $\Psi(G)$ and $s(G)$ (Proposition~\ref{prop:pointwise_mixing_time}); (4) an upper bound on the normalized cut $\Phi(\wh{C};G)$ in terms of $\Phi(C;G)$, to be used later in the proof of Theorem~\ref{thm:ppr_lb} (negative example); and (5) a uniform bound on the perturbations of the PPR vector, to be used later in the proof of Theorem~\ref{thm:density_cluster_consistent_recovery} (consistency of PPR). 
+\subsection{Proof of Lemma~\ref{lem:zhu}}
+\label{subsec:pf_lem_zhu}
+\textcolor{red}{(TODO)}
+
+\subsection{Mixedness of lazy random walk and PPR vectors}
+In this subsection, we give upper bounds on $h^{(t)} := h_{q_v^{(t)}}$ and $h^{(\alpha)} := h_{p_v}$. Although similar bounds exist in the literature (see in particular Theorem~1.1 of \citep{lovasz1990} and Theorem~3 of~\citep{andersen2006}), we could not find precisely the results we needed, and so for completeness we state and prove these results ourselves. 
+
+\begin{theorem}
+	\label{thm:mixing_time_rw}
+	For any $k \in [d_{\max}(G), 2m - d_{\max}(G)]$ and $t \geq 3$,
+	\begin{equation}
+	\label{eqn:mixing_time_rw_1}
+	h^{(t)}(k) \leq \frac{1}{8} + \frac{d_{\max}(G)}{2d_{\min}(G)^2} + \frac{\sqrt{m}}{d_{\min}(G)^2} \sqrt{\wb{k}} \Bigl(1 - \frac{\Psi(G)^2}{8}\Bigr)^{t - 3}.
+	\end{equation}
+	For any $k \in [0, d_{\max}(G)) \cup (2m - d_{\max}(G),2m]$,
+	\begin{equation}
+	\label{eqn:mixing_time_rw_2}
+	h^{(t)}(k) \leq \frac{1}{8} + \frac{d_{\max}(G)}{2d_{\min}(G)^2}.
+	\end{equation}
+\end{theorem}
+
+
+\begin{theorem}
+	\label{thm:mixing_time_PPR}
+	Let $\phi$ be any constant in $[0,1]$. Either the following bound holds for any $t \in \mathbb{N}$ and any $k \in [d_{\max}(G),2m - d_{\max}(G)]$:
+	\begin{equation*}
+	h^{(\alpha)}(k) \leq \alpha t + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\sqrt{m}}{d_{\min}^2} \cdot \sqrt{\overline{k}} \left(1 - \frac{\phi^2}{8}\right)^{t},
+	\end{equation*}
+	or there exists some sweep cut $S_j$ of $p_v$ such that $\Phi(S_j;G) \leq \phi$.
+\end{theorem}
+
+The proofs of these upper bounds will be similar to each other (in places word-for-word alike), and will follow a similar approach and use similar notation to that of \citep{lovasz1990,andersen2006}. For a given $0 \leq K_0 \leq m$ and a function $h: [0,2m] \to [0,1]$, let 
+\begin{equation*}
+L_{K_0}(k;h) = \frac{2m - K_0 - k}{2m - 2K_0}h(K_0) + \frac{k - K_0}{2m - 2K_0}h(2m - K_0)
+\end{equation*}
+be the linear interpolant of $h(K_0)$ and $h(2m - K_0)$, and additionally let
+\begin{equation*}
+C(K_0;h) := \max\set{\frac{h(k) - L_{K_0}(k;h)}{\sqrt{\overline{k}}}: K_0 \leq k \leq  2m - K_0}.
+\end{equation*}
+where we use the notation $\overline{k} := \min\{k, 2m - k\}$, and set $0/0$ equal to $0$. Our first pair of Lemmas upper bound $h^{(t)}$ and $h^{(\alpha)}$ as a function of $L_{K_0}$ and $C(K_0)$. Lemma~\ref{lem:mixing_random_walk} implies that if $t$ is large relative to $\Psi(G)$, then $h^{(t)}(\cdot)$ must be small.
+
+\begin{lemma}[\textbf{c.f. Theorem 1.2 of~\citep{lovasz1990}}]
+	\label{lem:mixing_random_walk}
+	For any $K_0 \in [0,m]$, $k \in [K_0, 2m - K_0]$, $t_0 \in \mathbb{N}$ and $t \geq t_0$,
+	\begin{equation}
+	\label{eqn:mixing_random_walk}
+	h^{(t)}(k) \leq L_{K_0}(k;h^{(t_0)}) + C(K_0; h^{(t_0)}) \sqrt{\wb{k}} \cdot \Bigl(1 - \frac{\Psi(G)^2}{8}\Bigr)^{t - t_0}
+	\end{equation}
+\end{lemma}
+
+Lemma~\ref{lem:mixing_time_PPR} implies that if the PPR random walk is not well mixed, then some sweep cut of $p_v$ must have small normalized cut.
+
+\begin{lemma}[\textbf{c.f Theorem~3 of \citep{andersen2006}}]
+	\label{lem:mixing_time_PPR}
+	Let $\phi \in [0,1]$. Either the following bound holds for any $t \in \mathbb{N}$, any $K_0 \in [0,m]$, and any $k \in [K_0,2m - K_0]$:
+	\begin{equation}
+	\label{eqn:mixing_time_PPR}
+	h^{(\alpha)}(k) \leq \alpha t + L_{K_0}(k; h^{(\alpha)}) + C(K_0;h^{(\alpha)})\sqrt{\overline{k}}\left(1 - \frac{\phi^2}{8}\right)^t
+	\end{equation}
+	or else there exists some sweep cut $S_{j}$ of $p_v$ such that $\Phi(S_j;G) \leq \phi$.
+\end{lemma}
+
+In order to make use of these Lemmas, we require upper bounds on $L_{K_0}(\cdot,h)$ and $C(K_0;h)$, for each of $h = h^{(3)}$ and $h = h^{(\alpha)}$. Of course, trivially $L_{K_0}(k;h) \leq \max\{h(K_0); h(2m - K_0)\}$ for any $k \in [K_0, 2m - K_0]$. As it happens, this observation will lead to a sufficient upper bound on $L_{K_0}$. 
+\begin{lemma}
+	\label{lem:interpolator_bound_rw}
+	For any $K_0 \in [0,2m]$, it holds that
+	\begin{equation*}
+	h^{(3)}\bigl(2m - K_0\bigr) \leq \frac{K_0}{2m}~~\textrm{and}~~h^{(3)}\bigl(K_0\bigr) \leq \frac{K_0}{2d_{\min}(G)^2} + \frac{1}{8}.
+	\end{equation*}
+	As a result, for any $k \in [K_0, 2m - K_0]$,
+	\begin{equation*}
+	L_{K_0}(k;h^{(3)}) \leq \frac{1}{8} + \frac{K_0}{2d_{\min}(G)^2}.
+	\end{equation*}
+\end{lemma}
+
+\begin{lemma}
+	\label{lem:interpolator_bound_ppr}
+	For any $K_0 \in [0,2m]$, it holds that 
+	\begin{equation*}
+	h^{(\alpha)}(2m - K_0) \leq \frac{K_0}{2m} ~\mathrm{and}~ h^{(\alpha)}(K_0) \leq \frac{K_0}{2d_{\min}(G)^2} + \frac{2\alpha}{1 + \alpha}.
+	\end{equation*}
+	As a result, for any $k \in [K_0,2m - K_0]$,
+	\begin{equation*}
+	L_{K_0}(k; h^{(\alpha)}) \leq \frac{2\alpha}{1 + \alpha} + \frac{K_0}{2d_{\min}(G)^2}.
+	\end{equation*}
+\end{lemma}
+
+We next establish an upper bound on $C_{K_0}(k;h)$, which rests on the following key observation: since $h(k)$ is concave and $L_{K_0}(K_0;h) = h(K_0)$, it holds that
+\begin{equation*}
+\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}} \leq
+\begin{cases}
+h'(K_0) \sqrt{k},~& k \leq m \\
+-h'(2m - K_0) \sqrt{2m - k},~& k > m.
+\end{cases}
+\end{equation*}
+(Since $h$ is not differentiable at $k = k_j$, here $h'$ refers to the right derivative of $h$.)  
+
+Lemma~\ref{lem:linearization_bound} gives good estimates for $h'(K_0)$ and $h'(2m - K_0)$, which hold for both $h = h^{(3)}$ and $h = h^{(\alpha)}$, and result in an upper bound on $C(K_0;h)$. Both the statement and proof of this Lemma are made easier by the \emph{Lovasz-Simonovits curve}, which is an explicit representation of the function $h_q(\cdot)$ that holds for any distribution $q$. Ordering the vertices $\frac{q(u_{(1)})}{\deg(u_{(1)};G)} \geq \frac{q(u_{(2)})}{\deg(u_{(2)};G)} \geq \cdots \geq \frac{q(u_{(n)})}{\deg(u_{(n)};G)}$, the function $h_q(k)$ satisfies
+\begin{equation}
+\label{eqn:lovasz_simonovits}
+h_q(k) = \sum_{i = 0}^{j} \left(q(u_{(i)}) - \pi(u_{(i)})\right) + \frac{\bigl(k - \vol(S_j;G)\bigr)}{\deg(u_{(j + 1)};G)} \left(q(u_{(j+1)}) - \pi(u_{(j+1)})\right) 
+\end{equation}
+for all $k \in [\vol(S_j),\vol(S_{j + 1}))$ and $j = 0,\ldots,n-1$.
+\begin{lemma}
+	\label{lem:linearization_bound}
+	The following statements hold for both $h = h^{(\alpha)}$ and $h = h^{(3)}$. 
+	
+	If $u_{(1)} = v$, then 
+	\begin{equation}
+	\label{eqn:right_derivative_1}
+	h'\bigl(\deg(v;G)\bigr) \leq \frac{1}{2\deg_{\min}(G)^2};
+	\end{equation}
+	otherwise $u_{(1)} \neq v$ and
+	\begin{equation}
+	\label{eqn:right_derivative_2}
+	h'(0) \leq \frac{1}{2\deg_{\min}(G)^2};
+	\end{equation}
+	for all $K \in [0,m]$,
+	\begin{equation}
+	\label{eqn:right_derivative_3}
+	h'(2m - K) \geq -\frac{d_{\max}}{d_{\min}\cdot \vol(G)}.
+	\end{equation}
+	As a result, letting $K_0 = \deg(v;G)$ if $u_{(1)} = v$, and otherwise letting $K_0 = 0$, we have
+	\begin{equation*}
+	C(K_0,h) \leq \frac{\sqrt{m}}{d_{\min}(G)^2}.
+	\end{equation*}
+\end{lemma}
+\paragraph{Proof of Theorems~\ref{thm:mixing_time_rw} and~\ref{thm:mixing_time_PPR}.}
+\begin{proof}[Proof (of Theorem~\ref{thm:mixing_time_rw})]
+	\textcolor{red}{(TODO)}
+\end{proof}
+
+The proof of Theorem~\ref{thm:mixing_time_PPR} follows immediately from Lemmas~\ref{lem:mixing_time_PPR},~\ref{lem:interpolator_bound_ppr} and~\ref{lem:linearization_bound}, taking $K_0 = 0$ if $u_{(1)} \neq v$ and otherwise $K_0 = \deg(v;G)$. 
+
+\paragraph{Proofs of Lemmas.}
+In our proof of Lemma~\ref{lem:mixing_random_walk}, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,w) := q(u)/d(u) \cdot 1\{(u,w) \in E\}$, and similarly for a collection of dyads $\wt{E} \subseteq V \times V$ we write $q(\wt{E}) := \sum_{(u,w) \in \wt{E}} q(u,w)$. 
+\begin{proof}[Proof (of Lemma~\ref{lem:mixing_random_walk})]
+	 We will prove Lemma~\ref{lem:mixing_random_walk} by induction on $t$. In the base case $t = t_0$, observe that $C(K_0;h^{(t_0)}) \cdot \sqrt{\wb{k}} \geq h^{(t_0)}(k) - L_{K_0}(k;h^{(t_0)})$ for all $k \in [K_0, 2m - K_0]$, which implies 
+	\begin{equation*}
+	L_{K_0}(k;h^{(t_0)}) + C(K_0; h^{(t_0)}) \cdot \sqrt{\wb{k}} \geq h^{(t_0)}(k).
+	\end{equation*}
+	
+	Now, we proceed with the inductive step, assuming that the inequality holds for $t_0,t_0 + 1,\ldots,t - 1$, and proving that it thus also holds for $t$. By the definition of $L_{K_0}$, the inequality~\eqref{eqn:mixing_random_walk} holds when $k = K_0$ or $k = 2m - K_0$. We will additionally show that~\eqref{eqn:mixing_random_walk} holds for every $k_j = \vol(S_j), j = 1,2,\ldots,n$ such that $k_j \in [K_0, 2m - K_0]$. This suffices to show that the inequality~\eqref{eqn:mixing_random_walk} holds for all $k \in [K_0,2m - K_0]$, since the right hand side of~\eqref{eqn:mixing_random_walk} is a concave function of $k$.
+	
+	Now, we claim that for each $k_j$, it holds that
+	\begin{equation}
+	\label{pf:mixing_random_walk_inductive_step}
+	q_v^{(t)}[k_j] \leq \frac{1}{2}\Bigl(q_v^{(t - 1)}[k_j - \wb{k}_j \Psi(G)] + q_v^{(t - 1)}[k_j + \wb{k}_j \Psi(G)]\Bigr).
+	\end{equation}
+	To establish this claim, we note that for any $u \in V$
+	\begin{equation*}
+	q_v^{(t)}(u) = \frac{1}{2}q_v^{(t - 1)}(u) + \frac{1}{2}\sum_{w \in V}q_v^{(t - 1)}(w,u) = \frac{1}{2} \sum_{w \in V} \bigl(q_v^{(t - 1)}(u,w) + q_v^{(t - 1)}(w,u)\bigr),
+	\end{equation*}
+	and consequentially for any $S \subset V$,
+	\begin{align*}
+	q_v^{(t)}(S) & = \frac{1}{2}\bigl\{q_v^{(t - 1)}(\mathrm{in}(S)) +  q_v^{(t - 1)}(\mathrm{out}(S))\bigr\} \\
+	& = \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl(\mathrm{in}(S) \cup \mathrm{out}(S)\bigr) +  q_v^{(t - 1)}\bigl(\mathrm{in}(S) \cap \mathrm{out}(S)\bigr)\bigr\}
+	\end{align*}
+	where $\mathrm{in}(S) = \{(u,w) \in E: u \in S\}$ and $\mathrm{out}(S) = \{(w,u) \in E: w \in S\}$. We deduce that
+	\begin{align*}
+	q_v^{(t)}[k_j] = q_v^{(t)}(S_j) & = \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl(\mathrm{in}(S_j) \cup \mathrm{out}(S_j)\bigr) +  q_v^{(t - 1)}\bigl(\mathrm{in}(S_j) \cap \mathrm{out}(S_j)\bigr)\bigr\} \\
+	& \leq \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl[|\mathrm{in}(S_j) \cup \mathrm{out}(S_j)|\bigr] +  q_v^{(t - 1)}\bigl[|\mathrm{in}(S_j) \cap \mathrm{out}(S_j)|\bigr]\bigr\} \\
+	& = \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl[k_j + \mathrm{cut}(S_j;G)\bigr] +  q_v^{(t - 1)}\bigl[k_j - \mathrm{cut}(S_j;G)\bigr]\bigr\} \\
+	& \leq \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl[k_j + \wb{k}_j\Phi(S_j;G)\bigr] +  q_v^{(t - 1)}\bigl[k_j - \wb{k}_j\Phi(S_j;G)\bigr]\bigr\} \\
+	& \leq \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl[k_j + \wb{k}_j\Psi(G)\bigr] +  q_v^{(t - 1)}\bigl[k_j - \wb{k}_j\Psi(G)\bigr]\bigr\},
+	\end{align*}
+	establishing~\eqref{pf:mixing_random_walk_inductive_step}. The final two inequalities both follow from the concavity of $q_v^{(t)}[\cdot]$. 
+	
+	Subtracting $k_j/2m$ from both sides, we get
+	\begin{equation}
+	\label{pf:mixing_random_walk_inductive_step_h}
+	h^{(t)}(k_j) \leq \frac{1}{2}\bigl\{h^{(t - 1)}\bigl(k_j + \wb{k}_j\Psi(G)\bigr)+  h^{(t - 1)}\bigl(k_j - \wb{k}_j\Psi(G)\bigr)\bigr\}.
+	\end{equation}
+	At this point, we divide our analysis into cases.
+	
+	\textbf{Case 1.}
+	Assume $k_j - \Psi(G) \overline{k}_j$ and $k_j + 2 \Psi(G) \overline{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to both terms on the right hand side of~\eqref{pf:mixing_random_walk_inductive_step_h} and obtain the following:
+	\begin{align*}
+	h^{(t)}(k_j) & \leq \frac{1}{2}\biggl(L_{K_0}\bigl(k_j - \Psi(G) \overline{k}_j; h^{(t_0)}\bigr) + L_{K_0}\bigl(k_j + \Psi(G) \overline{k}_j; h^{(t_0)}\bigr) \biggr) ~~+ \\
+	& \quad~ \frac{1}{2}C\bigl(K_0; h^{(t_0)}\bigr) \cdot \Bigl(\sqrt{\overline{k_j - \Psi(G) \overline{k}_j}} + \sqrt{\overline{k_j + \Psi(G) \overline{k}_j}}\Bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \\
+	& = L_{K_0}(k;h^{(t_0)}) + \frac{1}{2}\biggl(C(K_0;h^{t_0})\bigl(\sqrt{\overline{k_j - \Psi(G) \overline{k}_j}} + \sqrt{\overline{k_j + \Psi(G) \overline{k}_j}}\bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \biggr) \\
+	& \leq L_{K_0}(k;h^{(t_0)}) + \frac{1}{2}\biggl(C(K_0;h^{(t_0)})\bigl(\sqrt{\overline{k}_j - \Psi(G) \overline{k}_j} + \sqrt{\overline{k}_j + \Psi(G) \overline{k}_j}\bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \biggr).
+	\end{align*}
+	A Taylor expansion of $\sqrt{1 + \Psi(G)}$ around $\Psi(G) = 0$ yields the following bound:
+	\begin{equation*}
+	\sqrt{1 + \Psi(G)} + \sqrt{1 - \Psi(G)} \leq 2 - \frac{\Psi(G)^2}{4},
+	\end{equation*}
+	and therefore
+	\begin{align*}
+	h^{(t)}(k_j) & \leq L_{K_0}(k;h^{(t_0)}) + \frac{C(K_0;h^{(t_0)})}{2}\cdot \sqrt{\overline{k}_j}\cdot\left(2 - \frac{\Psi(G)^2}{4}\right)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-1} \\
+	&= L_{K_0}(k_j;h^{(t_0)}) + C(K_0;h^{(t_0)})\sqrt{\overline{k}_j}\left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0}.
+	\end{align*}
+	
+	\textbf{Case 2.} Otherwise one of $k_j - 2 \Psi(G) \overline{k}_j$ or $k_j + 2 \Psi(G) \overline{k}_j$ is not in $[K_0,2m  - K_0]$. Without loss of generality assume $k_j < m$, so that (i) we have $k_j - 2 \Psi(G) \overline{k}_j < K_0$ and (ii) $k_j + (k_j - K_0) \leq 2m - K_0$. We deduce the following:
+	\begin{align*}
+	h^{(t)}(k_j) & \overset{(\textrm{i})}{\leq} \frac{1}{2}\Bigl(h^{(t - 1)}(K_0) + h^{(t - 1)}\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
+	& \overset{(\textrm{ii})}{\leq} \frac{1}{2}\Bigl(h^{(t_0)}(K_0) + h^{(t)}\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
+	& \overset{(\textrm{iii})}{\leq}\frac{1}{2}\Bigl(L_{K_0}(K_0;h^{(t_0)}) + L_{K_0}(2k_j - K_0; h^{(t_0)}\bigr) + C(K_0;h^{(t_0)})\sqrt{\overline{2k_j - K_0}}\left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0 - 1}\Bigr) \\
+	& \leq L_{K_0}(k_j; h^{(t_0)}) + C(K_0;h^{(t_0)}) \frac{\sqrt{2\overline{k}_j}}{2} \left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0 - 1} \\
+	& \leq L_{K_0}(k_j;h^{(t_0)}) + C(K_0;h^{(t_0)}) \sqrt{\overline{k}_j} \cdot \left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0}
+	\end{align*}
+	where $(\textrm{(i)})$ follows from~\eqref{pf:mixing_random_walk_inductive_step_h} and the concavity of $h^{(t - 1)}$,  we deduce $(\textrm{ii})$ from~\eqref{pf:mixing_random_walk_inductive_step_h}, which implies that $h^{(t)}(k) \leq h^{(t_0)}(k)$, and $(\textrm{iii})$ follows from applying the inductive hypothesis to $h^{(t - 1)}(2k_j - K_0)$. 	
+\end{proof}
+
+\begin{proof}[Proof (of Theorem~\ref{lem:mixing_time_PPR}).]
+	We will show that if $\Phi(S_j; g) > \phi$ for each $j = 1,\ldots,n$, then \eqref{eqn:mixing_time_PPR} holds for all $t$ and any $k \in [K_0,2m - K_0]$.
+	
+	We proceed by induction on $t$. Our base case will be $t = 0$. Observe that $C(K_0;h^{(\alpha)}) \cdot \sqrt{\overline{k}} \geq h^{(\alpha)}(k) - L_{K_0}(k;h^{(\alpha)})$ for all $k \in [K_0,2m - K_0]$, which implies
+	\begin{equation*}
+	L_{K_0}(k;h^{(\alpha)}) + C(K_0;h^{(\alpha)}) \cdot \sqrt{\overline{k}} \geq h^{(\alpha)}(k).
+	\end{equation*}
+	
+	Now, we proceed with the inductive step. By the definition of $L_{K_0}$, the inequality~\eqref{eqn:mixing_time_PPR} holds when $k = K_0$ or $k = 2m - K_0$. We will additionally show that~\eqref{eqn:mixing_time_PPR} holds for every $k_j = \vol(S_j), j = 1,2,\ldots,n$ such that $k_j \in [K_0, 2m - K_0]$. This suffices to show that the inequality~\eqref{eqn:mixing_time_PPR} holds for all $k \in [K_0,2m - K_0]$, since the right hand side of~\eqref{eqn:mixing_time_PPR} is a concave function of $k$.
+	
+	By Lemma 5 of \citet{andersen2006}, we have that
+	\begin{align}
+	p_v[k_j] & \leq \alpha + \frac{1}{2} \bigl(p_v[k_j - \mathrm{cut}(S_j;G)] + p_v[k_j + \mathrm{cut}(S_j;G)] \bigr) \nonumber\\
+	& \leq \alpha + \frac{1}{2} \bigl(p_v[k_j - \Phi(S_j;G) \overline{k}_j] + p_v[k_j + \Phi(S_j;G) \overline{k}_j]  \bigr) \nonumber \\
+	& \leq \alpha + \frac{1}{2} \bigl(p_v[k_j - \phi \overline{k}_j] + p_v[k_j + \phi \overline{k}_j]\bigr) \nonumber
+	\end{align}
+	and subtracting $k_j/2m$ from both sides, we get
+	\begin{equation}
+	\label{eqn:mixing_time_PPR_pf1}
+	h^{(\alpha)}(k_j) \leq \alpha + \frac{1}{2} \bigl(h^{(\alpha)}(k_j - \phi \overline{k}_j) + h^{(\alpha)}(k_j +  \phi \overline{k}_j) \bigr)
+	\end{equation}
+	From this point, we divide our analysis into cases. 
+	
+	\textbf{Case 1.}
+	Assume $k_j - 2 \phi \overline{k}_j$ and $k_j + 2 \phi \overline{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to \eqref{eqn:mixing_time_PPR_pf1}, yielding
+	\begin{align*}
+	h^{(\alpha)}(k_j) & \leq \alpha + \alpha(t-1) \frac{1}{2}\biggl(L_{K_0}(k_j - \phi \overline{k}_j) + L_{K_0}(k_j + \phi \overline{k}_j) + C(K_0;h^{(\alpha)})\bigl(\sqrt{\overline{k_j - \phi \overline{k}_j}} + \sqrt{\overline{k_j + \phi \overline{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+	& \leq \alpha t + L_{K_0}(k;h^{(\alpha)}) + \frac{1}{2}\biggl(C(K_0;h^{(\alpha)})\bigl(\sqrt{\overline{k_j - \phi \overline{k}_j}} + \sqrt{\overline{k_j + \phi \overline{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+	& \leq \alpha t + L_{K_0}(k;h^{(\alpha)}) + \frac{1}{2}\biggl(C(K_0;h^{(\alpha)})\bigl(\sqrt{\overline{k}_j - \phi \overline{k}_j} + \sqrt{\overline{k}_j + \phi \overline{k}_j}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr).
+	\end{align*}
+	and therefore
+	\begin{equation*}
+	h^{(\alpha)}(k_j) \leq  \alpha t + L_{K_0}(k;h^{(\alpha)}) + \frac{C(K_0;h^{(\alpha)})}{2}\cdot \sqrt{\overline{k}_j}\cdot\left(2 - \frac{\phi^2}{4}\right)\left(1 - \frac{\phi^2}{8}\right)^{t-1} = \alpha t + L_{K_0}(k;h^{(\alpha)}) + C(K_0;h^{(\alpha)})\sqrt{\overline{k}_j}\left(1 - \frac{\phi^2}{8}\right)^{t}.
+	\end{equation*}
+	
+	\textbf{Case 2.} Otherwise one of $k_j - 2 \phi \overline{k}_j$ or $k_j + 2 \phi \overline{k}_j$ is not in $[K_0,2m  - K_0]$. Without loss of generality assume $k_j < m$, so that (i) we have $k_j - 2 \phi \overline{k}_j < K_0$ and (ii) $k_j + (k_j - K_0) \leq 2m - K_0$. By the concavity of $h$, and applying the inductive hypothesis to $h^{(\alpha)}2k_j - K_0)$, we have
+	\begin{align*}
+	h^{(\alpha)}(k_j) & \leq \alpha + \frac{1}{2}\Bigl(h^{(\alpha)}(K_0) + h\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
+	& \leq\alpha + \frac{\alpha(t - 1)}{2} + \frac{1}{2}\Bigl(L_{K_0}(K_0;p^{\alpha}) + L_{K_0}(2k_j - K_0\bigr) + C(K_0;h^{(\alpha)})\sqrt{\overline{2k_j - K_0}}\left(1 - \frac{\phi^2}{8}\right)^{t - 1}\Bigr) \\
+	& \leq \alpha t + L_{K_0}(k_j) + C(K_0;h^{(\alpha)}) \frac{\sqrt{2\overline{k}_j}}{2} \left(1 - \frac{\phi^2}{8}\right)^{t - 1} \\
+	& \leq \alpha t + L_{K_0}(k_j) + C(K_0;h^{(\alpha)}) \sqrt{\overline{k}_j} \cdot \left(1 - \frac{\phi^2}{8}\right)^{t}
+	\end{align*}
+\end{proof}
+
+\begin{proof}[Proof (of Lemma~\ref{lem:interpolator_bound_rw})]
+	\textcolor{red}{(TODO)}
+\end{proof}
+
+\begin{proof}[Proof (of Lemma~\ref{lem:interpolator_bound_ppr})]
+	\textcolor{red}{(TODO): Revise the notation in this proof.}
+	
+	We make use of the representation~\eqref{eqn:lovasz_simonovits} to prove the desired upper bounds on $h(2m - K_0)$ and $h(K_0)$. We first upper bound $h(2m - K_0)$,
+	\begin{align*}
+	h(2m - K_0) & = \sum_{i = 1}^{j} p(v_{(i)}) - \pi(v_{(i)}) \\
+	& \leq 1 - \sum_{i = 1}^{j} \pi(v_{(i)}) \\
+	& = 1 - \sum_{i = 1}^{j} \frac{d(v_{i})}{2m} = \frac{K_0}{2m}.
+	\end{align*}
+	
+	We will upper bound $h(K_0)$ by $p[\vol(S_j)] \leq p_v(v) + \sum_{u \in S_j \setminus \set{v}}p_v(u)$. In the proof of Lemma~\ref{lem:linearization_bound} we have already given an upper bound on $p_v(u)$ when $u \neq v$. Now, we additionally observe that for all $t$,
+	\begin{equation*}
+	e_vW^t(v) \leq \frac{1}{2d_{\min}} + \left(\frac{1}{2}\right)^t
+	\end{equation*}
+	and therefore $p_v(v) \leq \frac{1}{2d_{\min}} + \frac{2\alpha}{1 + \alpha}$.
+	As a result,
+	\begin{equation}
+	h(K_0) \leq \frac{2\alpha}{1 + \alpha} + \frac{\abs{S_j}}{2d_{\min}} \leq \frac{2\alpha}{1 + \alpha} + \frac{K_0}{2d_{\min}^2},
+	\end{equation}
+	where the latter inequality follows since $K_0 = \vol(S_j) \geq \abs{S_j}\cdot d_{\min}$.
+\end{proof}
+
+\begin{proof}[Proof (of Lemma~\ref{lem:linearization_bound}).]
+	The result of the Lemma is obvious once we show \eqref{eqn:right_derivative_1}-\eqref{eqn:right_derivative_2}. From this representation, it is not hard to verify that the left derivative $h'(k)$ can be upper bounded
+	\begin{equation}
+	\label{eqn:linearization_bound_pf1}
+	h'(k) \leq \frac{p(v_{(j + 1)})}{\deg(v_{(j + 1)};G)}
+	\end{equation}
+	
+	We now upper bound $p(u)$ uniformly over all $u$ except the seed node $v$. For any $u \in V$ besides the seed node $v$, we can show by induction that
+	\begin{equation*}
+	e_v W^t(u) \leq \frac{1}{2 d_{\min}}
+	\end{equation*} 
+	for any $t \geq 0$, and therefore
+	\begin{equation}
+	\label{eqn:linearization_bound_pf2}
+	p(\alpha,\chi_v)(u) = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \chi_v W^t(u) \leq  \frac{1}{2d_{\min}}.
+	\end{equation}
+	As a result, by \eqref{eqn:linearization_bound_pf1}, for either $K_0 = \deg(v;G)$ (in the case where $v_{(1)} = v$) or otherwise for $K_0 = 0$, the inequality $h'(K_0) \leq \frac{1}{2d_{\min}^2}$ holds, proving \eqref{eqn:left_derivative}. The inequality \eqref{eqn:right_derivative} follows immediately from the representation \eqref{eqn:lovasz_simonovits}, since
+	\begin{equation*}
+	h'(k) \geq -\frac{\pi(v_{(j+1)})}{d(v_{(j + 1)})} \geq -\frac{\pi_{\max}}{d_{\min}},
+	\end{equation*}
+	and the proof of the Lemma is therefore complete.
+\end{proof}
+
+
+\clearpage
+
+\subsection{Proof of Proposition~\ref{prop:pointwise_mixing_time}}
+\label{subsec:pf_prop_pointwise_mixing_time}
+To prove Proposition~\ref{prop:pointwise_mixing_time}, we will establish an upper bound on a total variation distance between $q_v^{(t)}$ and $\pi$, then upgrade to the desired uniform upper bound. The \emph{total variation distance} between distributions $q$ and $p$ is
+\begin{equation*}
+d_{\mathrm{TV}}(q,p) := \sum_{u \in v} \bigl|q(u) - p(u)\bigr|
+\end{equation*}
+It is a matter of some basic algebra~\textcolor{red}{(Either show it yourself or point to a reference)} to show that
+\begin{equation*}
+d_{\mathrm{TV}}(q,\pi) \leq \sup_{k \in [0,2m]} h_q(k).
+\end{equation*}
+
+\subsection{Spectral partitioning properties of PPR}
+\label{subsec:ppr_spectral_partitioning}
+The following theorem is the main theorem of this section. It relates the normalized cut of the sweep sets $\Phi(S_{\beta};G)$ to the normalized cut of $C$. 
+
+\begin{theorem}
+	\label{thm:conductance_ppr}
+	Let $C \subseteq V$ satisfy the following conditions:
+	\begin{itemize}
+		\item $\vol(C;G) \leq \frac{2}{3}\vol(G)$,
+		\item $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, and
+		\item $\frac{20\Phi(C;G)}{1 + 10\Phi(C;G)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$.
+	\end{itemize}
+	Suppose $60\Phi(C;G) \leq \alpha \leq 70\Phi(C;G)$, and let $(L,U) = (0,1)$. Then, there exists a subset $C^g \subset C$ with $\vol(C^g;G) \geq \frac{5}{6}\vol(C;G)$ such that for any $v \in C^g$ the following statement holds: For the PPR vector $p_v := p(v,\alpha;G)$, the minimum normalized cut of the sweep sets satisfies 
+	\begin{equation*}
+	\min_{\beta \in (0,1)}\Phi(S_{\beta,v};G) \leq \sqrt{11200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi(C;G)}
+	\end{equation*}
+\end{theorem}
+
+\begin{remark}
+	Although this theorem appears quite similar to standard results in the PPR literature -- for instance, Theorem 6 of \citet{andersen2006} -- crucially the above bound depends on $\log\left(\frac{m}{d_{\min}^2}\right)$ rather than $\log m$. In the case where $d_{\min} \asymp n$, this amounts to replacing a factor of $O(\log m)$ by a factor of ${O}(1)$, and therefore allows us to obtain meaningful results in the limit as $m \to \infty$. 
+\end{remark}
+Notwithstanding the aforementioned improvements, the proof of Theorem~\ref{thm:conductance_ppr} follows the same general outline as the proof of Theorem~6 of \citet{andersen2006}. We now walk through this outline step by step, modifying the results of \citet{andersen2006} as needed. As with their work, we begin by proving a mixing time bound on the PPR vector $p_v$.
+
+\subsubsection{Mixing time of PPR.}
+
+To quantify the mixing of a PPR vector $p_v$, we introduce the function $p[\cdot]: [0,2m] \to [0,1]$. For $j = 1,\ldots,n$, let $\beta_j$ be the smallest value of $\beta \in (0,1)$ such that $S_{\beta_j}$ contains at least $j$ vertices. (For notational ease, we will write $S_{i} := S_{\beta_i}$, so that $S_1,S_2,\ldots,S_n$ comprise the $n$ unique sweep cuts of $p_v$.)
+For each $j = 1,\ldots,n$, we let $p[\vol(S_j)] =  \sum_{u \in S} p_v(u)$. Additionally, we let $p[0] = 0$ and $p[2m] = 1$. Finally, we extend $p[\cdot]$  by piecewise interpolation to be defined everywhere on its domain. The mixedness of the PPR vector is then measured by the function $h:[0,2m] \to [0,1]$, defined as 
+\begin{equation*}
+h(k) = p[k] - \frac{k}{2m}.
+\end{equation*}
+Next, for a given $0 \leq K_0 \leq m$, let 
+\begin{equation*}
+L_{K_0}(k) = \frac{2m - K_0 - k}{2m - 2K_0}h(K_0) + \frac{k - K_0}{2m - 2K_0}h(2m - K_0)
+\end{equation*}
+be the linear interpolator of $h(K_0)$ and $h(2m - K_0)$, and additionally let
+\begin{equation*}
+C(K_0;h^{(\alpha)}) = \max\set{\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}}: K_0 < k < 2m - K_0}.
+\end{equation*}
+where we use the notation $\overline{k} := \min\{k, 2m - k\}$.
+
+
+As a sanity check, we confirm that Theorem~\ref{lem:mixing_time_PPR} is no weaker than Theorem~3 of \citet{andersen2006}. It is not hard to show that $h(k) \leq \min\{1,\sqrt{k}\}$, and therefore that $C(K_0;h^{(\alpha)}) \leq 1$ for any $K_0$. Setting $K_0 = 0$ in Theorem~\ref{lem:mixing_time_PPR}, we therefore recover Theorem~3 of \citet{andersen2006}.
+
+We now proceed to identify when Theorem~\ref{lem:mixing_time_PPR} may offer some improvement on Theorem~3 of \citet{andersen2006}, by showing when we can upper bound $C(K_0) \ll 1$. 
+
+Combining Theorem~\ref{lem:mixing_time_PPR}, Lemma~\ref{lem:linearization_bound} and Lemma~\ref{lem:interpolator_bound_ppr}, we have the following result.
+
+We arrive now at the main result of this section. It is similar to Theorem 2 of \citet{andersen2006} but reflects the improvements due to using Corollary~\ref{cor:mixing_time_PPR} in place of~\textcolor{red}{(?)}. To simplify notation, we will write the total mass placed by $p_v$ on a subset $S \subset V$ as $p_v(S) := \sum_{u \in S} p_v(u)$.
+\begin{theorem}
+	\label{lem:mixing_time_PPR_contrapositive}
+	Let $p_v = p(v,\alpha;G)$ be a PPR vector with seed node $v \in V$. Suppose there exists some $\delta > \frac{2\alpha}{1 + \alpha} + \frac{d_{\max}}{2d_{\min}^2}$, and a set $S \subseteq V$ with cardinality $\abs{S} \geq \frac{d_{\max}}{d_{\min}}$,  such that
+	\begin{equation}
+	\label{eqn:mixing_time_PPR_contrapositive_1}
+	p_v(S) - \frac{\vol(S;G)}{\vol(G)} > \delta.
+	\end{equation}
+	Then there exists a sweep cut $S_j$ of $p$, such that
+	\begin{equation*}
+	\Phi(S_j; G) < \sqrt{\frac{16\alpha\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+	\end{equation*}
+	where $\delta' = \delta - \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2}$. 
+\end{theorem}
+\begin{proof}
+	Suppose the assumption of the theorem is satisified, that is there exists a set $S \subset V$ with cardinality $\abs{S} \geq \frac{d_{\max}}{d_{\min}}$ which satisfies \eqref{eqn:mixing_time_PPR_contrapositive_1}. Then for $j = \abs{S}$ the sweep cut $S_j$ has volume at least $d_{\max}$, and by hypothesis $h(\vol(S_j)) >  \delta$.
+	
+	Now, letting
+	\begin{equation*}
+	t = \frac{8}{\phi^2}\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}, \quad \phi^2 = \frac{16\alpha\set{\log\left(\frac{m}{d_{\min}^2}\right) + \log(\frac{2}{\delta'})}}{\delta'}
+	\end{equation*}
+	we have that
+	\begin{equation*}
+	\alpha t + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\sqrt{m}}{d_{\min}^2} \cdot \sqrt{\overline{k}} \left(1 - \frac{\phi^2}{8}\right)^{t} \leq \frac{\delta'}{2} + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\delta'}{2} < \delta,
+	\end{equation*}
+	and the Theorem follows by Corollary~\ref{cor:mixing_time_PPR}.
+\end{proof}
+
+\subsubsection{Improved Local Partitioning with PPR.}
+
+As in \citet{andersen2006}, the mixing time results of the previous section lead to an upper bound on the normalized cut $\Phi(\wh{C};G)$. First, we restate a theorem of \citet{andersen2006} which lower bounds the probability mass $p(v,\alpha;G)(C)$ as a function of the normalized cut $\Phi(C)$. 
+
+\begin{theorem}
+	\label{thm:acl_3}
+	For any set $C$ and any constant $\alpha$, there exists a subset $C^g \subset C$ with $\vol(C^g;G) \geq \frac{5}{6}\vol(C;G)$, such that for any vertex $v \in C^g$, the PPR vector $p(v,\alpha;G)$ satisfies
+	\begin{equation*}
+	p(v,\alpha;G) \geq 1 - 6\frac{\Phi(C;G)}{\alpha}.
+	\end{equation*}
+\end{theorem}
+We are now in a position to prove Theorem~\ref{thm:conductance_ppr} by combining Corollary~\ref{cor:mixing_time_PPR} and Theorem~\ref{thm:acl_3}.
+
+\begin{proof}[Proof (of Theorem~\ref{thm:conductance_ppr})]
+	Since $\alpha \geq 60\Phi(C)$ and $v \in C^g$, by Theorem~\ref{thm:acl_3},
+	\begin{equation*}
+	p_v(C) \geq \frac{9}{10}.
+	\end{equation*}
+	This inequality along with the assumption $\vol(C) \leq \frac{2}{3}\vol(G)$ implies that $p_v(C) - \frac{\vol(C)}{\vol(G)} \geq \frac{1}{5}$. Since we assume $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, the hypothesis of Theorem~\ref{lem:mixing_time_PPR_contrapositive} is satisfied with $\delta = 1/5$. Therefore, the minimum conductance sweep cut satisfies
+	\begin{equation*}
+	\min_{j = 1,\ldots,n} \Phi(S_j;G) \leq \sqrt{\frac{1120\cdot \Phi(C;G)\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+	\end{equation*}
+	Finally, we assume $\frac{20\Phi(C)}{1 + 10\Phi(C)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$ which implies that
+	\begin{equation*}
+	\delta' = \delta - \frac{20\alpha}{1 + 10\alpha} + \frac{d_{\max}}{2d_{\min}^2} \geq \frac{1}{10} 
+	\end{equation*}
+	completing the proof of the theorem.
+\end{proof}
+
+\subsection{Uniform bounds on PPR}
+\label{subsec:ppr_uniform_bounds}
+\textcolor{red}{(TODO)}
+
+\section{Finite sample results}
+In this section, we prove high-probability finite-sample bounds on functionals of the random graph $G_{n,r}$. To do so, we will need several different \textcolor{red}{(concentration inequalities)}, and we begin by reviewing these.
+
+\subsection{Concentration inequalities}
+\textcolor{red}{(TODO)}
+
+\section{Population functionals for density clusters}
+
+
+
+\section{Proof of Major Theorems}
+\label{sec:pf_major_theorems}
+
+\section{aPPR and Misclassification Error}
+\label{sec:appr_misclassification_error}
+
+\section{Experimental Details}
+\label{sec:experimental_details}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{../../local_spectral_bibliography} 
+
+\end{document}
