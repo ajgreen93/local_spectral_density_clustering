@@ -434,6 +434,8 @@ In the main result (Theorem~\ref{thm:volume_ssd_ub}) of this section, we give a 
 
 \subsection{PPR cluster recovery: the fixed graph case.}
 
+\textcolor{red}{(TODO): Rewrite this subsection, to (1) change notation from $\tau_{\infty}(C,G)$ to $\tau_{\infty}(G[C])$; (2) redefine the local spread; and (3) properly state Proposition~\ref{prop:pointwise_mixing_time}.}\\
+
 When PPR is run on a fixed graph $G = (V,E)$ with the goal of recovering a candidate cluster $C \subset V$, \cite{zhu2013} provide the sharpest known bounds on the volume of the symmetric set difference between the cluster estimate $\wh{C}$ and candidate cluster $C$. Since these results will play a major part in our analysis, in Lemma~\ref{lem:zhu} we restate them for the convenience of the reader.\footnote{Technically speaking, Lemma~3.4 of~\cite{zhu2013} differs from Lemma~\ref{lem:zhu} by some constant factors, and for completeness we prove Lemma~\ref{lem:zhu} in our appendix. Nevertheless, to be clear the essential idea of Lemma~\ref{lem:zhu} is no different than that of~\cite{zhu2013}, and we do not claim any novelty.}
 
 In their most general form, the results of~\citet{zhu2013} depend on the mixing time of a lazy random walk over the induced subgraph $G[C] = (C, E \cap (C \times C))$. Letting 
