@@ -68,6 +68,7 @@
 \newcommand{\estC}{\widehat{C}_n}
 \newcommand{\hC}{\hat{C^{\sigma}_n}}
 \newcommand{\vol}{\mathrm{vol}}
+\newcommand{\cut}{\mathrm{cut}}
 \newcommand{\spansp}{\mathrm{span}~}
 \newcommand{\1}{\mathbf{1}}
 
@@ -111,6 +112,7 @@
 \newcommand{\Pclass}{\mathcal{P}}
 \newcommand{\Leb}{L}
 \newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\mbb}[1]{\mathbb{#1}}
 
 %%% Distributions and related quantities
 \newcommand{\Pbb}{\mathbb{P}}
@@ -669,11 +671,11 @@ In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,
 	\begin{equation*}
 	h_{q}'(k_j) \leq \frac{q(u_{(j + 1)})}{\deg(u_{(j + 1)};G)}.
 	\end{equation*}
-	Thus, as long as $u_{(j + 1)} \neq v$ we have from~\eqref{pf:interpolator_bound_max_entry} that---for either $q = q_v^{(t)}$ or $q = p_v$---the inequality $h_{q}'(k_j) \leq 1/(d_{\min}(G)^2)$ holds. The statement of~\eqref{eqn:right_derivative_1} guarantees that $u_{(j + 1)} \neq v$. 
+	We have chosen $K_0 = k_j$ so that $v \neq u_{(j + 1)}$, and so~\eqref{pf:interpolator_bound_max_entry} implies that $h_{q}'(k_j) \leq 1/(d_{\min}(G)^2)$, for either $q = q_v^{(t)}$ or $q = p_v$.
 	
-	On the other hand, the inequality \eqref{eqn:right_derivative_2} follows immediately from the representation \eqref{eqn:lovasz_simonovits}, since for any $K \in [0,m]$, taking $j$ so that $2m - K \in [k_j, k_{j + 1})$, 
+	On the other hand, the inequality \eqref{eqn:right_derivative_2} follows immediately from the representation \eqref{eqn:lovasz_simonovits}, since for any $K_0 \in [0,m]$, taking $j$ so that $2m - K_0 \in [k_j, k_{j + 1})$, 
 	\begin{equation*}
-	h'(2m - K) \geq -\frac{\pi(u_{(j+1)})}{\mathrm{deg}(u_{(j + 1)};G)} \geq -\frac{d_{\max}(G)}{d_{\min}(G) \cdot \vol(G)}.
+	h'(2m - K_0) \geq -\frac{\pi(u_{(j+1)})}{\mathrm{deg}(u_{(j + 1)};G)} \geq -\frac{d_{\max}(G)}{d_{\min}(G) \cdot \vol(G)}.
 	\end{equation*}
 \end{proof}
 
@@ -809,14 +811,231 @@ The claim of Theorem~\ref{thm:normalized_cut_ppr} is a consequence of~\eqref{eqn
 	\begin{equation*}
 	\frac{1}{2s(G)} \cdot \left(1 - \frac{\phi_{\ast}^2}{8}\right)^{t_{\ast}} \leq \frac{1}{2s(G)} \exp\Bigl(-\frac{\phi_{\ast}^2 t_{\ast}}{8}\Bigr) \leq \frac{1}{18}.
 	\end{equation*}
-	Thus the inequality~\eqref{pf:normalized_cut_ppr_2} cannot hold, and so it must be the case $\min_{\beta \in (0,1)} \Phi(S_{\beta,v};G) \leq \phi_{\ast}^2$. This is exactly the claim of the theorem.
+	Thus the inequality~\eqref{pf:normalized_cut_ppr_2} cannot hold, and so it must be that $\min_{\beta \in (0,1)} \Phi(S_{\beta,v};G) \leq \phi_{\ast}^2$. This is exactly the claim of the theorem.
 \end{proof}
 
-\section{Finite sample results}
-In this section, we prove high-probability finite-sample bounds on various functionals of the random graph $G_{n,r}$: cut, volume, minimum and maximum degree, normalized cut, local spread, and conductance. To do so, we will need several different \textcolor{red}{(concentration inequalities)}, and we begin by reviewing these.
+\section{Sample-to-population bounds}
+\label{sec:sample_to_population}
+In this section, we prove Proposition~\ref{prop:sample_to_population_1}, by establishing high-probability finite-sample bounds on various functionals of the random graph $G_{n,r}$: cut, volume, and normalized cut~(\ref{subsec:sample_to_population_ncut}), minimum and maximum degree, and local spread~(\ref{subsec:sample_to_population_local_spread}), and conductance~(\ref{subsec:sample_to_population_conductance}). To establish these results, we will use several different concentration inequalities, and we begin by reviewing these in~(\ref{subsec:concentration}). Throughout, we denote the empirical probability of a set $\mc{S} \subseteq \Rd$ as $\Pbb_n(\mc{S}) = \sum_{i = 1}^{n} \1\{x_i \in \mc{S}\}/n$, and the conditional (on being in $\mc{C}$) empirical probability as $\wt{\Pbb}_n = \sum_{i = 1}^{n} \1\{x_i \in (\mc{S} \cap \mc{C})\}/\wt{n}$, where $\wt{n} = |\mc{C}[X]|$ is the number of sample points that are in $\mc{C}$. For a probability measure $\Qbb$, we also write
+\begin{equation*}
+d_{\min}(\Qbb) := \inf_{x \in \mathrm{supp}(\mbb{Q})} \deg_{\Pbb,r}(x),~~\textrm{and}~~d_{\max}(\Qbb) := \sup_{x \in \mathrm{supp}(\mbb{Q})} \deg_{\Pbb,r}(x).
+\end{equation*}
 
-\subsection{Concentration inequalities}
-\textcolor{red}{(TODO)}
+\subsection{Review: concentration inequalities}
+\label{subsec:concentration}
+We use Hoeffding's inequality to control the deviations of the empirical measure of $\mc{S}$.
+\begin{lemma}[Hoeffding's Inequality.]
+	\label{lem:hoeffding_2}
+	Fix $\delta \in (0,1)$. For any measurable $\mc{S} \subseteq \Rd$,
+	\begin{equation*}
+	(1 - \delta) \Pbb(\mathcal{S}) \leq \Pbb_n(\mathcal{S}) \leq (1 + \delta)\Pbb(\mathcal{S})
+	\end{equation*}
+	with probability at least $1 - 2\exp\set{-2\delta^2(\Pbb(\mathcal{S}))^2n}$. 
+\end{lemma}
+
+Many graph functionals are order-2 U-statistics, and we use Hoeffding's inequality to control the deviations of these functionals from their expectations. Recall that $U_n$ is an order-2 U-statistic with kernel $\varphi: \Rd \times \Rd \to \Reals$ if 
+\begin{equation*}
+U_n = \frac{1}{n(n-1)}\sum_{i = 1}^{n} \sum_{j \neq i} \varphi(x_i,x_j).
+\end{equation*}
+We write $\norm{\varphi}_{\infty} = \sup_{x,y} |\varphi(x,y)|$. 
+\begin{lemma}[Hoeffding's Inequality for U-statistics.]
+	\label{lem:hoeffding}
+	Fix $\delta \in (0,1)$. Assume $\norm{\varphi}_{\infty} \leq 1$. Then,
+	\begin{equation*}
+	(1 - \delta) \mathbb{E}[U_n] \leq U_n \leq (1 + \delta) \mathbb{E}[U_n]
+	\end{equation*}
+	with probability at least $1 - 2 \exp\left(-\delta^2 (\mathbb{E}[U_n])^2 n\right)$.
+\end{lemma}
+
+Finally, we use Lemma~\ref{lem:bernstein_union}---a combination of Bernstein's inequality and a union bound---to upper and lower bound $d_{\max}(G_{n,r})$ and $d_{\min}(G_{n,r})$. For measurable sets $\mc{S}_1,\ldots,\mc{S}_M$, we denote $p_{\min} := \min_{m = 1,\ldots,M} \Pbb(\mathcal{A}_m)$, and likewise let $p_{\max} := \max_{m = 1,\ldots,M} \Pbb(\mathcal{A}_m)$
+\begin{lemma}[Bernstein's inequality + union bound.]
+	\label{lem:bernstein_union}
+	Fix $\delta \in (0,1)$. For any measurable $\mathcal{S}_1,\ldots,\mathcal{S}_M \subseteq \Rd$, 
+	\begin{equation*}
+	(1 - \delta) p_{\min} \leq \min_{m = 1,\ldots,M} \Pbb_n(\mathcal{A}_m) \leq \max_{m = 1,\ldots,M}  \Pbb_n(\mathcal{A}_m) \leq (1 + \delta) p_{\max}
+	\end{equation*}
+	with probability at least $1 - 2 M \exp\left\{-\frac{\frac{1}{3}\delta^2p_{\min}n}{1 + \frac{\delta}{3}}\right\}$.  
+\end{lemma}
+
+\subsection{Sample-to-population: normalized cut}
+\label{subsec:sample_to_population_ncut}
+In this subsection we establish~\eqref{eqn:sample_to_population_normalized_cut}. For a set $\mc{S} \subseteq \Rd$, both $\mathrm{cut}_{n,r}(\mc{S}[X])$ and $\mathrm{vol}_{n,r}(\mc{S}[X])$ are order-$2$ U-statistics:
+\begin{align*}
+\mathrm{cut}_{n,r}(\mc{S}[X]) & = \sum_{i = 1}^{n} \sum_{j \neq i} \1\{\|x_i - x_j\| \leq r\} \cdot \1\{x_i \in \mc{S}\} \cdot \1\{x_j \not\in \mc{S}\},
+\intertext{and}
+\mathrm{vol}_{n,r}(\mc{S}[X]) & = \sum_{i = 1}^{n} \sum_{j \neq i} \1\{\|x_i - x_j\| \leq r\} \cdot \1\{x_i \in \mc{S}\}.
+\end{align*}
+Therefore with probability at least $1 - \exp\{-\delta^2 \cut_{\Pbb,r}(\mc{S})\}$,
+\begin{equation*}
+\frac{1}{n(n - 1)} \mathrm{cut}_{n,r}(\mc{S}[X]) \leq (1 + \delta) \cut_{\Pbb,r}(\mc{S}),
+\end{equation*}
+and likewise with probability at least $1 - \exp\{-\delta^2 \vol_{\Pbb,r}(\mc{S})\}$,
+\begin{equation*}
+(1 - \delta) \vol_{\Pbb,r}(\mc{S}) \leq \frac{1}{n(n - 1)} \vol_{n,r}(\mc{S}[X]).
+\end{equation*}
+Consequently, for any $\delta \in (0,1/3)$,  
+\begin{equation*}
+\Phi_{n,r}(\mc{C}[X]) \leq \frac{1 + \delta}{1 - \delta} \frac{\cut_{\Pbb,r}(\mc{C})}{\min\{\vol_{\Pbb,r}(\mc{C}), \vol_{\Pbb,r}(\mc{C}^c)\}} = \frac{1 + \delta}{1 - \delta} \Phi_{\Pbb,r}(\mc{C}) \leq (1 + 3\delta) \cdot \Phi_{\Pbb,r}(\mc{C})  
+\end{equation*}
+with probability at least $1 - 3\exp\{-\delta^2 \cut_{\Pbb,r}(\mc{C})\}$. This establishes~\eqref{eqn:sample_to_population_normalized_cut} upon taking $b_1 = \cut_{\Pbb,r}(\mc{C})$ and $C_1 = 3$.
+
+
+\subsection{Sample-to-population: local spread}
+\label{subsec:sample_to_population_local_spread}
+In this subsection we establish~\eqref{eqn:sample_to_population_local_spread}. To ease the notational burden, let $\wt{G}_{n,r} := G_{n,r}\bigl[\mc{C}[X]\bigr]$. By Lemma~\ref{lem:hoeffding}, with probability at least $1 - \exp\{-2\delta^2 \Pbb(\mc{C})^2n\}$
+\begin{equation}
+\label{pf:sample_to_population_local_spread_1}
+\wt{n} \geq (1 - \delta) \cdot n \cdot \Pbb(\mc{C}).
+\end{equation}
+Conditional on~\eqref{pf:sample_to_population_local_spread_1}, it follows from Lemma~\ref{lem:bernstein_union} that with probability at least $1 -n\exp\{-2(1 - \delta)\delta^2d_{\min}(\wt{\Pbb})^2 \Pbb(\mc{C}) n\}$,
+\begin{equation}
+\label{pf:sample_to_population_local_spread_2}
+\frac{1}{\wt{n}} d_{\min}(\wt{G}_{n,r}) \geq (1 - \delta) \cdot d_{\min}(\wt{\Pbb}),
+\end{equation}
+and likewise it follows from Lemma~\ref{lem:hoeffding_2} that with probability at least $1 - \exp\{-2\delta^2(1 - \delta) \vol_{\wt{\Pbb},r}(\mc{C})^2 \Pbb(\mc{C})n \}$,
+\begin{equation*}
+\frac{1}{\wt{n}(\wt{n} - 1)} \vol(\wt{G}_{n,r}) \geq (1 - \delta) \cdot \vol_{\wt{\Pbb},r}(\mc{C}).
+\end{equation*}
+Consequently, for any $\delta \in (0,1/3)$,
+\begin{equation*}
+s_{n,r}(\mc{C}[X]) = \frac{d_{\min}(\wt{G}_{n,r})^2}{\vol(\wt{G}_{n,r})} \geq \frac{\frac{1}{\wt{n}^2}d_{\min}(\wt{G}_{n,r})^2}{\frac{1}{\wt{n}(\wt{n} - 1)}\vol(\wt{G}_{n,r})} \geq \frac{(1 - \delta)^2}{(1 + \delta)} \frac{d_{\min}(\wt{\Pbb})^2}{\vol_{\wt{\Pbb},r}(\mc{C})} \geq (1 - 3\delta) \cdot s_{\Pbb,r}(\mc{C}).
+\end{equation*}
+with probability at least $1 - 2\exp\bigl\{-\delta^2\bigl(\vol_{\wt{\Pbb},r}(\mc{C})\bigr)^2 \Pbb(\mc{C})n\bigr\} - n\exp\bigl\{-\delta^2\bigl(d_{\min}(\wt{\Pbb})\bigr)^2 \Pbb(\mc{C}) n\bigr\}$. This establishes~\eqref{eqn:sample_to_population_local_spread} upon taking $b_2 = \bigl(\vol_{\wt{\Pbb},r}(\mc{C})\bigr)^2 \Pbb(\mc{C})$, $b_3 = \bigl(d_{\min}(\wt{\Pbb})\bigr)^2 \Pbb(\mc{C})$, and $C_2 = 3$. 
+
+\subsection{Sample-to-population: conductance}
+\label{subsec:sample_to_population_conductance}
+
+In this subsection we establish~\eqref{eqn:sample_to_population_conductance}. As mentioned in our main text, the proof of~\eqref{eqn:sample_to_population_conductance} relies on a high-probability upper bound of the $\infty$-transportation distance between $\mbb{P}$ and $\mbb{P}_n$, from~\citep{garciatrillos16b}. We begin by reviewing this upper bound, in Theorem~\ref{thm:garciatrillos16}. Subsequently in Proposition~\ref{prop:conductance_lb_transportation_distance}, we relate the $\infty$-transportation distance between two measures $\mbb{Q}_1$ and $\mbb{Q}_2$ to the difference of their conductances. Together these results will imply~\eqref{eqn:sample_to_population_conductance}.
+
+\paragraph{Review: $\infty$-transportation distance and transportation maps.}
+We give a brief review of some of the main ideas regarding $\infty$-transportation distance, and transportation maps. This discussion is largely taken from~\citep{garciatrillos16b,garciatrillos16}, and the reader should consult these works for more detail. 
+
+For two measures $\mbb{Q}_1$ and $\mbb{Q}_2$ on a domain $D$, the \emph{$\infty$-transportation distance} $\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2)$ is
+\begin{equation*}
+\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2) := \inf_{\gamma}\Bigl\{\mathrm{esssup}_{\gamma} \bigl\{|x - y|: (x,y) \in D \times D\bigr\}: \gamma \in \Gamma(\mbb{Q}_1,\mbb{Q}_2) \Bigr\}
+\end{equation*}
+where $\Gamma(\mbb{Q}_1,\mbb{Q}_2)$ is the set of all couplings of $\mbb{Q}_1$ and $\mbb{Q}_2$, that is the set of all probability measures on $D \times D$ for which the marginal distribution in the first variable is $\mbb{Q}_1$, and the marginal distribution in the second variable is $\mbb{Q}_2$. 
+
+Suppose $\mbb{Q}_1$ is absolutely continuous with respect to the Lebesgue measure. Then $\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2)$ can be more simply defined in terms of push-forward measures and transportation maps. For a Borel map $T: D \to D$, the \emph{push-forward} of $\mbb{Q}_1$ by $T$ is $T_{\sharp}\mbb{Q}_1$, defined for Borel sets $U$ as 
+\begin{equation*}
+T_{\sharp}\mbb{Q}_1(U) = \mbb{Q}_1(T^{-1}(U)).
+\end{equation*}
+A \emph{transportation map} from $\mbb{Q}_1$ to $\mbb{Q}_2$ is a Borel map $T$ for which $T_{\sharp}\mbb{Q}_1 = \mbb{Q}_2$. Transportation maps satisfy two important properties. First, the transportation distance can be formulated in terms of transportation maps:
+\begin{equation*}
+\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2) = \inf_{T} \|\mathrm{Id} - T\|_{\Leb^{\infty}(\mbb{Q}_1)}
+\end{equation*}
+where $\mathrm{Id}: D \to D$ is the identity mapping, and the infimum is over transportation maps $T$ from $\mbb{Q}_1$ to $\mbb{Q}_2$. Second, they result in the following change of variables formula; if $T_{\sharp}\mbb{Q}_1 = \mbb{Q}_2$, then for any $g \in L^1(\mbb{Q}_2)$,
+\begin{equation}
+\label{eqn:transportation_map_change_of_variable}
+\int g(y) \,d\mbb{Q}_2(y) = \int g(T(x)) \,d\mbb{Q}_1(x).
+\end{equation} 
+
+\paragraph{$\infty$-transportation distance between empirical and population measures.}
+Under mild regularity conditions, \cite{garciatrillos16b} upper bound the transportation distance $\Delta_{\infty}(\mbb{P},\mbb{P}_n)$. 
+\begin{enumerate}[label=(A\arabic*)]
+	\item 
+	\label{asmp:domain} 
+	The distribution $\Pbb$ is defined on a domain $D \subseteq \Rd$, which is a bounded, connected, open set with Lipschitz boundary. 
+	\item 
+	\label{asmp:bounded_density} 
+	The distribution $\Pbb$ has density $g: D \to (0,\infty)$ such that there exist $g_{\min} \leq 1 \leq g_{\max}$ for which
+	\begin{equation*}
+	(\forall x \in D)~~ g_{\min} \leq g(x) \leq g_{\max}
+	\end{equation*}
+\end{enumerate}
+\begin{theorem}[Theorem~1.1 of \cite{garciatrillos16}]
+	\label{thm:garciatrillos16}
+	Suppose $\Pbb$ satisfies~\ref{asmp:domain} and~\ref{asmp:bounded_density}. Then, there exists positive constants $B_{2}$ and $B_3$ that do not depend on $n$, such that with probability at least $1 - B_2/n$:
+	\begin{equation*}
+	\Delta_{\infty}(\mbb{P},\mbb{P}_n) \leq B_{3} \cdot 
+	\begin{dcases*}
+	\frac{\ln(n)^{3/4}}{n^{1/2}},&~~\textrm{if $d = 2$,} \\
+	\frac{\ln(n)^{1/d}}{n^{1/d}},&~~\textrm{if $d \geq 3$.}
+	\end{dcases*}
+	\end{equation*}
+\end{theorem}
+Assuming the candidate cluster $\mc{C}$ and conditional distribution $\wt{\Pbb}$ satisfy~\ref{asmp:domain} and~\ref{asmp:bounded_density}, then Theorem~\ref{thm:garciatrillos16} applies to $\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n)$; we will use this upper bound on $\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n)$ to show~\eqref{eqn:sample_to_population_conductance}.  
+
+\paragraph{Lower bound on conductance using transportation maps.}
+Let $\mbb{Q}_1$ and $\mbb{Q}_2$ be probability measures, with $\mbb{Q}_1$ absolutely continuous with respect to Lebesgue measure, and let $T$ be a transportation map from $\mbb{Q}_1$ to $\mbb{Q}_2$. We write $\Delta_T(\mbb{Q}_1,\mbb{Q}_2) := \|\mathrm{Id} - T\|_{\Leb^{\infty}(\mbb{Q}_1)}$. To facilitate easy comparison between the conductances of two arbitrary distributions, let $\Psi_r(\mbb{Q}) := \Psi_{\mbb{Q},r}(\mathrm{supp}(\mbb{Q}))$ for a distribution $\mbb{Q}$. In the following Proposition, we lower bound $\Psi_r(\mbb{Q}_2)$ by $\Psi_r(\mbb{Q}_1)$, plus an error term that depends on $\Delta(\mbb{Q}_1,\mbb{Q}_2)$.
+\begin{proposition}
+	\label{prop:conductance_lb_transportation_distance}
+	Let $\mbb{Q}_1$ be a probability measure that admits a density $g$ with respect to $\nu(\cdot)$, let $\mbb{Q}_2$ be an arbitrary probability measure, and let $T$ be a transportation map from $\mbb{Q}_1$ to $\mbb{Q}_2$. Suppose $\Delta_T(\mbb{Q}_1,\mbb{Q}_2) \leq r/(4(d - 1))$. It follows that
+	\begin{equation}
+	\label{eqn:conductance_lb_transportation_distance}
+	\Psi_r(\mbb{Q}_2) \geq \Psi_r(\mbb{Q}_1) \cdot \biggl(1 - \frac{2b_4\Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2}\biggr) - \frac{b_4 \Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2},
+	\end{equation}
+	where $b_4 := 2d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}$ is a positive constant that does not depend on $\mbb{Q}_2$. 
+\end{proposition}
+We note that the lower bound can also be stated with respect to the $\infty$-optimal transport distance $\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2)$. 
+\begin{proof}[Proof (of Proposition~\ref{prop:conductance_lb_transportation_distance})]
+	Throughout this proof, we will write $\Delta_{12} = \Delta_T(\mbb{Q}_1,\mbb{Q}_2)$, and $\wb{\vol}_{\mbb{Q},r}(\mc{R}) = \min\bigl\{\vol_{\mbb{Q},r}\bigl(\mc{R}\bigr),\vol_{\mbb{Q},r}\bigl(\mc{R}^c\bigr)\bigr\}$ for conciseness. Naturally, the proof of Proposition~\ref{prop:conductance_lb_transportation_distance} involves using the transportation map $T$ to relate $\cut_{\mbb{Q}_2,r}(\cdot)$ to $\cut_{\mbb{Q}_1,r}(\cdot)$, and likewise $\vol_{\mbb{Q}_2,r}(\cdot)$ to $\vol_{\mbb{Q}_1,r}(\cdot)$. Define the remainder term $R_{\epsilon,\mbb{Q}_1}^{(\Delta)}(x) = \int \1\{\epsilon \leq \|x - y\| \leq \epsilon + \Delta\} \,d\mbb{Q}_1(y)$ for any $\epsilon, \Delta > 0$. Then for any set $\mc{S} \subseteq \mathrm{supp}(\mbb{Q}_2)$, we have that
+	\begin{align}
+	\cut_{\mbb{Q}_2,r}(\mc{S}) & = \iint \1\{\|x - y\|\leq r\} \cdot \1\{x \in \mc{S} \} \cdot \1\{y \in \mc{S}^c \} \,d\mbb{Q}_2(y) \,d\mbb{Q}_2(x) \nonumber \\ 
+	& \overset{\mathrm{(i)}}{=} \iint \1\{\|T(x) - T(y)\|\leq r\} \cdot \1\{x \in T^{-1}(\mc{S}) \} \cdot \1\{y \in T^{-1}(\mc{S})^c \} \,d\mbb{Q}_1(y) \,d\mbb{Q}_1(x) \nonumber \\
+	& \overset{\mathrm{(ii)}}{\geq} \iint \1\{\|x - y\|\leq r - 2\Delta_{12}\} \cdot \1\{x \in T^{-1}(\mc{S}) \} \cdot \1\{y \in T^{-1}(\mc{S}^c) \} \,d\mbb{Q}_1(y) \,d\mbb{Q}_1(x) \nonumber \\
+	& = \cut_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) - \int R_{r - 2\Delta_{12} ,\mbb{Q}_1}^{(2\Delta_{12})}(x) \,d\mbb{Q}_1(x) \label{pf:conductance_lb_transportation_distance_1}
+	\end{align} 
+	where $\mathrm{(i)}$ follows from the change of variables formula~\eqref{eqn:transportation_map_change_of_variable}, and $\mathrm{(ii)}$ follows from the triangle inequality. Similar reasoning implies that
+	\begin{equation}
+	\label{pf:conductance_lb_transportation_distance_2}
+	\vol_{\mbb{Q}_2,r}(\mc{S}) \leq \vol_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) + \int R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x)  \,d\mbb{Q}_1(x).
+	\end{equation}
+	For any $x \in \Rd$, the remainder terms can be upper bounded: for any $\Delta_{12} \geq 0$,
+	\begin{equation*}
+	R_{r - 2\Delta_{12} ,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{1 - \Bigl(1 - \frac{2\Delta_{12}}{r}\Bigr)^d \Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq \underbrace{2 d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}}_{= b_4} \cdot \Delta_{12},
+	\end{equation*}
+	and for any $0 \leq \Delta_{12} \leq r/(4(d - 1))$,
+	\begin{equation*}
+	R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{\Bigl(1 + \frac{2\Delta_{12}}{r}\Bigr)^d - 1\Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq 2 b_4 \cdot \Delta_{12}.
+	\end{equation*} 
+	Plugging these bounds on the remainder terms back into~\eqref{pf:conductance_lb_transportation_distance_1} and~\eqref{pf:conductance_lb_transportation_distance_2} respectively, we see that
+	\begin{align*}
+	\Phi_{\mbb{Q}_2,r}(\mc{S}) & \geq \frac{\cut_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) - b_4 \Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2b_4 \Delta_{12}} \\ & = \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S}))}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2b_4\Delta_{12}}\biggr) - \frac{b_4\Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2b_4\Delta_{12}} \\
+	& \overset{\eqref{pf:conductance_lb_transportation_distance_2}}{\geq} \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S}) - 2b_4\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}\biggr) - \frac{b_4\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}.
+	\end{align*}
+	We would like to conclude by taking an infimum over $\mc{S}$ on both sides, but in order to ensure that the remainder term is small we must specially handle the case where $\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})$ is small. Let
+	\begin{equation*}
+	\mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2) = \bigl\{\mc{S} \subseteq \mathrm{supp}(\mbb{Q}_2): \wb{\vol}_{\mbb{Q}_2,r}(\mc{S}) \geq (1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2 \bigr\}.
+	\end{equation*}
+	On the one hand, taking an infimum over all sets $\mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)$, we have that
+	\begin{equation*}
+	\inf_{\mc{S}: \mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)} \Phi_{\mbb{Q}_2,r}(\mc{S}) \geq \Psi_{r}(\mbb{Q}_1) \cdot \biggl(1 - \frac{2 b_4 \Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}\biggr) - \frac{b_4\Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}
+	\end{equation*}
+	On the other hand, we claim that 
+	\begin{equation}
+	\label{pf:conductance_lb_transportation_distance_3}
+	\Phi_{r,\mbb{Q}_2}(\mc{R}) \geq \Psi_{r}(\mbb{Q}_1),~~\textrm{for any $\mc{R} \not\in \mathfrak{L}(\mbb{Q}_1,\mbb{Q}_2)$}.
+	\end{equation}
+	To derive~\eqref{pf:conductance_lb_transportation_distance_3}, suppose that $\mc{R} \subseteq \mathrm{supp}(\mbb{Q}_2)$ and $\mc{R} \not\in \mathfrak{L}(\mbb{Q}_1,\mbb{Q}_2)$. Without loss of generality, we shall assume that $\vol_{\mbb{Q}_2,r}(\mc{R}) \leq (1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2$ (otherwise we can work with respect to $\mc{R}^c$.)  Then, for all $x \in \mc{R}$:
+	\begin{equation*}
+	\int \1\{\|x - y\| \leq r\}\cdot \1\{y \in \mc{R}^c\} \,d\mbb{Q}_2(y) \geq \deg_{\Qbb_2,r}(x) -  \mbb{Q}_2(\mc{R}) \geq \deg_{\Qbb_2,r}(x) - \frac{\vol_{\mbb{Q}_2,r}(\mc{R})}{d_{\min}(\mbb{Q}_2)} \geq d_{\min}(\mbb{Q}_2) \cdot \Psi_{r}(\mbb{Q}_2),
+	\end{equation*}
+	whence integrating over all $x \in \mc{R}$ and dividing by~$\vol_{\mbb{Q}_2,r}(\mc{R})$ yields~\eqref{pf:conductance_lb_transportation_distance_3}. This completes the proof of Proposition~\ref{prop:conductance_lb_transportation_distance}. 
+\end{proof}
+
+\paragraph{Putting the pieces together.} 
+First, we note that
+\begin{equation*}
+\Psi_r(\wt{\mbb{P}}) = \Psi_{\wt{\mbb{P}},r}(\mathrm{supp}(\wt{\mbb{P}})) = \Psi_{\Pbb,r}(\mc{C}), ~~\textrm{and}~~\Psi_{r}(\wt{\mbb{P}}_n) = \Psi_{\wt{\mbb{P}}_n, r}(\mathrm{supp}(\wt{\mbb{P}}_n)) = \Psi_{n,r}(\mc{C}[X]),
+\end{equation*}
+so that we may apply Proposition~\ref{prop:conductance_lb_transportation_distance} to get a lower bound on $\Psi_{n,r}(\mc{C}[X])$ in terms of $\Psi_{\Pbb,r}(\mc{C})$, $\Delta_{\infty}(\wt{\Pbb}, \wt{\Pbb}_n)$, and $d_{\min}(\wt{\Pbb}_{n})$. Next, as we have already derived in~\eqref{pf:sample_to_population_local_spread_2}, with probability at least $1 - \exp\{-\mbb{P}(\mc{C})^2n\} - \exp\{-d_{\min}(\wt{\Pbb})^2 \Pbb(\mc{C}) n/\sqrt{2}\}$,
+\begin{equation*}
+d_{\min}(\wt{\Pbb}_n) = \frac{1}{\wt{n}} d_{\min}(\wt{G}_{n,r}) \geq \frac{1}{\sqrt{2}} d_{\min}(\wt{\Pbb}).
+\end{equation*}
+Finally, taking
+\begin{equation*}
+b_5 := \frac{1}{2b_4}\Psi_r(\wt{\Pbb}) \cdot (1 - \Psi_r(\wt{\Pbb})) \cdot d_{\min}(\wt{\Pbb})^2,~~\textrm{and}~~ B_1 := \frac{1}{B_4}\min\Bigl\{\frac{b_5}{2\Psi_r(\wt{\Pbb})}, b_5, \frac{r}{4(d - 1)} \Bigr\} 
+\end{equation*}
+by Theorem~\ref{thm:garciatrillos16} and~\eqref{eqn:sample_to_population_conductance_sample_complexity} we have that
+\begin{equation*}
+\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_3 \frac{\log(n)^{p_d}}{n^{1/d}} \leq \min\Bigl\{\frac{b_5}{2\Psi_r(\wt{\Pbb})}, b_5, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
+\end{equation*}
+with probability at least $1 - B_2/n$. Therefore by Proposition~\ref{prop:conductance_lb_transportation_distance},
+\begin{equation*}
+\Psi_r(\wt{\Pbb}_n) \geq \Psi_r(\wt{\Pbb}) \cdot \biggl(1 - \frac{2b_4\Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2}\biggr) - \frac{b_4 \Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb}_N)}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2} \geq \Psi_r(\wt{\Pbb}) (1 - 2\delta)
+\end{equation*}
+with probability at least $1 - B_2/n - (n + 2)\exp\{-d_{\min}(\wt{\Pbb})^2 \Pbb(\mc{C}) n/\sqrt{2}\}$, establishing~\eqref{eqn:sample_to_population_conductance}.
 
 \section{Population functionals for density clusters}
 
