@@ -380,7 +380,9 @@ best_sweep_cut <- function(G,f,bounds)
 
 volume_ssd <- function(C,S,G)
 {
-  volume(G[setdiff(C,S),]) + volume(G[setdiff(S,C),])
+  volume_CminusS <- if (is.null(setdiff(C,S))) 0 else volume(G[setdiff(C,S),]) 
+  volume_SminusC <- if (is.null(setdiff(S,C))) 0 else volume(G[setdiff(S,C),])
+  return(volume_CminusS + volume_SminusC)
 }
 
 #----------------------------------------------------------------#
