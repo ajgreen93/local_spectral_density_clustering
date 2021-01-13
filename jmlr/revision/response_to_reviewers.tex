@@ -1,0 +1,243 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+\newcommand{\dist}{\mathrm{dist}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+First of all, we would like to thank the reviewers and associate editor for their thoughtful comments and helpful suggestions, and for the invitation to resubmit. In response to this feedback, we have significantly reworked our manuscript, making the following major changes: 
+
+\begin{itemize}
+	\item \textbf{New theoretical results.} In a new Section 2, we establish conditions under which Personalized PageRank (PPR), run on a geometric graph, will recover an \emph{arbitrary} candidate cluster $\mc{C} \subseteq \Rd$ (i.e. not necessarily a density cluster).  Our upper bound in Theorem 9 (new version) on the error $\Delta(\wh{C},\mc{C}[X])$ depends on population-level functionals---normalized cut, local spread, and conductance---that have previously been used to analyze the behavior of (global) spectral clustering algorithms in nonparametric mixture models, and we explicitly connect our results to this related work.
+	
+	\item \textbf{Improved upper bounds.} In Section 3, we apply this general theory to the specific case where $\mc{C} = \mc{C}_{\lambda}$ is a density cluster. The resulting upper bound on $\Delta(\wh{C},\mc{C}_{\lambda}[X])$ (Corollary 14) is comparable to Theorem~5 of our previous submission, but with significantly smaller universal constants.
+	
+	\item \textbf{Reworked exposition.} In particular: 
+	\begin{itemize}
+		\item We comment more extensively on our major theoretical results, explaining their significance and tying them to related work;
+		\item We precisely use universal constants throughout, and in particular offer a cleaner comparison between our upper and lower bounds;
+		\item We \textcolor{red}{(emphasize)} the three modular components of our analysis: (i) bounds on PPR in terms of graph functionals; (ii) bounds on graph functionals in terms of population functionals; (iii) in the case of density cluster recovery, bounds on population functionals in terms of geometric parameters. \textcolor{red}{(Do I need to add a sentence here, or is modularity an obviously good goal on its own?)}
+	\end{itemize}
+\end{itemize}
+
+\section{Response to Associate Editor's Comments}
+
+(\textit{``...usefulness of the key Theorem 5...''}) As outlined above, in our resubmission we have replaced Theorem 5 (old version) by Theorem 9 and Corollary 14 (new version). 
+
+Theorem~9 (new version)  is substantially more general than Theorem~5 (old version), as it upper bounds $\Delta(\wh{C},\mc{C}[X])$ for an arbitrary set $\mc{C} \subseteq \Rd$ in terms of the population-level normalized cut and conductance. To the best of our knowledge, this is the first result on the clustering performance of PPR in the non-parametric statistical setup. In some remarks, we compare Theorem~9 to some related literature on global spectral clustering, showing both that Theorem~9 is in certain respect sharper than these related results while naturally requiring (weaker) local rather than global conditions.
+
+Corollary~14 (new version) treats the case where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster. It gives substantially tighter (in terms of constants) upper bound on $\Delta(\wh{C},\mc{C}_{\lambda}[X])$ than Theorem~5 (old version). To our knowledge, this is the first resulting tying the clustering performance of a canonical spectral method to recovery of a density cluster.
+
+(\textit{``...sets of zero measure may dramatically alter the topological structure of the level sets.''}) We deal with this difficulty by assuming the density $f(x) \geq \lambda_{\sigma}$ everywhere on the $\sigma$-thickened set $\mc{C}_{\lambda,\sigma} = \mc{C}_{\lambda} + B(0,\sigma)$. In our revised submission, we comment explicitly on the difficulty measure-zero sets can play in the definition of density clusters, and clarify how the $\sigma$-thickening resolves this difficulty.
+
+(\textit{``...literature mentioned on density-based clustering (see page 5) abruptly ends in 2013...''}) We have updated our literature review to include more recent works.
+
+\section{Response to Reviewer 1's Comments}
+
+(\textit{``Is $\kappa(\mc{C})$ uniquely defined?''}) We have modified our definition of the condition number so as to make it uniquely defined. We now denote the condition number by $\kappa_{\Pbb,r}(\mc{C},\delta)$, to make clear exactly what the condition number depends on: the distribution $\Pbb$, the graph radius $r > 0$, the candidate cluster $\mc{C} \subset \Rd$, and a high-probability parameter $\delta \in (0,1)$. 
+
+(\textit{``...not clear whether or not $c \cdot \kappa(\mc{C}) \leq \vol(X \setminus \mc{C}) / \vol(\mc{C} \cap X)$''}) Whenever the thickened density-cluster $\mc{C}_{\lambda,\sigma}$ satisfies a sufficiently strong low-noise condition---i.e. $\theta$ and $\gamma$ in (A2) are sufficiently large--- it will hold that $\kappa_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \leq \vol(X \setminus \mc{C}_{\lambda}) / \vol(\mc{C}_{\lambda} \cap X)$.
+
+(\textit{``...there is a risk that the upper bounds presented here could be too loose that they do not reflect the real performance of the algorithm.''}) In our view, the most useful way to interpret our upper and lower bounds is by focusing on how these bounds depend on the geometric parameters $\sigma, \rho$ and $L$, the density parameters $\lambda,\Lambda_{\sigma},\lambda_{\sigma},\gamma$ and $\theta$, and the dimension $d$, and we have clarified this in our exposition. 
+
+Nevertheless, we acknowledge that practically speaking it is useful to have reasonable values for constants, and in our resubmission we have also substantially improved the constants in our upper bounds on normalized cut and mixing time. While it is very hard to know the sharpest possible values for all constants, at relevant points in our appendices we do include discussions of the tightness of our bounds with regards to constants. Finally, we have modified our experiments section so that the reader may more easily compare our upper bounds with empirical reality.
+
+(``[In] \textit{the example used to produce Fig. 2... Thm.5 becomes $\vol\bigl(\wh{C} \vartriangle (\mc{C} \cap X)\bigr) \leq 70950 \cdot \vol\bigl(\mc{C} \cap X\bigr)$. This looks much worse than the trivial case $\wh{C} = \emptyset$.''}) We have substantially improved our bounds, including our bounds on the population-level normalized cut and conductance of density clusters, as well as the difference between sample and population-level normalized cut and conductance. In the specific example used for Fig. 2, our upper bound on $\Delta(\wh{C},\mc{C}[X])/\vol_{n,r}(\mc{C}[X])$ is $\leq 1/2$ whenever $\theta \geq \textcolor{red}{(...)}$.
+
+(``\textit{The use of universal constants throughout the paper is not consistent.}'') We apologize for the confusion. In our new submission, we have clarified our use of constants so as to avoid any ambiguity. 
+
+(``\textit{$\kappa(\mc{C})$ should be explicitly reported} [in experiments]'') The condition number will be a rather loose bound (in terms of constants) on the actual performance of the algorithm, a fact we frankly acknowledge in our experiments section. Nevertheless, as pointed out previous, the bound on $\Delta(\wh{C},\mc{C}[X])/\vol_{n,r}(\mc{C}[X])$ will be small when $\theta \geq \textcolor{red}{(...)}$. 
+
+\textcolor{red}{Alden for Siva: I guess somewhere around here is where it might be helpful to comment on how seriously one should take our constants?}
+
+(``\textit{...parameters used in the first experiment...}'') We now report all parameters for our experiment in Appendix~\textcolor{red}{(?)}. 
+
+(``\textit{Minor comments}) We have addressed all of the errors noticed by the reviewer, and we thank them for their careful attention. 
+
+\section{Response to Reviewer 2's Comments}
+
+(\textit{``...no explicit smoothness assumption on the density function...''}) This is resolved by assuming $f(x) \geq \lambda_{\sigma}$ on the thickened set $\mc{C}_{\lambda, \sigma} = \mc{C} + B(0,\sigma)$, as in \textcolor{green}{(Chaudhuri and Dasgupta)}. The set $\mc{C}_{\lambda, \sigma}$ is full dimensional with a smooth boundary, and thus no smoothness assumption on $f$ is required.
+
+(\textit{``The bound in Theorem 5 doesn't appear to be something that can go to 0 as $n \to \infty$ and $r \to 0$...''}) This comment is correct. This bound---in Theorem~5 (old version), and now in Theorem~9 (new version)--- is
+\begin{equation}
+\label{eqn:volume_ssd_ppr}
+\frac{\Delta(\wh{C},\mc{C}[X])}{\vol_{n,r}(\mc{C}_{\sigma}[X])} \leq 30 \cdot \kappa_{\Pbb,r}(\mc{C},\delta),
+\end{equation}
+and the right hand side will not converge to $0$ as $n \to \infty$. This is typical in the analysis of spectral clustering algorithms in a non-parametric statistical context~\textcolor{green}{(Shi, Schiebinger, Garcia-Trillos)}, and we make some detailed comparison between our bound and these related works after Theorem~9 (new version). We also confirm, both theoretically and experimentally, that indeed that the misclassification error of PPR will not go to zero as $n \to \infty$, even for some fairly well-conditioned density clusters.
+
+(``\textit{...assumptions for Theorem 6 to hold seem very strong...}'')  We would point out that Theorem~6  is, to the best of our knowledge, the first of its kind---that is, the first to show that spectral clustering can \emph{consistently} recover a geometrically-defined cluster. However, we agree that the assumptions are quite strong, in our revised submission we have moved this Theorem to one of our appendices, so as not to distract from our major points. 
+
+(``\textit{...(Def 2) doesn't appear to guarantee a bijection between the true clusters and the estimated clusters...''}) The reviewer is correct that this is fundamental to the local nature of the problem, in which we ask the algorithm to return only one cluster, rather than a clustering. We have clarified this point in our exposition. 
+
+\end{document}
