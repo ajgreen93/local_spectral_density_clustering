@@ -373,8 +373,6 @@ where $\Wbf = (\Ibf{} + \Dbf^{-1}\Abf)/2$ is the lazy random walk matrix over
 $G_{n,r}$ and $e_{v}$ is the indicator vector for node $v$ (that has a 1 in
 position $v$ and 0 elsewhere).  
 
-%\subsubsection{Sweep cut}
-%\label{subsection: sweep_cut}
 Next, we define a \emph{$\beta$-sweep cut} of $\pbf_v = (\pbf_v(u))_{u \in V}$,
 for a given level $\beta > 0$, as    
 \begin{equation}
@@ -496,7 +494,7 @@ limiting operators. \citet{koltchinskii2000} establish convergence of spectral
 projections of the adjacency matrix to a limiting integral operator, with
 similar results obtained using simplified proofs in
 \citet{rosasco10}. \citet{vonluxburg2008} studies convergence of eigenvectors of
-the Laplacian matrix for a neighborhood of fixed radius. \citet{belkin07} and
+the Laplacian matrix for a neighborhood graph of fixed radius. \citet{belkin07} and
 \citet{garciatrillos18} extend these results to the regime where the radius $r
 \to 0$ as $n \to \infty$.
 
@@ -623,13 +621,12 @@ clusters which contain arbitrarily thin bridges or spikes. As in the work of
 \Cbb_f(\lambda)$} defined as $\Csig := \set{x \in \Reals^d: \dist(x,\Cset) \leq
 \sigma}$, which we call the \emph{$\sigma$-expansion} of $\Cset$. Here
 \smash{$\dist(x,\Cset) := \inf_{y \in \Cset} \norm{y - x}$}.  We now list our
-conditions on $\Csig$.
+conditions on $\Csig$, which are defined with respect to $\sigma$ as well as positive numbers $\lambda_{\sigma}, \Lambda_{\sigma}, L$, $\theta \in (0,\infty)$, $\gamma \in [0,1]$, and $r \in (0,\frac{\sigma}{4d}]$. 
 
 \begin{enumerate}[label=(A\arabic*)]
 \item
   \label{asmp: bounded_density}
-  \emph{Bounded density within cluster:} There exist constants
-  $0<\lambda_{\sigma}< \Lambda_{\sigma}<\infty$ such that 
+  \emph{Bounded density within cluster:} The density is bounded above and below in $\mc{C}_{\sigma}$:
   $$
   \lambda_{\sigma} \leq \inf_{x \in \Csig} f(x) \leq \sup_{x \in \Csig} f(x)
   \leq \Lambda_{\sigma}.
@@ -637,10 +634,9 @@ conditions on $\Csig$.
 
 \item 
   \label{asmp: low_noise_density}
-  \emph{Low noise density:} There exists constants $c_0 > 0$ and $\gamma \in
-  [0,1]$ such that for any $x \in \Rd$ with $0 < \dist(x, \Csig) \leq \sigma$,     
+  \emph{Low noise density:} For any $x \in \Rd$ such that $0 < \dist(x, \Csig) \leq \sigma$,     
   $$
-  \inf_{x' \in \Csig} f(x') - f(x) \geq  c_0 \cdot \dist(x, \Csig)^{\gamma}.  
+  \inf_{x' \in \Csig} f(x') - f(x) \geq  \theta \cdot \dist(x, \Csig)^{\gamma}.  
   $$
   Roughly, this assumption ensures that the density decays sufficiently quickly
   as we move away from the target cluster $\Csig$, and is a standard assumption
@@ -649,14 +645,13 @@ conditions on $\Csig$.
 \item
   \label{asmp: embedding}
   \emph{Lipschitz embedding:}
-  There exists $g: \Reals^d \to \Reals^d$ with the following properties: 
+  There exists some $g: \Reals^d \to \Reals^d$ satisfying each of the following:
   \begin{enumerate}
-  \item we have $\Csig = g(\mathcal{K})$, for a convex set $\mathcal{K}
-    \subseteq \Rd$ with $\mathrm{diam}(\mathcal{K}) = \sup_{x,y \in
-      \mathcal{K}}\norm{x - y} =: \diam < \infty$;
-  \item $\det(\nabla g (x)) = 1$ for all $x \in \Csig$, where $\nabla g(x)$ is
+  \item the thickened set $\Csig = g(\mathcal{K})$, where $\mathcal{K}
+    \subseteq \Rd$ is a convex set with diameter $\mathrm{diam}(\mathcal{K}) = \sup_{x,y \in \mathcal{K}}\norm{x - y} \leq \diam$;
+  \item $\det(\nabla g (x)) = 1$ for all $x \in \mc{K}$, where $\nabla g(x)$ is
     the Jacobian of $g$ evaluated at $x;$ and 
-  \item for some $L \geq 1$,   
+  \item The restriction of $g$ to $\mc{K}$ is $L$-Lipschitz, i.e.
     $$
     \norm{g(x) - g(y)} \leq L \norm{x - y} ~
     \text{for all $x,y \in \mathcal{K}$}. 
@@ -674,11 +669,9 @@ conditions on $\Csig$.
   \label{eqn:volume}
   \vol_{\Pbb,r}(\mathcal{S}) := \int_{\mathcal{S}} \Pbb(B(x,r)) f(x) \, dx.
   \end{equation}
-  where $B(x,r)$ is the closed ball of radius $r$ centered at $x$. We assume
-  that the radius of the neighborhood graph $0 < r \leq \sigma/(2d)$ is chosen 
-  such that  
+  where $B(x,r)$ is the closed ball of radius $r$ centered at $x$. It holds that
   $$
-  \vol_{\Pbb,r}(\Cset_\sigma) \leq \frac{1}{2} \vol_{\Pbb,r}(\Reals^d). 
+  \vol_{\Pbb,r}(\Cset_\sigma) \leq \vol_{\Pbb,r}(\Reals^d \setminus \mc{C}_{\sigma}). 
   $$
 \end{enumerate}
 
@@ -722,35 +715,30 @@ normalized cut and mixing time, \smash{$\Phi(\Csig[\Xbf]; G_{n,r}) \cdot
   \tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$}. Following \eqref{eqn:
   graph_symmetric_set_difference_1}, we see that the smaller the condition
 number $\kappa(\Cset)$ is, the more success PPR will have in recovering the
-target $\Cset$.
-
-\textcolor{red}{Need to fix this definition: (1) the universal constants are not given in the Theorem statements, and (2) the definition of $\tau_u(\mc{C})$ has changed.}  
+target $\Cset$.  
 
 \begin{definition}
   \label{def:well_conditioned_density_cluster}
   For $\lambda > 0$ and \smash{$\Cset \in \Cbb_f(\lambda)$}, let $\Cset$ satisfy  
-  \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} for some $\sigma >
-  0$. Then, for universal constants $c_1, c_2, c_3 > 0$ to be specified later
-  (in Theorems \ref{thm: conductance_upper_bound} and \ref{thm:
-    mixing_time_upper_bound}), define
-  \begin{equation}
+  \ref{asmp: bounded_density}--\ref{asmp: bounded_volume} for some $\sigma, \lambda_{\sigma}, \Lambda_{\sigma}, L > 0$,  $\theta \in (0,\infty)$, $\gamma \in [0,1]$ and $r \in (0,\sigma/4d]$. Then, for positive universal constants $c_1$-$c_5$ to be specified later
+  (in Theorems \ref{thm: conductance_upper_bound} and \ref{thm: mixing_time_upper_bound}), define
+  \begin{align}
     \label{eqn: condition_number}
     \Phibf(\Cset) 
-    := c_1 r \frac{d}{\sigma} \frac{\lambda}{\lambda_{\sigma}}
-    \frac{(\lambda_{\sigma} - c_0 \frac{r^{\gamma}}{\gamma +
-        1})}{\lambda_{\sigma}}, \quad
-    \taubf(\Cset) := c_2 \frac{\Lambda_{\sigma}^4 d^3 \rho^2
-      L^2}{\lambda_{\sigma}^4 r^2}
-    \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2r}\right) + c_3.
-  \end{equation}
+    & := c_1 r \frac{d}{\sigma} \frac{\lambda}{\lambda_{\sigma}}
+    \frac{(\lambda_{\sigma} - \theta \frac{r^{\gamma}}{\gamma +
+        1})}{\lambda_{\sigma}} \\
+    \taubf(\Cset) & := c_2 \frac{\Lambda_{\sigma}^4 (d + 2)^3 
+    	\rho^2 L^2}{\lambda_{\sigma}^4 r^2} \ln^2\Bigl(c_5^{1/d}\frac{\Lambda_{\sigma}^{2/d}L\rho}{2\lambda_{\sigma}^{2/d}r}\Bigr)
+  \end{align}
   Letting \smash{$\kappa(\Cset) := \Phibf(\Cset) \cdot \taubf(\Cset)$},
   we call $\kappa(\Cset)$ the \emph{condition number} of $\Cset$.  We also call
   the set $\Cset$ a \emph{$\kappa$-well-conditioned} density cluster.  
 \end{definition}
 
 The condition number $\kappa(\Cset)$ succinctly captures the role of the various 
-geometric parameters.  We note in passing that $\Phibf(\Cset)$ and
-$\taubf(\Cset)$ are exactly the upper bounds  on \smash{$\Phi(\Csig[\Xbf];
+geometric parameters.\footnote{Technically speaking, the condition number depends on the numbers $\sigma, \lambda_{\sigma}, \Lambda_{\sigma},L > 0$, $\theta \in (0,\infty)$, $\gamma \in [0,1]$, and $r \in (0,\sigma/(4d))$ rather than on $\mc{C}$. However, we use the notation $\kappa(\mc{C})$ to make clear that the purpose of $\kappa$ is to measure the quality of the cluster $\mc{C}$.}  We note in passing that $\Phibf(\Cset)$ and
+$\taubf(\Cset)$ are essentially the upper bounds  on \smash{$\Phi(\Csig[\Xbf];
   G_{n,r})$} and \smash{$\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$} that we derive in
 our analysis later, in Section \ref{sec: analysis}. 
 
@@ -765,9 +753,9 @@ chosen to fall within specific ranges,
 \begin{equation}
 \begin{gathered}
 \label{eqn: initialization}
-0 < r \leq \frac{\sigma}{2d}, \quad 
-\alpha \in {\textstyle [\frac{1}{10}, \frac{1}{9})} \cdot
-\frac{1}{\taubf(\theta)}, \\ 
+0 < r \leq \frac{\sigma}{4d}, \quad 
+\alpha \in {\textstyle [\frac{1}{3}, \frac{5}{12})} \cdot
+\frac{1}{\taubf(\mc{C})}, \\ 
 (L,U) \subseteq {\textstyle(\frac{1}{50},\frac{1}{5})} \cdot 
 \frac{1}{2{n \choose 2} \vol_{\Pbb,r}(\Csig)}.  
 \end{gathered}
@@ -788,21 +776,23 @@ normalized cut.
 
 We now present our first main result: a bound on the volume of the symmetric set
 difference between the estimated cluster \smash{$\Cest$} and empirical cluster 
-$\Csig[\Xbf]$. In this theorem, and hereafter, we let $c, c_i > 0$ denote
-universal constants, and $b,b_i > 0$ denote constants which may depend on  
+$\Csig[\Xbf]$. In this theorem, and hereafter, we let $c_i > 0$ denote
+universal constants, and $b_i > 0$ denote constants which may depend on  
 $\Pbb,\lambda,r,d$ and so on, but \emph{not} on the sample size 
-$n$.  % where possible, we keep track of all constants in our proofs. 
-
-\textcolor{red}{Need to fix this Theorem.}
+$n$.
 
 \begin{theorem}
   \label{thm: volume_ssd}
   Fix $\lambda,\sigma > 0$, let \smash{$\Cset \in \Cbb_f(\lambda)$} be a   
   $\kappa$-well-conditioned density cluster, and assume Algorithm \ref{alg: ppr}
   is well-initialized with respect to $\Cset$. Then for any 
-  $$
-  n \geq b_1 (\log n)^{\max\{\frac{3}{d},1\}},
-  $$
+  \begin{equation*}
+  n \geq b_0 \cdot 
+  \begin{cases*}
+  \log(n)^{3/2},& ~~\textrm{if $d = 2$,} \\
+  \log(n),& ~~\textrm{if $d \neq 2$}
+  \end{cases*}
+  \end{equation*}
   there exists a set $\Csig[\Xbf]^g 
   \subseteq \Csig[\Xbf]$ of large volume, \smash{$\vol_{n,r}(\Csig[\Xbf]^g)
     \geq \vol_{n,r}(\Csig[\Xbf])/2$}, such that the following holds: if 
@@ -810,10 +800,10 @@ $n$.  % where possible, we keep track of all constants in our proofs.
   the PPR estimated cluster \smash{$\Cest$} satisfies
   \begin{equation}
     \label{eqn: volume_ssd}
-    \Delta(\Cest, \Csig[\Xbf]) \leq c \cdot \kappa(\Cset) \cdot
+    \Delta(\Cest, \Csig[\Xbf]) \leq c_0 \cdot \kappa(\Cset) \cdot
     \vol_{n,r}(\Csig[\Xbf]),  
   \end{equation}
-  with probability at least $1 - b_2/n$. 
+  with probability at least $1 - b_0/n - c_0n\exp\{-b_{11}n\}$. 
 \end{theorem}
 
 The proof of Theorem \ref{thm: volume_ssd}, as with all results in this paper,
@@ -963,11 +953,11 @@ $\Phi_{n,r}(\Csig[\Xbf]) := \Phi(\Csig[\Xbf]; G_{n,r})$.
   \ref{asmp: bounded_volume}. Then for any $\delta \in (0,1/2)$, it holds that
   \begin{equation}
     \label{eqn: conductance_additive_error_bound}
-    \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq (1 + 4\delta) c_1\frac{d}{\sigma}
+    \frac{\Phi_{n,r}(\Csig[\Xbf])}{r} \leq (1 + 4\delta) c_1\frac{dr}{\sigma}
     \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
-      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}},
+      \theta\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}},
   \end{equation}
-  with probability at least $1 - 3\exp\set{-b n \delta^2}$. 
+  with probability at least $1 - 3\exp\set{-b_{10} n \delta^2}$. 
 \end{theorem}
 
 \begin{remark}
@@ -1012,20 +1002,20 @@ $\tau_{\infty}(G_{n,r}[\Csig[\Xbf]])$.
   Fix $\lambda, \sigma > 0$, and assume \smash{$\Cset \in \Cbb_f(\lambda)$} 
   satisfies Assumptions \ref{asmp: bounded_density} and \ref{asmp: embedding}.
   Also assume that \smash{$0 < r \leq \sigma/(4d)$}. Then for any \smash{$\delta \in \bigl(0,1/(8 + 16/d)\bigr)$}, and any
-  $$
+  \begin{equation}
+  \label{eqn: mixing_time_sample_size}
   n \geq b_1 \cdot (1 + 4\delta) \cdot 
   \begin{cases*}
   \log(n)^{3/2},& ~~\textrm{if $d = 2$,} \\
   \log(n),& ~~\textrm{if $d \neq 2$}
   \end{cases*}
-  $$
+  \end{equation}
   the mixing time satisfies
-  \begin{align} 
+  \begin{equation} 
     \label{eqn: mixing_time_upper_bound}
-    \tau_{\infty}\bigl(G_{n,r}[\Csig[\Xbf]]\bigr) & \leq (1 + 40\delta) c_2 \frac{\Lambda_{\sigma}^4 d^3 
-      \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \log\Bigl(c_4^{1/d}\frac{\Lambda_{\sigma}^{2/d}L\rho}{\lambda_{\sigma}^{2/d}\sigma}\Bigr)\log\Bigl(c_5^{1/d}\frac{\Lambda_{\sigma}^{2/d}L\rho}{\lambda_{\sigma}^{2/d}\sigma}\Bigr) + \\
-  &~~c_3\biggl((1 + 32\delta)d\log\Bigl(c_4^{1/d}\frac{\Lambda_{\sigma}^{2/d}L\rho}{\lambda_{\sigma}^{2/d}\sigma}\Bigr) + 1\biggr), 
-  \end{align}
+    \tau_{\infty}\bigl(G_{n,r}[\Csig[\Xbf]]\bigr) \leq (1 + c_3\delta) c_2 \frac{\Lambda_{\sigma}^4 (d + 2)^3 
+      \rho^2 L^2}{\lambda_{\sigma}^4 r^2} \ln^2\Bigl(c_5^{1/d}\frac{\Lambda_{\sigma}^{2/d}L\rho}{2\lambda_{\sigma}^{2/d}r}\Bigr)
+  \end{equation}
   with probability at least $1 - b_5/n - 4n\exp\{-\delta^2 b_2 n\}$.
 \end{theorem}
 The proof of Theorem \ref{thm: mixing_time_upper_bound} relies heavily on
@@ -1319,7 +1309,6 @@ helpful and inspiring conversations. This work was supported in part by the NSF 
 
 \appendix
 
-%In this supplement, we present proofs and experimental details for the article ``Local Spectral Clustering of Density Upper Level Sets''.
 \section{Proof of Theorem \ref{thm: conductance_upper_bound}}
 \label{sec: proof_of_theorem_1}
 
@@ -1333,7 +1322,7 @@ With this notation in place, the goal of Theorem~\ref{thm: conductance_upper_bou
 \begin{align*}
 \Phi_{n,r}(\Csig[\Xbf]) := \frac{\cut_{n,r}(\Csig[\Xbf])}{\min\{\vol_{n,r}(\Csig[\Xbf]), \vol_{n,r}((\Rd \setminus \Csig)[\Xbf])\}} \leq c_1 \frac{d}{\sigma}
     \frac{\lambda}{\lambda_{\sigma}} \frac{(\lambda_{\sigma} -
-      c_0\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}}
+      \theta\frac{r^{\gamma}}{\gamma+1})}{\lambda_{\sigma}}
 \end{align*}
 with probability at least $1 - 3\exp\{-nb\}$.
 
@@ -1353,15 +1342,15 @@ The following result provides upper and lower bounds on the expected values $\cu
 	\label{lem: expected_density_cut}\label{lem: expected_density_volume}
 	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
 	\begin{align}
-	\cut_{\Pbb,r}(\Csig) &\leq \frac{ d \nu_d r^{d+1} \lambda}{\sigma - dr} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig), \label{eqn:claim_one} \\
+	\cut_{\Pbb,r}(\Csig) &\leq \frac{ d \nu_d r^{d+1} \lambda}{\sigma - dr} \left(\lambda_{\sigma} - \theta\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig), \label{eqn:claim_one} \\
 	\vol_{\Pbb,r}(\Csig) &\geq \biggl(1 + \frac{dr}{\sigma - dr}\biggr)^{-1} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig).\label{eqn:claim_two}
 	\end{align}
 \end{lemma}
 Taking Lemma~\ref{lem: expected_density_cut} and \eqref{eqn: conductance_upper_bound_pf1} as given we can now complete the proof of the theorem. We lower bound $\Phi_{n,r}(\Csig[\Xbf])$ as follows:
 \begin{equation*}
-\Phi_{n,r}(\Csig[\Xbf]) \leq \frac{(1 + \delta)\cut_{\Pbb,r}(\Csig)}{(1 - \delta)\vol_{\Pbb,r}(\Csig)} \leq \frac{(1 + \delta)}{(1 - \delta)(1 - dr/\sigma)^2}\frac{d \nu_d r \lambda \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right)}{\sigma \lambda_{\sigma}^2}.
+\Phi_{n,r}(\Csig[\Xbf]) \leq \frac{(1 + \delta)\cut_{\Pbb,r}(\Csig)}{(1 - \delta)\vol_{\Pbb,r}(\Csig)} \leq \frac{(1 + \delta)}{(1 - \delta)(1 - dr/\sigma)^2}\frac{d r \lambda \left(\lambda_{\sigma} - \theta\frac{r^{\gamma}}{\gamma + 1}\right)}{\sigma \lambda_{\sigma}^2}.
 \end{equation*}
-Noting that $(1 - dr/\sigma)^{-2} \leq 1 + 6dr/\sigma \leq 4$ for all $r \leq \sigma/2d$, the theorem is satisfied by choosing $c_1 = 4$ and $b = (\cut_{\Pbb,r}(\Csig))^2$. 
+Noting that $(1 - dr/\sigma)^{-2} \leq 16/9$ for all $r \leq \sigma/(4d)$, the theorem is satisfied by choosing $c_1 = 16/9$ and $b = (\cut_{\Pbb,r}(\Csig))^2$. 
 
 \subsection{Proof of Lemma~\ref{lem: expected_density_cut}}
 We write $\Pbb(\Aset) = \int_{\Aset} f(x) dx$ for measurable $\Aset \subseteq \Rd$.
@@ -1373,7 +1362,7 @@ and the bulk of our technical effort will be devoted to showing the following up
 	\label{lem: expected_number_boundary_points}
 	For any $0 < r \leq \sigma/(2d)$, under the conditions of Theorem \ref{thm: conductance_upper_bound} it holds that
 	\begin{equation*}
-	\Pbb(\Csigr) \leq \frac{dr}{\sigma - dr} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
+	\Pbb(\Csigr) \leq \frac{dr}{\sigma - dr} \left(\lambda_{\sigma} - \theta\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
 	\end{equation*}	
 \end{lemma}
 Taking this result as given we can now prove the claim~\eqref{eqn:claim_one}.
@@ -1416,7 +1405,7 @@ We begin by partitioning $\Csigr$ into slices based on distance from $\Csig$ as 
 	\end{equation}
 	Assumptions~\ref{asmp: bounded_density} and \ref{asmp: low_noise_density} imply the upper bound
 	\begin{equation*}
-	\max_{x \in \mathcal{T}_{i,k}} f(x) \leq \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma},
+	\max_{x \in \mathcal{T}_{i,k}} f(x) \leq \lambda_{\sigma} - \theta(rt_{i,k})^{\gamma},
 	\end{equation*}
 	and writing
 	\begin{equation*}
@@ -1425,9 +1414,9 @@ We begin by partitioning $\Csigr$ into slices based on distance from $\Csig$ as 
 	we have
 	\begin{align}
 	\label{eqn: telescoping_sum}
-	\sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x) & \leq \sum_{i = 0}^{k-1} \biggl\{ \nu_{i+1,k} - \nu_{i,k} \biggr\} \biggl( \lambda_{\sigma} - c_0(rt_{i,k})^{\gamma} \biggr) \nonumber \\
+	\sum_{i = 0}^{k-1} \nu(\mathcal{T}_{i,k}) \max_{x \in \mathcal{T}_{i,k}} f(x) & \leq \sum_{i = 0}^{k-1} \biggl\{ \nu_{i+1,k} - \nu_{i,k} \biggr\} \biggl( \lambda_{\sigma} - \theta(rt_{i,k})^{\gamma} \biggr) \nonumber \\
 	& = \underbrace{\sum_{i = 1}^{k} 
-	\nu_{i,k} \biggl( \left[\lambda_{\sigma} - c_0(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - c_0(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - c_0r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
+	\nu_{i,k} \biggl( \left[\lambda_{\sigma} - \theta(rt_{i-1,k})^{\gamma}\right] -  \left[\lambda_{\sigma} - \theta(rt_{i,k})^{\gamma}\right]\biggr)}_{:= \Sigma_k} + \underbrace{\biggl(\nu_{k,k}\left[\lambda_{\sigma} - \theta r^{\gamma}\right] - \nu_{1,k}\lambda_{\sigma} \biggr)}_{:= \xi}
 	\end{align}
 	where the second equality comes from rearranging terms in the sum.
 	
@@ -1439,21 +1428,21 @@ We begin by partitioning $\Csigr$ into slices based on distance from $\Csig$ as 
 	\end{equation}
 	which in turn gives
 	\begin{align}
-	\Sigma_k & \leq c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
-	& = c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (\text{substituting}~u_{i,k} := t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
+	\Sigma_k & \leq \theta\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ rt_{i,k}}{\sigma}\right)^d \biggl( (t_{i,k})^{\gamma} - (t_{i-1,k})^{\gamma}\biggr) \nonumber \\
+	& = \theta\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}).~~~~~~~~~~~~~~ (\text{substituting}~u_{i,k} := t_{i,k}^{\gamma}) \label{eqn: Sigmak_riemann_sum}
 	\end{align}
 	The expression in~\eqref{eqn: Sigmak_riemann_sum} is a Riemann sum, and taking the limit as $k \to \infty$ we obtain
 	\begin{align}
-	\lim_{k \to \infty} c_0\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}) & = c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{r u^{1/\gamma}}{\sigma}\right)^{d} du \nonumber \\
-	& \overset{\text{(i)}}{\leq} c_0\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{ d r u^{1/\gamma}}{\sigma - dr}\right) du \nonumber \\
-	& = c_0\nu(\Csig) r^\gamma \left(1 + \gamma \frac{d r}{(\gamma + 1)(\sigma - dr)}\right). \label{eqn: Sigmak_integral}
+	\lim_{k \to \infty} \theta\nu(\Csig) r^\gamma \sum_{i = 1}^{k} \left(1 + \frac{ru_{i,k}^{1/\gamma}}{\sigma}\right)^d ( u_{i,k} - u_{i,k-1}) & = \theta\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{r u^{1/\gamma}}{\sigma}\right)^{d} du \nonumber \\
+	& \overset{\text{(i)}}{\leq} \theta\nu(\Csig) r^\gamma \int_{0}^{1} \left(1 + \frac{ d r u^{1/\gamma}}{\sigma - dr}\right) du \nonumber \\
+	& = \theta\nu(\Csig) r^\gamma \left(1 + \gamma \frac{d r}{(\gamma + 1)(\sigma - dr)}\right). \label{eqn: Sigmak_integral}
 	\end{align}
-	where $\text{(i)}$ follows from the upper bound in Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma/(2d)$. 
+	where $\text{(i)}$ follows from the upper bound in Lemma \ref{lem: Taylor_series} in light of the fact $r \leq \sigma/(4d)$. 
 	
 	An upper bound on $\xi$ follows from largely the same logic, although it does not involve integration:
 	\begin{align}
-	\xi & \overset{\text{(ii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
-	& \overset{\text{(iii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{d r}{\sigma - dr}\right)(\lambda_{\sigma} - c_0r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{dr}{\sigma - dr}(\lambda_{\sigma} - c_0r^{\gamma}) - c_0 r^{\gamma} \biggr\}. \label{eqn: xi_ub}
+	\xi & \overset{\text{(ii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{ r}{\sigma}\right)^d(\lambda_{\sigma} - \theta r^{\gamma}) - \lambda_{\sigma} \biggr\} \nonumber \\
+	& \overset{\text{(iii)}}{\leq} \nu(\Csig) \biggl\{ \left(1 + \frac{d r}{\sigma - dr}\right)(\lambda_{\sigma} - \theta r^{\gamma}) - \lambda_{\sigma} \biggr\} = \nu(\Csig) \biggl\{ \frac{dr}{\sigma - dr}(\lambda_{\sigma} - \theta r^{\gamma}) - \theta r^{\gamma} \biggr\}. \label{eqn: xi_ub}
 	\end{align}
 	where $\text{(ii)}$ follows from \eqref{eqn: slice_volume_bound}, and $\text{(iii)}$ from Lemma \ref{lem: Taylor_series}. As the bounds in \eqref{eqn: partition_ub} and \eqref{eqn: telescoping_sum} hold for all $k$, these along with \eqref{eqn: Sigmak_integral} and \eqref{eqn: xi_ub} imply the desired result.
 
@@ -1570,132 +1559,6 @@ We will need to carefully control the volume of expansion sets using the estimat
 	\end{align*}
 \end{lemma}
 
-
-
-
-%\subsection{Density-weighted cut and volume estimates}
-%\label{sec: density_weighted_cut_and_volume_estimates}
-%
-%For notational ease, we write
-%\begin{align*}
-%\cut_{n,r} = \cut(\Csig[\Xbf]; G_{n,r}), ~ \mu_K = \mathbb{E}(\cut_{n,r}), ~ \cut_{\Pbb,r}(\Csig) = \frac{\mu_K}{{n \choose 2}} \\
-%\vol_{n,r} = \vol(\Csig[\Xbf]; G_{n,r}), ~ \mu_V = \mathbb{E}(\vol_{n,r}), ~ \vol_{\Pbb,r}(\Csig) = \frac{\mu_V}{{n \choose 2}} \\
-%\vol_{n,r}^c = \vol(\Xbf \setminus \Csig[\Xbf]; G_{n,r}), ~ \mu_V^c = \mathbb{E}(\vol_{n,r}^c), ~ \vol_{\Pbb,r}(\Csig)^c = \frac{\mu_V^c}{{n \choose 2}}
-%\end{align*}
-%for the random variable, mean, and probability of cut size and volume, respectively. 
-%
-%\begin{lemma}
-%	\label{lem: expected_density_cut}
-%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
-%	\begin{equation*}
-%	\cut_{\Pbb,r}(\Csig) \leq \frac{4 d \nu_d r^{d+1} \lambda}{\sigma} \left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right) \nu(\Csig)
-%	\end{equation*}
-%\end{lemma}
-%\begin{proof}
-%
-%\end{proof}
-%
-%\begin{lemma}
-%	\label{lem: expected_density_volume}
-%	Under the setup and conditions of Theorem \ref{thm: conductance_upper_bound}, and for any $0 < r \leq \sigma/(2d)$,
-%	\begin{equation*}
-%	\vol_{\Pbb,r}(\Csig) \geq \frac{12}{25} \lambda_{\sigma}^2 \nu_d r^d \nu(\Csig)
-%	\end{equation*}
-%\end{lemma}
-%\begin{proof}
-%	The proof will proceed similarly to Lemma \ref{lem: expected_density_cut}. We begin by writing $\vol_{n,r}$ as the sum of indicator functions,
-%	\begin{equation}
-%	\label{eqn: volume_expansion}
-%	\vol_{n,r} = \sum_{i = 1}^{n} \sum_{j \neq i} \1(x_i \in \Csig) \1(x_j \in B(x_i, r))
-%	\end{equation}
-%	and by linearity of expectation we obtain
-%	\begin{equation*}
-%	\vol_{\Pbb,r}(\Csig) = \frac{\mu_V}{{n \choose 2}} = 2 \cdot \Pbb(x_i \in \Csig, x_j \in B(x_i,r)). \tag{for any $i,j$, $i \neq j$. }
-%	\end{equation*}
-%	Writing this with respect to the density function $f$, we have
-%	\begin{align*}
-%	\vol_{\Pbb,r}(\Csig) & = 2 \int_{\Csig} f(x) \Pbb(B(x,r)) \dx \\
-%	& \geq 2 \int_{\Csig} f(x) \Pbb(B(x,r) \cap \Csig) \dx
-%	\end{align*}
-%	whence the claim then follows by Lemma \ref{lem: local_conductance}.
-%\end{proof}
-%
-%To employ Lemmas \ref{lem: expected_density_cut} and \ref{lem: expected_density_volume} in the proof of Theorem \ref{thm: conductance_upper_bound}, we must relate the random variable
-%\begin{equation*}
-%\Phi_{n,r}(\Csig[\Xbf]) = \frac{\cut_{n,r}}{\min \set{\vol_{n,r}, \vol_{n,r}^c}}
-%\end{equation*}
-%to $\cut_{\Pbb,r}(\Csig)$ and $\vol_{\Pbb,r}(\Csig)$. 
-%
-%In Lemma \ref{lem: prob_bound_cutvol}, we give probabilistic bounds on the $\cut_{n,r}$, $\vol_{n,r}$ and $\vol_{n,r}^c$ in terms of $\cut_{\Pbb,r}(\Csig)$ and $\vol_{\Pbb,r}(\Csig)$. These bounds are a straightforward consequence of Lemma \ref{lem: bounded_difference}, Hoeffding's inequality for U-statistics.
-%
-%\begin{lemma}
-%	\label{lem: prob_bound_cutvol}
-%	For any $\delta \in (0,1]$,
-%	\begin{equation}
-%	\label{eqn: numerator_additive_bound}
-%	\frac{\cut_{n,r}}{{n \choose 2}} \leq \cut_{\Pbb,r}(\Csig) + \sqrt{\frac{\log(1/\delta)}{n}},~\text{and}~ \frac{\vol_{n,r}}{{n \choose 2}}, \frac{\vol_{n,r}^c}{{n \choose 2}}  \geq \vol_{\Pbb,r}(\Csig) - \sqrt{\frac{\log(1/\delta)}{n}}.
-%	\end{equation}
-%	each with probability at least $1 - \delta$. 
-%\end{lemma}
-%
-%\begin{proof}[Proof of Lemma \ref{lem: prob_bound_cutvol}]
-%	From \eqref{eqn: density_cut_expansion} and \eqref{eqn: volume_expansion}, we see that $\cut_{n,r}$ and $\vol_{n,r}$, properly scaled, can be expressed as order-$2$ $U$-statistics,
-%	\begin{equation*}
-%	\frac{\cut_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_K(x_i, x_j),~~ \frac{\vol_{n,r}}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_V(x_i, x_j)
-%	\end{equation*}
-%	with kernels
-%	\begin{align*}
-%	\phi_K(x_i,x_j) & = \1(x_i \in \Csig, x_j \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, x_i \not\in \Csig, \norm{x_i - x_j} \leq r) \\
-%	\phi_V(x_i,x_j) & = \1(x_i \in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \in \Csig, \norm{x_i - x_j} \leq r). 
-%	\end{align*}
-%	
-%	Similarly,
-%	\begin{equation*}
-%	\frac{\vol_{n,r}^c}{{n \choose 2}} = \frac{1}{{n \choose 2}} \sum_{1 \leq i < j \leq n} \phi_{V^c}(x_i, x_j)
-%	\end{equation*}
-%	with kernel,
-%	\begin{equation*}
-%	\phi_{V^c}(x_i,x_j) = \1(x_i \not\in \Csig, \norm{x_i - x_j} \leq r) + \1(x_j \not\in \Csig, \norm{x_i - x_j} \leq r). 
-%	\end{equation*}
-%	
-%	From Lemma \ref{lem: bounded_difference} we therefore have
-%	\begin{equation*}
-%	\frac{\cut_{n,r}}{{n \choose 2}} \leq \cut_{\Pbb,r}(\Csig) + \sqrt{\frac{\log(1/\delta)}{n}},~  \frac{\vol_{n,r}}{{n \choose 2}} \geq \vol_{\Pbb,r}(\Csig) - \sqrt{\frac{\log(1/\delta)}{n}}, ~ \frac{\vol_{n,r}^c}{{n \choose 2}} \geq \vol_{\Pbb,r}(\Csig)^c - \sqrt{\frac{\log(1/\delta)}{n}}
-%	\end{equation*}
-%	each with probability at least $1 - \delta$. The claim follows in light of \ref{asmp: bounded_volume}, which implies $\vol_{\Pbb,r}(\Csig)^c \geq \vol_{\Pbb,r}(\Csig)$. 
-%\end{proof}
-%
-%\subsection{Proof of Theorem \ref{thm: conductance_upper_bound}}
-%\label{sec: proof_of_theorem_1}
-%
-%The proof of Theorem \ref{thm: conductance_upper_bound} is more or less given by Lemmas \ref{lem: expected_density_cut}, \ref{lem: expected_density_volume}, and \ref{lem: prob_bound_cutvol}. All that remains is some algebra, which we take care of below.
-%
-%Fix $\delta \in (0,1]$ and let $\delta' = \delta/3$. We rewrite
-%\begin{equation}
-%\label{eqn: conductance_representation_1}
-%\Phi_{n,r}(\Csig[\Xbf]) = \frac{\cut_{\Pbb,r}(\Csig) + \left(\frac{\cut_{n,r}}{{n \choose 2}} - \cut_{\Pbb,r}(\Csig)\right)}{\vol_{\Pbb,r}(\Csig) + \left(\frac{\min\set{\vol_{n,r}, \vol_{n,r}^c}}{{n \choose 2}} - \vol_{\Pbb,r}(\Csig)\right)}.
-%\end{equation}
-%Assume (\ref{eqn: numerator_additive_bound}) holds with respect to $\delta'$, keeping in mind that this will happen with probability at least $1 - \delta$. Along with (\ref{eqn: conductance_representation_1}) this means
-%\begin{equation*}
-%\Phi_{n,r}(\Csig[\Xbf]) \leq \frac{\cut_{\Pbb,r}(\Csig) + \Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n}
-%\end{equation*}
-%for $\Err_n = \sqrt{\frac{\log(1/\delta')}{n}}$.
-%Now, some straightforward algebraic manipulations yield
-%\begin{align*}
-%\frac{\cut_{\Pbb,r}(\Csig) + \Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n} & = \frac{\cut_{\Pbb,r}(\Csig)}{\vol_{\Pbb,r}(\Csig)} \left(\frac{\vol_{\Pbb,r}(\Csig)}{\vol_{\Pbb,r}(\Csig) - \Err_n}\right) + \frac{\Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n} \\
-%& = \frac{\cut_{\Pbb,r}(\Csig)}{\vol_{\Pbb,r}(\Csig)} + \left(\frac{\cut_{\Pbb,r}(\Csig)}{\vol_{\Pbb,r}(\Csig)} + 1\right)\frac{\Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n} \\
-%& \leq \frac{\cut_{\Pbb,r}(\Csig)}{\vol_{\Pbb,r}(\Csig)} + 2 \frac{\Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n}.
-%\end{align*}
-%By Lemmas \ref{lem: expected_density_cut} and \ref{lem: expected_density_volume}, we have
-%\begin{equation*}
-%\frac{\cut_{\Pbb,r}(\Csig)}{\vol_{\Pbb,r}(\Csig)} \leq \frac{100rd}{12\sigma} \frac{\lambda}{\lambda_{\sigma}} \frac{\left(\lambda_{\sigma} - c_0\frac{r^{\gamma}}{\gamma + 1}\right)}{\lambda_{\sigma}}.
-%\end{equation*}
-%Then, by the choice of sample size in \eqref{eqn: conductance_sample_complexity}, 
-%\begin{equation*}
-%n \geq \frac{(2 + \epsilon)^2 \log\left(\frac{3}{\delta}\right)}{\epsilon^2 \vol_{\Pbb,r}(\Csig)^2}
-%\end{equation*}
-%which implies $2 \frac{\Err_n}{\vol_{\Pbb,r}(\Csig) - \Err_n} \leq \epsilon$. 
-
 \section{Proof of Theorem \ref{thm: mixing_time_upper_bound}}
 
 Let $\widetilde{G}_{n,r} := G_{n,r}[\Csig[\Xbf]]$; in general, we will use tilde notation to refer to quantities computed over $\Csig$ or over the induced subgraph $\widetilde{G}_{n,r}$. The goal of Theorem \ref{thm: mixing_time_upper_bound} is to show that with high probability,
@@ -1722,7 +1585,7 @@ The following proposition establishes an upper bound on the mixing time $\tau_{\
 	\label{prop: pointwise_mixing_time}
 	Assume $\min_{u \in V} \deg(u; G) \geq 10$. Then,
 	\begin{equation*}
-	\tau_{\infty}(G) \leq \frac{2}{\Phi^2(G)} \log \left(\frac{1440}{s(G)}\right)\log \left(\frac{14}{s(G)}\right)  + 3 \log \left(\frac{14}{s(G)}\right) + 3
+	\tau_{\infty}(G) \leq \frac{2}{\Phi^2(G)} \ln \left(\frac{320}{s(G)}\right)\log_2 \left(\frac{14}{s(G)}\right)  + 3 \log_2 \left(\frac{14}{s(G)}\right) + 3
 	\end{equation*}
 \end{proposition}
 
@@ -1754,11 +1617,6 @@ The second step in our approach is to lower bound the local spread and conductan
 
 Taking these results as given, the proof of Theorem \ref{thm: mixing_time_upper_bound} is more or less complete. Since the condition $\min_{u \in \Csig[\Xbf]} \deg(u;\widetilde{G}_{n,r}) \geq 10$ is satisfied, we may apply Proposition \ref{prop: pointwise_mixing_time}. Noting that: 
 \begin{itemize}
-	\item by~\eqref{eqn: local_spread}, for any constant $c > 0$,
-	\begin{align*}
-	\log\biggl(\frac{1}{s(\wt{G}_{n,r})}\biggr) & \leq d \log\biggl(c^{1/d}\frac{40^{1/d}}{9^{1/d}} \cdot \frac{(1 + \delta)^{2/d}}{(1 - \delta)^{2/d}} \cdot \frac{\lambda_{\sigma}^{2/d}L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) \\
-	& \leq d \frac{(1 + \delta)^{2/d}}{(1 - \delta)^{2/d}} \log\biggl(\frac{40^{1/d}}{9^{1/d}} \cdot \frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr)
-	\end{align*}
 	\item By assumption $r/\sigma \leq 1/(4d)$. Thus 
 	\begin{equation*}
 	1 - \frac{r}{4\rho L} \geq 1 - \frac{r}{4\sigma} \geq \frac{15}{16}
@@ -1773,16 +1631,22 @@ Taking these results as given, the proof of Theorem \ref{thm: mixing_time_upper_
 	\frac{1}{\Phi^2(\wt{G}_{n,r})} & \leq \frac{36^2 \cdot 16^2}{15^2(1 - \delta)^2(1 - 1/(4\sqrt{2}))^4 2\pi} \cdot \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)}{r^2 \lambda_{\sigma}^4} \\
 	& \leq \frac{511}{(1 - \delta)^2} \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)}{r^2 \lambda_{\sigma}^4}.
 	\end{align*}
+	\item by~\eqref{eqn: local_spread}, for any constant $c \geq 1$,
+	\begin{align*}
+	\log\biggl(\frac{c}{s(\wt{G}_{n,r})}\biggr) & \leq d \log\biggl(c^{1/d}\frac{40^{1/d}}{9^{1/d}\bigl(1 - \sqrt{\frac{d + 2}{2\pi}}\frac{r}{\sigma}\bigr)^{2/d}} \cdot \frac{(1 + \delta)^{2/d}}{(1 - \delta)^{2/d}} \cdot \frac{\lambda_{\sigma}^{2/d}L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) \\
+	& \leq d \frac{(1 + \delta)^{2/d}}{(1 - \delta)^{2/d}} \log\biggl(c^{1/d}\frac{60^{1/d}}{9^{1/d} } \cdot \frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr)
+	\end{align*}
 \end{itemize}
 Hence, by Proposition~\ref{prop: pointwise_mixing_time} it holds that
 \begin{align*}
-\tau_{\infty}(\widetilde{G}_{n,r}) & \leq \frac{2}{\Phi^2(\widetilde{G}_{n,r})} \log \left(\frac{1440}{s(\widetilde{G}_{n,r})}\right)\log \left(\frac{14}{s(\widetilde{G}_{n,r})}\right)  + 3 \log \left(\frac{14}{s(\widetilde{G}_{n,r})}\right) + 3 \\
-& \leq \frac{1022(1 + \delta)^{4/d}}{(1 - \delta)^{4/d + 2}} \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)}{r^2 \lambda_{\sigma}^4} \log\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) \log\biggl(c_5^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + \\
-& ~~ 3d\frac{(1 + \delta)^{2/d}}{(1 - \delta)^{2/d}} \log\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + 3 \\
-& \leq 1022\biggl(1 + \Bigl(\frac{32}{d} + 8\Bigr)\delta\biggr) \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)}{r^2 \lambda_{\sigma}^4} \log\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) \log\biggl(c_5^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + \\
-& ~~ 3d(1 + 32\delta)\log\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + 3 
+\tau_{\infty}(\widetilde{G}_{n,r}) & \leq \frac{2}{\Phi^2(\widetilde{G}_{n,r})} \ln \left(\frac{320}{s(\widetilde{G}_{n,r})}\right)\log_2 \left(\frac{14}{s(\widetilde{G}_{n,r})}\right)  + 3 \log_2 \left(\frac{14}{s(\widetilde{G}_{n,r})}\right) + 3 \\
+& \leq \frac{1022(1 + \delta)^{4/d}}{(1 - \delta)^{4/d + 2}} \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)^3}{r^2 \lambda_{\sigma}^4} \log_2\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) \ln\biggl(c_5^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + \\
+& ~~ 3d\frac{(1 + \delta)^{2/d}}{(1 - \delta)^{2/d}} \log_2\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + 3 \\
+& \leq 1022\biggl(1 + \Bigl(\frac{32}{d} + 8\Bigr)\delta\biggr) \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)^3}{r^2 \lambda_{\sigma}^4} \log_2\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) \ln\biggl(c_5^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + \\
+& ~~ 3d(1 + 32\delta)\log_2\biggl(c_4^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr) + 3 \\
+& \leq 1028 \biggl(1 + 40\delta\biggr) \frac{\Lambda_{\sigma}^4\rho^2 L^2 (d + 2)^3}{r^2 \lambda_{\sigma}^4} \ln^2\biggl(c_5^{1/d}\frac{\lambda_{\sigma}^{2/d} L\rho}{\Lambda_{\sigma}^{2/d} 2r}\biggr)
 \end{align*}
-where $c_4 := 63, c_5 := 2240$, and the final inequality holds whenever $\delta < 1/(8 + 16/d)$. Thus the Theorem holds upon proper choice of universal constants $c_2 = 1022$, $c_3 = 3$, and constants $b_1 = b_3^d + b_4$, $b_2 = \min\{\wt{\vol}_{\Pbb,r}(\Csig), \lambda_{\sigma}\nu_dr^d/8\}$.
+where $c_4 := 94, c_5 := 2134$, and the second to last inequality holds whenever $\delta < 1/(8 + 16/d)$. Thus the Theorem holds upon proper choice of universal constants $c_2 = 1028$, $c_3 = 40$, and constants $b_1 = b_3^d + b_4$, $b_2 = \min\{\wt{\vol}_{\Pbb,r}(\Csig), \lambda_{\sigma}\nu_dr^d/8\}$.
 
 In the rest of this section we proceed to proving Propositions \ref{prop: pointwise_mixing_time} and \ref{prop: local_spread_conductance}.
 
@@ -1802,11 +1666,11 @@ Our goal is to demonstrate that for a sufficiently large $t$, $d_{\textrm{unif}}
 As we will see, an upper bound on the uniform distance can be obtained from an analogous upper bound on the total variation distance. First, however, we upper bound the total variation distance $||q_v^{(t)} - \pi||_{\mathrm{TV}}$ as a function of the local spread $s(G)$, the conductance $\Phi(G)$ and the number of steps $t$.
 \begin{lemma}
 	\label{lem: tv_mixing_time}
-	For any $v \in V$, and any $0 < a \leq 1/4$,
+	For any $v \in V$, and any $0 < a < 1/4$,
 	\begin{align}
 	\norm{q_v^{(t + 3)} - \pi}_{\mathrm{TV}} \leq \max\set{as(G), \frac{1}{8} + \frac{9a}{20} + \frac{1}{2 \min_{u \in V} \deg(u;G)}} 
 	\nonumber \\
-	~~~~~~~~~~~~~~~~~~~~~ + \left(\frac{1}{1 - 2as(G)} +  \frac{1}{2 as(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t \label{eqn: tv_mixing_time}
+	~~~~~~~~~~~~~~~~~~~~~ + \left(\frac{1}{1 - 2as(G)} +  \frac{1}{2 as(G)}\right) \left(1 - \frac{\Phi^2(G)}{2}\right)^t. \label{eqn: tv_mixing_time}
 	\end{align}
 \end{lemma}
 
@@ -1815,7 +1679,7 @@ As mentioned, a bound on the total variation distance implies a corresponding bo
 	\label{lem: tv_to_uniform_distance}
 	Let $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{s(G)}{14}$. Then,
 	\begin{equation*}
-	d_{\mathrm{unif}}(q_v^{(t + 3)},\pi) \leq \frac{1}{4}
+	d_{\mathrm{unif}}(q_v^{(t + 3)},\pi) \leq \frac{1}{4}.
 	\end{equation*}
 \end{lemma}
 
@@ -1823,15 +1687,15 @@ As mentioned, a bound on the total variation distance implies a corresponding bo
 \begin{equation*}
 \tau_1 = \frac{2}{\Phi^2(G)} \log \left(\frac{1440}{s(G)}\right)\log \left(\frac{14}{s(G)}\right)  + 3 \log \left(\frac{14}{s(G)}\right) + 3
 \end{equation*}
-the uniform distance $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$, which proves the claim of Proposition \ref{prop: pointwise_mixing_time}. Fix $a = \frac{1}{18}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \log \left(\frac{80}{a s(G)}\right)$, so that
+the uniform distance $d_{\textrm{unif}}(q_v^{(\tau_1 + 3)}, \pi) \leq \frac{1}{4}$, which proves the claim of Proposition \ref{prop: pointwise_mixing_time}. Fix $a = \frac{1}{12}$, and let $\tau_0 = \frac{2}{\Phi^2(G)} \ln \left(\frac{320}{ s(G)}\right)$, so that
 \begin{equation*}
-\left(1 - \frac{\Phi^2(G)}{2}\right)^{\tau_0} \leq \exp(- \tau_0\Phi^2(G)/2) \leq \frac{as(G)}{80}.
+\left(1 - \frac{\Phi^2(G)}{2}\right)^{\tau_0} \leq \exp(- \tau_0\Phi^2(G)/2) \leq \frac{s(G)}{320}.
 \end{equation*}
-Recall that by assumption, $\min_{u \in V} \deg(u;G) \geq 10$. Moreover note that for $a \leq 1/4$, $2as(G) < 1/2 < 1 - 2as(G)$, since $s(G) \leq 9/10 < 1$. By Lemma \ref{lem: tv_mixing_time} we therefore obtain
+Recall that by assumption, $\min_{u \in V} \deg(u;G) \geq 10$. Moreover note that since $a = 1/12 \leq 1/4$ and $s(G) \leq 9/10 < 1$, we have $2as(G) < 1/2 < 1 - 2as(G)$. By Lemma \ref{lem: tv_mixing_time} we therefore obtain
 \begin{equation*}
-\norm{q_v^{(\tau_0 + 3)} - \pi}_{\mathrm{TV}} \leq \max \set{\frac{1}{20}, \frac{1}{8} + \frac{1}{20} + \frac{1}{20}} + \left(\frac{1}{as(G)}\right) \frac{as(G)}{80} \leq \frac{1}{4}.
+\norm{q_v^{(\tau_0 + 3)} - \pi}_{\mathrm{TV}} \leq \max \set{\frac{1}{20}, \frac{1}{8} + \frac{9}{240} + \frac{1}{20}} + \left(\frac{12}{s(G)}\right) \frac{s(G)}{320} = \frac{1}{4}.
 \end{equation*}
-It is a well-known fact (see e.g.~\cite{montenegro2002}) that if $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{4}$, then for any $0 < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{\mathrm{TV}} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log(\frac{14}{s(G)})$, 
+It is a well-known fact (see e.g.~\cite{montenegro2002}) that if $\norm{q_v^{(t)} - \pi}_{\mathrm{TV}} \leq \frac{1}{4}$, then for any $0 < \epsilon < 1$, $\norm{q_v^{(t\log_2(1/\epsilon))} - \pi}_{\mathrm{TV}} \leq \epsilon$. Therefore, letting $\tau_1 = (\tau_0 + 3) \log_2(\frac{14}{s(G)})$, 
 \begin{equation*}
 \norm{q_v^{(\tau_1)} - \pi}_{\mathrm{TV}} \leq \frac{s(G)}{14}
 \end{equation*}
@@ -2394,7 +2258,7 @@ where $\delta$ is a small number we will determine later on. Let $\mc{S}_{\delta
 	\end{equation*}
 	\item[2.] For any $\mc{S} \subseteq \mc{C}_{\sigma}$, it holds that
 	\begin{equation*}
-	\frac{\nu(\mc{S})}{\nu(\mc{C}_{\sigma})} \cdot \ell \leq \wt{\pi}_{\nu,r}(\mc{S}) \leq \frac{\nu_d r^d \nu(\mc{S})}{I(\mc{C}_{\sigma})}
+	\frac{\nu_dr^d\nu(\mc{S})}{J(\mc{C}_{\sigma})} \cdot \ell \leq \wt{\pi}_{\nu,r}(\mc{S}) \leq \frac{\nu_d r^d \nu(\mc{S})}{J(\mc{C}_{\sigma})}
 	\end{equation*}
 	\item[3.] From \textcolor{red}{Abbasi-Yadkori} (see also the seminal works of \textcolor{red}{(Lovasz and Simonovits)} and \textcolor{red}{(Dyer)}), we have the following isoperimetric inequality.
 	\begin{lemma}[Isoperimetry of Lipschitz embeddings of convex sets.]
@@ -2441,7 +2305,7 @@ Now, suppose $\wt{\pi}_{\nu,r}(\mc{S}^{\delta}) \leq (1 - a) \wt{\pi}_{\nu,r}(\m
 \end{equation*}
 Otherwise, we deduce that
 \begin{align*}
-\wt{Q}_{\nu,r}(\mc{S},\mc{R}) & \geq \frac{\nu(\mc{S}_{\delta})\nu_dr^d}{2I(\mc{C}_{\sigma})} \cdot \ell \delta \tag{Step 2} \\
+\wt{Q}_{\nu,r}(\mc{S},\mc{R}) & \geq \frac{\nu(\mc{S}_{\delta})\nu_dr^d}{2J(\mc{C}_{\sigma})} \cdot \ell \delta \tag{Step 2} \\
 & \geq \frac{\dist(\mc{S}^{\delta},\mc{R}^{\delta})}{\rho L} \frac{\nu_dr^d\min\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\}}{J(\mc{C}_{\sigma})}  \ell^2 \delta \tag{Step 3}\\
 & \geq \frac{r (1 - 2\delta)\sqrt{2\pi}}{\rho L\sqrt{d + 2}} \frac{\nu_dr^d \min\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\}}{J(\mc{C}_{\sigma})}  \ell^2 \delta \tag{Step 4} \\
 & \geq  \frac{r (1 - 2\delta)\sqrt{2\pi}}{\rho L\sqrt{d + 2}} \min\bigl\{\wt{\pi}_{\nu,r}(\mc{S}^{\delta}),\wt{\pi}_{\nu,r}(\mc{R}^{\delta})\bigr\} \ell^2 \delta \tag{Step 2} \\
@@ -2559,7 +2423,7 @@ In this section, we establish some inequalities regarding the volume of (interse
 	
 	We now establish~\eqref{eqn:overlap_balls_2}. Assume that $\|x - y\| = \sigma$, as otherwise if $\|x - y\| < \sigma$ the volume of the overlap will only grow. Then $B(x,r) \cap B(y,\sigma)$ contains a spherical cap of radius $r$ and height $r - \frac{r^2}{2\sigma}$, and similar derivations to those used to show~\eqref{eqn:overlap_balls_1} imply that
 	\begin{equation*}
-	\nu(\cap_r(r - r^2/(2\sigma))) \geq \frac{1}{2}\nu_dr^d\biggl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\biggr).
+	\nu(\mathrm{cap}_r(r - r^2/(2\sigma))) \geq \frac{1}{2}\nu_dr^d\biggl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\biggr).
 	\end{equation*}
 \end{proof}
 
@@ -2620,7 +2484,7 @@ an upper bound on the ratio of Gamma functions.
 \label{sec:proof_of_volume_ssd}
 
 In this section, we prove Theorem \ref{thm: volume_ssd}. To do so, we apply the following Lemma, which upper bounds the volume of the symmetric set difference in terms of normalized cut and mixing time on an arbitrary graph $G$. 
-It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except with tighter constants.
+It is essentially identical to Lemma 3.4 of~\citep{zhu2013}, except with tighter constants.
 \begin{lemma}
 	\label{lem:zhu}
 	Let $G = (V,E)$ be a undirected, unweighted, connected graph and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{\beta,v}$ is
@@ -2629,11 +2493,11 @@ It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except 
 	\end{equation*} 
 	For some $A \subseteq V$, suppose that 
 	\begin{equation*}
-	\alpha \leq \min\Bigl\{\frac{1}{15}, \frac{1}{5\tau_{\infty}(G[A])}\Bigr\},~~ \beta, \varepsilon \leq \frac{1}{4\vol(A;G)}.
+	\alpha \leq \min\Bigl\{\frac{1}{2000}, \frac{1}{2\tau_{\infty}(G[A])}\Bigr\},~~ \beta \leq \frac{1}{5\vol(A;G)},~~ \varepsilon \leq \frac{1}{25\vol(A;G)}
 	\end{equation*}
 	Then there exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A^g;G)$ such that for any $v \in A^g$, the sweep cut $S_{\beta,v}$ satisfies
 	\begin{equation*}
-	\vol(A \vartriangle S_{\beta,v};G) \leq \left(\frac{3}{\beta} + \frac{200}{9\vol(A;G)}\right) \frac{\Phi(A;G)}{\alpha}
+	\vol(A \vartriangle S_{\beta,v};G) \leq 6\frac{\Phi(A;G)}{\alpha \beta}.
 	\end{equation*}
 \end{lemma}
 \begin{proof}
@@ -2641,20 +2505,21 @@ It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except 
 	\begin{equation*}
 	\wt{\pi}(u) = \frac{\deg(u;G[A])}{\vol(A;G[A])}
 	\end{equation*}
-	for the stationary distribution of a random walk over $G[A]$. The proof of this Lemma proceeds along very similar lines to that of~\textcolor{red}{(Zhu 2013 Lemma 3.4)}. We directly use the following three inequalities, derived in that work:
+	for the stationary distribution of a random walk over $G[A]$. The proof of this Lemma proceeds along very similar lines to that of~\citep[Lemma 3.4]{zhu2013}. In fact, we directly use the following three inequalities, derived in that work:
 	\begin{itemize}
-		\item \textcolor{red}{(Zhu 2013 Lemma 3.2.)} For any seed node $v \in A$, the following inequalities hold for every $u \in A$:
+		\item \citep[Lemma 3.2]{zhu2013} For any seed node $v \in A$, the PPR vector is lower bounded,
 		\begin{equation}
 		\label{pf:zhu1}
-		\wt{p}_v(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr) \cdot \wt{\pi}(u)
+		\wt{p}_v(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr) \cdot \wt{\pi}(u),
 		\end{equation}
-		\item \textcolor{red}{(Zhu 2013 Corollary 3.3)} For any seed node $v \in A$, there exists a non-negative distribution vector $\ell$ supported on $A$ for which
+		for every $u \in A$.
+		\item \citep[Corollary 3.3]{zhu2013} For any seed node $v \in A$, there exists a non-negative distribution vector $\ell$ supported on $A$ for which
 		\begin{equation}
 		\label{pf:zhu2}
 		p_v(u) \geq \wt{p}_v(u) - \wt{p}_{\ell}(u) - \varepsilon \cdot \deg(u;G),
 		\end{equation}
-		and $\|\ell\|_1 \leq 2\frac{\Phi(A;G)}{\alpha}$.
-		\item \textcolor{red}{(Zhu 2013 Lemma 3.1, Anderson 2007 Theorem 5.1)} There exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A;G)$ such that for every seed node $v \in A^g$, it holds that
+		for all $u \in A$. Furthermore $\|\ell\|_1 \leq 2\frac{\Phi(A;G)}{\alpha}$.
+		\item \citep[Lemma 3.1][Theorem 5.1]{zhu2013,andersen2006} There exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A;G)$ such that for every seed node $v \in A^g$, it holds that
 		\begin{equation}
 		\label{pf:zhu3}
 		\sum_{u \neq A} p_v(u) \leq 2\frac{\Phi(A;G)}{\alpha}.
@@ -2693,47 +2558,48 @@ It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except 
 	where the second upper bound follows from the upper bound on $\|\ell\|_1$, since $\sum_{u \in A} \wt{p}_{\ell}(u) = \|\ell\|_1$. 
 	Then, from the assumed upper bounds on $\alpha, \beta$ and $\varepsilon$ we obtain the inequality
 	\begin{equation*}
-	\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \geq \frac{9}{100\vol(A;G)}.
+	\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \geq \frac{2}{3}\beta,
 	\end{equation*}
-	We conclude that
+	and we conclude that
 	\begin{equation}
 	\label{pf:zhu5}
-	\vol(A^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \frac{200\Phi(A;G)}{9\alpha}.
+	\vol(A^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \frac{3\Phi(A;G)}{\alpha\beta}.
 	\end{equation}
 	Otherwise $u \in A \setminus A^{\mathrm{int}}$, and so $\mathrm{cut}(u, A^C;G[A]) \geq \alpha \cdot \beta \cdot \vol(A;G) \cdot \deg(u;G)$. Summing over all such vertices, we obtain
 	\begin{equation}
 	\label{pf:zhu6}
 	\vol(A \setminus A^{\mathrm{int}};G) \leq \frac{\Phi(A;G)}{\alpha \cdot \beta}.
 	\end{equation} 
-	The claim follows upon summing the upper bounds in~\eqref{pf:zhu3.5}, \eqref{pf:zhu5} and~\ref{pf:zhu6}.
+	The claim follows upon summing the upper bounds in~\eqref{pf:zhu3.5}, \eqref{pf:zhu5} and~\eqref{pf:zhu6}.
 	\end{proof}
 
 \paragraph{Proof of Theorem~\ref{thm: volume_ssd}.}
-First, we verify that the conditions of Lemma~\ref{lem:zhu} are met when $S = \Cset_{\sigma}[\Xbf]$, $G = G_{n,r}$, and the user-specified parameters satisfy the initialization conditions~\eqref{eqn: initialization}. By Theorem~\ref{thm: mixing_time_upper_bound} and \eqref{eqn: initialization}, the teleportation parameter $\alpha$ is upper bounded
+To prove Theorem~\ref{thm: volume_ssd}, we simply apply Lemma~\ref{lem:zhu} to the specific graph $G = G_{n,r}$ and cluster $A = \mc{C}_{\sigma}[\Xbf]$. We must first establish that the conditions of Lemma~\ref{lem:zhu} are met in this setting. Applying Theorem~\ref{thm: mixing_time_upper_bound} with $\delta = 1/200$ and recalling \eqref{eqn: initialization}, we have that for all $n$ sufficiently large, the following upper bound on $\alpha$:
 \begin{equation*}
-\alpha < \frac{1}{9\taubf(\theta)} \leq \frac{1}{9\tau_\infty(G_{n,r}(\Cset_{\sigma}[\Xbf])}
+\alpha < \frac{5}{12\taubf(\mc{C})} \leq \min\biggl\{\frac{1}{2000},\frac{1}{2\tau_\infty(G_{n,r}(\Cset_{\sigma}[\Xbf])} \biggr\}
 \end{equation*}
-with probability at least $1 - \frac{b_2}{n}$. Since we use an exact PPR vector $p_v = p_v^{(0)}$ to construct the sweep cut sets in Algorithm~\ref{alg: ppr}, we may apply Lemma~\ref{lem:zhu}. By this Lemma, there exists a set $\Csig[\Xbf]^g \subset \Csig[\Xbf]$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}(\frac{1}{100},\frac{2}{5})$, the sweep cut $S_{\beta,v}$ of $p(\alpha, v; G_{n,r})$ satisfies
+holds with probability at least $1 - \frac{b_5}{n} - 4n\exp\{-b_2n/200^2\}$. Additionally, in Algorithm~\ref{alg: ppr} we use an exact PPR vector $p_v = p_v^{(0)}$ to construct the sweep cut sets. Therefore by Lemma~\ref{lem:zhu}, there exists a set $\Csig[\Xbf]^g \subset \Csig[\Xbf]$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any $\beta \leq  \frac{1}{5\vol_{n,r}(\Csig[\Xbf])}$, the sweep cut $S_{\beta,v}$ of $p(\alpha, v; G_{n,r})$ satisfies
 \begin{align}
-\vol_{n,r}(\Csig[\Xbf] \vartriangle S_{\beta,v}) & \leq \left(218\frac{\Phi_{n,r}(\Csig[\Xbf])}{\alpha}\right) \vol_{n,r}(\Csig[\Xbf]) \nonumber \\
-& \leq 2180 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf]) \label{eqn:volume_ssd_pf1}
+\vol_{n,r}(\Csig[\Xbf] \vartriangle S_{\beta,v}) & \leq \frac{6}{\alpha \beta}\Phi_{n,r}(\mc{C}_{\sigma}) \\
+& \leq \frac{20}{\beta} (1 + 4\delta) \kappa(\mc{C}) \label{eqn:volume_ssd_pf1}
 \end{align}
-where the latter inequality holds with probability at least $1 - 3\exp\set{-bn}$, and follows from Theorem~\ref{thm: conductance_upper_bound} and the lower bound $\alpha \geq \frac{1}{10 \tau_u(\theta)}$ given in \eqref{eqn: initialization}. 
+where the latter inequality holds with probability at least $1 - 3\exp\set{-1/(36)^2b_{10}n}$, and follows from setting $\delta = 1/36$ in Theorem~\ref{thm: conductance_upper_bound} and the lower bound $\alpha \geq \frac{1}{3 \tau_u(\mc{C})}$ given in \eqref{eqn: initialization}. 
 
-Now we show that we can apply~\eqref{eqn:volume_ssd_pf1} to the cluster estimate $\Cest$ output by Algorithm~\ref{alg: ppr}. Observe that $\Cest$ is itself a sweep cut as $\Cest = S_{\beta,v}$ for some $\beta \in \left(\frac{1}{50},\frac{1}{5}\right)\cdot\frac{1}{2{n \choose 2}\vol_{\Pbb,r}(\Csig)}$. Moreover, applying  Lemma~\ref{lem:ball_bounds_in_probability} with $\delta = 1/2$,
+Finally, note that $\Cest = S_{\beta,v}$ for some $\beta \in \left(\frac{1}{7},\frac{1}{6}\right)\cdot\frac{1}{2{n \choose 2}\vol_{\Pbb,r}(\Csig)}$. Applying  Lemma~\ref{lem:ball_bounds_in_probability} with $\delta = 1/5$, we obtain
 \begin{equation}
 \label{eqn:volume_ssd_pf2}
-\frac{1}{2}\vol_{\Pbb,r}(\Csig) \leq \frac{\vol_{n,r}(\Csig[\Xbf])}{2{n \choose 2}} \leq \frac{3}{2}\vol_{\Pbb,r}(\Csig)
+\frac{4}{5}\vol_{\Pbb,r}(\Csig) \leq \frac{\vol_{n,r}(\Csig[\Xbf])}{2{n \choose 2}} \leq \frac{6}{5}\vol_{\Pbb,r}(\Csig)
 \end{equation}
-with probability at least $1 - 2\exp\{-\frac{1}{4} n \vol_{\Pbb,r}(\Csig)^2\}$. Therefore, conditional on \eqref{eqn:volume_ssd_pf2} the cluster estimate $\Cest = S_{\beta,v}$ for some $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}\left(\frac{1}{100},\frac{2}{5}\right)$, and therefore the upper bound \eqref{eqn:volume_ssd_pf1} holds with respect to $\vol_{n,r}(\Cest \vartriangle \Csig[\Xbf])$. To summarize, we have shown that when
+with probability at least $1 - 2\exp\{-\frac{1}{25} n \vol_{\Pbb,r}(\Csig)^2\}$; thus $\Cest = S_{\beta,v}$ for some $\beta \in \frac{1}{\vol_{n,r}(\Csig[\Xbf])}\left(\frac{4}{35},\frac{1}{5}\right)$, and from \eqref{eqn:volume_ssd_pf1} we have that
 \begin{equation*}
-n \geq b_1(\log(n))^{\max\{\frac{3}{d},1\}}
+\vol_{n,r}(\Cest \vartriangle \Csig[\Xbf]) \leq 175 \cdot \kappa(\mc{C}) \cdot \vol_{n,r}(\mc{C}_{\sigma}[\Xbf]).
 \end{equation*}
+To summarize, we have shown that when $n$ is sufficiently large (as determined by setting $\delta = 1/200$ in ~\eqref{eqn: mixing_time_sample_size})
 then
 \begin{equation*}
-\vol_{n,r}(\Csig[\Xbf] \vartriangle \Cest) \leq  2180 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf])
+\vol_{n,r}(\Csig[\Xbf] \vartriangle \Cest) \leq 175 \cdot\kappa(\Cset)\cdot\vol_{n,r}(\Csig[\Xbf])
 \end{equation*} 
-with probability at least $1 - \frac{b_2}{n} - 3\exp\set{-(b + \frac{1}{4}\vol_{\Pbb,r}(\Csig)^2)n}$. We have proved Theorem~\ref{thm: volume_ssd} (upon appropriate choice of constants $b_2$ and $c$ in the theorem statement).
+with probability at least $1 - \frac{b_5}{n} - 4n\exp\{-b_2n/200^2\} - 3\exp\set{-(b_{10} + \frac{1}{5}\vol_{\Pbb,r}(\Csig)^2)n}$. We have proved Theorem~\ref{thm: volume_ssd} (upon appropriate choice of universal constant $c_0 = 175$, and constants $b_0 = \max\{2b_1, b_5\}$ and $b_{11} = \min\{b_2/200^2, b_{10} + \frac{1}{5}\vol_{\Pbb,r}(\Csig)^2\}$ in the theorem statement).
 
 \section{Proof of Theorem~\ref{thm: consistent_recovery_of_density_clusters}}
 \label{sec: proof_of_consistent_cluster_recovery}
@@ -2778,7 +2644,7 @@ We now collect the estimates on graph functionals we will use to complete the pr
 \begin{itemize}
 	\item By Theorem~\ref{thm: conductance_upper_bound},
 	\begin{equation*}
-	\Phi(\Csig[\Xbf]; G_{n,r}) \leq \Phibf(\theta) 
+	\Phi(\Csig[\Xbf]; G_{n,r}) \leq \Phibf(\mc{C}) 
 	\end{equation*}
 	with probability at least $1 - 3\exp\{-nb\}$. By \eqref{eqn: initialization}, $\alpha \geq 1/(10 \taubf(\theta))$ and therefore $2 \Phi(\Csig[\Xbf]; G_{n,r})/\alpha \leq 20 \kappa(\Cset)$.
 	\item By Lemma~\ref{lem:ball_bounds_in_probability}, for any $\delta \in (0,1)$,
@@ -3636,7 +3502,7 @@ Additionally, let $\widetilde{\vol}_{\Pbb,r}(\mathcal{S}) := \frac{1}{2{n \choos
 	With probability at least $1 - 2\exp\set{-n \delta^2 \vol_{\Pbb,r}(\Sset)^2}$,
 	\begin{equation}
 	\label{eqn:vol_bound}
-	(1 - \delta)\vol_{\Pbb,r}(\Sset) \leq \frac{\vol_{n,r}(\Sset[\Xbf])}{2{n \choose 2}}\leq 2(1 + \delta)\vol_{\Pbb,r}(\Sset).
+	(1 - \delta)\vol_{\Pbb,r}(\Sset) \leq \frac{\vol_{n,r}(\Sset[\Xbf])}{2{n \choose 2}}\leq 2(1 + \delta)\cut_{\Pbb,r}(\Sset).
 	\end{equation}
 	With probability at least $1 - 2\exp\set{-n \delta^2 \cut_{\Pbb,r}(\Sset)^2}$,
 	\begin{equation}
@@ -3663,8 +3529,10 @@ Additionally, let $\widetilde{\vol}_{\Pbb,r}(\mathcal{S}) := \frac{1}{2{n \choos
 	\end{equation}
 \end{lemma}
 \begin{proof}{(of Lemma~\ref{lem:ball_bounds_in_probability})}
+	\\
+	\\
 	\hfill 
-	\paragraph{Proof of \eqref{eqn:degwt_bound}, \eqref{eqn:degpr_bound}:}
+	\textit{Proof of \eqref{eqn:degwt_bound}, \eqref{eqn:degpr_bound}:}
 	Under~\ref{asmp: bounded_density}, we have that for every $x_j \in \Csig[\Xbf]$
 	\begin{equation*}
 	\mathbb{E}(\widetilde{\deg}_{n,r}(x_j)) \leq \Lambda_{\sigma} \nu_d r^d;
@@ -3679,16 +3547,19 @@ Additionally, let $\widetilde{\vol}_{\Pbb,r}(\mathcal{S}) := \frac{1}{2{n \choos
 		\sigma} \nu_d r^d.
 	\end{equation*} 
 	Then \eqref{eqn:degwt_bound} and \eqref{eqn:degpr_bound} each follow from Lemma~\ref{lem:bernstein_union}.
-	\paragraph{Proof of \eqref{eqn:volwt_bound}, \eqref{eqn:vol_bound}, \eqref{eqn:cut_bound}:}
-	
+	\\
+	\\
+	\noindent \textit{Proof of \eqref{eqn:volwt_bound}, \eqref{eqn:vol_bound}, \eqref{eqn:cut_bound}:}
 	We have that $\frac{1}{2{n \choose 2}}\widetilde{\vol}_{n,r}(\Csig[\Xbf])$, $\frac{1}{2{n \choose 2}}\vol_{n,r}(\Sset[\Xbf])$, $\frac{1}{2{n \choose 2}}\cut_{n,r}(\Sset[\Xbf])$ are each order-2 U statistics, with respective kernels
 	\begin{align*}
 	h_{\widetilde{\vol}}(x_i,x_j) & = \1(x_i \in \Csig)\1(x_j \in \Csig)\1(\norm{x_i - x_j} \leq r), \\ h_{\cut}(x_i,x_j) & = \1(x_i \in \Csig)\1(x_j \notin \Csig)\1(\norm{x_i - x_j} \leq r) \\
 	h_{\vol}(x_i,x_j) & = \1(x_i \in \Csig)\1(\norm{x_i - x_j} \leq r).
 	\end{align*}
 	We may therefore apply Lemma~\ref{lem:hoeffding} in each case to obtain the stated bounds.
-	
-	\paragraph{Proof of \eqref{eqn:cardinality}:}
+	\\
+	\\
+	\noindent
+	\textit{Proof of \eqref{eqn:cardinality}:}
 	Apply Lemma~\ref{lem:hoeffding_2} to $\Csig$.
 \end{proof}
 

@@ -181,6 +181,32 @@
 \date{\today}
 \maketitle
 
+\chapter{Normalized cut}
+To recall, our upper bound on normalized cut---ignoring the terms that depend on the density---is 
+\begin{equation*}
+\wt{\Phi}_{\nu,r}(\mc{C}_{\sigma}) \lessapprox \frac{16dr}{9\sigma}.
+\end{equation*}
+\section{Lower bound on normalized cut}
+Our goal is to examine the tightness of our upper bound on normalized cut (Theorem 10 of our JMLR submission), by giving a comparable lower bound. Recall that the (uniform, population level) normalized cut of a set $\mc{C}_{\sigma}$ is given by
+\begin{equation*}
+\Phi_{\nu,r}(\mc{C}_{\sigma}) := \frac{\int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx}{\int_{\mc{C}_{\sigma}} \nu(B(x,r)) \,dx}.
+\end{equation*}
+As informed by the isoperimetric ratio, the worst-case for a functional like normalized cut should be when $\mc{C}_{\sigma}$ by a $d$-dimensional ball. Letting $\mc{C}_{\sigma} = B(0,\sigma)$, we have that
+\begin{equation*}
+\frac{\int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx}{\int_{\mc{C}_{\sigma}} \nu(B(x,r)) \,dx} = \frac{1}{\nu_d^2 r^d \sigma^d} \int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx.
+\end{equation*}
+If $\|x\| < \sigma - r$, then $B(x,r) \setminus \mc{C}_{\sigma} = \emptyset$. Otherwise $\sigma - r \leq \|x\| \leq \sigma$, and if $r \ll \sigma$ then $B(x,r) \setminus \mc{C}_{\sigma} \approx \mathrm{cap}_{r}(\|x\| - (\sigma - r))$. Converting to polar coordinates, we have:
+\begin{align*}
+\int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx & \approx s_d \int_{\sigma - r}^{\sigma} \nu(\mathrm{cap}_{r}(x - (\sigma - r))) t^{d - 1} \,dt \\
+& \geq s_d (\sigma - r)^{d - 1} \int_{\sigma - r}^{\sigma} \nu(\mathrm{cap}_{r}(t - (\sigma - r)))  \,dt \\
+& = s_d (\sigma - r)^{d - 1} \int_{0}^{r} \nu(\mathrm{cap}_{r}(z)  \,dz.
+\end{align*}
+As calculated below~\eqref{eqn:lb_conductance_1}, $\int_{0}^{r} \nu(\mathrm{cap}_{r}(z)  \,dz = \frac{1}{d + 1} \nu_d r^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma(d/2 + 1/2)\sqrt{\pi}} \approx \frac{1}{d + 1} \nu_d r^{d + 1} \frac{\sqrt{d + 2}}{\sqrt{2\pi}}$ and hence
+\begin{equation*}
+\Phi_{\nu,r}(\mc{C}_{\sigma}) \approx s_d (\sigma - r)^{d - 1}\frac{1}{d + 1} \nu_d r^{d + 1} \frac{\sqrt{d + 2}}{\sqrt{2\pi}} \frac{1}{\nu_d^2 r^d \sigma^d} \approx \frac{ \sqrt{d + 2}}{(d + 1)\sqrt{2\pi}} \cdot \frac{dr}{\sigma}.
+\end{equation*}
+By contrast, our upper bound is $\approx dr/\sigma$, revealing a gap of roughly $\frac{ \sqrt{d + 2}}{(d + 1)\sqrt{2\pi}}$. 
+
 \chapter{Lower bound for conductance of continuous-space ball walk}
 For $x \in \mc{C}_{\sigma}$ and measurable $\Sset \subseteq \mc{C}_{\sigma}$, let $\ell_{\nu,r}(x) = \nu(B(x,r) \cap \mc{C}_{\sigma})$ and ${J}_{\nu,r}(\mc{S}) = \int_{\mc{S}} \ell_{\nu,r}(x) \,dx$. Further define
 \begin{equation*}
@@ -457,6 +483,46 @@ Lemma~\ref{lem:volume_perturbation} bounds the difference $\nu(B(x,r) \cap \mc{C
 	and the upper bound $\nu(B(x,r) \cap \mc{C}_{\sigma}) \leq \nu(B(y,r) \cap \mc{C}_{\sigma}) +  \nu_dr^dd\|y - x\|/(r - (d - 1)\|y - x\|)$ follows by Bernoulli's inequality (\textcolor{red}{(Lemma 22)}). Reversing $x$ and $y$ gives an equivalent upper bound on $\nu(B(y,r) \cap \mc{C}_{\sigma})$.
 \end{proof}
 
+\section{Upper bound on conductance}
+To investigate the tightness of Lemma~\ref{lem: uniform_continuous_conductance}, we give an accompanying upper bound on $\wt{\Phi}_{\nu,r}$. Let 
+\begin{equation*}
+\mc{C}_{\sigma} = [-\sigma,\sigma]^{d - 1} \otimes [-\rho/2,\rho/2],
+\end{equation*}
+and consider the partition of $\mc{C}_{\sigma}$ induced by the hyperplane $\{x \in \Rd: x_d = 0\}$, i.e
+\begin{equation*}
+\mc{L} = [-\sigma,\sigma]^{d - 1} \otimes [-\rho/2,0),~~\mc{R} = [-\sigma,\sigma]^{d - 1} \otimes [0,\rho/2].
+\end{equation*}
+Recalling that 
+\begin{equation*}
+\wt{\Phi}_{\nu,r}(\mc{L}) = \frac{\wt{Q}_{\nu,r}(\mc{L},\mc{R})}{\wt{\pi}_{\nu,r}(\mc{L})} = \frac{\int_{\mc{L}} \nu(B(x,r) \cap \mc{R}) \,dx}{\int_{\mc{L}} \nu(B(x,r) \cap \mc{C}_{\sigma}) \,dx} 
+\end{equation*}
+our goal will be to upper bound the numerator and lower bound the denominator of the above expression.
+
+
+We begin by upper bounding the numerator. For any $x \in \mc{L}$, either $\dist(x,\mc{R}) = -x \leq r$ in which case $B(x,r) \cap \mc{R} \subset \mathrm{cap}_r(r + x)$, or $\dist(x,\mc{R}) = -x > r$ in which case $B(x,r) \cap \mc{R} = \emptyset$. Thus
+\begin{equation}
+\label{eqn:lb_conductance_1}
+\int_{\mc{L}} \nu\bigl(B(x,r) \cap \mc{R}\bigr) \,dx \leq (2\sigma)^{d - 1} \int_{-r}^{0} \nu(\mathrm{cap}_r(r + x)) \,dx = (2\sigma)^{d - 1} \int_{0}^{r} \nu\bigl(\mathrm{cap}_r(r - x)\bigr) \,dx.
+\end{equation}
+Recalling that the volume of a hyperspherical cap is given by $\nu(\mathrm{cap}_r(h)) = \frac{1}{2}\nu_dr^dI_{1 - \alpha}\biggl(\frac{d + 1}{2};\frac{1}{2}\biggr)$ for $\alpha = 1 - \frac{2rh - h^2}{r^2}$, we have that
+\begin{align*}
+\int_{0}^{r} \nu\bigl(\mathrm{cap}_r(r - x)\bigr) \,dx & = \frac{1}{2}\nu_dr^d \int_{0}^{r} I_{1 - x^2/r^2}\Bigl(\frac{d + 1}{2}; \frac{1}{2}\Bigr) \,dx \\
+& = \frac{1}{2}\nu_dr^{d + 1} \int_{0}^{1} I_{1 - z^2}\Bigl(\frac{d + 1}{2}; \frac{1}{2}\Bigr) \,dz \tag{substituting $z = x/r$}\\ 
+& = \frac{1}{2}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \int_{0}^{1} \int_{0}^{1 - z^2} u^{(d - 1)/2} (1 - u)^{-1/2} \,du \,dz \\
+& = \frac{1}{2}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \int_{0}^{1} \int_{0}^{\sqrt{1 - u}} u^{(d - 1)/2} (1 - u)^{-1/2} \,dz \,du \tag{Fubini's Theorem} \\
+& = \frac{1}{2}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \int_{0}^{1} u^{(d - 1)/2} \,du \\
+& = \frac{1}{d + 1}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}},
+\end{align*}
+and plugging back in to~\eqref{eqn:lb_conductance_1}, we obtain
+\begin{equation*}
+\int_{\mc{L}} \nu\bigl(B(x,r) \cap \mc{R}\bigr) \,dx \leq \frac{(2\sigma)^{d-1}}{d + 1}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \leq \frac{(2\sigma)^{d - 1} \nu_d r^{d + 1}\sqrt{d + 2}}{(d + 1)\sqrt{2\pi}}.
+\end{equation*}
+On the other hand, when $r \ll \sigma$ the denominator is $\int_{\mc{L}}\nu(B(x,r) \cap \mc{C}_{\sigma}) \,dx \approx \frac{1}{2}(2\sigma)^{d - 1} \rho \nu_d r^d$. Therefore,
+\begin{equation*}
+\wt{\Phi}_{\nu,r} \lessapprox \frac{2r(d + 2)^{1/2}}{(d + 1)\rho \sqrt{2\pi}}.
+\end{equation*}
+This matches our lower bound on $\wt{\Phi}_{\nu,r}$ up to a factor of $18/(2\pi\ell^2) \cdot \sqrt{(d + 2)/(d + 1)} < 3/\ell^2.$
+
 \chapter{Misclassification error of PPR}
 The following Lemma upper bounds the misclassification error of (a sweep cut of) a PPR vector, in terms of the \emph{normalized cut} and \emph{mixing time} functionals. It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except with tighter constants.
 \begin{lemma}
@@ -540,6 +606,79 @@ The following Lemma upper bounds the misclassification error of (a sweep cut of)
 		\end{equation*}	
 	\end{itemize}
 \end{proof}
+
+\chapter{Examples}
+
+In this chapter, we calculate a numerical value of our upper bounds for a few example density functions.
+
+\section{Mixture of two-(quasi)-uniforms}
+\textcolor{red}{(NOTE): This is quite similar to the density function used in our experiment, but not exactly the same.}
+
+The density function $q(x) \propto \wt{q}(x) + \wt{q}\bigl(x - z\bigr)$, where $z = (4\sigma,0) \in \Reals^2$, and 
+\begin{equation}
+\wt{q}(x) :\propto
+\begin{cases}
+\lambda,~ & x \in \{0\} \times [0,\wt{\rho}] =: \mc{C}, \\
+\lambda - \eta \cdot \dist(x,\mc{C}),~ & x \in \mc{C}_{\sigma} \setminus \mc{C}, \\
+(\lambda - \eta\sigma - \theta \cdot \dist(x,\mc{C}_{\sigma})^{\gamma}, & x \in (\mc{C}_{\sigma} + \sigma B) \setminus \mc{C}_{\sigma}, \\
+0,~ & \textrm{otherwise}.
+\end{cases}
+\end{equation}
+When $d = 2$, our upper bounds on mixing time and normalized cut become,
+\begin{align}
+\label{eqn: condition_number}
+\Phi_u(\mc{C}) 
+& = \frac{32}{9} \cdot \frac{r}{\sigma} \frac{\lambda}{(\lambda - \eta \sigma)}
+\frac{(\lambda - \eta \sigma - \theta \frac{r^{\gamma}}{\gamma +
+		1})}{(\lambda - \eta \sigma)} \\
+\tau_u(\mc{C}) & = 1028 \cdot 64 \cdot \frac{\lambda^4
+	(4\sigma^2 + \wt{\rho}^2)}{(\lambda - \eta \sigma)^4 r^2} \ln^2\Bigl(\sqrt{2134} \frac{\Lambda_{\sigma} \sqrt{4\sigma^2 + \wt{\rho}^2}}{\lambda_{\sigma} 2r}\Bigr)
+\end{align}
+Let us see how good these bounds are in the best-case. Put $\wt{\rho} = 0$, so that $\mc{C}_{\sigma} = B(0,\sigma)$ is geometrically well-conditioned. Put $\eta = 0$ and $\gamma = 1$ so that $\mc{C}$ is sharply vertically defined. Finally, put $r = \sigma/8$; our bounds improve as $r$ increases, but $r$ can be at most $\sigma/(4d)$ for our theory to apply. Our bounds then become
+\begin{align}
+\label{eqn: condition_number2}
+\Phi_u(\mc{C}) 
+& = \frac{4}{9} \cdot
+\frac{(\lambda - \theta)}{\lambda} \\
+\tau_u(\mc{C}) & = 1028 \cdot 4^7 \cdot \ln^2\Bigl(\sqrt{2134} \cdot 8 \Bigr)
+\end{align}
+with a resulting bound on PPR misclassification error of 
+\begin{equation*}
+\frac{1}{\vol_{n,r}(\mc{C}_{\sigma}[X])}\Delta(\wh{C},\mc{C}_{\sigma}[X]) \leq 175 \cdot \Phi_u(\mc{C}) \cdot \tau_u(\mc{C}) = 175 \cdot 115 \cdot 4^8 \cdot  \ln^2\Bigl(\sqrt{2134} \cdot 8 \Bigr) \cdot \frac{(\lambda - \theta)}{\lambda} \approx 10^{10.67} \cdot \frac{(\lambda - \theta)}{\lambda}
+\end{equation*}
+holding with high probability. Therefore if $\theta \geq (1 - 10^{-11.67})\lambda$, then with high probability $\frac{1}{\vol_{n,r}(\mc{C}_{\sigma}[X])}\Delta(\wh{C},\mc{C}_{\sigma}[X]) \leq \frac{1}{10}$. But of course, for such a value of $\theta$ the probability of $X ~ q$ landing in $\mc{C}_{\sigma, \sigma + r} = B(0,2\sigma) \setminus B(0,\sigma)$ would be only about $\frac{1}{2} \cdot \frac{3}{4}\pi \cdot 10^{-11.67}$. 
+
+
+The parameters $\gamma$ and $\theta$ will be made explicit later, but of course they are chosen so that $\lambda - \sigma \eta - \theta \sigma^{\gamma} \geq 0$. Finally $q_2$ is an arbitrary distribution over a repository of mass $\mc{R}$ that is non-intersecting with $\mc{C}_{\sigma}$ (the density $q_2$ and set $\mc{R}$ should be chosen to meet the requirement of (A4)---for instance, $\mc{R}$ might be a translation of $\mc{C}_{\sigma}$---but are otherwise unimportant.). 
+
+The set $\mc{C}_{\sigma}$ meets each of the assumptions (A1)-(A3), for parameter values:
+\begin{itemize}
+	\item \textit{Bounded density within cluster}: the maximum in-cluster density $\Lambda_{\sigma} = \lambda/2 = \frac{75}{81}\sigma^{\gamma}$, and the minimum in-cluster density  $\lambda_{\sigma} = \frac{1}{2}(\lambda - \sigma \eta) = \frac{135}{162} \sigma^{\gamma}$. 
+	\item \textit{Low noise density}: $\theta = \textcolor{red}{(?)}$ and $\gamma = \textcolor{red}{(?)}$. 
+	\item \textit{Lipschitz embedding}: The set $\mc{C}_{\sigma}$ is itself a convex set with diameter $\sqrt{4\sigma^2 + \rho^2}$. 
+\end{itemize}
+From this, we can compute the following upper bounds on normalized cut and mixing time:
+\begin{equation*}
+\Phi_u(\mc{C}) \leq \frac{4}{9} \cdot \frac{150}{135} \cdot \Bigl(1 - \frac{81}{135} \cdot \frac{\theta}{8^{\gamma}(\gamma + 1)}\Bigr)
+\end{equation*}
+and
+\begin{equation*}
+\tau_u(\mc{C}) \leq 1028 \cdot \Bigl(\frac{150}{135}\Bigr)^4 \cdot 4^6 \cdot \frac{4\sigma^2 + \rho^2}{\sigma^2} \ln^2\biggl(\sqrt{2134} \cdot \frac{150}{135} \cdot \frac{8 \sqrt{4\sigma^2 + \rho^2}}{\sigma}\biggr).
+\end{equation*}
+Hence,
+\begin{equation*}
+\kappa(\mc{C}) \leq 10^{6.51} \cdot \Bigl(1 - \frac{81}{135} \cdot \frac{\theta}{8^{\gamma}(\gamma + 1)}\Bigr) \cdot \frac{4\sigma^2 + \rho^2}{\sigma^2} \ln^2\biggl(\sqrt{2134} \cdot \frac{150}{135} \cdot \frac{8 \sqrt{4\sigma^2 + \rho^2}}{\sigma}\biggr)
+\end{equation*}
+and it follows from Theorem 5 that for $n$ sufficiently large,
+\begin{equation*}
+\Delta(\wh{C},\mc{C}_{\sigma}[X]) \leq 10^{8.75} \cdot \Bigl(1 - \frac{81}{135} \cdot \frac{\theta}{8^{\gamma}(\gamma + 1)}\Bigr) \cdot \frac{4\sigma^2 + \rho^2}{\sigma^2} \ln^2\biggl(\sqrt{2134} \cdot \frac{150}{135} \cdot \frac{8 \sqrt{4\sigma^2 + \rho^2}}{\sigma}\biggr)
+\end{equation*}
+with high probability.
+
+Thus, when $\rho = 0$, $\gamma = 0$ and $\theta = 135/81 \cdot (1 - 10^{-12})$ we have that
+\begin{equation*}
+\Delta(\wh{C},\mc{C}_{\sigma}[X]) \leq .1.
+\end{equation*}
 
 
 
