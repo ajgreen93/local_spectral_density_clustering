@@ -1,0 +1,546 @@
+\documentclass{report}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+\newcommand{\dist}{\mathrm{dist}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Work for revision of ``Local Spectral Clustering of Density Upper Level Sets''}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\chapter{Lower bound for conductance of continuous-space ball walk}
+For $x \in \mc{C}_{\sigma}$ and measurable $\Sset \subseteq \mc{C}_{\sigma}$, let $\ell_{\nu,r}(x) = \nu(B(x,r) \cap \mc{C}_{\sigma})$ and ${J}_{\nu,r}(\mc{S}) = \int_{\mc{S}} \ell_{\nu,r}(x) \,dx$. Further define
+\begin{equation*}
+\widetilde{P}_{\nu,r}(x; \Sset) := \frac{\nu(\Sset \cap B(x,r))}{\nu(\mc{C}_{\sigma} \cap B(x,r))}, \quad \widetilde{\pi}_{\nu,r}(\Sset) = \frac{J_{\nu,r}(\mc{S})}{J_{\nu,r}(\mc{C}_{\sigma})}, \quad  \widetilde{Q}_{\nu,r}(\Sset_1,\Sset_2) := \int_{\Sset_1} \widetilde{P}_{\nu,r}(x;\Sset_2) \,d\widetilde{\pi}_{\nu,r}(x).
+\end{equation*}
+The uniform continuous normalized cut and conductance are then
+\begin{equation*}
+\widetilde{\Phi}_{\nu,r}(\Sset) := \frac{\widetilde{Q}_{\nu,r}(\Sset, \Sset^c)}{\min\set{\widetilde{\pi}_{\nu,r}(\Sset),\widetilde{\pi}_{\nu,r}(\Sset^c)}}, \quad \widetilde{\Phi}_{\nu,r} := \min_{\Sset \subseteq \mc{C}_{\sigma}} \widetilde{\Phi}_{\nu,r}(\Sset),
+\end{equation*}
+where the minimum is taken over all measurable sets $\Sset \subseteq \mc{C}_{\sigma}$.
+
+\begin{lemma}
+	\label{lem: uniform_continuous_conductance}
+	Let $\mc{C}_{\sigma}$ satisfy Assumption \textcolor{red}{(A3)} (of our main document) for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \mc{C}_{\sigma}$ with Lipschitz constant $L$. Let $0 < \ell < 1/2$ be a number that satisfies $\ell_{\nu,r}(x) \geq \nu_d r^d \ell$ for all $x \in \mc{C}_{\sigma}$.  Then the uniform conductance $\widetilde{\Phi}_{\nu,r}$ is lower bounded:
+	\begin{equation*}
+	\widetilde{\Phi}_{\nu,r} \geq \Bigl(1 - \frac{r}{4\rho}\Bigr) \cdot\frac{\ell^2\sqrt{2\pi}}{9} \cdot \frac{r}{\rho L \sqrt{d + 2}}
+	\end{equation*}
+\end{lemma}
+Lemma~\ref{lem: overlap_balls} gives the lower bound $\ell \geq 1/2 \cdot (1 - r/\sigma \cdot \sqrt{(d + 2)/(2\pi)})$ leading to the following corollary.
+\begin{corollary}
+	\label{cor: uniform_continuous_conductance}
+	Let $\mc{C}_{\sigma}$ satisfy Assumption \textcolor{red}{(A3)} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \mc{C}_{\sigma}$ with Lipschitz constant $L$. Then the uniform conductance $\widetilde{\Phi}_{\nu,r}$ is lower bounded:
+	\begin{equation*}
+	\widetilde{\Phi}_{\nu,r} \geq \Bigl(1 - \frac{r}{4\rho}\Bigr) \Bigl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\Bigr)^2 \cdot \frac{\sqrt{2\pi}}{36} \cdot \frac{r}{\rho L \sqrt{d + 2}}
+	\end{equation*}
+\end{corollary}
+
+\subsection{Proof of Lemma~\ref{lem: uniform_continuous_conductance}}
+Lower bounds on the conductance of geometric random walks follow a typical pattern, in which one supplies an isoperimetric inequality, uses this to lower bound the ergodic flow $\wt{Q}$, and thereby derives a lower bound on the conductance. The proof of Lemma~\ref{lem: uniform_continuous_conductance} proceeds along these lines, and we start by sketching the chain of inequalities we will use. For a given partition $\{\mc{S},\mc{R}\}$ of $\mc{C}_{\sigma}$, write
+\begin{equation*}
+\mc{S}^{\delta} := \biggl\{u \in \mc{S}: \wt{P}(u,\mc{R}) \leq \delta \biggr\}~~\textrm{and}~~\mc{R}^{\delta} := \biggl\{u \in \mc{R}: \wt{P}(u,\mc{S}) \leq \delta \biggr\} 
+\end{equation*}
+where $\delta$ is a small number we will determine later on. Let $\mc{S}_{\delta} := \mc{C}_{\sigma} \setminus (\mc{S}^{\delta} \cup \mc{R}^{\delta})$. 
+\begin{enumerate}
+	\item[1.] The ergodic flow $\wt{Q}$ between $\mc{S}$ and $\mc{R}$ satisfies the following lower bound:
+	\begin{equation*}
+	\wt{Q}_{\nu,r}(\mc{S},\mc{R}) \geq \frac{1}{2} \wt{\pi}_{\nu,r}(\mc{S}_{\delta}) \cdot \delta.
+	\end{equation*}
+	\item[2.] For any $\mc{S} \subseteq \mc{C}_{\sigma}$, it holds that
+	\begin{equation*}
+	\frac{\nu(\mc{S})}{\nu(\mc{C}_{\sigma})} \cdot \ell \leq \wt{\pi}_{\nu,r}(\mc{S}) \leq \frac{\nu_d r^d \nu(\mc{S})}{I(\mc{C}_{\sigma})}
+	\end{equation*}
+	\item[3.] From \textcolor{red}{Abbasi-Yadkori} (see also the seminal works of \textcolor{red}{(Lovasz and Simonovits)} and \textcolor{red}{(Dyer)}), we have the following isoperimetric inequality.
+	\begin{lemma}[Isoperimetry of Lipschitz embeddings of convex sets.]
+		\label{lem: nonconvex_isoperimetry}
+		Let $\mc{C}_{\sigma}$ satisfy Assumption \textcolor{red}{(A3)} for some convex set $\mathcal{K}$ with diameter $\rho$, and measure-preserving mapping $g: \mathcal{K} \to \mc{C}_{\sigma}$ with Lipschitz constant $L$. Then, for any partition $(\Omega_1,\Omega_2,\Omega_3)$ of $\mc{C}_{\sigma}$, 
+		\begin{equation*}
+		\nu(\Omega_3) \geq 2\frac{\dist(\Omega_1, \Omega_2)}{\rho L} \min(\nu(\Omega_1), \nu(\Omega_2)).
+		\end{equation*}
+	\end{lemma}
+	\item[4.] 
+	The following Lemma relates the Euclidean distance $\|x - y\|$ to the the total variation distance
+	\begin{equation*}
+	\|\wt{P}(x,\cdot) - \wt{P}(y,\cdot)\|_{\mathrm{TV}} = \sup_{\mc{S} \subseteq \mc{C}_{\sigma}} |\wt{P}(x,\mc{S}) - \wt{P}(y,\mc{S}) |
+	\end{equation*}
+	\begin{lemma}
+		\label{lem: one_step_distributions}
+		For all $x,y \in \mc{C}_{\sigma}$ and any $\mc{S} \in \mc{C}_{\sigma}$, it holds that
+		\begin{equation}
+		\label{eqn:one_step_distributions_1}
+		\|x - y\| \geq \Bigl(\bigl|\wt{P}(x,\mc{S}) - \wt{P}(y,\mc{S})\bigr|\Bigr)\sqrt{\frac{2\pi}{d + 2}}r\ell
+		\end{equation}
+		Therefore, for any $\mc{S}_1,\mc{S}_2 \subseteq \mc{C}_{\sigma}$, it holds that
+		\begin{equation}
+		\label{eqn:one_step_distributions_2}
+		\dist(\mc{S}_1,\mc{S}_2) \geq \Bigl(\inf_{\substack{x \in \mc{S}_1 \\ y \in \mc{S}_2}}\|\wt{P}(x,\cdot) - \wt{P}(y,\cdot)\|_{\mathrm{TV}}\Bigr)\sqrt{\frac{2\pi}{d + 2}}r\ell.
+		\end{equation}
+	\end{lemma}
+	Note that for any $x \in \mc{S}^{\delta}, y \in \mc{R}^{\delta}$, we have that
+	\begin{equation*}
+	\wt{P}(x,\mc{S}) - \wt{P}(y,\mc{S}) = 1 - \bigl(\wt{P}(x,\mc{R}) + \wt{P}(y,\mc{S})\bigr) \geq 1 - 2\delta,
+	\end{equation*}
+	Thus, applying Lemma~\ref{lem: one_step_distributions} to $\mc{S}^{\delta}$ and $\mc{R}^{\delta}$ gives
+	\begin{equation*}
+	\dist(\mc{S}^{\delta},\mc{R}^{\delta}) \geq \bigl(1 - 2\delta\bigr) \cdot \sqrt{\frac{2\pi}{d + 2}}r\ell
+	\end{equation*}
+\end{enumerate}
+The claim of Lemma~\ref{lem: uniform_continuous_conductance}---i.e. a lower bound on the continuous normalized cut $\wt{\Phi}_{\nu,r}(\mc{S})$ that holds for any measurable $\mc{S} \subseteq \mc{C}_{\sigma}$---directly follows from these inequalities, as we now show. In particular, the ergodic flow $\wt{Q}(\mc{S},\mc{R})$ can be lower bounded
+\begin{equation*}
+\wt{Q}_{\nu,r}(\mc{S},\mc{R}) \geq \frac{1}{2}\wt{\pi}_{\nu,r}(\mc{S}_{\delta}) \cdot \delta. \tag{Step 1}
+\end{equation*}
+Now, suppose $\wt{\pi}_{\nu,r}(\mc{S}^{\delta}) \leq (1 - a) \wt{\pi}_{\nu,r}(\mc{S})$ or $\wt{\pi}_{\nu,r}(\mc{R}^{\delta}) \leq (1 - a) \wt{\pi}_{\nu,r}(\mc{R})$, for some $0 < a < 1$. Then $\wt{\pi}_{\nu,r}(\mc{S}_{\delta}) \geq a \min\{\wt{\pi}_{\nu,r}(\mc{S}),\wt{\pi}_{\nu,r}(\mc{R})\}$, and consequently,
+\begin{equation*}
+\wt{\Phi}_{\nu,r}(\mc{S}) = \frac{\wt{Q}_{\nu,r}(\mc{S},\mc{S}^c)}{\min\{\wt{\pi}_{\nu,r}(\mc{S}),\wt{\pi}_{\nu,r}(\mc{R})\}} \geq \frac{1}{2}a \delta.
+\end{equation*}
+Otherwise, we deduce that
+\begin{align*}
+\wt{Q}_{\nu,r}(\mc{S},\mc{R}) & \geq \frac{\nu(\mc{S}_{\delta})\nu_dr^d}{2I(\mc{C}_{\sigma})} \cdot \ell \delta \tag{Step 2} \\
+& \geq \frac{\dist(\mc{S}^{\delta},\mc{R}^{\delta})}{\rho L} \frac{\nu_dr^d\min\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\}}{J(\mc{C}_{\sigma})}  \ell^2 \delta \tag{Step 3}\\
+& \geq \frac{r (1 - 2\delta)\sqrt{2\pi}}{\rho L\sqrt{d + 2}} \frac{\nu_dr^d \min\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\}}{J(\mc{C}_{\sigma})}  \ell^2 \delta \tag{Step 4} \\
+& \geq  \frac{r (1 - 2\delta)\sqrt{2\pi}}{\rho L\sqrt{d + 2}} \min\bigl\{\wt{\pi}_{\nu,r}(\mc{S}^{\delta}),\wt{\pi}_{\nu,r}(\mc{R}^{\delta})\bigr\} \ell^2 \delta \tag{Step 2} \\
+& \geq \frac{r (1 - 2\delta)\sqrt{2\pi}}{\rho L\sqrt{d + 2}} \min\bigl\{\wt{\pi}_{\nu,r}(\mc{S}),\wt{\pi}_{\nu,r}(\mc{R})\bigr\}   \ell^2 \delta (1 - a). \tag{by hypothesis}
+\end{align*}
+Setting $\delta = 1/3$, we have
+\begin{equation*}
+\wt{\Phi}_{\nu,r}(\mc{S}) \geq \min\biggl\{\frac{\sqrt{2\pi} r}{9\sqrt{d + 2} \rho L} \ell^2(1 - a), \frac{a\ell}{6}\biggr\}
+\end{equation*}
+and putting $a = r\ell/(2\rho)$ yields the claim.
+
+Now, we turn to establishing the inequalities used in the above chain.
+
+\paragraph{Step 1: Lower bound the ergodic flow.}
+By symmetry, $\wt{Q}_{\nu,r}(\mc{S}_1,\mc{S}_2) = \wt{Q}_{\nu,r}(\mc{S}_1,\mc{S}_2)$, whence a direct computation yields
+\begin{equation*}
+2\wt{Q}_{\nu,r}(\mc{S}_1,\mc{S}_2) = \wt{Q}_{\nu,r}(\mc{S}_1,\mc{S}_2) + \wt{Q}_{\nu,r}(\mc{S}_2,\mc{S}_1) \geq \delta \wt{\pi}_{\nu,r}(\mc{S}_{\delta}).
+\end{equation*}
+
+\paragraph{Step 2: Estimate the stationary distribution.}
+
+Both the upper and lower  bounds on $\wt{\pi}_{\nu,r}(\mc{S})$ are a direct consequence of the following inequalities:
+\begin{equation*}
+\ell \nu_d r^d \nu(\mc{S})  \leq {J}_{\nu,r}(\mc{S}) \leq \nu_d r^d \nu(\mc{S}).
+\end{equation*}
+\paragraph{Step 3: Isoperimetric inequality.}
+NB: the proof of Lemma \ref{lem: nonconvex_isoperimetry} from first principles is non-trivial, even when the domain $\mc{C}_{\sigma}$ is itself convex, and is a primary technical contribution of the seminal work \textcolor{red}{(Lovasz 1990)}, extended by \textcolor{red}{(Dyer 1991)} among others. However, once the result is shown in the convex setting, it is not hard to show that it applies to Lipschitz transformations of convex sets as well.
+\begin{proof}[Proof of Lemma \ref{lem: nonconvex_isoperimetry}]
+	For $\Omega_i, i = 1,2,3$, denote the preimage
+	\begin{equation*}
+	R_i = \set{x \in \mathcal{K}: g(x) \in \Omega_i}
+	\end{equation*}
+	For any $x \in R_1, y \in R_2$, 
+	\begin{equation*}
+	\norm{x - y} \geq \frac{1}{L}\norm{g(x) - g(y)} \geq \frac{1}{L} \dist(\Omega_1, \Omega_2). 
+	\end{equation*}
+	Since $x \in \Omega_1$ and $y \in \Omega_2$ were arbitrary, we have
+	\begin{equation*}
+	\dist(R_1, R_2) \geq \frac{1}{L} \dist(\Omega_1, \Omega_2).
+	\end{equation*}
+	By Theorem 2.2 of \textcolor{red}{(Lovasz 1990)},
+	\begin{align*}
+	\nu(R_3) & \geq 2\frac{\dist(R_1, R_2)}{\rho} \min \{\nu(R_1), \nu(R_2)\} \\
+	& \geq \frac{2}{\rho L} \dist(\Omega_1, \Omega_2) \min\{\nu(R_1), \vol(R_2)\}
+	\end{align*}
+	and by the measure-preserving property of $g$, this implies
+	\begin{equation*}
+	\nu(\Omega_3) \geq\frac{2}{\rho L} \dist(\Omega_1, \Omega_2) \min\{\nu(\Omega_1), \nu(\Omega_2)\}.
+	\end{equation*}
+\end{proof}
+
+\paragraph{Step 4: Total variation distance.}
+
+\begin{proof}[Proof of Lemma~\ref{lem: one_step_distributions}]
+	Note that~\eqref{eqn:one_step_distributions_2} follows from~\eqref{eqn:one_step_distributions_1} by first taking the supremum over all $\mc{S} \subseteq \mc{C}_{\sigma}$, and then the infimum over all $x \in \mc{S}_1$ and $y \in \mc{S}_2$. 
+	
+	It remains to show~\eqref{eqn:one_step_distributions_1}. Let $\mc{R} = \mc{C}_{\sigma} \setminus \mc{S}$ and $\mc{I} = B(x,y) \cap B(y,r)$, and suppose without loss of generality that $\ell_{\nu,r}(x) > \ell_{\nu,r}(y)$. We can relate $\wt{P}(x,\mc{S}) - \wt{P}(y,\mc{S})$ to the volume of the intersection $\mc{I}$ as follows:
+	\begin{align*}
+	\wt{P}(x,\mc{S}) - \wt{P}(y,\mc{S}) & = 1 - \bigl(\wt{P}(x,\mc{R}) + \wt{P}(y,\mc{S})\bigr) \\
+	& = 1 - \biggl(\frac{\nu\bigl(B(x,r) \cap \mc{R}\bigr)}{\ell_{\nu,r}(x)} + \frac{\nu\bigl(B(y,r) \cap \mc{S}\bigr)}{\ell_{\nu,r}(y)}\biggr) \\
+	& \leq 1 - \frac{1}{\ell_{\nu,r}(x)}\Bigl(\nu\bigl(B(x,r) \cap \mc{R}\bigr) + \nu\bigl(B(y,r) \cap \mc{S}\bigr)\Bigr) \\
+	& \leq 1 - \frac{1}{\ell_{\nu,r}(x)}\nu\bigl(\mc{I} \cap \mc{C}_{\sigma}\bigr) \\
+	& \leq 1 - \frac{1}{\ell_{\nu,r}(x)}\Bigl(\nu(\mc{I}) - \nu\bigl(B(x,r)\bigr) + \ell_{\nu,r}(x)\Bigr) \\
+	& = \frac{1}{\ell_{\nu,r}(x)}\Bigl(\nu_dr^d - \nu(\mc{I})\Bigr).
+	\end{align*}
+	Now, by hypothesis $\ell_{\nu,r}(x) \geq \ell \nu_dr^d$. On the other hand, Lemma~\ref{lem: volume_of_spherical_cap} gives a lower bound on the volume of $\mc{I}$, and from this we obtain
+	\begin{equation*}
+	\wt{P}(x,\mc{S}) - \wt{P}(y,\mc{S}) \leq \frac{\|x - y\|}{\ell r} \sqrt{\frac{d + 2}{2\pi}};
+	\end{equation*}
+	solving for $\|x - y\|$ yields~\eqref{eqn:one_step_distributions_1}.
+\end{proof}
+
+\section{Volume Estimates}
+
+\begin{lemma}
+	\label{lem: overlap_balls}
+	For any $x,y \in \Rd$, it holds that
+	\begin{equation}
+	\label{eqn:overlap_balls_1}
+	\nu\bigl(B(x,r) \cap B(y,r)\bigr) \geq \nu_d r^d\biggl(1 - \frac{\|x - y\|}{r} \sqrt{\frac{d + 2}{2\pi}}\biggr).
+	\end{equation}
+	If additionally $\|x - y\| \leq \sigma$, then
+	\begin{equation}
+	\label{eqn:overlap_balls_2}
+	\nu\bigl(B(x,r) \cap B(y,\sigma)\bigr) \geq \frac{1}{2} \nu_d r^d\biggl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\biggr)
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	We first prove~\eqref{eqn:overlap_balls_1}. It is not hard to see that $\mathcal{I} := B(x,r) \cap B(y,r)$ consists of two symmetric spherical caps, each with height
+	\begin{equation*}
+	h = r - \frac{\|x - y\|}{2}
+	\end{equation*} 
+	As a result, by Lemma \ref{lem: volume_of_spherical_cap} we have
+	\begin{equation*}
+	\nu\bigl(\mathcal{I}\bigr) = \nu_d r^d I_{1 - \alpha}(\frac{d + 1}{2}; \frac{1}{2})
+	\end{equation*}
+	where
+	\begin{equation*}
+	\alpha = 1 - \frac{2rh - h^2}{r^2} = \frac{\|x - y\|^2}{4r^2}.
+	\end{equation*}
+	Expanding the incomplete beta function in integral form, we obtain
+	\begin{align*}
+	\nu\bigl(\mathcal{I}\bigr) & = \nu_d r^d \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \int_{0}^{1 - \alpha}u^{(d-1)/2}(1 - u)^{-1/2}du \\
+	& \overset{\text{(i)}}{\geq} \nu_d r^d \left(1 - \frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \frac{ \|x - y\|}{r} \right) \\
+	& \overset{\text{(ii)}}{\geq} \nu_d r^d \left(1 - \frac{\|x - y\|}{r} \sqrt{\frac{d + 2}{2\pi}} \right),
+	\end{align*}
+	where $\text{(i)}$ follows from Lemma \ref{lem: beta_integral}, and $\text{(ii)}$ from Lemma \ref{lem: beta_function}.
+	
+	We now establish~\eqref{eqn:overlap_balls_2}. Assume that $\|x - y\| = \sigma$, as otherwise if $\|x - y\| < \sigma$ the volume of the overlap will only grow. Then $B(x,r) \cap B(y,\sigma)$ contains a spherical cap of radius $r$ and height $r - \frac{r^2}{2\sigma}$, and similar derivations to those used to show~\eqref{eqn:overlap_balls_1} imply that
+	\begin{equation*}
+	\nu(\cap_r(r - r^2/(2\sigma))) \geq \frac{1}{2}\nu_dr^d\biggl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\biggr).
+	\end{equation*}
+\end{proof}
+
+\subsection{Spherical caps and associated estimates}
+\label{subsec:caps}
+In this section, we state a result for the volume of a spherical cap and derive some 
+useful upper bounds. 
+\begin{lemma}
+	\label{lem: volume_of_spherical_cap}
+	Let $\mathrm{cap}_r(h)$ denote a spherical cap of radius $r$ and height $h$. Then, 
+	\begin{equation*}
+	\nu\bigl( \mathrm{cap}_r(h)  \bigr) = \frac{1}{2} \nu_d r^d I_{1 - \alpha}\left(\frac{d + 1}{2}; \frac{1}{2}\right)
+	\end{equation*}
+	where
+	\begin{equation*}
+	\alpha := 1 - \frac{2 r h - h^2}{r^2}
+	\end{equation*}
+	and
+	\begin{equation*}
+	I_{1 - \alpha}(z,w) = \frac{\Gamma(z + w)}{\Gamma(z) \Gamma(w)} \int_{0}^{1 - \alpha} u^{z - 1} (1 - u)^{w - 1} du.
+	\end{equation*}
+	is the cumulative distribution function of a $\mathrm{Beta}(z,w)$ distribution, evaluated at $1 - \alpha$. 
+\end{lemma}
+The following result provides a lower bound on the Beta integral, and the result in Lemma~\ref{lem: beta_function} provides
+an upper bound on the ratio of Gamma functions. 
+\begin{lemma}
+	\label{lem: beta_integral}
+	For any $0 \leq \alpha \leq 1$,
+	\begin{equation*}
+	\int_{0}^{1 - \alpha}u^{(d-1)/2}(1 - u)^{-1/2}du \geq \frac{\Gamma\bigl(\frac{d + 1}{2}\bigr)\Gamma\bigl(\frac{1}{2}\bigr)}{ \Gamma\bigl(\frac{d}{2}+ 1\bigr)} - 2\sqrt{\alpha}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We can write 
+	\begin{equation*}
+	\int_{0}^{1 - \alpha}u^{(d-1)/2}(1 - u)^{-1/2}du = \int_{0}^{1}u^{(d-1)/2}(1 - u)^{-1/2}du - \int_{1 - \alpha}^{1}u^{(d-1)/2}(1 - u)^{-1/2}du
+	\end{equation*}
+	The first integral is simply the beta function, with
+	\begin{equation*}
+	B(\frac{d+1}{2},\frac{1}{2}) := \frac{\Gamma\bigl(\frac{d + 1}{2}\bigr)\Gamma\bigl(\frac{1}{2}\bigr)}{ \Gamma\bigl(\frac{d}{2}+ 1\bigr)}.
+	\end{equation*}
+	Noting that for all $u \in [0,1]$ and $d \geq 1$, $u^{(d - 1)/2} \leq 1$, the second integral can be upper bounded as follows:
+	\begin{equation*}
+	\int_{1 - \alpha}^{1}u^{(d-1)/2}(1 - u)^{-1/2}du \leq \int_{1 - \alpha}^{1}(1 - u)^{-1/2}du = \int_{0}^{\alpha} u^{-1/2}du = 2\sqrt{\alpha}.
+	\end{equation*}
+\end{proof}
+
+\begin{lemma}
+	\label{lem: beta_function}
+	\begin{equation*}
+	\frac{\Gamma\bigl(\frac{d}{2}+ 1\bigr)}{\Gamma\bigl(\frac{d + 1}{2}\bigr) \Gamma\bigl(\frac{1}{2}\bigr)} \leq \sqrt{\frac{d + 2}{2\pi}}
+	\end{equation*}
+\end{lemma}
+\noindent The proof of Lemma \ref{lem: beta_function} is straightforward and follows from the fact that $\Gamma(1/2) = \sqrt{\pi}$ and the upper bound $\Gamma(x + 1)/ \Gamma(x+s) \leq (x + 1)^{1-s}$ for $s \in [0,1]$.
+
+\section{Other derived results}
+
+Lemma~\ref{lem:volume_perturbation} bounds the difference $\nu(B(x,r) \cap \mc{C}_{\sigma}) - \nu(B(y,r) \cap \mc{C}_{\sigma})$ as a function of $\|x - y\|_{\Rd}$. Unfortunately, it only kicks in when $\|x - y\| \lesssim r/d$, whereas we would like something which applies when $\|x - y\| \lesssim r/\sqrt{d}$.
+
+\begin{lemma}
+	\label{lem:volume_perturbation}
+	Let $x,y \in \mc{C}_{\sigma}$ satisfy $\|x - y\| < \frac{r}{d - 1}$. Then,
+	\begin{equation*}
+	\Bigl|\nu\bigl(B(x,r) \cap \mc{C}_{\sigma}\bigr) - \nu\bigl(B(y,r) \cap \mc{C}_{\sigma}\bigr)\Bigr| \leq \nu_dr^d\frac{d\|y - x\|}{(r - (d - 1)\|y - x\|)}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	By the triangle inequality, 
+	\begin{align*}
+	\nu(B(x,r) \cap \mc{C}_{\sigma}) & = \int_{\mc{C}_{\sigma}} \1(\|z - x\| \leq r) \,dz \\
+	& \leq \int_{\mc{C}_{\sigma}} \1(\|z - y\| \leq r + \|y - x\|) \,dz \\
+	& = \int_{\mc{C}_{\sigma}} \bigl(\1(\|z - y\| \leq r) + \1(r < \|z - y\| \leq r + \|y - x\|) \bigr)  \,dz \\
+	& \leq \nu(B(y,r) \cap \mc{C}_{\sigma}) + \nu_d\bigl((r + \|y - x\|)^d - r^d\bigr),
+	\end{align*}
+	and the upper bound $\nu(B(x,r) \cap \mc{C}_{\sigma}) \leq \nu(B(y,r) \cap \mc{C}_{\sigma}) +  \nu_dr^dd\|y - x\|/(r - (d - 1)\|y - x\|)$ follows by Bernoulli's inequality (\textcolor{red}{(Lemma 22)}). Reversing $x$ and $y$ gives an equivalent upper bound on $\nu(B(y,r) \cap \mc{C}_{\sigma})$.
+\end{proof}
+
+\chapter{Misclassification error of PPR}
+The following Lemma upper bounds the misclassification error of (a sweep cut of) a PPR vector, in terms of the \emph{normalized cut} and \emph{mixing time} functionals. It is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except with tighter constants.
+\begin{lemma}
+	Let $G = (V,E)$ be a undirected, unweighted, connected graph and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{\beta,v}$ is
+	\begin{equation*}
+	S_{\beta,v} = \set{u \in V: \frac{p_v^{(\varepsilon)}(u)}{\deg(u;G)} \geq \beta}.
+	\end{equation*} 
+	For some $A \subseteq V$, suppose that 
+	\begin{equation*}
+	\alpha \leq \min\Bigl\{\frac{1}{15}, \frac{1}{5\tau_{\infty}(G[A])}\Bigr\},~~ \beta, \varepsilon \leq \frac{1}{4\vol(A;G)}.
+	\end{equation*}
+	Then there exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A^g;G)$ such that for any $v \in A^g$, the sweep cut $S_{\beta,v}$ satisfies
+	\begin{equation*}
+	\vol(A \vartriangle S_{\beta,v};G) \leq \left(\frac{3}{\beta} + \frac{200}{9\vol(A;G)}\right) \frac{\Phi(A;G)}{\alpha}
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	We adopt the notation $\wt{p}_v$ for the (exact) PPR vector computed over the subgraph $G[A]$, and 
+	\begin{equation*}
+	\wt{\pi}(u) = \frac{\deg(u;G[A])}{\vol(A;G[A])}
+	\end{equation*}
+	for the stationary distribution of a random walk over $G[A]$. The proof of this Lemma proceeds along very similar lines to that of~\textcolor{red}{(Zhu 2013 Lemma 3.4)}. We directly use the following three inequalities, derived in that work:
+	\begin{itemize}
+		\item \textcolor{red}{(Zhu 2013 Lemma 3.2.)} For any seed node $v \in A$, the following inequalities hold for every $u \in A$:
+		\begin{equation}
+		\label{pf:zhu1}
+		\wt{p}_v(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr) \cdot \wt{\pi}(u)
+		\end{equation}
+		\item \textcolor{red}{(Zhu 2013 Corollary 3.3)} For any seed node $v \in A$, there exists a non-negative distribution vector $\ell$ supported on $A$ for which
+		\begin{equation}
+		\label{pf:zhu2}
+		p_v(u) \geq \wt{p}_v(u) - \wt{p}_{\ell}(u) - \varepsilon \cdot \deg(u;G),
+		\end{equation}
+		and $\|\ell\|_1 \leq 2\frac{\Phi(A;G)}{\alpha}$.
+		\item \textcolor{red}{(Zhu 2013 Lemma 3.1, Anderson 2007 Theorem 5.1)} There exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A;G)$ such that for every seed node $v \in A^g$, it holds that
+		\begin{equation}
+		\label{pf:zhu3}
+		\sum_{u \neq A} p_v(u) \leq 2\frac{\Phi(A;G)}{\alpha}.
+		\end{equation}
+	\end{itemize}
+	From these we can derive the following upper bound on the volumes of $S_{\beta,v} \setminus A$ and $A \setminus S_{\beta,v}$.
+	\begin{itemize}
+		\item For any $u \in S_{\beta,v} \setminus A$, $p_v^{(\varepsilon)}(u) > \beta \cdot \deg(u;G)$. Summing up over all such vertices, from~\eqref{pf:zhu3} we may conclude that
+		\begin{equation*}
+		\vol(S_{\beta,v} \setminus A; G) \leq \frac{1}{\beta} \sum_{u \not\in A}p_v^{(\varepsilon)}(u) \leq 2\frac{\Phi(A;G)}{\beta \cdot \alpha}.
+		\end{equation*} 
+		\item For any $u \in A$, from~\eqref{pf:zhu1} and~\eqref{pf:zhu2} we obtain a lower bound on $p_v^{(\varepsilon)}(u)$,
+		\begin{equation*}
+		p_v^{(\varepsilon)}(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr) \cdot \wt{\pi}(u) - \wt{p}_{\ell}(u) - \varepsilon \cdot \deg(u;G).
+		\end{equation*}
+		If $u \not\in S_{\beta,v}$ then $p_v(u) < \beta \deg(u;G)$, and thus for all $u \in A \setminus S_{\beta,v}$ it must be that
+		\begin{equation}
+		\label{pf:zhu4}
+		\frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(G[A])\bigr)\wt{\pi}(u) - (\varepsilon + \beta)\deg(u;G) \leq \wt{p}_{\ell}(u).
+		\end{equation}
+
+		Let us restrict our attention for the moment to those vertices $u$ with sufficiently large degree in $G[A]$; precisely speaking, let
+		\begin{equation*}
+		A^{\mathrm{int}} := \Bigl\{u \in A: \deg(u;G[A]) > \bigl(1 - \alpha \cdot \beta \cdot \vol(A;G)\bigr) \deg(u;G) \Bigr\}.
+		\end{equation*}
+		We note that for any $u \in A^{\mathrm{int}}$,
+		\begin{equation*}
+		\wt{\pi}(u) > \frac{(1 - \alpha \beta \vol(A;G))\deg(u;G)}{\vol(A;G)},
+		\end{equation*}
+		so that by~\eqref{pf:zhu4} it holds that
+		\begin{equation*}
+		\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \cdot \deg(u;G) \leq \wt{p}_{\ell}(u)
+		\end{equation*}
+		for any $u \in A^{\mathrm{int}} \setminus S_{\beta,v}$. Summing over all such u, we obtain
+		\begin{equation*}
+		\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \cdot \vol(A^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \sum_{u \in A^{\mathrm{int}} \setminus S_{\beta,v}} \wt{p}_{\ell}(u) \leq 2\frac{\Phi(A;G)}{\alpha}
+		\end{equation*}
+		where the second upper bound follows from the upper bound on $\|\ell\|_1$, since $\sum_{u \in A} \wt{p}_{\ell}(u) = \|\ell\|_1$. 
+		Then, from the assumed upper bounds on $\alpha, \beta$ and $\varepsilon$ we obtain the inequality
+		\begin{equation*}
+		\biggl(\frac{3(1 - \alpha \beta \vol(A;G))\cdot\bigl(1 - \alpha \tau_{\infty}(G[A])\bigr)}{4\vol(A;G)} - (\beta + \varepsilon)\biggr) \geq \frac{9}{100\vol(A;G)}.
+		\end{equation*}
+		\item Finally, for every $u \in A \setminus A^{\mathrm{int}} $, it holds that $\mathrm{cut}(u, A^C;G[A]) \geq \alpha \cdot \beta \cdot \vol(A;G) \cdot \deg(u;G)$. Summing over all such vertices, we obtain
+		\begin{equation*}
+		\vol(A \setminus A^{\mathrm{int}};G) \leq \frac{\Phi(A;G)}{\alpha \cdot \beta}.
+		\end{equation*}	
+	\end{itemize}
+\end{proof}
+
+
+
+\end{document}
