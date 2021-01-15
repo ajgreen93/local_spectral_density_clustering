@@ -1040,10 +1040,10 @@ with probability at least $1 - B_2/n - (n + 2)\exp\{-d_{\min}(\wt{\Pbb})^2 \Pbb(
 
 \section{Population functionals for density clusters}
 \label{sec:density_cluster_population_functionals}
-In this section, we prove Lemma~\ref{lem:density_cluster_local_spread} (in Section~\ref{subsec:density_cluster_local_spread}), Proposition~\ref{prop:density_cluster_normalized_cut} (in Section~\ref{subsec:density_cluster_ncut}), and Proposition~\ref{prop:density_cluster_conductance} (in Section~\ref{subsec:density_cluster_conductance}), by establishing bounds on the population-level local spread, normalized cut, and conductance of a thickened density cluster $\mc{C}_{\lambda,\sigma}$. In these proofs, we make use of some estimates on the volume of spherical caps, and we detail these in Section~\ref{subsec:spherical caps}; we also use some isoperimetric inequalities, which we detail in Section~\ref{subsec:isoperimetric_inequalities}. Throughout, we write $\nu_d := \nu(B(0,1))$ for the Lebesgue measure of a $d$-dimensional unit ball.
+In this section, we prove Lemma~\ref{lem:density_cluster_local_spread} (in Section~\ref{subsec:density_cluster_local_spread}), Proposition~\ref{prop:density_cluster_normalized_cut} (in Section~\ref{subsec:density_cluster_ncut}), and Proposition~\ref{prop:density_cluster_conductance} (in Section~\ref{subsec:density_cluster_conductance}), by establishing bounds on the population-level local spread, normalized cut, and conductance of a thickened density cluster $\mc{C}_{\lambda,\sigma}$. In these proofs, we make use of some estimates on the volume of spherical caps (given in Section~\ref{subsec:spherical_caps}); some isoperimetric inequalities (given in Section~\ref{subsec:isoperimetric_inequalities}), and some reverse isoperimetric inequalities (given in Section~\ref{subsec:reverse_isoperimetric_inequalities}). Throughout, we write $\nu_d := \nu(B(0,1))$ for the Lebesgue measure of a $d$-dimensional unit ball.
 
 \subsection{Balls, Spherical Caps, and Associated Estimates}
-\label{subsec:spherical caps}
+\label{subsec:spherical_caps}
 In this section, we derive lower bounds on the volume of the intersection between two balls in $\Rd$, and the volume of a spherical cap. Results of this type are well-known, but since we could not find exactly the statements we desire, for completeness we also supply proofs. We use the notation $B(x,r)$ for a ball of radius $r$ centered at $x \in \Rd$, and $\mathrm{cap}_{r}(h)$ for a spherical cap of height $r$ and radius $r$. Recall that the Lebesgue measure of a spherical cap is
 \begin{equation*}
 \nu\bigl(\mathrm{cap}_r(h)\bigr) = \frac{1}{2} \nu_d r^d I_{1 - a}\left(\frac{d + 1}{2}; \frac{1}{2}\right)
@@ -1112,49 +1112,64 @@ An immediate implication of~\eqref{eqn:overlap_balls_2} is that for any $x \in \
 	\end{equation*}
 \end{proof}
 
-\subsection{\textcolor{red}{Isoperimetric inequalities}}
+\subsection{Isoperimetric inequalities}
 \label{subsec:isoperimetric_inequalities}
+\citet{dyer1991} establish the following isoperimetric inequality for convex sets.
+\begin{lemma}[Isoperimetry of a convex set.]
+	\label{lem:convex_isoperimetric_inequality}
+	For any partition $(\mc{R}_1,\mc{R}_2,\mc{R}_3)$ of a convex set $\mc{K} \subseteq \Rd$, it holds that
+	\begin{equation*}
+	\nu(\Omega_3) \geq 2\frac{\mathrm{dist}(\mc{R}_1, \mc{R}_2)}{\mathrm{diam}(\mc{K})} \min(\nu(\mc{R}_1), \nu(\mc{R}_2)).
+	\end{equation*}
+\end{lemma}
+\citet{abbasi-yadkori2016a} points out that if $\mc{S}$ is the image of a convex set under a Lipschitz measure-preserving mapping $g: \Rd \to \Rd$, a similar inequality can be obtained.
+\begin{corollary}[Isoperimetry of Lipschitz embeddings of convex sets.]
+	\label{cor:nonconvex_isoperimetric_inequality}
+	Suppose $\mc{S}$ is the image of a convex set $\mathcal{K}$ under a mapping $g:\Rd \to \Rd$ such that
+	\begin{equation*}
+	\|g(x) - g(y)\| \leq L \cdot \|x - y\|,~~\textrm{for all $x,y \in \mc{K}$, and}~~\det(\nabla g(x)) = 1~~\textrm{for all $x \in \mc{K}$.}
+	\end{equation*}
+	Then for any partition $(\Omega_1,\Omega_2,\Omega_3)$ of $\mc{S}$, 
+	\begin{equation*}
+	\nu(\Omega_3) \geq 2\frac{\mathrm{dist}(\Omega_1, \Omega_2)}{\diam(\mc{K}) L} \min(\nu(\Omega_1), \nu(\Omega_2)).
+	\end{equation*}
+\end{corollary}
+
+\subsection{Reverse isoperimetric inequalities}
+\label{subsec:reverse_isoperimetric_inequalities}
 
 For any set $\mc{C} \subseteq \Rd$ and $\sigma > 0$, recall that $\mc{C}_{\sigma} := \{x: \mathrm{dist}(x,\mc{C}) \leq \sigma\}$. We begin with an upper bound on the volume of $\mc{C}_{\sigma + \delta}$ as compared to $\mc{C}_{\sigma}$. 
 \begin{lemma}
-	\label{lem:external_isoperimetric_inequality}
+	\label{lem:reverse_isoperimetric_inequality}
 	For any bounded set $\mc{C} \subseteq \Rd$ and  $\sigma, \delta > 0$, it holds that
 	\begin{equation}
-	\label{eqn:external_isoperimetric_inequality}
+	\label{eqn:reverse_isoperimetric_inequality}
 	\nu(\mc{C}_{\sigma + \delta}) \leq \nu(\mc{C}_{\sigma}) \cdot \Bigl(1 + \frac{\delta}{\sigma}\Bigr)^d.
 	\end{equation}
 \end{lemma}
-To prove Lemma~\ref{lem:external_isoperimetric_inequality} for a general bounded set $\mc{C}$, we first construct a particular covering of $\mc{C}_{\sigma + \delta}$, then apply~\eqref{eqn:external_isoperimetric_inequality_1} to each set in the covering.
-
-For $\delta \leq \sigma/d$ we have that $\bigl(1 + \delta/\sigma\bigr)^d \leq 1 + d \cdot \delta/(\sigma - d\delta)$, and we deduce from~\eqref{eqn:external_isoperimetric_inequality} that
+Lemma~\ref{lem:reverse_isoperimetric_inequality} should be interpreted as a reverse isoperimetric inequality. To see this, note that if $\delta \leq \sigma/d$ then $\bigl(1 + \delta/\sigma\bigr)^d \leq 1 + d \cdot \delta/(\sigma - d\delta)$, and we deduce from~\eqref{eqn:reverse_isoperimetric_inequality} that
 \begin{equation}
-\label{eqn:external_isoperimetric_inequality_2}
-\nu(\mc{C}_{\sigma + \delta} \setminus \mc{C}_{\sigma}) = \nu(\mc{C}_{\sigma + \delta}) - \nu(\mc{C}_{\sigma}) \leq d \cdot \frac{\delta}{\sigma - d\delta} \cdot \nu(\mc{C}_{\sigma}).
+\label{eqn:reverse_isoperimetric_inequality_2}
+\nu(\mc{C}_{\sigma + \delta} \setminus \mc{C}_{\sigma}) = \nu(\mc{C}_{\sigma + \delta}) - \nu(\mc{C}_{\delta}) \leq \frac{d\delta}{\sigma - d\delta} \cdot \nu(\mc{C}_{\sigma}).
 \end{equation}
-We use~\eqref{eqn:external_isoperimetric_inequality_2} along with Assumption~\ref{asmp:low_noise_density} to derive a density-weighted isoperimetric inequality. 
+We use~\eqref{eqn:reverse_isoperimetric_inequality_2} along with Assumption~\ref{asmp:low_noise_density} to derive a density-weighted reverse isoperimetric inequality. 
 \begin{lemma}
-	\label{lem:external_isoperimetric_inequality_density_weighted}
+	\label{lem:reverse_isoperimetric_inequality_density_weighted}
 	Let $\mc{C}_{\lambda,\sigma}$ satisfy Assumption~\ref{asmp:bounded_density} and~\ref{asmp:low_noise_density} for some $\theta, \gamma$ and $\lambda_{\sigma}$. Then for any $0 < r \leq \sigma/d$, it holds that
 	\begin{equation}
-	\label{eqn:external_isoperimetric_inequality_density_weighted}
+	\label{eqn:reverse_isoperimetric_inequality_density_weighted}
 	\Pbb\bigl(\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}\bigr) \leq \Bigl(1 + \frac{dr}{\sigma - dr}\Bigr) \cdot \frac{dr}{\sigma} \cdot \left(\lambda_{\sigma} - \theta\frac{r^{\gamma}}{\gamma + 1}\right) \cdot \nu(\mc{C}_{\lambda,\sigma}).
 	\end{equation}
 \end{lemma}
-
-Before we prove Lemma~\ref{lem:external_isoperimetric_inequality}, we observe that in the special case where $\mc{C}$ is a single point---say $\mc{C} = \{0\}$--- the inequality~\eqref{eqn:external_isoperimetric_inequality} holds with equality. In this case $\mc{C}_{\sigma + \delta} = B(0,\sigma + \delta)$ and $\mc{C}_{\sigma} = B(0,\sigma)$, and
-\begin{equation}
-\label{eqn:external_isoperimetric_inequality_1}
-\nu(\mc{C}_{\sigma + \delta}) = \nu_d (\sigma + \delta)^d = \nu_d \sigma^d \Bigl(1 + \frac{\delta}{\sigma}\Bigr)^d = \nu(\mc{C}_{\sigma}) \cdot \Bigl(1 + \frac{\delta}{\sigma}\Bigr)^d.
-\end{equation}
-\begin{proof}[Proof (of Lemma~\ref{lem:external_isoperimetric_inequality})] 
+\begin{proof}[Proof (of Lemma~\ref{lem:reverse_isoperimetric_inequality})] 
 	Fix $\delta' > 0$, and take $\epsilon = \delta + \delta'$. We will show that
 	\begin{equation*}
-	\label{pf:external_isoperimetric_inequality}
+	\label{pf:reverse_isoperimetric_inequality}
 	\nu(\mc{C}_{\sigma + \epsilon}) \leq \nu(\mc{C}_{\sigma}) \cdot \Bigl(1 + \frac{\epsilon}{\sigma}\Bigr)^d,
 	\end{equation*}
 	whence taking a limit as $\delta' \to 0$ yields the claim.
 	
-	To show~\eqref{pf:external_isoperimetric_inequality} for general closed and bounded $\mc{C}$, we need to construct a particular disjoint covering $\mc{A}_1(\sigma + \epsilon), \ldots, \mc{A}_N(\sigma + \epsilon)$ of $\mc{C}_{\sigma + \delta}$. To do so, we first take a finite set of points $x_1,\ldots,x_N$ such that the net $B(x_1,\sigma + \epsilon),\ldots,B(x_N,\sigma + \epsilon)$ covers $\mc{C}_{\sigma + \delta}$.  Note that such a covering exists for some finite $N = N(\epsilon)$ because $\mc{C}_{\sigma + \delta}$ is bounded, and the closure of $\mc{C}_{\sigma + \delta}$ is thus a compact subset of $\cup_{x \in \mc{C}} B(x,\sigma + \epsilon)$. Defining $\mc{A}_1(s), \ldots, \mc{A}_N(s)$ for a given $s > 0$ to be
+	To show~\eqref{pf:reverse_isoperimetric_inequality} for general closed and bounded $\mc{C}$, we need to construct a particular disjoint covering $\mc{A}_1(\sigma + \epsilon), \ldots, \mc{A}_N(\sigma + \epsilon)$ of $\mc{C}_{\sigma + \delta}$. To do so, we first take a finite set of points $x_1,\ldots,x_N$ such that the net $B(x_1,\sigma + \epsilon),\ldots,B(x_N,\sigma + \epsilon)$ covers $\mc{C}_{\sigma + \delta}$.  Note that such a covering exists for some finite $N = N(\epsilon)$ because $\mc{C}_{\sigma + \delta}$ is bounded, and the closure of $\mc{C}_{\sigma + \delta}$ is thus a compact subset of $\cup_{x \in \mc{C}} B(x,\sigma + \epsilon)$. Defining $\mc{A}_1(s), \ldots, \mc{A}_N(s)$ for a given $s > 0$ to be
 	\begin{equation*}
 	\mc{A}_1(s) := B(x_1,s),~~\textrm{and}~~ \mc{A}_{j + 1}(s) := B(x_{j + 1},s) \setminus \bigcup_{i = 1}^{j} B(x_i,s) ~~\textrm{for $j = 1,\ldots,N - 1$},
 	\end{equation*}
@@ -1166,7 +1181,7 @@ Before we prove Lemma~\ref{lem:external_isoperimetric_inequality}, we observe th
 	\end{equation*}
 	and summing over $j$, we see that
 	\begin{equation*}
-	\nu(\mc{C}_{\sigma + \delta}) \leq \sum_{j = 1}^{N} \nu(\mc{A}_j(\sigma + \epsilon)) \leq \Bigl(1 + \frac{\epsilon}{\sigma}\Bigr)^d \sum_{j = 1}^{N} \nu\bigl(\mc{A}_j(\sigma) \leq \Bigl(1 + \frac{\epsilon}{\sigma}\Bigr)^d \mc{C}_{\sigma}
+	\nu(\mc{C}_{\sigma + \delta}) \leq \sum_{j = 1}^{N} \nu\bigl(\mc{A}_j(\sigma + \epsilon)\bigr) \leq \Bigl(1 + \frac{\epsilon}{\sigma}\Bigr)^d \cdot \sum_{j = 1}^{N} \nu\bigl(\mc{A}_j(\sigma)\bigr) \leq \Bigl(1 + \frac{\epsilon}{\sigma}\Bigr)^d \mc{C}_{\sigma},
 	\end{equation*}
 	with the last inequality following since $\mc{A}_1(\sigma),\ldots,\mc{A}_N(\sigma)$ are disjoint subsets of $\mc{C}_{\sigma}$.
 	
@@ -1181,8 +1196,8 @@ Before we prove Lemma~\ref{lem:external_isoperimetric_inequality}, we observe th
 	and applying $\nu(\cdot)$ to both sides yields the claim.
 \end{proof}
 	
-\begin{proof}[Proof (of Lemma~\ref{lem:external_isoperimetric_inequality_density_weighted})]
-	Fix $k \in \mathbb{N}$. To establish~\eqref{eqn:external_isoperimetric_inequality_density_weighted}, we partition $\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}$ into thin tubes $\mc{T}_{1},\ldots,\mc{T}_{k}$, with the $j$th tube $\mc{T}_j$ defined as $\mc{T}_j := \mc{C}_{\lambda,\sigma + jr/k} \setminus \mc{C}_{\lambda,\sigma + (j - 1)r/k}.$ We upper bound the Lebesgue measure of each tube $\mc{T}_j$ using~\eqref{eqn:external_isoperimetric_inequality_2}:\footnote{Note that $\mc{C}$ must be bounded, since the density $f(x) \geq \lambda_{\sigma}$ for all $x \in \mc{C}$.}
+\begin{proof}[Proof (of Lemma~\ref{lem:reverse_isoperimetric_inequality_density_weighted})]
+	Fix $k \in \mathbb{N}$. To establish~\eqref{eqn:reverse_isoperimetric_inequality_density_weighted}, we partition $\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}$ into thin tubes $\mc{T}_{1},\ldots,\mc{T}_{k}$, with the $j$th tube $\mc{T}_j$ defined as $\mc{T}_j := \mc{C}_{\lambda,\sigma + jr/k} \setminus \mc{C}_{\lambda,\sigma + (j - 1)r/k}.$ We upper bound the Lebesgue measure of each tube $\mc{T}_j$ using~\eqref{eqn:reverse_isoperimetric_inequality_2}:\footnote{Note that $\mc{C}$ must be bounded, since the density $f(x) \geq \lambda_{\sigma}$ for all $x \in \mc{C}$.}
 	\begin{equation*}
 	\nu(\mc{T}_j) \leq \frac{dr/k}{\sigma - dr/k} \nu(\mc{C}_{\lambda,\sigma + (j - 1)r/k}) \leq \frac{dr/k}{\sigma - dr/k} \nu(\mc{C}_{\lambda,\sigma + r}) \leq \Bigl(1 + \frac{dr}{\sigma - dr}\Bigr) \cdot \frac{dr/k}{\sigma - dr/k}  \cdot \nu(\mc{C}_{\lambda,\sigma}),
 	\end{equation*}
@@ -1192,20 +1207,19 @@ Before we prove Lemma~\ref{lem:external_isoperimetric_inequality}, we observe th
 	\end{equation*}
 	combining these upper bounds, we see that
 	\begin{equation}
-	\label{pf:external_isoperimetric_inequality_density_weighted_1}
+	\label{pf:reverse_isoperimetric_inequality_density_weighted_1}
 	\Pbb\bigl(\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}\bigr) = \sum_{j = 1}^{k} \Pbb(\mc{T}_j) \leq \Bigl(1 + \frac{dr}{\sigma - dr}\Bigr) \cdot  \frac{dr/k}{\sigma - dr/k} \cdot \nu(\mc{C}_{\lambda,\sigma}) \cdot \biggl(\sum_{j = 0}^{k - 1}\lambda_{\sigma} -  \theta r^{\gamma} \Bigl(\frac{j}{k}\Bigr)^{\gamma} \biggr).
 	\end{equation}
 	Treating the sum in the previous expression as a Riemann sum of a non-increasing function evaluated at $0,\ldots,k -1$ gives the upper bound
 	\begin{equation*}
 	\sum_{j = 0}^{k - 1}\lambda_{\sigma} -  \theta r^{\gamma} \Bigl(\frac{j}{k}\Bigr)^{\gamma } \leq \lambda_{\sigma} + \int_{0}^{k - 1} \Bigl(\lambda_{\sigma} -  \theta r^{\gamma} \Bigl(\frac{x}{k}\Bigr)^{\gamma}\Bigr) \,dx \leq k\lambda_{\sigma} + (k - 1)\frac{\theta r^{\gamma}}{\gamma + 1} \Bigl(\frac{k - 1}{k}\Bigr)^{\gamma},
 	\end{equation*}
-	and plugging back in to~\eqref{pf:external_isoperimetric_inequality_density_weighted_1}, we obtain
+	and plugging back in to~\eqref{pf:reverse_isoperimetric_inequality_density_weighted_1}, we obtain
 	\begin{equation*}
 	\Pbb\bigl(\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}\bigr) \leq  \Bigl(1 + \frac{dr}{\sigma - dr}\Bigr) \cdot \frac{dr}{\sigma - dr/k} \nu(\mc{C}_{\lambda,\sigma}) \cdot \biggl(\lambda - \frac{\theta r^{\gamma}}{\gamma + 1} \cdot \Bigl(\frac{k - 1}{k}\Bigr)^{\gamma + 1} \biggl).
 	\end{equation*}
 	The above inequality holds for any $k \in \mathbb{N}$, and taking the limit of the right hand side as $k \to \infty$ yields the claim.
 \end{proof}
-
 
 \subsection{Proof of Lemma~\ref{lem:density_cluster_local_spread}}
 \label{subsec:density_cluster_local_spread}
@@ -1246,14 +1260,95 @@ On the other hand, using the lower bound $f(x) \geq \lambda_{\sigma} $ for all $
 & \geq \lambda_{\sigma}^2 \cdot \iint \1\{\|x - y\| \leq r \} \cdot \1\{x,y \in \mc{C}_{\lambda,\sigma}\} \,dy \,dy \\
 & \geq \lambda_{\sigma}^2 \cdot \frac{1}{2} \nu_d r^d \cdot \Bigl(1 - \frac{r}{\sigma} \sqrt{\frac{d + 2}{2\pi}}\Bigr) \cdot \nu(\mc{C}_{\lambda,\sigma}).
 \end{align*}
-The claim of Proposition~\ref{prop:density_cluster_normalized_cut} follows upon using Lemma~\ref{lem:external_isoperimetric_inequality_density_weighted} to upper bound $\Pbb\bigl(\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}\bigr)$.
+The claim of Proposition~\ref{prop:density_cluster_normalized_cut} follows upon using Lemma~\ref{lem:reverse_isoperimetric_inequality_density_weighted} to upper bound $\Pbb\bigl(\mc{C}_{\lambda,\sigma + r} \setminus \mc{C}_{\lambda,\sigma}\bigr)$.
 
 \subsection{Proof of Proposition~\ref{prop:density_cluster_conductance}}
 \label{subsec:density_cluster_conductance}
-\textcolor{red}{(TODO)}
+The following Lemma upper bounds the population-level uniform conductance $\Psi_{\nu,r}(\mc{C}_{\lambda,\sigma})$. 
+\begin{lemma}
+	\label{lem:uniform_density_cluster_conductance}
+	Suppose $\mc{C}_{\lambda,\sigma}$ satisfies Assumption~\ref{asmp:embedding} with respect to some $\rho > 0$ and $L \geq 1$. For any $0 < r \leq \sigma \sqrt{2\pi/(d + 2)}$, it holds that
+	\begin{equation}
+	\label{eqn:uniform_density_cluster_conductance}
+	\Psi_{\nu,r}(\mc{C}_{\lambda,\sigma}) \geq \Bigl(1 - \frac{r}{4\rho L}\Bigr) \cdot \Bigl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\Bigr)^2 \cdot \frac{\sqrt{2\pi}}{36} \cdot \frac{r}{\rho L \sqrt{d + 2}}.
+	\end{equation}
+\end{lemma}
+Noting that $\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \geq \Psi_{\nu,r}(\mc{C}_{\lambda,\sigma}) \cdot \lambda_{\sigma}^2/\Lambda_{\sigma}^2$, Proposition~\ref{prop:density_cluster_conductance} follows from~\eqref{eqn:uniform_density_cluster_conductance}. 
+
+\begin{proof}[Proof (of Lemma~\ref{lem:uniform_density_cluster_conductance})]
+	For ease of notation, throughout this proof we write $\wt{\nu}$ for the uniform probability measure over $\mc{C}_{\lambda,\sigma}$, put $\ell \nu_d r^d := \min_{x \in \mc{C}_{\lambda,\sigma}}\nu(B(x,r) \cap \mc{C}_{\sigma})$ and $a := r/(2\rho L)$. 
+	
+	Let $\mc{S}$ be an arbitrary measurable subset of $\mc{C}_{\lambda,\sigma}$, and let $\mc{R} = \mc{C}_{\lambda,\sigma} \setminus \mc{S}$. For a given $\delta \in (0,1)$, let the $\delta$-interior of $\mc{S}$ be 
+	\begin{equation*}
+	\mc{S}^{\delta} := \{x \in \mc{S}: \nu\bigl(B(x,r) \cap \mc{R}\bigr) \leq \ell \delta \nu_d r^d\};
+	\end{equation*}
+	define $\mc{R}^{\delta}$ likewise, and let $\mc{B}^{\delta} = \mc{C}_{\lambda,\sigma} \setminus (\mc{S}^{\delta} \cup \mc{R}^{\delta})$ consist of the remaining boundary points.
+	As is standard (see for example~\cite{dyer1991,lovasz1990}), the proof of Lemma~\ref{lem:uniform_density_cluster_conductance} uses several inequalities to lower bound the normalized cut $\Phi_{\wt{\nu},r}(\mc{S})$.
+	\begin{itemize}
+		\item \textbf{Bounds on cut and volume.}
+		We can lower bound $\cut_{\wt{\nu},r}(\mc{S})$ as follows:
+		\begin{align*}
+		\nu(\mc{C}_{\lambda,\sigma})^2 \cdot \cut_{\wt{\nu},r}(\mc{S}) & = \int_{\mc{S}} \int_{\mc{R}} \1(\|x - y\| \leq r) \,dy \,dx \\
+		& = \frac{1}{2}\Bigl(\int_{\mc{S}} \int_{\mc{R}} \1(\|x - y\| \leq r) \,dy \,dx + \int_{\mc{R}} \int_{\mc{S}} \1(\|x - y\| \leq r) \,dy \,dx\Bigr) \\
+		& \geq \frac{1}{2} \delta \ell \nu_d r^d \cdot \nu(\mc{B}^{\delta}).
+		\end{align*}
+		We can upper bound $\vol_{\wt{\nu},r}(\mc{S})$ as follows:
+		\begin{equation*}
+		\nu(\mc{C}_{\lambda,\sigma})^2 \cdot \vol_{\wt{\nu},r}(\mc{S}) = \int_{\mc{C}_{\lambda,\sigma}} \int_{\mc{S}} \1(\|x - y\| \leq r) \,dy \,dx \leq \nu_d r^d \nu(\mc{S})
+		\end{equation*}
+		and likewise for $\vol_{\wt{\nu},r}(\mc{S})$. Therefore,
+		\begin{equation}
+		\label{pf:uniform_density_cluster_conductance_1}
+		\Phi_{\wt{\nu},r}(\mc{S}) \geq \frac{\delta \ell \cdot \nu(\mc{B}^{\delta})}{2 \cdot \min\{\nu(\mc{S}), \nu(\mc{R})\}}.
+		\end{equation}
+		\item \textbf{Isoperimetric inequality.}
+		Applying Corollary~\ref{cor:nonconvex_isoperimetric_inequality}, we have that
+		\begin{equation}
+		\label{pf:uniform_density_cluster_conductance_2}
+		\nu(\mc{B}^{\delta}) \geq \frac{2 \cdot \mathrm{dist}(\mc{S}^{\delta},\mc{R}^{\delta})}{\rho L} \cdot \min\bigl\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\bigr\}.
+		\end{equation}
+		\item \textbf{Volume of $\delta$-interiors.} Suppose $\nu(\mc{S}^{\delta}) \leq (1 - a) \cdot \nu(\mc{S})$ or $\nu(\mc{R}^{\delta}) \leq (1 - a) \cdot \nu(\mc{R})$. Then 
+		$\nu(\mc{B}^{\delta}) \geq a \cdot \min\{\nu(\mc{S}), \nu(\mc{R})\}$, and combined with~\eqref{pf:uniform_density_cluster_conductance_1} we have that $\Phi_{\wt{\nu},r}(\mc{S}) \geq \delta a \ell/2$. Otherwise,
+		\begin{equation}
+		\label{pf:uniform_density_cluster_conductance_3}
+		\min\bigl\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\bigr\} \geq (1- a) \cdot \min\bigl\{\nu(\mc{S}),\nu(\mc{R})\bigr\}.
+		\end{equation}
+		\item \textbf{Distance between $\delta$-interiors.} For any $x \in \mc{S}^{\delta}$ and $y \in \mc{R}^{\delta}$, we have that 
+		\begin{align*}
+		\nu\bigl(B(x,r) \cap B(y,r)\bigr) & = \nu\bigl(B(x,r) \cap B(y,r) \cap \mc{R}\bigr) + \nu\bigl(B(x,r) \cap B(y,r) \cap \mc{S}\bigr) + \nu\bigl(B(x,r) \cap B(y,r) \cap \mc{C}_{\lambda,\sigma}^c\bigr) \\
+		& \leq \nu\bigl(B(x,r) \cap \mc{R}\bigr) + \nu\bigl(B(y,r) \cap \mc{S}\bigr) + \nu\bigl(B(x,r) \cap \mc{C}_{\lambda,\sigma}^c\bigr) \\
+		& \leq \bigl(2\ell\delta + (1 - \ell)\bigr) \cdot \nu_dr^d.
+		\end{align*}
+		It follows from~\eqref{eqn:overlap_balls_1} that
+		\begin{equation*}
+		\|x - y\| \geq \frac{r}{\nu_d r^d} \cdot \Bigl(\nu_d r^d - \nu\bigl(B(x,r) \cap B(y,r)\bigr)\Bigr) \cdot \sqrt{\frac{2\pi}{d + 2}} \geq r \cdot \ell \cdot (1 - 2\delta) \cdot \sqrt{\frac{2\pi}{d + 2}},
+		\end{equation*}
+		and taking the infimum over all $x \in \mc{S}^{\delta}$ and $y \in \mc{R}^{\delta}$, we have
+		\begin{equation}
+		\label{pf:uniform_density_cluster_conductance_4}
+		\mathrm{dist}(\mc{S}^{\delta},\mc{R}^{\delta}) \geq r \cdot \ell \cdot (1 - 2\delta) \cdot \sqrt{\frac{2\pi}{d + 2}}.
+		\end{equation}
+	\end{itemize}	
+	Combining~\eqref{pf:uniform_density_cluster_conductance_1}-\eqref{pf:uniform_density_cluster_conductance_4} and taking $\delta = 1/3$ implies that
+	\begin{equation*}
+	\Phi_{\wt{\nu},r}(\mc{S}) \geq \min\biggl\{(1 - a) \cdot \frac{r}{\rho L} \cdot \frac{\ell^2}{9} \cdot \sqrt{\frac{2\pi}{d + 2}}, \frac{a\ell}{6}\biggr\}
+	\end{equation*}
+	and the claim follows from~\eqref{eqn:uniform_local_conductance}, which implies that $\ell \geq 1/2 \cdot (1 - r/\sigma)\sqrt{2\pi/(d + 2)}$.
+\end{proof}
+
 
 \section{Proof of Major Theorems}
 \label{sec:pf_major_theorems}
+In this section, we prove Theorem~\ref{thm:volume_ssd_ub} (in Section), Corollary~\ref{cor:density_cluster_volume_ssd_ub}, and Theorem~\ref{thm:ppr_lb}.
+
+\subsection{Proof of Theorem~\ref{thm:volume_ssd_ub}}
+
+\subsection{Proof of Corollary~\ref{cor:density_cluster_volume_ssd_ub}}
+
+\subsection{Proof of Theorem~\ref{thm:ppr_lb}}
+
+
+
 
 \section{Additional results: aPPR and Consistency of PPR}
 \label{sec:appr_misclassification_error}
