@@ -572,7 +572,7 @@ We now make some other remarks:
 	\end{equation}
 	We point out two ways in which~\eqref{eqn:volume_ssd_ub} is a tighter bound than~\eqref{eqn:schiebinger}. First,~\eqref{eqn:schiebinger} depends on $\Psi_{\Pbb,r}(\mc{C}^c)$ in addition to $\Psi_{\Pbb,r}(\mc{C})$, and is thus a useful bound only if $\mc{C}^c$ and $\mc{C}$ are both internally well-connected. In contrast~\eqref{eqn:volume_ssd_ub} depends only on $\Psi_{\Pbb,r}(\mc{C})$, and is thus a useful bound if $\mc{C}$ has small conductance, regardless of the conductance of $\mc{C}^c$. This is intuitive: PPR is a local rather than global algorithm, and as such the analysis requires only local rather than global conditions. Second,~\eqref{eqn:schiebinger} depends on $\sqrt{\Phi_{\Pbb,r}(\mc{C})}$ rather than $\Phi_{\Pbb,r}(\mc{C})$, and since $\Phi_{\Pbb,r}(\mc{C}) \leq 1$ this results in a weaker bound.~\citep{schiebinger2015} provide experiments suggesting that the linear, rather than square-root, dependence is correct, and we theoretically confirm this in the local clustering setup. Of course, on the other hand~\eqref{eqn:volume_ssd_ub} depends on $\log^2(1/s_{\Pbb,r}(\mc{C}))$ which does not appear in~\eqref{eqn:schiebinger}.
 	
-	\item Although Theroem~\ref{thm:volume_ssd_ub} is stated with respect to the exact PPR vector $p_v$, for a sufficiently small choice of $\varepsilon$, the 
+	\item Although Theorem~\ref{thm:volume_ssd_ub} is stated with respect to the exact PPR vector $p_v$, for a sufficiently small choice of $\varepsilon$, the 
 	application of \eqref{eqn: appr_error} within the proof of Theorem
 	\ref{thm:volume_ssd_ub} leads to an analogous result which holds for the aPPR vector \smash{$p_v^{(\varepsilon)}$}.
 	\begin{corollary}
@@ -771,7 +771,6 @@ so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, we have
 \end{figure}
 
 \paragraph{Lower bound on symmetric set difference.}
-
 As the following theorem demonstrates, even when Algorithm~\ref{alg:ppr} is
 reasonably initialized, if the density cluster \smash{$\mc{C}^{(1)}$} is 
 sufficiently geometrically ill-conditioned (in words, tall and thin) the cluster 
@@ -780,37 +779,33 @@ estimator $\wh{C}$ will fail to recover \smash{$\mc{C}^{(1)}$}. Let
 \label{eqn:lower_set}
 \mathcal{L} = \set{(x_1,x_2) \in \mathcal{X}: x_2 < 0}.
 \end{equation}
-
+In what follows, we put
+\begin{align*}
+C_{3,\delta} & := 768 \cdot (1 + 3\delta),&&C_{4,\delta} := \frac{72}{(1 - 3\delta)\pi}, \\
+C_{5,\delta} & := \frac{(1 + \delta)^2}{(1 - \delta)^2},&&C_{6,\delta} := \frac{72(1 + \delta)}{(1 - \delta)} \sqrt{8/3 + 8 \delta}.
+\end{align*}
 \begin{theorem}
 	\label{thm:ppr_lb}
-	Assume the radius $r < \min\set{\frac{1}{40}\rho, \frac{1}{4}\sigma}$, and that Algorithm~\ref{alg:ppr} is initialized using inputs $\alpha = 65  
-	\Phi_{\Pbb,r}(\mathcal{L})$, and $(L,U) = (0,1)$.  Then, for any 
-	\begin{equation*}
-	n \geq \max\set{\frac{64}{\epsilon^2 \rho \sigma \pi r^2},
-		\frac{8}{\epsilon}}, 
-	\end{equation*}
-	the following statement holds with probability at least $1 - B_3 n \exp\set{-b_3 n}$: there exists a set $\mc{C}[X]^g$ of large volume, \smash{$\vol_{n,r}(\mc{C}[X]^g \cap 
-		\mc{C}^{(1)}[X]) \geq \vol_{n,r}(\mc{C}^{(1)}[X];G_{n,r})/10$}, such
+	Fix $\delta \in (0,1/7)$. Assume the neighborhood graph radius $r < \sigma/2$, that
+	\begin{equation}
+	\label{eqn:ppr_lb_condition}
+	\max\biggl\{C_{3,\delta} \cdot \frac{r}{\rho} \cdot \ln\Bigl(C_{4,\delta} \frac{\rho\sigma}{r^2 \epsilon^2} \Bigr), \frac{C_{5,\delta}}{n} \cdot \frac{\rho \sigma}{r^2 \epsilon^2} \biggr\} < \frac{1}{18}~~\textrm{and}~~n \geq \frac{6 \sigma \rho (1 + \delta)}{(\sigma - 2r)(\rho - r) (1 - \delta)},
+	\end{equation} 
+	and that Algorithm~\ref{alg:ppr} is initialized using inputs $\alpha = 36 \cdot   
+	\Phi_{n,r}(\mathcal{L}[X])$, and $(L,U) = (0,1)$.  Then the following statement holds with probability at least $1 - B_3 \exp\set{- \delta^2 b_4 n/(3 + \delta)} - n \exp\{-\delta^2 b_5 n/(3 + \delta)\}$: there exists a set $\mc{C}[X]^g$ of large volume, \\ \smash{$\vol_{n,r}(\mc{C}[X]^g \cap 
+		\mc{C}^{(1)}[X]) \geq 6\vol_{n,r}(\mc{C}^{(1)}[X];G_{n,r})/49$}, such
 	that for any seed node $v \in \mc{C}[X]^g$, the PPR estimated cluster
 	\smash{$\wh{C}$} satisfies    
 	\begin{equation}
 	\label{eqn:ppr_lb}
 	\frac{\sigma \rho}{r^2 n^2} \cdot \vol_{n,r}(\wh{C} \vartriangle
-	\mc{C}^{(1)}[X]) \geq \frac{1}{4} -  C_4 \cdot 
-	\frac{\sqrt{\sigma/\rho}}{\epsilon^2} \cdot \sqrt{ \log\left(\frac{\rho \sigma}
+	\mc{C}^{(1)}[X]) \geq \frac{1 - \delta}{2} -  C_{6,\delta} \cdot 
+	\frac{\sqrt{\sigma/\rho}}{\epsilon^2} \cdot \sqrt{ \log\left(C_{4,\delta} \cdot \frac{\rho \sigma}
 		{\epsilon^2 r^2}\right) \frac{\sigma}{r}},   
-	\end{equation}
-	Consequently, if
-	\begin{equation*}
-	\epsilon^2 \geq \frac{C_4}{8} \cdot \sqrt{\frac{\sigma}{\rho}} \cdot \sqrt{ 
-		\log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}, 
-	\end{equation*}
-	then with high probability \smash{$\frac{\sigma
-			\rho}{r^2 n^2} \cdot \vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X]) 
-		\geq 1/8$}.    
+	\end{equation} 
 \end{theorem}
 
-\textcolor{red}{(TODO): Either (preferably) replace $C_4$ by a number, or otherwise say that it is a universal constant.}
+\textcolor{red}{(TODO): Check that the assumptions of the Theorem match those used in the proof.}
 
 %Note that for large enough $n$, $\vol_{n,r}(\mc{C}^{(1)}[X])$  will be close to $n^2 r^2/(\sigma\rho)$, and therefore the quantity \smash{$\frac{\sigma \rho}{r^2 n^2} \cdot \vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$} in \eqref{eqn:ppr_lb} is comparable to \smash{$\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X]) / \vol_{n,r}(\mc{C}^{(1)}[X])$}, which corresponds to the quantity we upper bound in Corollary~\ref{thm:volume_ssd_ub}.   
 
