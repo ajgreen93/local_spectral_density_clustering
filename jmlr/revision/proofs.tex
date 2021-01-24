@@ -172,8 +172,8 @@
 The proofs of our major theorems largely consist of (at most) three modular parts.
 \begin{enumerate}
 	\item \textbf{Fixed graph results.} Results which hold with respect to an arbitrary graph $G$, and are stated with respect to functionals (i.e. normalized cut, conductance, and local spread) of $G$;
-	\item \textbf{Finite-sample bounds.} For the specific choice of $G = G_{n,r}$, we relate the aforementioned functionals to their population analogues. This proves~\textcolor{red}{(?)} 
-	\item \textbf{Population functionals.} (In the case of density clustering only.) When the candidate cluster is a $\lambda$-density cluster, we bound the population functionals by a function of $\lambda$, as well as the other relevant parameters introduced in Section~\textcolor{red}{(?)}. This proves~\textcolor{red}{(?)}
+	\item \textbf{Sample-to-population results.} For the specific choice of $G = G_{n,r}$, we relate the aforementioned functionals to their population analogues. This proves~\textcolor{red}{(?)} 
+	\item \textbf{Bounds on population functionals.} (In the case of density clustering only.) When the candidate cluster is a $\lambda$-density cluster, we bound the population functionals by a function of $\lambda$, as well as the other relevant parameters introduced in Section~\textcolor{red}{(?)}. This proves~\textcolor{red}{(?)}
 \end{enumerate}
 The first three sections of this appendix will correspond to each of these three parts. In Section~\ref{sec:pf_major_theorems}, we will combine these parts to prove the major theorems of our main text, \textcolor{red}{(...)}. Finally, in Section~\ref{sec:appr_misclassification_error} we derive upper bounds for the aPPR vector, and in Section~\ref{sec:experimental_details} we give relevant details regarding our experiments.
 
@@ -211,12 +211,13 @@ The conductance of $V$ is abbreviated as $\Psi(G) := \Psi(V;G)$, and likewise fo
 \end{equation*}
 We note that $d_{\min}(G)^2 \leq d_{\min}(G) \cdot n \leq \vol(G) \leq n \cdot d_{\max}(G)$, and that for any $S \subseteq V$, $|S| \cdot d_{\min}(G) \leq \vol(S;G)$ (where $|S|$ is the cardinality of $S$.)
 
-\paragraph{Organization.} In the following subsections we establish: (\ref{subsec:pf_lem_zhu}) an upper bound on the misclassification error of PPR in terms of $\alpha$ and $\Phi(C;G)$ (Lemma~\ref{lem:zhu}); (\ref{subsec:ppr_uniform_bounds}) a uniform bound on the perturbations of the PPR vector, to be used later in the proof of Theorem~\ref{thm:density_cluster_consistent_recovery} (consistency of PPR);  (\ref{subsec:lovasz_simonovits_bounds}) upper bounds on the mixedness of $q_v^{(t)}$ (as a function of $t$) and $p_v$ (as a function of $\alpha$), which will be helpful in the proofs of Proposition~\ref{prop:pointwise_mixing_time} and Theorem~\ref{thm:ppr_lb}; (\ref{subsec:pf_prop_pointwise_mixing_time}) an upper bound on $\tau_{\infty}(G)$ in terms of $\Psi(G)$ and $s(G)$ (Proposition~\ref{prop:pointwise_mixing_time}); and (\ref{subsec:ppr_spectral_partitioning}) an upper bound on the normalized cut $\Phi(\wh{C};G)$ in terms of $\Phi(C;G)$, to be used later in the proof of Theorem~\ref{thm:ppr_lb} (negative example). 
+\paragraph{Organization.} In the following subsections we establish: (\ref{subsec:pf_lem_zhu}) an upper bound on the misclassification error of PPR in terms of $\alpha$ and $\Phi(C;G)$ (Lemma~\ref{lem:zhu}), and an analogous result for aPPR (Corollary~\ref{cor:zhu}); (\ref{subsec:ppr_uniform_bounds}) a uniform bound on the perturbations of the PPR vector, to be used later in the proof of Theorem~\ref{thm:density_cluster_consistent_recovery} (consistency of PPR);  (\ref{subsec:lovasz_simonovits_bounds}) upper bounds on the mixedness of $q_v^{(t)}$ (as a function of $t$) and $p_v$ (as a function of $\alpha$), which will be helpful in the proofs of Proposition~\ref{prop:pointwise_mixing_time} and Theorem~\ref{thm:ppr_lb}; (\ref{subsec:pf_prop_pointwise_mixing_time}) an upper bound on $\tau_{\infty}(G)$ in terms of $\Psi(G)$ and $s(G)$ (Proposition~\ref{prop:pointwise_mixing_time}); and (\ref{subsec:ppr_spectral_partitioning}) an upper bound on the normalized cut $\Phi(\wh{C};G)$ in terms of $\Phi(C;G)$, to be used later in the proof of Theorem~\ref{thm:ppr_lb} (negative example). 
 
-\subsection{Proof of Lemma~\ref{lem:zhu}}
+\subsection{Misclassification error of clustering with PPR and aPPR}
 \label{subsec:pf_lem_zhu}
 For a candidate cluster $C \subseteq V$, we use the tilde-notation $\wt{G} = G[C]$ to refer to the subgraph of $G$ induced by $C$. Similarly we write $\wt{q}_v^{(t)} := q(v,t;\wt{G})$ for the $t$-step distribution of the lazy random walk over $\wt{G}$, $\wt{\pi} = \pi(G[C])$ for the stationary distribution of $\wt{q}_v^{(t)}$ (we will always assume $G[C]$ is connected), and $\wt{p}_v := p(v,\alpha;\wt{G})$ for the PPR vector over $\wt{G}$.
 
+\begin{proof}[Proof (of Lemma~\ref{lem:zhu})]
 As mentioned in the main text, Lemma~\ref{lem:zhu} is equivalent, up to constants, to Lemma~3.4 in \cite{zhu2013}, and the proof of Lemma~\ref{lem:zhu} proceeds along very similar lines to the proof of that lemma. In fact, we directly use the following three inequalities, derived in that work:
 \begin{itemize}
 	\item \textbf{(c.f. Lemma 3.2 of \cite{zhu2013})} For any seed node $v \in C$, the PPR vector is lower bounded,
@@ -262,13 +263,13 @@ On the other hand, for any $u \in C^{\mathrm{int}}$ it holds that
 \end{equation*}
 by plugging this in to~\eqref{pf:zhu4} we obtain
 \begin{equation*}
-\biggl(\frac{3(1 - \alpha \beta \vol(C;G))\cdot\bigl(1 - \alpha \tau_{\infty}(\wt{G})\bigr)}{4\vol(C;G)} - \beta\biggr) \cdot \deg(u;G) \leq \wt{p}_{\ell}(u),~~\textrm{for all $u \in C^{\mathrm{int}} \setminus S_{\beta,v}$},
+\biggl(\frac{3(1 - \alpha \beta \vol(C;G))\cdot\bigl(1 - \alpha \tau_{\infty}(\wt{G})\bigr)}{4\vol(C;G)} - \beta\biggr) \cdot \deg(u;G) \leq \wt{p}_{\ell}(u),~~\textrm{for all $u \in C^{\mathrm{int}} \setminus S_{\beta,v}$};
 \end{equation*}
 and summing over all such $u$ gives
 \begin{equation*}
 \biggl(\frac{3(1 - \alpha \beta \vol(C;G))\cdot\bigl(1 - \alpha \tau_{\infty}(\wt{G})\bigr)}{4\vol(C;G)} - \beta\biggr) \cdot \vol\bigl(C^{\mathrm{int}} \setminus S_{\beta,v}; G\bigr) \leq \wt{p}_{\ell}\bigl(C^{\mathrm{int}} \setminus S_{\beta,v}\bigr) \leq 2\frac{\Phi(C;G)}{\alpha}.
 \end{equation*}
-The upper bounds in~\eqref{eqn:zhu_condition} imply
+The upper bounds on $\alpha$ and $\beta$ in~\eqref{eqn:zhu_condition} imply
 \begin{equation*}
 \biggl(\frac{3(1 - \alpha \beta \vol(C;G))\cdot\bigl(1 - \alpha \tau_{\infty}(\wt{G})\bigr)}{4\vol(C;G)} - \beta\biggr) \geq \frac{2}{3}\beta,
 \end{equation*}
@@ -288,6 +289,44 @@ and summing over all such vertices yields
 \vol(C^{\mathrm{bdry}};G) \leq \frac{1}{\alpha \beta \vol(C;G)}\sum_{\substack{u \in C^{\mathrm{bdry}} \\ w \not\in C}} \1((u,w) \in E) \leq \frac{\Phi(C;G)}{\alpha \cdot \beta}.
 \end{equation} 
 The claim follows upon summing the upper bounds in~\eqref{pf:zhu3.5}, \eqref{pf:zhu5} and~\eqref{pf:zhu6}.
+\end{proof}
+
+If the cluster estimate $\wh{C}$ is instead obtained by sweep cutting the aPPR vector $p_v^{(\varepsilon)}$, a similar upper bound on $\vol(\wh{C} \vartriangle C)$ holds, provided that $\varepsilon$ is sufficiently small.
+\begin{corollary}
+	\label{cor:zhu}
+	For a set $C \subseteq V$, suppose that $\alpha,\beta$ satisfy~\eqref{eqn:zhu_condition}, and additionally that 
+	\begin{equation}
+	\label{eqn:zhu_condition_2}
+	\varepsilon \leq \frac{1}{25\vol(C;G)}.
+	\end{equation}
+	Then there exists a set $C^g \subset C$ with $\vol(C^g;G) \geq \frac{1}{2}\vol(C^g;G)$ such that for any $v \in C^g$, the sweep cut $S_{\beta,v}$ of the aPPR vector $p_v^{(\varepsilon)}$ satisfies
+	\begin{equation}
+	\label{eqn:zhu_ub}
+	\vol(S_{\beta,v} \vartriangle C;G) \leq 6\frac{\Phi(C;G)}{\alpha \beta}.
+	\end{equation}
+\end{corollary}
+\begin{proof}[Proof (of Corollary~\ref{cor:zhu})]
+	Recall that the upper bound~\eqref{eqn:zhu_ub} on $\vol(\wh{C} \vartriangle C;G)$ comes from combining the upper bounds on $\vol(\wh{C} \setminus C;G)$, $\vol(C^{\mathrm{int}} \setminus \wh{C};G)$ and $\vol(C^{\mathrm{bdry}} \setminus \wh{C};G)$ in~\eqref{pf:zhu3.5},~\eqref{pf:zhu5} and~\eqref{pf:zhu6}. From the upper bound $p_v^{(\varepsilon)}(u) \leq p_v(u)$ for all $u \in V$, it is clear that both~\eqref{pf:zhu3.5} and~\eqref{pf:zhu6} continue to hold when the aPPR vector is used instead of the PPR vector. 
+	
+	It remains only to establish an upper bound on~$\vol(C^{\mathrm{int}} \setminus \wh{C};G)$. For any $u \in C \setminus S_{\beta,v}$, from inequality~\eqref{pf:zhu2} and the lower bound $p_v^{(\varepsilon)}(u) \geq p_v(u)  - \varepsilon \deg(u;G)$ in~\eqref{eqn:appr_error} we deduce that
+	\begin{equation}
+	\frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(\wt{G})\bigr) \cdot \wt{\pi}(u) -  (\beta + \varepsilon)\deg(u;G) \leq \wt{p}_{\ell}(u).
+	\end{equation}
+	Following the same steps as used in the proof of Lemma~\ref{lem:zhu} yields the following inequality:
+	\begin{equation*}
+	\biggl(\frac{3(1 - \alpha \beta \vol(C;G))\cdot\bigl(1 - \alpha \tau_{\infty}(\wt{G})\bigr)}{4\vol(C;G)} - \beta\biggr) \cdot \vol\bigl(C^{\mathrm{int}} \setminus S_{\beta,v}; G\bigr) \leq \wt{p}_{\ell}\bigl(C^{\mathrm{int}} \setminus S_{\beta,v}\bigr) \leq 2\frac{\Phi(C;G)}{\alpha}.
+	\end{equation*}
+	The upper bounds on $\alpha,\beta$ in~\eqref{eqn:zhu_condition},  and on $\varepsilon$ in~\eqref{eqn:zhu_condition_2}, imply that
+	\begin{equation*}
+	\biggl(\frac{3(1 - \alpha \beta \vol(C;G))\cdot\bigl(1 - \alpha \tau_{\infty}(\wt{G})\bigr)}{4\vol(C;G)} - \beta\biggr) \geq \frac{2}{3}\beta,
+	\end{equation*}
+	and we conclude that
+	\begin{equation}
+	\label{pf:zhu2_1}
+	\vol(C^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \frac{3\Phi(C;G)}{\alpha\beta}.
+	\end{equation}
+	Summing the right hand sides of~\eqref{pf:zhu2},~\eqref{pf:zhu6}, and~\eqref{pf:zhu2_1} yields the claim.
+\end{proof}
 
 \subsection{Uniform bounds on PPR}
 \label{subsec:ppr_uniform_bounds}
@@ -866,42 +905,41 @@ In this subsection we establish~\eqref{eqn:sample_to_population_normalized_cut}.
 \intertext{and}
 \mathrm{vol}_{n,r}(\mc{S}[X]) & = \sum_{i = 1}^{n} \sum_{j \neq i} \1\{\|x_i - x_j\| \leq r\} \cdot \1\{x_i \in \mc{S}\}.
 \end{align*}
-Therefore with probability at least $1 - \exp\{-\delta^2 \cut_{\Pbb,r}(\mc{S})\}$,
+Therefore with probability at least $1 - \exp\{-\delta^2 (\cut_{\Pbb,r}(\mc{S}))^2\}$,
 \begin{equation*}
 \frac{1}{n(n - 1)} \mathrm{cut}_{n,r}(\mc{S}[X]) \leq (1 + \delta) \cut_{\Pbb,r}(\mc{S}),
 \end{equation*}
-and likewise with probability at least $1 - \exp\{-\delta^2 \vol_{\Pbb,r}(\mc{S})\}$,
+and likewise with probability at least $1 - \exp\{-\delta^2 (\vol_{\Pbb,r}(\mc{S}))^2\}$,
 \begin{equation*}
 (1 - \delta) \vol_{\Pbb,r}(\mc{S}) \leq \frac{1}{n(n - 1)} \vol_{n,r}(\mc{S}[X]).
 \end{equation*}
 Consequently, for any $\delta \in (0,1/3)$,  
 \begin{equation*}
-\Phi_{n,r}(\mc{C}[X]) \leq \frac{1 + \delta}{1 - \delta} \frac{\cut_{\Pbb,r}(\mc{C})}{\min\{\vol_{\Pbb,r}(\mc{C}), \vol_{\Pbb,r}(\mc{C}^c)\}} = \frac{1 + \delta}{1 - \delta} \Phi_{\Pbb,r}(\mc{C}) \leq (1 + 3\delta) \cdot \Phi_{\Pbb,r}(\mc{C})  
+\Phi_{n,r}(\mc{C}[X]) \leq \frac{1 + \delta}{1 - \delta} \cdot  \frac{\cut_{\Pbb,r}(\mc{C})}{\min\{\vol_{\Pbb,r}(\mc{C}), \vol_{\Pbb,r}(\mc{C}^c)\}} = \frac{1 + \delta}{1 - \delta} \cdot \Phi_{\Pbb,r}(\mc{C}) \leq (1 + 3\delta) \cdot \Phi_{\Pbb,r}(\mc{C})  
 \end{equation*}
-with probability at least $1 - 3\exp\{-\delta^2 \cut_{\Pbb,r}(\mc{C})\}$. This establishes~\eqref{eqn:sample_to_population_normalized_cut} upon taking $b_1 = \cut_{\Pbb,r}(\mc{C})$ and $C_1 = 3$.
-
+with probability at least $1 - 3\exp\{-\delta^2 (\cut_{\Pbb,r}(\mc{C}))^2\}$. This establishes~\eqref{eqn:sample_to_population_normalized_cut} upon taking $b_1 := (\cut_{\Pbb,r}(\mc{C}))^2$.
 
 \subsection{Sample-to-population: local spread}
 \label{subsec:sample_to_population_local_spread}
-In this subsection we establish~\eqref{eqn:sample_to_population_local_spread}. To ease the notational burden, let $\wt{G}_{n,r} := G_{n,r}\bigl[\mc{C}[X]\bigr]$. By Lemma~\ref{lem:hoeffding}, with probability at least $1 - \exp\{-2\delta^2 \Pbb(\mc{C})^2n\}$
+In this subsection we establish~\eqref{eqn:sample_to_population_local_spread}. To ease the notational burden, let $\wt{G}_{n,r} := G_{n,r}\bigl[\mc{C}[X]\bigr]$. By Lemma~\ref{lem:hoeffding_2}, with probability at least $1 - \exp\{-2\delta^2 (\Pbb(\mc{C}))^2n\}$
 \begin{equation}
 \label{pf:sample_to_population_local_spread_1}
 \wt{n} \geq (1 - \delta) \cdot n \cdot \Pbb(\mc{C}).
 \end{equation}
-Conditional on~\eqref{pf:sample_to_population_local_spread_1}, it follows from Lemma~\ref{lem:bernstein_union} that with probability at least $1 -n\exp\{-2(1 - \delta)\delta^2d_{\min}(\wt{\Pbb}) \Pbb(\mc{C}) n\}$,
+Conditional on~\eqref{pf:sample_to_population_local_spread_1}, it follows from Lemma~\ref{lem:bernstein_union} that with probability at least $1 -n\exp\{-\delta^2d_{\min}(\wt{\Pbb}) \cdot (1 - \delta) \Pbb(\mc{C}) n/(3 + \delta)\}$,
 \begin{equation}
 \label{pf:sample_to_population_local_spread_2}
 \frac{1}{\wt{n}} d_{\min}(\wt{G}_{n,r}) \geq (1 - \delta) \cdot d_{\min}(\wt{\Pbb}),
 \end{equation}
-and likewise it follows from Lemma~\ref{lem:hoeffding_2} that with probability at least $1 - \exp\{-2\delta^2(1 - \delta) \vol_{\wt{\Pbb},r}(\mc{C})^2 \Pbb(\mc{C})n \}$,
+and likewise it follows from Lemma~\ref{lem:hoeffding} that with probability at least $1 - \exp\{-\delta^2(\vol_{\wt{\Pbb},r}(\mc{C}))^2 \cdot (1 - \delta) \Pbb(\mc{C}) n \}$,
 \begin{equation*}
 \frac{1}{\wt{n}(\wt{n} - 1)} \vol(\wt{G}_{n,r}) \geq (1 - \delta) \cdot \vol_{\wt{\Pbb},r}(\mc{C}).
 \end{equation*}
-Consequently, for any $\delta \in (0,1/3)$,
+Consequently for any $\delta \in (0,1/3)$,
 \begin{equation*}
-s_{n,r}(\mc{C}[X]) = \frac{d_{\min}(\wt{G}_{n,r})^2}{\vol(\wt{G}_{n,r})} \geq \frac{\frac{1}{\wt{n}^2}d_{\min}(\wt{G}_{n,r})^2}{\frac{1}{\wt{n}(\wt{n} - 1)}\vol(\wt{G}_{n,r})} \geq \frac{(1 - \delta)^2}{(1 + \delta)} \frac{d_{\min}(\wt{\Pbb})^2}{\vol_{\wt{\Pbb},r}(\mc{C})} \geq (1 - 3\delta) \cdot s_{\Pbb,r}(\mc{C}).
+s_{n,r}(\mc{C}[X]) = \frac{d_{\min}(\wt{G}_{n,r})^2}{\vol(\wt{G}_{n,r})} \geq \frac{\frac{1}{\wt{n}^2}d_{\min}(\wt{G}_{n,r})^2}{\frac{1}{\wt{n}(\wt{n} - 1)}\vol(\wt{G}_{n,r})} \geq \frac{(1 - \delta)^2}{(1 + \delta)} \cdot  \frac{d_{\min}(\wt{\Pbb})^2}{\vol_{\wt{\Pbb},r}(\mc{C})} \geq (1 - 3\delta) \cdot s_{\Pbb,r}(\mc{C}).
 \end{equation*}
-with probability at least $1 - 2\exp\bigl\{-\delta^2\bigl(\vol_{\wt{\Pbb},r}(\mc{C})\bigr)^2 \Pbb(\mc{C})n\bigr\} - n\exp\bigl\{-\delta^2\bigl(d_{\min}(\wt{\Pbb})\bigr)^2 \Pbb(\mc{C}) n\bigr\}$. This establishes~\eqref{eqn:sample_to_population_local_spread} upon taking $b_2 = \bigl(\vol_{\wt{\Pbb},r}(\mc{C})\bigr)^2 \Pbb(\mc{C})$ and $b_3 = d_{\min}(\wt{\Pbb}) \Pbb(\mc{C})$ 
+with probability at least $1 - \exp\{-2\delta^2 (\Pbb(\mc{C}))^2n\} - \exp\bigl\{-2\delta^2\bigl(\vol_{\wt{\Pbb},r}(\mc{C})\bigr)^2 \Pbb(\mc{C})n/3\bigr\} - n\exp\bigl\{-\delta^2 d_{\min}(\wt{\Pbb}) \cdot \Pbb(\mc{C}) n/5\bigr\}$. This establishes~\eqref{eqn:sample_to_population_local_spread} upon taking $b_2 := (\Pbb(\mc{C}))^2 \wedge 2\bigl(\vol_{\wt{\Pbb},r}(\mc{C})\bigr)^2 \Pbb(\mc{C})/3 \wedge d_{\min}(\wt{\Pbb}) \cdot \Pbb(\mc{C})/5$.
 
 \subsection{Sample-to-population: conductance}
 \label{subsec:sample_to_population_conductance}
@@ -946,9 +984,9 @@ Under mild regularity conditions, \cite{garciatrillos16b} upper bound the transp
 \end{enumerate}
 \begin{theorem}[Theorem~1.1 of \cite{garciatrillos16}]
 	\label{thm:garciatrillos16}
-	Suppose $\Pbb$ satisfies~\ref{asmp:domain} and~\ref{asmp:bounded_density}. Then, there exists positive constants $B_{2}$ and $B_3$ that do not depend on $n$, such that with probability at least $1 - B_2/n$:
+	Suppose $\Pbb$ satisfies~\ref{asmp:domain} and~\ref{asmp:bounded_density}. Then, there exists positive constants $B_{2}$ and $B_4$ that do not depend on $n$, such that with probability at least $1 - B_2/n$:
 	\begin{equation*}
-	\Delta_{\infty}(\mbb{P},\mbb{P}_n) \leq B_{3} \cdot 
+	\Delta_{\infty}(\mbb{P},\mbb{P}_n) \leq B_4 \cdot 
 	\begin{dcases*}
 	\frac{\ln(n)^{3/4}}{n^{1/2}},&~~\textrm{if $d = 2$,} \\
 	\frac{\ln(n)^{1/d}}{n^{1/d}},&~~\textrm{if $d \geq 3$.}
@@ -1020,7 +1058,7 @@ First, we note that
 \begin{equation*}
 \Psi_r(\wt{\mbb{P}}) = \Psi_{\wt{\mbb{P}},r}(\mathrm{supp}(\wt{\mbb{P}})) = \Psi_{\Pbb,r}(\mc{C}), ~~\textrm{and}~~\Psi_{r}(\wt{\mbb{P}}_n) = \Psi_{\wt{\mbb{P}}_n, r}(\mathrm{supp}(\wt{\mbb{P}}_n)) = \Psi_{n,r}(\mc{C}[X]),
 \end{equation*}
-so that we may apply Proposition~\ref{prop:conductance_lb_transportation_distance} to get a lower bound on $\Psi_{n,r}(\mc{C}[X])$ in terms of $\Psi_{\Pbb,r}(\mc{C})$, $\Delta_{\infty}(\wt{\Pbb}, \wt{\Pbb}_n)$, and $d_{\min}(\wt{\Pbb}_{n})$. Next, as we have already derived in~\eqref{pf:sample_to_population_local_spread_2}, with probability at least $1 - \exp\{-\mbb{P}(\mc{C})n\} - \exp\{-d_{\min}(\wt{\Pbb})^2 \Pbb(\mc{C}) n/\sqrt{2}\}$,
+so that we may apply Proposition~\ref{prop:conductance_lb_transportation_distance} to get a lower bound on $\Psi_{n,r}(\mc{C}[X])$ in terms of $\Psi_{\Pbb,r}(\mc{C})$, $\Delta_{\infty}(\wt{\Pbb}, \wt{\Pbb}_n)$, and $d_{\min}(\wt{\Pbb}_{n})$. Next, taking $1 - \delta = 1/\sqrt{2}$ in~\eqref{pf:sample_to_population_local_spread_2}, we have that with probability at least $1 - \exp\{-(\mbb{P}(\mc{C}))^2n/5\} - n\exp\{-d_{\min}(\wt{\Pbb}) \Pbb(\mc{C}) n/50\}$,
 \begin{equation*}
 d_{\min}(\wt{\Pbb}_n) = \frac{1}{\wt{n}} d_{\min}(\wt{G}_{n,r}) \geq \frac{1}{\sqrt{2}} d_{\min}(\wt{\Pbb}).
 \end{equation*}
@@ -1030,13 +1068,13 @@ b_5 := \frac{1}{2b_4}\Psi_r(\wt{\Pbb}) \cdot (1 - \Psi_r(\wt{\Pbb})) \cdot d_{\m
 \end{equation*}
 by Theorem~\ref{thm:garciatrillos16} and~\eqref{eqn:sample_to_population_conductance_sample_complexity} we have that
 \begin{equation*}
-\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_3 \frac{\log(n)^{p_d}}{n^{1/d}} \leq \min\Bigl\{\frac{b_5}{2\Psi_r(\wt{\Pbb})}, b_5, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
+\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_4 \frac{(\log n)^{p_d}}{n^{1/d}} \leq \min\Bigl\{\frac{b_5}{2\Psi_r(\wt{\Pbb})}, b_5, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
 \end{equation*}
 with probability at least $1 - B_2/n$. Therefore by Proposition~\ref{prop:conductance_lb_transportation_distance},
 \begin{equation*}
 \Psi_r(\wt{\Pbb}_n) \geq \Psi_r(\wt{\Pbb}) \cdot \biggl(1 - \frac{2b_4\Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2}\biggr) - \frac{b_4 \Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb}_N)}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2} \geq \Psi_r(\wt{\Pbb}) (1 - 2\delta)
 \end{equation*}
-with probability at least $1 - B_2/n - (n + 2)\exp\{-d_{\min}(\wt{\Pbb})\cdot \Pbb(\mc{C}) n/\sqrt{2}\}$, establishing~\eqref{eqn:sample_to_population_conductance}.
+with probability at least $1 - B_2/n - \exp\{-(\mbb{P}(\mc{C}))^2n/5\} - n\exp\{-d_{\min}(\wt{\Pbb}) \Pbb(\mc{C}) n/50\}$, establishing~\eqref{eqn:sample_to_population_conductance} upon taking $b_3 := (\mbb{P}(\mc{C}))^2/5 \wedge d_{\min}(\wt{\Pbb}) \Pbb(\mc{C}) /50$.
 
 \section{Population functionals for density clusters}
 \label{sec:density_cluster_population_functionals}
@@ -1307,7 +1345,7 @@ Noting that $\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \geq \Psi_{\nu,r}(\mc{C}_{\l
 		\label{pf:uniform_density_cluster_conductance_2}
 		\nu(\mc{B}^{\delta}) \geq \frac{2 \cdot \mathrm{dist}(\mc{S}^{\delta},\mc{R}^{\delta})}{\rho L} \cdot \min\bigl\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\bigr\}.
 		\end{equation}
-		\item \textbf{Volume of $\delta$-interiors.} Suppose $\nu(\mc{S}^{\delta}) \leq (1 - a) \cdot \nu(\mc{S})$ or $\nu(\mc{R}^{\delta}) \leq (1 - a) \cdot \nu(\mc{R})$. Then 
+		\item \textbf{Lebesgue measure of $\delta$-interiors.} Suppose $\nu(\mc{S}^{\delta}) \leq (1 - a) \cdot \nu(\mc{S})$ or $\nu(\mc{R}^{\delta}) \leq (1 - a) \cdot \nu(\mc{R})$. Then 
 		$\nu(\mc{B}^{\delta}) \geq a \cdot \min\{\nu(\mc{S}), \nu(\mc{R})\}$, and combined with~\eqref{pf:uniform_density_cluster_conductance_1} we have that $\Phi_{\wt{\nu},r}(\mc{S}) \geq \delta a \ell/2$. Otherwise,
 		\begin{equation}
 		\label{pf:uniform_density_cluster_conductance_3}
@@ -1370,11 +1408,56 @@ s_{\Pbb,r}(\mc{X}) \geq \frac{\pi r^2 \epsilon^2}{2 \rho\sigma}
 
 \section{Proof of Major Theorems}
 \label{sec:pf_major_theorems}
-In this section, we prove Theorem~\ref{thm:volume_ssd_ub} (in Section), Corollary~\ref{cor:density_cluster_volume_ssd_ub}, and Theorem~\ref{thm:ppr_lb}.
+We now prove the three major theorems of our paper: Theorem~\ref{thm:volume_ssd_ub} (in Section~\ref{subsec:pf_volume_ssd_ub}), Theorem~\ref{thm:density_cluster_volume_ssd_ub}, and Theorem~\ref{thm:ppr_lb}.  Throughout, we use the notation $\wt{n} = |\mc{C}[X]|$ and $\wt{G}_{n,r} = G_{n,r}\bigl[\mc{C}[X]\bigr]$ as defined above.
 
 \subsection{Proof of Theorem~\ref{thm:volume_ssd_ub}}
+\label{subsec:pf_volume_ssd_ub}
+We begin by recalling some probabilistic estimates needed for the proof of Theorem~\ref{thm:volume_ssd_ub}, along with the probability with which they hold.
 
-\subsection{Proof of Corollary~\ref{cor:density_cluster_volume_ssd_ub}}
+\textit{Probablistic estimates.}
+Throughout the proof of Theorem~\ref{thm:volume_ssd_ub}, we will assume (i) that the inequalities~\eqref{eqn:sample_to_population_normalized_cut}-\eqref{eqn:sample_to_population_conductance} are satisfied; (ii) that the volume of $\mc{C}[X]$ is upper and lower bounded,
+\begin{equation}
+\label{pf:volume_ssd_ub_1}
+(1 - \delta) \cdot n(n - 1) \vol_{\Pbb,r}(\mc{C}) \leq \vol_{n,r}(\mc{C}[X]) \leq (1 + \delta) \cdot n(n - 1) \vol_{\Pbb,r}(\mc{C});
+\end{equation}
+(iii) that the number of sample points in $\mc{C}$ is lower bounded,
+\begin{equation}
+\label{pf:volume_ssd_ub_2}
+\wt{n} \geq (1 - \delta) \cdot n \cdot \mbb{P}(\mc{C});
+\end{equation}
+and finally (iv) that the minimum and maximum degree of $\wt{G}_{n,r}$ are lower and upper bounded respectively,
+\begin{equation}
+\label{pf:volume_ssd_ub_3}
+~~\frac{1}{\wt{n}} d_{\min}(\wt{G}_{n,r}) \geq (1 - \delta) \cdot d_{\min}(\wt{\Pbb}),~~\textrm{and}~~\frac{1}{\wt{n}} d_{\max}(\wt{G}_{n,r}) \leq (1 + \delta) \cdot d_{\max}(\wt{\Pbb}).
+\end{equation}
+By Propositions~\ref{prop:sample_to_population_1}-\ref{prop:sample_to_population_2} and Lemmas~\ref{lem:hoeffding_2}-\ref{lem:bernstein_union}, these inequalities are satisfied with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - 2(n + 2)\exp\{-b_2\delta^2n\} - (n + 2)\exp\{-b_3n\}$.
+
+% AJG comment: The presence of a pre-factor of 4 in the second term, instead of 3, accounts for the extra upper bound needed on the vol_{n,r}(\mc{C}[X]). The presence of a pre-factor of 2(n + 2) in the third term, instead of (n + 2), accounts for the extra upper bound needed on d_{\max}(\wt{G}_{n,r}).
+
+\begin{proof}[Proof (of Theorem~\ref{thm:volume_ssd_ub})]
+We use Lemma~\ref{lem:zhu} to upper bound $\Delta(\wh{C},\mc{C}[X])$. In order to do so, we must verify that the tuning parameters $\alpha$ and $(L,U)$ satisfy the condition \eqref{eqn:zhu_condition} of this lemma. In order to verify that $\alpha \leq 1/\bigl(2\tau_{\infty}(\wt{G}_{n,r})\bigr)$, we will use Proposition~\ref{prop:conductance_lb_transportation_distance} to upper bound $\tau_{\infty}(\wt{G}_{n,r})$, which we may use because
+\begin{equation*}
+\frac{d_{\max}(\wt{G}_{n,r})}{\bigl(d_{\min}(\wt{G}_{n,r})\bigr)^2} \leq \frac{(1 + \delta)}{(1 - \delta)^2} \cdot \frac{d_{\max}(\wt{\Pbb})}{\wt{n}\bigl(d_{\min}(\wt{\Pbb})\bigr)^2} \leq \frac{(1 + \delta)}{(1 - \delta)^3} \cdot \frac{d_{\max}(\wt{\Pbb})}{n\Pbb(\mc{C})\bigl(d_{\min}(\wt{\Pbb})\bigr)^2} \leq \frac{1}{16},
+\end{equation*}
+with the last inequality following by~\eqref{eqn:volume_ssd_ub_sample_complexity} upon taking $B_3 := 16 \cdot d_{\max}(\wt{\Pbb})/\bigl(d_{\min}(\wt{\Pbb})\bigr)^2$ in that equation. Therefore by Proposition~\ref{prop:conductance_lb_transportation_distance}, inequalities~\eqref{eqn:sample_to_population_local_spread} and~\eqref{eqn:sample_to_population_conductance}, and the initialization conditions~\eqref{eqn:initialization} and \eqref{eqn:alpha_initialization}, we have that $\alpha \leq 1/45 \wedge 1/\bigl(2\tau_{\infty}(\wt{G}_{n,r})\bigr)$.  
+On the other hand, by the upper bound on $\vol_{n,r}(\mc{C}[X])$ given in~\eqref{pf:volume_ssd_ub_3} and~\eqref{eqn:initialization}, we have that $U \leq 1/\bigl(5 \vol_{n,r}(\mc{C}[X])\bigr)$.
+
+Invoking Lemma~\ref{lem:zhu}, we conclude that there exists a set $\mc{C}[X]^g \subset \mc{C}[X]$ of volume at least $\vol_{n,r}(\mc{C}[X]^g) \geq \vol_{n,r}(\mc{C}[X])/2$, such that for any $\beta \in (L,U)$,
+\begin{equation*}
+\vol_{n,r}(S_{\beta,v} \vartriangle \mc{C}[X]) \leq 60 \cdot \frac{\Phi_{n,r}(\mc{C}[X])}{\alpha L} \leq 60 \frac{(1 + 2\delta)}{(1 - 4\delta)^2} \cdot \frac{\Phi_{n,r}(\mc{C}[X])}{\alpha_{\Pbb,r}(\mc{C},\delta)}\cdot n(n-1)\vol_{\Pbb,r}(\mc{C})
+\end{equation*}
+Noting that $\wh{C} = S_{\beta,v}$ for some $\beta \in (L,U)$, the claimed upper bound~\eqref{eqn:volume_ssd_ub} on $\Delta(\wh{C},\mc{C}[X])$ then follows from the upper bound~\eqref{eqn:sample_to_population_normalized_cut} on $\Phi_{n,r}(\mc{C}[X])$ and the upper bound on $\vol_{\Pbb,r}(\mc{C})$ in~\eqref{pf:volume_ssd_ub_1}.
+\end{proof}
+\subsection{Proof of Theorem~\ref{thm:density_cluster_volume_ssd_ub}}
+From Theorem~\ref{thm:volume_ssd_ub}, we have with probability $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - 2(n + 2)\exp\{-b_2\delta^2n\} - (n + 2)\exp\{-b_3n\}$, there exists a set $\mc{C}_{\lambda,\sigma}[X]^g \subset \mc{C}_{\lambda,\sigma}[X]$ of volume at least $\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^g) \geq \vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])/2$, such that
+\begin{align*}
+\frac{\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])}{\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])} & \leq 60 \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)} \cdot \frac{\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}{\alpha_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta)} \\
+& \leq \frac{780}{\ln(2)} \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)} \cdot \frac{\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}{\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})^2} \cdot \ln^2\Bigl(\frac{8}{(1 - 3\delta) s_{\Pbb,r}(\mc{C})}\Bigr)
+\end{align*}
+The claimed upper bound~\eqref{eqn:density_cluster_volume_ssd_ub} on $\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])$ then follows from the bounds~\eqref{eqn:density_cluster_local_spread}-\eqref{eqn:density_cluster_conductance} on the population-level local spread, normalized cut, and conductance of $\mc{C}_{\lambda,\sigma}$, noting that the condition $r \leq \sigma/(4d)$ implies that $(1 - r/(4\rho L)) \geq 1 - 1/16$ and $1 - r/\sigma \cdot \sqrt{(d + 2)/(2\pi)} \geq 1 - 1/\sqrt{32}$, and taking
+\begin{equation*}
+C_{1,\delta} := \frac{898560}{\pi \cdot \ln(2) \cdot (1 - 1/16)^2 \cdot (1 - 1/\sqrt{32})^4} \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)},~~\textrm{and}~~C_{2,\delta} := \frac{36}{(1 - 1/\sqrt{32})} \cdot \frac{1}{1-3\delta}.
+\end{equation*}
 
 \subsection{Proof of Theorem~\ref{thm:ppr_lb}}
 To prove Theorem~\ref{thm:ppr_lb}, we use Theorem~\ref{thm:normalized_cut_ppr}, Proposition~\ref{prop:sample_to_population_1} and~\eqref{eqn:ncut_lower_set} to show that the cluster estimate $\wh{C}$ must have a small normalized cut. On the other hand, in Lemma~\ref{lem:normalized_cut_lb} we establish that any set $Z \subseteq X$ which is close to $\mc{C}^{(1)}[X]$---meaning $\vol_{n,r}(Z \vartriangle \mc{C}^{(1)}[X])$ is small---has a large normalized cut.
@@ -1388,6 +1471,11 @@ To prove Theorem~\ref{thm:ppr_lb}, we use Theorem~\ref{thm:normalized_cut_ppr}, 
 \end{lemma}
 We therefore conclude that $\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$ must be large. Now, we give a formal proof Theorem~\ref{thm:ppr_lb}, and then of Lemma~\ref{lem:normalized_cut_lb}.
 \begin{proof}[Proof (of Theorem~\ref{thm:ppr_lb})]
+	Put
+	\begin{align*}
+	C_{3,\delta} & := 768 \cdot (1 + 3\delta),&&C_{4,\delta} := \frac{72}{(1 - 3\delta)\pi}, \\
+	C_{5,\delta} & := \frac{(1 + \delta)^2}{(1 - \delta)^2},&&C_{6,\delta} := \frac{72(1 + \delta)}{(1 - \delta)} \sqrt{8/3 + 8 \delta}.
+	\end{align*}
 	As mentioned, we would like to use Theorem~\ref{thm:normalized_cut_ppr} to upper bound $\Phi_{n,r}(\wh{C})$, and so we first verify that the conditions of Theorem~\ref{thm:normalized_cut_ppr} are met. In particular, we have each of the following.
 	\begin{itemize}
 		\item Recalling that $n \geq \frac{6 \sigma \rho (1 + \delta)}{(\sigma - 2r)(\rho - r) (1 - \delta)}$ and that $\vol_{\Pbb,r}(\mc{L}) \geq \frac{(\sigma - 2r)(\rho - r)}{2\sigma \rho}$, it follows from Lemmas~\ref{lem:bernstein_union} and~\ref{lem:hoeffding_2} that with probability at least $1 - n\exp\{\delta^2 d_{\min}(\Pbb) /(3 + \delta)\} - \exp\{-\delta^2 \vol_{\Pbb,r}(\mc{L})^2 n\}$,
@@ -1410,7 +1498,7 @@ We therefore conclude that $\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$ mus
 		\begin{equation}
 		s_{n,r}(X) \geq (1 - 3\delta) \cdot s_{\Pbb,r}(\mc{X}) \geq (1 - 3\delta) \cdot \frac{\pi r^2}{2\rho\sigma}.
 		\end{equation}
-		Therefore by Assumption~\textcolor{red}{(?)}, condition~\eqref{eqn:normalized_cut_ppr_ncut} is satisfied.
+		The assumption~\eqref{eqn:ppr_lb_condition} implies that  condition~\eqref{eqn:normalized_cut_ppr_ncut} is satisfied.
 	\end{itemize}
 	As a result, we may apply Theorem~\ref{thm:normalized_cut_ppr}, and deduce the following: there exists a set $\mc{L}[X]^g \subset \mc{L}$ of large volume, $\vol_{n,r}(\mc{L}[X]^g) \geq 5/6 \cdot \vol_{n,r}(\mc{L}[X])$, such that for any seed node $v \in \mc{L}[X]^g$, the normalized cut of the PPR cluster estimate $\Phi_{n,r}(\wh{C})$ satisfies the following upper bound:
 	\begin{align*}
@@ -1425,9 +1513,9 @@ We therefore conclude that $\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$ mus
 	\end{equation}
 	with probability at least $1 - 5\exp\set{-\delta^2(\cut_{\Pbb,r}(\mathcal{L}))^2n} - n\exp\bigl\{-\delta^2 d_{\min}(\Pbb) n/(3 + \delta)\bigr\} - \frac{12\sigma \rho}{r^2} \exp\set{-\frac{\delta^2\epsilon r^2 n}{\rho \sigma(3 + \delta)}} - \frac{2\rho}{r}\exp\set{-\frac{\delta^2\pi r^3n}{2\sigma\rho^2(3 + \delta)}}$. Solving the inequality~\eqref{pf:ppr_lb_3} for $\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$ yields~\eqref{eqn:ppr_lb}. 
 	
-	We conclude by observing that the set $\mc{L}[X]^g$ must have significant overlap with $\mc{C}^{(1)}[X]$: 
+	We conclude by observing that the set $\mc{L}[X]^g$ must have significant overlap with $\mc{C}^{(1)}[X]$. In particular,
 	\begin{align*}
-	\vol_{n,r}(\mathcal{L}[X]^g \cap \mc{C}^{(1)}[X]) & \geq  \vol_{n,r}(\mathcal{L}[X]^g) - \vol_{n,r}((\mathcal{L}[X]^g \cap (\mc{C}^{(0)} \cup \mc{C}^{(2)})[X])[X]) \\
+	\vol_{n,r}(\mathcal{L}[X]^g \cap \mc{C}^{(1)}[X]) & \geq  \vol_{n,r}(\mathcal{L}[X]^g) - \vol_{n,r}\bigl((\mathcal{L}[X]^g \cap (\mc{C}^{(0)} \cup \mc{C}^{(2)})[X])\bigr) \\
 	& \geq \frac{5}{6}\vol_{n,r}\bigl(\mathcal{L}[X]\bigr) - \vol_{n,r}\bigl((\mathcal{L} \cap (\mc{C}^{(0)} \cup \mc{C}^{(1)}))[X]\bigr) \\
 	& \geq \frac{5}{6}\vol_{n,r}\bigl((\mathcal{L} \cap \mc{C}^{(1)})[X]\bigr) - \frac{1}{6}\vol_{n,r}\bigl(\mathcal{L}[X]\bigr) \\
 	& \overset{\mathrm{(i)}}{\geq} \left(\frac{5}{6}(1 - \delta) - \frac{1}{2}(1 + \delta)\right)\vol_{\Pbb,r}( \mathcal{L} \cap \mc{C}^{(1)}) \\
@@ -1435,7 +1523,6 @@ We therefore conclude that $\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$ mus
 	\end{align*}
 	where $\mathrm{(i)}$ and $\mathrm{(ii)}$ follow from Lemma~\ref{lem:hoeffding} and hold with probability at least $1 - 3\exp\set{-n\delta^2(\vol_{\Pbb,r}( \mathcal{L} \cap \mc{C}^{(1)}))^2}$, and the last inequality follows since $\delta \in (0,1/7)$. The claim of Theorem~\ref{thm:ppr_lb} follows upon taking constants $B_3:= 8 + 12\sigma\rho/r^2 + 2\rho/r$, $b_4 := \cut_{\Pbb,r}(\mc{L})^2 \wedge \epsilon r^2/(\rho \sigma) \wedge \pi r^3/(2\sigma\rho^2) \wedge \vol_{\Pbb,r}( \mathcal{L} \cap \mc{C}^{(1)})^2$ and $b_5 := d_{\min}(\Pbb)$. 
 \end{proof}
-
 
 \begin{proof}[Proof (of Lemma~\ref{lem:normalized_cut_lb}).]
 	To lower bound the normalized cut $\Phi_{n,r}(Z)$, it suffices to lower bound $\cut_{n,r}(Z)$ and upper bound $\vol_{n,r}(Z)$. A crude upper bound on the volume is simply 
@@ -1514,76 +1601,130 @@ We therefore conclude that $\vol_{n,r}(\wh{C} \vartriangle \mc{C}^{(1)}[X])$ mus
 	for all $Z \subseteq X$.
 \end{proof}
 
-
-
-
-
 \section{Additional results: aPPR and Consistency of PPR}
 \label{sec:appr_misclassification_error}
+In this section, we prove two additional results regarding PPR remarked upon in our main text. In Section~\ref{subsec:appr_volume_ssd_ub}, we show that clustering using the aPPR vector satisfies an equivalent guarantee to Theorem~\ref{thm:volume_ssd_ub}. In Section~\ref{subsec:consistent_recovery_density_clusters}, we show that the PPR vector can perfectly distinguish two distinct density clusters $\mc{C}_{\lambda},\mc{C}_{\lambda}'$. 
 
-\subsection{Consistency}
+\subsection{Generic cluster recovery with aPPR}
+\label{subsec:appr_volume_ssd_ub}
+Our formal claim regarding cluster recovery with aPPR is contained in Corollary~\ref{cor:appr}.
+\begin{corollary}
+	\label{cor:appr}
+	Consider instead of
+	Algorithm \ref{alg:ppr} using the approximate PPR vector from
+	\citet{andersen2006} satisfying \eqref{eqn:appr_error}, and forming the 
+	corresponding cluster estimate \smash{$\wh{C}$} in the same manner.  Then 
+	provided we take 
+	\begin{equation}
+	\label{eqn:appr_parameter}
+	\varepsilon = \frac{1}{25(1 + \delta)n(n - 1)\vol_{\Pbb,r}(\mc{C})} ,
+	\end{equation}
+	under the assumptions of Theorem~\ref{thm:volume_ssd_ub} the upper bound on symmetric set difference in \eqref{eqn:volume_ssd_ub} still
+	holds.
+\end{corollary}	
+\begin{proof}[Proof (of Corollary~\ref{cor:appr})]
+	Note that the choice of $\varepsilon$ in~\eqref{eqn:appr_parameter} implies $\varepsilon \leq 1/25\vol_{n,r}(\mc{C}[X])$ with probability at least $1 - \exp\bigl\{-\delta^2\bigl(\vol_{\Pbb,r}(\mc{C})\bigr)^2\bigr\}$. The proof of Corollary~\ref{cor:appr} is then identical to that of Theorem~\ref{thm:volume_ssd_ub}, except we use Corollary~\ref{cor:zhu} rather than Lemma~\ref{lem:zhu} to relate the symmetric set difference to the graph normalized cut and mixing time.
+\end{proof}
+
+\subsection{Perfectly distinguishing two density clusters}
 \label{subsec:consistent_recovery_density_clusters}
 
-The symmetric set difference does not measure whether \smash{$\wh{C}$}
+As mentioned in our main text, the symmetric set difference does not measure whether \smash{$\wh{C}$}
 can (perfectly) distinguish any two distinct clusters \smash{$\mc{C}_{\lambda},\mc{C}_{\lambda}' \in 
 	\mathbb{C}_f(\lambda)$}. We therefore also study a second notion of cluster 
-estimation, first introduced by \citet{hartigan1981}, and defined
-asymptotically.  
+estimation, first introduced by \citet{hartigan1981}.
 
 \begin{definition}
 	\label{def:density_cluster_consistency}
-	For an estimator \smash{$\wh{C} \subseteq X$} and cluster \smash{$\mc{C}_{\lambda} \in \mathbb{C}_f(\lambda)$}, we call \smash{$\wh{C}$} \emph{consistent} for
-	\smash{$\mc{C}_{\lambda}$} if for all \smash{$\mc{C}_{\lambda}' \in \mathbb{C}_f(\lambda)$} with  
-	\smash{$\mc{C} \not= \mc{C}'$}, the following holds with probability tending to 1 as $n \to \infty$: 
+	For an estimator \smash{$\wh{C} \subseteq X$} and distinct clusters \smash{$\mc{C}_{\lambda}, \mc{C}_{\lambda}' \in \mathbb{C}_f(\lambda)$}, we say \smash{$\wh{C}$} \emph{separates} $\mc{C}_{\lambda}$ from $\mc{C}_{\lambda}'$ if 
 	\begin{equation}
 	\label{eqn:density_cluster_consistency}
-	\mc{C}[X] \subseteq \wh{C} \quad \text{and} \quad
-	\wh{C} \cap \mc{C}'[X] = \emptyset.
+	\mc{C}_{\lambda}[X] \subseteq \wh{C} \quad \text{and} \quad
+	\wh{C} \cap \mc{C}_{\lambda}'[X] = \emptyset.
 	\end{equation}
 \end{definition}
 
-Consistent cluster recovery roughly ensures that, for a given 
-threshold $\lambda>0$, the estimated cluster \smash{$\wh{C}$} contains all points
-in a true density cluster $\mc{C}_{\lambda} \in \mathbb{C}_f(\lambda)$, and simultaneously does 
-not contain any points in any other density cluster $\mc{C}_{\lambda}' \in
-\mathbb{C}_f(\lambda)$. \textcolor{red}{TODO: explain why this is a desirable property for a cluster estimate $\wh{C}$.}
-
-The bound on symmetric set difference \eqref{eqn:density_cluster_volume_ssd_ub} does not imply consistent density cluster estimation in the sense of \eqref{eqn:density_cluster_consistency}. This notion of consistency requires a
-uniform bound over the PPR vector $p_v$: as an example, suppose that we were
-able to show that for all \smash{$\mc{C}' \in \mathbb{C}_f(\lambda), \mc{C}' \neq \mc{C}$}, and each $u \in \mc{C}, w \in \mc{C}'$,  
+The bound on symmetric set difference \eqref{eqn:density_cluster_volume_ssd_ub} does not imply \eqref{eqn:density_cluster_consistency}, which requires a
+uniform bound over the PPR vector $p_v$. As an example, suppose that we were
+able to show that for all \smash{$\mc{C}' \in \mathbb{C}_f(\lambda), \mc{C}' \neq \mc{C}$}, and each $u \in \mc{C}, u' \in \mc{C}'$,  
 \begin{equation}
 \label{eqn:ppr_gap}
-\frac{p_v(w)}{D_{ww}} \leq \frac{1}{100 {n \choose 2} \vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} <
-\frac{1}{10 {n \choose 2} \vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} \leq \frac{p_v(u)}{D_{uu}}. 
+\frac{p_v(u')}{\deg(u';G)} \leq \frac{1}{10} \cdot \frac{1}{n (n - 1) \vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} <
+\frac{1}{5} \cdot \frac{1}{n (n-1) \vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} \leq \frac{p_v(u)}{\deg(u;G)}. 
 \end{equation}
 Then, any $(L,U)$ satisfying~\eqref{eqn:initialization} and any sweep cut
 $S_{\beta}$ for $\beta \in (L,U)$ would fulfill both conditions laid out in
 \eqref{eqn:density_cluster_consistency}. In Theorem 
 \ref{thm:density_cluster_consistent_recovery}, we show that a sufficiently 
 small upper bound on $\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])$ ensures that with high probability the uniform bound~\eqref{eqn:ppr_gap} is satisfied, and hence implies
-\smash{$\wh{C}$} will be a consistent estimator.
+that \smash{$\wh{C}$} will separate $\mc{C}_{\lambda}$ from $\mc{C}_{\lambda}'$. In what follows, put
+\begin{equation*}
+c_{1,\delta} := \frac{(1 - \delta)^3}{4} \cdot \min\Bigl\{\Bigl(\frac{3}{8(1 + \delta)} - \frac{1}{5}\Bigr),\frac{1}{10}\Bigr\}
+\end{equation*}
+and note that if $\delta \in (0,7/8)$ then $c_{1,\delta} > 0$. (In fact, we will have to take $\delta \in (0,1/4)$ in order to use Propositions~\ref{prop:sample_to_population_1} and~\ref{prop:sample_to_population_2}). Additionally, denote $\Pbb'$ for the conditional distribution of a sample point given that it falls in $\mc{C}_{\lambda,\sigma}'$, i.e. $\Pbb'(\mc{S}) := \Pbb(\mc{S} \cap \mc{C}_{\lambda,\sigma}')/\Pbb(\mc{C}_{\lambda,\sigma}')$, and $G_{n,r}' := G_{n,r}[\mc{C}_{\lambda,\sigma}']$ for the subgraph of $G_{n,r}$ induced by $\mc{C}_{\lambda,\sigma}'$. 
 \begin{theorem}
 	\label{thm:density_cluster_consistent_recovery}
-	For any $\delta \in (0,1)$, the following statement holds with probability at least $1 - 3\exp\{-b_1\delta^2n\} - B_2n\exp\{-b_2\delta^2n\}$: there exists a constant $c_1$ and a set $\mc{C}_{\lambda,\sigma}[X]^g \subseteq \mc{C}_{\lambda,\sigma}[X]$ of large volume,  \smash{$\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^g) \geq\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])/2$}, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized and run with any seed node $v \in \mc{C}_{\lambda,\sigma}[X]^g$, and moreover
+	For any $\delta \in (0,1/4)$, and otherwise under the same conditions as Theorem~\ref{thm:volume_ssd_ub}, the following statement holds with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (n + 2)\exp\{-b_3n\} - 3(n + 3)\exp\{-b_6\delta^2n\}$: there exists a set $\mc{C}_{\lambda,\sigma}[X]^g \subseteq \mc{C}_{\lambda,\sigma}[X]$ of large volume, $\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^g) \geq \vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized and run with any seed node $v \in \mc{C}_{\lambda,\sigma}[X]^g$, and moreover
 	\begin{equation}
 	\label{eqn:density_cluster_consistent_recovery_condition}
-	\kappa_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta) \leq c_1 \cdot \min_{x: f(x) \geq \lambda} \Bigl\{\deg_{\Pbb,r}(x)\Bigr\},
+	\kappa_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta) \leq c_{1,\delta} \cdot \frac{\min\bigl\{\Pbb(\mc{C}_{\lambda,\sigma})^2 \cdot d_{\min}(\wt{\Pbb})^2, \Pbb(\mc{C}_{\lambda,\sigma}')^2 \cdot d_{\min}(\Pbb')^2\bigl\}}{\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}
 	\end{equation}
 	then the PPR estimated cluster \smash{$\wh{C}$} satisfies \eqref{eqn:density_cluster_consistency}.
 \end{theorem}
-In one sense, this is a strong result: if the density cluster $\mc{C}_{\lambda}$ satisfies the requirement~\eqref{eqn:density_cluster_consistent_recovery_condition}, and we are willing to ignore the behavior of the algorithm in low-density regions, Corollary~\ref{cor:density_cluster_volume_ssd_ub} guarantees that PPR will \emph{perfectly distinguish} the candidate cluster $\mc{C}_{\lambda}$ from all other connected components $\mc{C}_{\lambda}' \in \mathbb{C}_f(\lambda), \mc{C}_\lambda' \not= \mc{C}_{\lambda}$.
 
-On the other hand, unfortunately the requirement~\eqref{eqn:density_cluster_consistent_recovery_condition} is rather restrictive. Specifically, from the following chain of inequalities,
+Before we prove Theorem~\ref{thm:density_cluster_consistent_recovery}, we make a few brief remarks:
+\begin{itemize}
+	\item In one sense, Theroem~\ref{thm:density_cluster_consistent_recovery} is a strong result: if the density clusters $\mc{C}_{\lambda},\mc{C}_{\lambda}'$ satisfies the requirement~\eqref{eqn:density_cluster_consistent_recovery_condition}, and we are willing to ignore the behavior of the algorithm in low-density regions, Theorem~\ref{thm:density_cluster_consistent_recovery} guarantees that PPR will \emph{perfectly distinguish} the candidate cluster $\mc{C}_{\lambda}$ from $\mc{C}_{\lambda}'$.
+	
+	\item On the other hand, unfortunately the requirement~\eqref{eqn:density_cluster_consistent_recovery_condition} is rather restrictive. Suppose the density cluster $\mc{C}_{\lambda,\sigma}$ satisfies~\ref{asmp:lambda_bounded_density}. Then from the following chain of inequalities,
+	\begin{equation*}
+	\frac{\Delta(\wh{C}, \mc{C}_{\lambda,\sigma}[X])}{\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])} \overset{(\textrm{Thm.~\ref{thm:volume_ssd_ub}})}{\leq} \kappa_{\Pbb,r}(\mc{C},\delta) \overset{\eqref{eqn:density_cluster_consistent_recovery_condition}}{\leq} c_{1,\delta} \cdot \frac{\Pbb(\mc{C}_{\lambda,\sigma})^2 \cdot d_{\min}(\wt{\Pbb})^2}{\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} \overset{\ref{asmp:lambda_bounded_density}}{\leq} c_{1,\delta} \cdot \frac{\Lambda_{\sigma}}{\lambda_{\sigma}} \nu_d r^d,
+	\end{equation*}
+	we see that in order for~\eqref{eqn:density_cluster_consistent_recovery_condition} to be met, it is necessary that \smash{$\Delta(\wh{C}, \mc{C}_{\lambda,\sigma}[X])/\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])$} be on the order of $r^d$. In plain terms, we 
+	are able to recover a density cluster $\mc{C}_{\lambda}$ in the strong sense of
+	\eqref{eqn:density_cluster_consistency} only when we can guarantee the volume of the symmetric set difference will be very small. This strong condition is
+	the price we pay in order to obtain the uniform bound in~\eqref{eqn:ppr_gap}. 
+	\item The proof of Theorem~\ref{thm:density_cluster_consistent_recovery} relies heavily on Lemma~\ref{lem:ppr_uniform_bound}. This lemma---or more accurately, the equation~\eqref{pf:interpolator_bound_max_entry} used in the proof of the lemma---can be thought of as a smoothness result for the PPR vector, showing that the mass of $p_v(\cdot)$ cannot be overly concentrated at any one node $u$. However,~\eqref{pf:interpolator_bound_max_entry} is a somewhat crude bound. By plugging a stronger result on the smoothness of $p_v(\cdot)$ in to the proof of Lemma~\ref{lem:ppr_uniform_bound}, we could improve the uniform bounds of the lemma in turn show that the conclusion of Theorem~\ref{thm:density_cluster_consistent_recovery} holds under weaker conditions than~\eqref{eqn:density_cluster_consistent_recovery_condition}. 
+\end{itemize}  
+
+Now we recall some probabilistic estimates before proceeding to the proof of Theorem~\ref{thm:density_cluster_consistent_recovery}.
+
+\textit{Probabilistic estimates.}
+As in the proof of Theorem~\ref{thm:volume_ssd_ub}, we will assume that the inequalities~\eqref{eqn:sample_to_population_normalized_cut}-\eqref{eqn:sample_to_population_conductance} and~\eqref{pf:volume_ssd_ub_1}-\eqref{pf:volume_ssd_ub_3} are satisfied. We will additionally assume that
+\begin{equation}
+n' \geq (1 - \delta) \cdot n \cdot \Pbb(\mc{C}_{\lambda,\sigma}')
+\end{equation}
+and that 
+\begin{equation}
+\frac{1}{n'} d_{\min}(G_{n,r}') \geq (1 - \delta) n \cdot d_{\min}(\Pbb').
+\end{equation}
+By Propositions~\ref{prop:sample_to_population_1}-\ref{prop:sample_to_population_2} and Lemmas~\ref{lem:hoeffding_2}-\ref{lem:bernstein_union}, these inequalities are satisfied with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (n + 2)\exp\{-b_3n\} - 3(n + 3)\exp\{-b_6\delta^2n\}$, taking $b_6 := b_2 \wedge d_{\min}(\Pbb')/4 \wedge \bigl(\Pbb(\mc{C}_{\lambda,\sigma}')\bigr)^2$.
+
+% The pre-factor of 1/4 in the definition of b_6 is to handle the factor of 1/(3 + \delta) in Bernstein's inequality.
+
+
+\begin{proof}[Proof (of Theorem~\ref{thm:density_cluster_consistent_recovery})]
+We have already verified in the proof of Theorem~\ref{thm:volume_ssd_ub} that $\alpha \leq 1/(2\tau_{\infty}(\wt{G}_{n,r}))$, and we may therefore apply Lemma~\ref{lem:ppr_uniform_bound}, which gives an upper bound on $p_v(u)$ for all $u \in \mc{C}_{\lambda,\sigma}[X]_o$ and a lower bound on $p_v(u')$ for all $p_v(u')$ for all $u' \in \mc{C}_{\lambda,\sigma}'[X]_o$. These bounds are useful because $r \leq \sigma$, which implies that $\mc{C}_{\lambda}[X] \subseteq\mc{C}_{\lambda,\sigma}[X]_o$ and likewise that $C_{\lambda}'[X] \subseteq\mc{C}_{\lambda,\sigma}'[X]_o$. We will show that these bounds in turn imply~\eqref{eqn:ppr_gap}, from which the claim of the theorem follows.
+
+We begin with the lower bound in~\eqref{eqn:ppr_gap}. From (in order) Lemma~\ref{lem:ppr_uniform_bound}, our assorted probabilistic estimates, and the assumed lower bound~\eqref{eqn:density_cluster_consistent_recovery_condition} on $\kappa_{\Pbb,r}(\mc{C},\delta)$, we have that for all $u \in \mc{C}_{\lambda}[X]$,
+\begin{align*}
+\frac{p_v(u)}{\deg_{n,r}(u)} & \geq \frac{3}{8\vol_{n,r}(\mc{C}[X])} - 2\frac{\Phi_{n,r}(\mc{C}_{\lambda,\sigma}[X])}{d_{\min}(\wt{G}_{n,r})^2 \alpha} \\
+& \geq \frac{1}{n^2}\biggl(\frac{3}{8(1 + \delta)\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} - 4 \cdot \frac{n^2}{\wt{n}^2} \cdot \frac{\kappa_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta)}{(1 - \delta) d_{\min}(\wt{\Pbb})^2}\biggr) \\
+& \geq \frac{1}{n^2}\biggl(\frac{3}{8(1 + \delta)\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})} - 4 \cdot \frac{\kappa_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta)}{(1 - \delta)^3 \Pbb(\mc{C})^2 d_{\min}(\wt{\Pbb})^2}\biggr) \\
+& \geq \frac{1}{5 n^2\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}.
+\end{align*}
+An equivalent derivation implies the upper bound in~\eqref{eqn:ppr_gap}: for all $u' \in \mc{C}_{\lambda}'[X]$,
 \begin{equation*}
-\frac{\Delta(\wh{C}, \mc{C}_{\lambda,\sigma}[X])}{\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])} \overset{(\textrm{Thm.~\ref{thm:volume_ssd_ub}})}{\leq} \kappa_{\Pbb,r}(\mc{C},\delta) \overset{\eqref{eqn:density_cluster_consistent_recovery_condition}}{\leq} c_1 \cdot \min_{x: f(x) \geq \lambda} \bigl\{\deg_{\Pbb,r}(x)\bigr\} \overset{\ref{asmp:lambda_bounded_density}}{\leq} c_1 \cdot \Lambda_{\sigma} \nu_d r^d,
+\frac{p_v(u')}{\deg_{n,r}(u')} \leq 2 \frac{\Phi_{n,r}(\mc{C}_{\lambda,\sigma}[X])}{d_{\min}(G_{n,r}')^2 \alpha} \leq 4 \cdot \frac{n^2}{(n')^2} \cdot 4\frac{ \kappa(\mc{C}_{\lambda,\sigma},\delta)}{(1 - \delta) d_{\min}(\Pbb')^2} \leq 4\frac{ \kappa(\mc{C}_{\lambda,\sigma},\delta)}{n^2 (1 - \delta)^3 \Pbb(\mc{C}_{\lambda,\sigma}')^2 d_{\min}(\Pbb')^2} \leq \frac{1}{10 n^2\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})},
 \end{equation*}
-we see that in order for~\eqref{eqn:density_cluster_consistent_recovery_condition} to be met, it is necessary that \smash{$\Delta(\wh{C}, \mc{C}_{\lambda,\sigma}[X])/\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])$} be at most $c_1 \cdot \Lambda_{\sigma} \nu_d r^d$. In plain terms, we 
-are able to recover a density cluster $\mc{C}_{\lambda}$ in the strong sense of
-\eqref{eqn:density_cluster_consistency} only when we can guarantee the volume of the symmetric set difference will be very small. This strong condition is
-the price we pay in order to obtain the uniform bound in~\eqref{eqn:ppr_gap}.
+completing the proof of Theorem~\ref{thm:density_cluster_consistent_recovery}.
+	
+\end{proof}
 
 \section{Experimental Details}
 \label{sec:experimental_details}
+
+\textcolor{red}{(TODO)}
 
 \clearpage
 \bibliographystyle{plainnat}
