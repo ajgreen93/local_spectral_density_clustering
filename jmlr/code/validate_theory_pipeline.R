@@ -13,6 +13,9 @@
 
 # How noisy should the pipeline be?
 verbose <- T
+
+# Should we include PPR?
+PPR <- F
   
 # Dependencies
 library(magrittr)
@@ -26,7 +29,7 @@ source("graph.R")
 source("sample.R")
 
 # Read configs.
-configs_name <- "2d_uniform_rectangles_theta"
+configs_name <- "2d_uniform_rectangles_epsilon"
 source(file.path("configs",paste0(configs_name,".R")))
 
 # Structures to save data.
@@ -77,12 +80,18 @@ for(iter in 1:n_iters)
     alpha <- tune_alpha(G_candidate_cluster,psi_hat)
     LU <- tune_LU(G_candidate_cluster)
     
-    p <- ppr(seed, alpha, G)
-    deg <- degree(G)
-    estimated_cluster <- best_sweep_cut(G,p/deg,LU)
-    Delta_hat <- volume_ssd(empirical_candidate_cluster,estimated_cluster,G)
+    if(PPR){
+      p <- ppr(seed, alpha, G)
+      deg <- degree(G)
+      estimated_cluster <- best_sweep_cut(G,p/deg,LU)
+      Delta_hat <- volume_ssd(empirical_candidate_cluster,estimated_cluster,G)
+    } else{
+      p <- rep(NA,n_samples)
+      estimated_cluster <- NA
+      Delta_hat <- NA
+    }
     
-    if(verbose & d == 2)
+    if(verbose & PPR & d == 2)
     {
       plot(X[,1],X[,2],xlim = c(-1,1),ylim = c(-1,1), main = c("Samples."))
       plot(X[estimated_cluster,1],X[estimated_cluster,2],xlim = c(-1,1),ylim = c(-1,1), main = c("Cluster estimate."))

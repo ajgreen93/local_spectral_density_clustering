@@ -5,12 +5,13 @@
 # 
 # -- vectors <- c("samples","normalized_ppr","sweep_cut")
 # -- quantities <- c("normalized_cut","conductance","local_spread","normalized_volume_ssd")
+# -- parameter <- c()
 #----------------------------------------------------#
 
 # What is to be plotted?
 vectors <- NULL
-quantities <- c("conductance","local_spread")
-parameter <- "lambda"
+quantities <- c("normalized_cut", "conductance","local_spread")
+parameter <- "rho"
 
 # Would you like to save plots to file?
 save_plots <- TRUE
@@ -19,30 +20,29 @@ save_plots <- TRUE
 plot_indx <- 1:10
 
 # Structure for storing data to plot
+n_quantities <- length(quantities)
 list_of_plot_data <- vector(mode = "list", length = n_quantities)
 names(list_of_plot_data) <- quantities
 
 # Load results
 save_file <- paste0("2d_uniform_rectangles_",parameter,".rda")
 load(file.path("data",save_file))
-empirical_data <- list(ncut = empirical_ncuts,
+empirical_data <- list(normalized_cut = empirical_ncuts,
                        conductance = empirical_conductances,
                        local_spread = empirical_local_spreads,
                        normalized_volume_ssd = empirical_normalized_volume_ssd)
-population_bounds <- list(ncut = population_ncuts,
+population_bounds <- list(normalized_cut = population_ncuts,
                        conductance = population_conductances,
                        local_spread = population_local_spreads,
                        normalized_volume_ssd = population_condition_numbers)
 
-##
+# Take only the asked-for quantities.
 empirical_data <- empirical_data[quantities]
 population_bounds <- population_bounds[quantities]
-
 
 # Data for plotting
 parameter_values <- get(parameter)
 
-n_quantities <- length(quantities)
 for(ii in 1:n_quantities)
 {
   avg_empirical <- rowMeans(empirical_data[[ii]])[plot_indx]

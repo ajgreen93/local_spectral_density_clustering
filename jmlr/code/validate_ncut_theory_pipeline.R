@@ -13,7 +13,8 @@ source("graph.R")
 source("sample.R")
 
 # Read configs.
-source("configs/2d_uniform_rectangles_theta.R")
+source("configs/2d_uniform_rectangles_epsilon.R")
+n_iters <- 10
 
 # Structures to save data.
 Xs <- vector(mode = "list",length = length(distributions))

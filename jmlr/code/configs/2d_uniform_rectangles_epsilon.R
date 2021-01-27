@@ -8,12 +8,12 @@
 # -- C_1 = [-1/2 - sigma/2,-1/2 + sigma/2] x [-rho/2,rho/2]
 # -- C_2 = [1/2 - sigma/2,1/2 + sigma/2] x   [-rho/2,rho/2]
 
-# for \sigma <= \rho <= 2, and \sigma < 1 - r, and r <= sigma/4d, and
-# epsilon = 1 - 2*lambda*rho*sigma, and 1/4 <= lambda <= 1/(2 * rho * sigma)
+# Here \sigma <= \rho < 2 - r, \sigma < 1 - r, r <= sigma/4d, and
+# 0 < epsilon <= (4 - 2*rho*sigma).
 # -----------------------------------------------------------------------------#
 
 # Global parameters
-n_samples <- 4000
+n_samples <- 8000
 n_iters <- 50
 d <- 2
 n_mixtures <- 2
@@ -46,14 +46,10 @@ domain <- function(x)
 attributes(domain) <- list("d" = d, "measure" = 4)
 
 # Parameters
-rho <- rep(.8,n_distributions)
-sigma <- rep(.4,n_distributions)
-theta <- exp(seq(log(.1),log(1),length.out = n_distributions))
-lambda <- (theta + 1)/(1 + 2*rho*sigma) # Solve for lambda from theta
-epsilon <- 1 - 2*rho*sigma*lambda       # Solve for epsilon from lambda
-
-stopifnot(lambda >= 1/4) # Make sure it is in fact a density cluster.
-stopifnot(all(epsilon > 0)) # Make sure it is in fact a density.
+sigma <- rep(.25,n_distributions)
+rho <- rep(.5,n_distributions)
+density_ratio <- exp(seq(log(.1),log(.5),length.out = n_distributions))
+epsilon <- density_ratio/(2*rho*sigma/(4 - 2*rho*sigma) + density_ratio)
 
 # Make distributions
 make_distribution_jj <- function(jj){
@@ -73,5 +69,11 @@ make_distribution_jj <- function(jj){
 distributions <- lapply(1:n_distributions, make_distribution_jj)
 
 # Graph hyperparameters
- r <- min(sigma)/(4 * d)
+r <- min(sigma)/(4 * d)
 # k <- 10
+
+# Checks
+stopifnot(all(r == r[1]))      # Don't change r.
+stopifnot(all(epsilon > 0))    # Make sure it is a distribution.
+stopifnot(all(rho + 2*r <= 2)) # Make sure the cut doesn't cross the domain boundary.
+stopifnot(all(sigma + r <= 1)) # Make sure the cut doesn't involve 2nd cluster.
