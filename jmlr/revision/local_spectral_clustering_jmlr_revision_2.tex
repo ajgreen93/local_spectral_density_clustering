@@ -200,7 +200,7 @@
 \end{abstract}
 
 \begin{keywords}
-	graphs, spectral clustering, density clustering, Personalized PageRank, unsupervised learning
+	graphs, spectral clustering, Personalized PageRank, density clustering, unsupervised learning
 \end{keywords}
 
 
@@ -231,7 +231,7 @@ many authors to develop supporting theory
 \citep{spielman2013,andersen2009,gharan2012,zhu2013} that gives worst-case
 guarantees on traditional graph-theoretic notions of cluster quality (such as normalized cut and conductance). In contrast, in this paper we adopt a classical statistical viewpoint, and examine what the output of local clustering on a data set reveals about the underlying density $f$ of the samples. We establish conditions on $f$ under which PPR, when appropriately tuned and initialized inside a candidate cluster $\mc{C}$, will approximately recover this candidate cluster. We pay special attention to the case where $\mc{C}$ is a \emph{density cluster} of $f$---defined as a connected component of the upper level set $\{x \in \Rd : f(x) \geq \lambda\}$ for some $\lambda > 0$---and show precisely how PPR accounts for both geometry and density in estimating a cluster.
 
-Before giving a more detailed overview of our main results, we review some of the aforementioned worst-case guarantees, formally define PPR on a neighborhood graph, and introduce the population-level functionals that govern the behavior of local clustering in our statistical context. 
+Before giving a more detailed overview of our main results, we formally define PPR on a neighborhood graph, review some of the aforementioned worst-case guarantees, and introduce the population-level functionals that govern the behavior of local clustering in our statistical context. 
 
 \subsection{PPR clustering}
 \label{subsec:ppr_clustering}
@@ -254,7 +254,7 @@ In practice, exactly solving the system of equations~\eqref{eqn:ppr_vector} to c
 p_v^{(\varepsilon)}(u) \leq p_v(u).  
 \end{equation}
 
-Once $p_v$ or $p_v^{(\varepsilon)}$ is computed, the cluster estimate $\wh{C}$ is chosen by taking a particular sweep cut of $p_v$. For a given level $\beta > 0$, the \emph{$\beta$-sweep cut} of $p_v = (p_v(u))_{u \in V}$ is 
+Once $p_v$ or $p_v^{(\varepsilon)}$ is computed, the cluster estimate $\wh{C}$ is chosen by taking a particular sweep cut. For a given level $\beta > 0$, the \emph{$\beta$-sweep cut} of $p_v = (p_v(u))_{u \in V}$ is 
 \begin{equation}
 \label{eqn:sweep_cuts}
 S_{\beta,v} := \set{u \in V: \frac{p_v(u)}{D_{uu}} > \beta}.
@@ -273,7 +273,7 @@ and the \emph{normalized cut} of $C$ is
 \end{equation} 
 
 \subsection{Worst-case guarantees for PPR clustering}
-As mentioned, to date most analysis of local clustering has focused on worst-case guarantees, defined with respect to functionals of an a priori fixed graph $G = (V,E)$.  For instance, \cite{andersen2006} analyze the normalized cut of the cluster estimate $\wh{C}$ output by PPR, showing that when PPR is appropriately seeded within a candidate cluster $C \subseteq V$, the normalized cut of $\wh{C}$ is upper bounded $\Phi(\wh{C};G) \lesssim \sqrt{\Phi(C;G)}$.\footnote{We say $a \lesssim b$ when $a \leq $} \cite{zhu2013} build on this: they introduce a second functional, the \emph{conductance} $\Psi(G)$, defined as 
+As mentioned, to date most analysis of local clustering has focused on worst-case guarantees, defined with respect to functionals of an a priori fixed graph $G = (V,E)$.  For instance, \cite{andersen2006} analyze the normalized cut of the cluster estimate $\wh{C}$ output by PPR, showing that when PPR is appropriately seeded within a candidate cluster $C \subseteq V$, the normalized cut $\Phi(\wh{C};G)$ is upper bounded by (a constant times)  $\sqrt{\Phi(C;G)}$. \cite{zhu2013} build on this: they introduce a second functional, the \emph{conductance} $\Psi(G)$, defined as 
 \begin{equation}
 \label{eqn:conductance}
 \Psi(G) := \min_{S \subseteq V} \Phi(S;G),
@@ -287,7 +287,7 @@ We now formally describe the statistical setting in which we operate, as well as
 $\Pbb$ on $\Rd$. We will assume throughout that $\Pbb$ has a density $f$ with respect to the Lebesgue measure $\nu$ on $\Rd$ . For a radius $r > 0$, we define
 $G_{n,r}=(V,E)$ to be the \emph{$r$-neighborhood graph} of $X$, an
 unweighted, undirected graph with vertices $V=X$, and an edge $(x_i,x_j) \in
-E$ if and only if $\|x_i - x_j\| \leq r$, where $\|\cdot\|$ is the
+E$ if and only if $i \neq j$ and $\|x_i - x_j\| \leq r$, where $\|\cdot\|$ is the
 Euclidean norm. Once the neighborhood graph $G_{n,r}$ is formed, the PPR vector $p_v$ is then computed over $G_{n,r}$, with a resulting cluster estimate $\wh{C} \subseteq X$. The precise PPR algorithm we analyze is summarized in Algorithm~\ref{alg:ppr}.   
 
 \begin{algorithm}
@@ -331,11 +331,11 @@ which weights misclassified points according to their degree in $G_{n,r}$. To ke
 \end{definition}
 
 \subsection{Population normalized cut and conductance}
-Next we define two population-level functionals of $\mc{C}$, the normalized cut $\Phi_{\Pbb,r}(\mc{C})$ and conductance $\Psi_{\Pbb,r}(\mc{C})$, which govern the volume of the symmetric set difference $\Delta(\wh{C},\mc{C}[X])$. Let the population-level \emph{cut} of $\mc{C}$ be the expectation (up to a rescaling) of $\cut_{n,r}(\mc{C}[X]) := \cut(\mc{C}[X]; G_{n,r})$,  and likewise let the population-level \emph{volume} of $\mc{C}$ be the expectation (up to a rescaling) of $\vol_{n,r}(\mc{C}[X]) := \vol(\mc{C}[X]; G_{n,r})$; i.e. let
+Next we define three population-level functionals of $\mc{C}$---the normalized cut $\Phi_{\Pbb,r}(\mc{C})$, conductance $\Psi_{\Pbb,r}(\mc{C})$, and local spread $s_{\Pbb,r}(\mc{C})$---which govern the volume of the symmetric set difference $\Delta(\wh{C},\mc{C}[X])$. Let the population-level \emph{cut} of $\mc{C}$ be the expectation (up to a rescaling) of $\cut_{n,r}(\mc{C}[X]) := \cut(\mc{C}[X]; G_{n,r})$,  and likewise let the population-level \emph{volume} of $\mc{C}$ be the expectation (up to a rescaling) of $\vol_{n,r}(\mc{C}[X]) := \vol(\mc{C}[X]; G_{n,r})$; i.e. let
 \begin{equation*}
-\mathrm{cut}_{\Pbb,r}(\mc{C}) := \int_{\mc{C}} \int_{\mc{C}^c} \1\{\|x - y\| \leq r\} \,d\Pbb(y) \,d\Pbb(x)~~ \mathrm{vol}_{\Pbb,r}(\mc{C}) := \int_{\mc{C}} \int_{\Rd} \1\{\|x - y\| \leq r\} \,d\Pbb(y) \,d\Pbb(x),
+\mathrm{cut}_{\Pbb,r}(\mc{C}) := \int_{\mc{C}} \int_{\mc{C}^c} \1\{\|x - y\| \leq r\} \,d\Pbb(y) \,d\Pbb(x),~~ \mathrm{vol}_{\Pbb,r}(\mc{C}) := \int_{\mc{C}} \int_{\Rd} \1\{\|x - y\| \leq r\} \,d\Pbb(y) \,d\Pbb(x),
 \end{equation*}
-where $\mc{C}^c := \Rd \!\setminus\! \mc{C}$.
+where $\mc{C}^c := \Rd \!\setminus\! \mc{C}$. Also let $\deg_{\Pbb,r}(x) := \int_{\Rd} \1\{\|y - x\| \leq r\} \,d\Pbb(y)$ to be the expected degree of $x$ in $G_{n,r}$. 
 \begin{definition}[Population normalized cut]
 	For a set $\mc{C} \subset \Rd$, distribution $\Pbb$ and radius $r > 0$, the \emph{population normalized cut} is
 	\begin{equation}
@@ -360,28 +360,54 @@ Let $\wt{\mathbb{P}}(\cdot) = \mathbb{P}(\cdot|x \in \mc{C})$ be the conditional
 	\Psi_{\mathbb{P},r}(\mc{C}) = \inf_{\mc{S} \subseteq \mc{C}} \Phi_{\wt{\Pbb},r}(\mc{S}).
 	\end{equation}
 \end{definition}
+\begin{definition}[Population local spread]
+	For a set $\mc{C} \subset \Rd$, distribution $\Pbb$ and radius $r > 0$, the \emph{population local spread} is
+	\begin{equation}
+	\label{eqn:local_spread}
+	s_{\Pbb,r}(\mc{C}) := \min_{x \in \mc{C}} \biggl\{\frac{\bigl(\deg_{\wt{\Pbb},r}(x)\bigr)^2}{\vol_{\wt{\Pbb},r}(\mc{C})} \biggr\},
+	\end{equation}
+\end{definition}
 
-It is quite natural that $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$ should help quantify the role geometry plays in local spectral clustering. Indeed, by construction these functionals are quite obviously the population-level analogues of the empirical quantities $\Phi_{n,r}(\mc{C}[X]) := \Phi(\mc{C}[X];G_{n,r})$ and $\Psi_{n,r}(\mc{C}[X]) := \Psi(G_{n,r}\bigl[\mc{C}[X]\bigr])$, and as we have already mentioned, these empirical quantities in turn suffice to upper bound the volume of the symmetric set difference. For this reason, similar population level functionals are used by \citep{shi2009,schiebinger2015,garciatrillos19} in the analysis of \emph{global} spectral clustering in a statistical context. We will comment more on the relationship between these works and our own results in Section~\ref{subsec:related_work}. \\ 
+It is quite natural that $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$ should help quantify the role geometry plays in local spectral clustering. Indeed, by construction these functionals are quite obviously the population-level analogues of the empirical quantities $\Phi_{n,r}(\mc{C}[X]) := \Phi(\mc{C}[X];G_{n,r})$ and $\Psi_{n,r}(\mc{C}[X]) := \Psi(G_{n,r}\bigl[\mc{C}[X]\bigr])$, and as we have already mentioned, these empirical quantities in turn suffice to upper bound the volume of the symmetric set difference. For this reason, similar population level functionals are used by \citep{shi2009,schiebinger2015,garciatrillos19} in the analysis of \emph{global} spectral clustering in a statistical context. We will comment more on the relationship between these works and our own results in Section~\ref{subsec:related_work}. 
 
-\textcolor{red}{(TODO): Possibly add a section here \emph{giving}---rather than summarizing---our main results.}
+The role played by $s_{\Pbb,r}(\mc{C})$ is somewhat less obvious. For now, we mention only that it plays an essential role in obtaining tight bounds on the mixing time of a particular random walk that can be related to the PPR vector, and defer further discussion until later, in Section~\ref{sec:ub_symmetric_set_difference}.
 
-\subsection{Summary of results}
-A summary of our results (and an outline for this paper) is as follows.
-\begin{itemize}
-	\item In Section~\ref{sec:ub_symmetric_set_difference}, we show that under certain conditions the sample normalized cut $\Phi_{n,r}(\mc{C}[X])$ and conductance $\Psi_{n,r}(\mc{C}[X])$ are close to their population level counterparts $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$. As a consequence, we find that $\Delta(\wh{C},\mc{C}[X])$ is small whenever $\Phi_{\Pbb,r}(\mc{C})$ is small relative to $\Psi_{\Pbb,r}(\mc{C})^2$, giving the first population-level guarantees for local clustering in a nonparametric statistical context.
-\end{itemize}
-In Section~\ref{sec:ppr_density_cluster}, we focus on the special case where the candidate cluster $\mc{C} = \mc{C}_{\lambda}$ is a \emph{$\lambda$-density cluster}---that is, a connected component of the upper level set $\{x: f(x) \geq \lambda\}$---an object of central interest in the statistical clustering literature, dating back to the work of \citet{hartigan1981}.
-\begin{itemize}
-	\item In Section~\ref{subsec:recovery_well-conditioned_density_clusters}, we derive specific upper bounds on the normalized cut $\Phi_{\Pbb,r}(\mc{C}_{\lambda})$ and conductance $\Psi_{\Pbb,r}(\mc{C}_{\lambda})$. These upper bounds depend on $\lambda$ as well as some other natural parameters, and immediately result in an upper bound on $\Delta(\wh{C},\mc{C}[X])$ in the density cluster setting (Theorem~\ref{thm:density_cluster_volume_ssd_ub}).
-	\item In Section~\ref{sec:lower_bound}, we prove a negative result: we give a hard distribution $\Pbb$ with corresponding density cluster $\mc{C}_{\lambda}$ for which the symmetric set difference $\Delta(\wh{C},\mc{C}_{\lambda}[X])$ is provably large.
-\end{itemize}
-In Section~\ref{sec:experiments} we empirically investigate some of our conclusions, before ending with some discussion in Section~\ref{sec:discussion}.
+\subsection{Main Results}
+We now informally state our two main upper bounds, regarding the recovery of a generic cluster $\mc{C}$, and a density cluster $\mc{C}_{\lambda}$. Theorem~\ref{thm:volume_ssd_ub_informal} informally summarizes the first of our main results, formally stated in Theorem~\ref{thm:volume_ssd_ub}, regarding the recovery of a generic cluster $\mc{C}$, .
+\begin{theorem}[Informal]
+	\label{thm:volume_ssd_ub_informal}
+	Let $\mc{C} \subset \Rd$ and $\Pbb$ satisfy appropriate regularity conditions, and suppose Algorithm~\ref{alg:ppr} is well-initialized with respect to $\mc{C}$. For all $n \in \mathbb{N}$ sufficiently large, with high probability it holds that
+	\begin{equation*}
+	\frac{\Delta(\wh{C},\mc{C}[X])}{\vol_{n,r}(\mc{C}[X])} \leq c \cdot\Phi_{\Pbb,r}(\mc{C}) \cdot  \biggl(\frac{\log(1/s_{\Pbb,r}(\mc{C}))}{\Psi_{\Pbb,r}(\mc{C})}\biggr)^2.
+	\end{equation*}
+\end{theorem}
+(In the above, and throughout, $c$ stands for a universal constant that may change from line to line.) Put even more succinctly, we find that $\Delta(\wh{C},\mc{C}[X])$ is small when $\Phi_{\Pbb,r}(\mc{C})$ is small relative to $\Psi_{\Pbb,r}(\mc{C})^2$ (ignoring $\log$ factors). To the best of our knowledge, this gives the first population-level guarantees for local clustering in the nonparametric statistical context.
+
+Theorem~\ref{thm:density_cluster_volume_ssd_ub_informal} informally summarizes the second of our main results, formally stated in Theorem~\ref{thm:density_cluster_volume_ssd_ub}, regarding the recovery of a $\lambda$-density cluster $\mc{C}_{\lambda}$ by PPR. For reasons that we explain later, in Section~\ref{sec:ppr_density_cluster}, our cluster recovery statement will actually be with respect to the $\sigma$-thickened set $\mc{C}_{\lambda,\sigma} := \{x \in \Rd: \mathrm{dist}(x,\mc{C}_{\lambda}) < \sigma\}$, for a given $\sigma > 0$. The upper bound we establish is a function of various parameters that measure the conditioning of both the density cluster $\mc{C}_{\lambda,\sigma}$ and density $f$ for recovery by PPR. We assume that $\mc{C}_{\lambda,\sigma}$ is the image of a convex set $\mc{K}$ of finite diameter $\mathrm{diam}(\mc{K}) \leq \rho < \infty$ under an Lipschitz, Lebesgue-measure-preserving mapping $g$, with Lipschitz constant $L$. We also assume that $f$ is bounded away from $0$ and $\infty$ on $\mc{C}_{\lambda,\sigma}$,
+\begin{equation*}
+0 < \lambda_{\sigma} \leq f(x) \leq \Lambda_{\sigma} < \infty~~\textrm{for all $x \in \mc{C}_{\lambda,\sigma}$}
+\end{equation*}
+while satisfying the low-noise condition 
+\begin{equation*}
+\inf_{y \in \mc{C}_{\lambda,\sigma}} f(y) - f(x) \geq  \theta \cdot \dist(x, \mc{C}_{\lambda,\sigma})^{\gamma}~~\textrm{for all $x$ such that $\dist(x,\mc{C}_{\lambda,\sigma}) \leq r$.}
+\end{equation*}
+(Here $\dist(x,\mc{C}) := \inf_{y \in \mc{C}} \|y - x\|$.) 
+\begin{theorem}[Informal]
+	\label{thm:density_cluster_volume_ssd_ub_informal}
+	Let $\mc{C}_{\lambda} \subset \Rd$ be a $\lambda$-density cluster of a distribution $\Pbb$ that satisfies appropriate regularity conditions, and suppose Algorithm~\ref{alg:ppr} is well-initialized with respect to $\mc{C}_{\lambda,\sigma}$. For all $n \in \mathbb{N}$ sufficiently large, with high probability it holds that
+	\begin{equation}
+	\label{eqn:density_cluster_volume_ssd_ub_informal}
+	\frac{\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])}{\vol_{n,r}(\mc{C}_{\lambda,\sigma})} \leq c \cdot d^4 \cdot \frac{L^2\rho^2}{\sigma r} \cdot \frac{\Lambda_{\sigma}^2 \lambda (\lambda - \theta \frac{r^{\gamma}}{\gamma + 1})}{\lambda_{\sigma}^4} \cdot \log^2\biggl(\frac{\Lambda_{\sigma}^{2/d} L\rho}{\lambda_{\sigma}^{2/d}2r}\biggr).
+	\end{equation}
+\end{theorem}
+Equation~\eqref{eqn:density_cluster_volume_ssd_ub_informal} reveals the separate roles played by geometry and density in the ability of PPR to recover a density cluster. The parameters $L$, $\rho$ and $\sigma$ capture whether $\mc{C}_{\lambda,\sigma}$ is well-conditioned (short and fat) or poorly-conditioned (long and thin) for recovery by PPR. Likewise, the parameters $\lambda_{\sigma}, \Lambda_{\sigma}, \gamma$ and $\theta$ measure whether $f$ is well-conditioned (approximately uniform over the density cluster, and having thin tails outside the density cluster) or poorly conditioned (vice versa). Theorem~\ref{thm:density_cluster_volume_ssd_ub_informal} tells us that if the thickened density cluster $\mc{C}_{\lambda,\sigma}$ is well-conditioned---i.e. $L^2\rho^2/(\sigma r) \approx 1$---and the density $f$ is well-conditioned near $\mc{C}_{\lambda,\sigma}$---i.e. $\Lambda_{\sigma} \approx \lambda \approx \lambda_{\sigma}$ and $(\lambda - \theta r^{\gamma}/(\gamma + 1)) \ll \lambda$---then PPR will approximately recover the (thickened) density cluster.
 
 \subsection{Related Work}
 \label{subsec:related_work}
-We conclude this section by summarizing some related work (in addition to the background already given above). 
+We now summarize some related work (in addition to the background already given above), regarding the theory of spectral clustering, and of density cluster recovery.
 
-\paragraph{Spectral clustering.}In the stochastic block model (SBM), arguably one of the simplest models of network formation, edges between nodes independently occur with probability based on a latent community membership. In the SBM, the ability of spectral algorithms to perform clustering---or community detection---is well-understood, dating 
+\paragraph{Spectral clustering.}
+In the stochastic block model (SBM), arguably one of the simplest models of network formation, edges between nodes independently occur with probability based on a latent community membership. In the SBM, the ability of spectral algorithms to perform clustering---or community detection---is well-understood, dating 
 back to \citet{mcsherry2001} who gives conditions under which the entire
 community structure can be recovered. In more recent work, \citet{rohe2011}
 upper bound the fraction of nodes misclassified by a spectral algorithm for the
@@ -404,18 +430,27 @@ the Laplacian matrix for a neighborhood graph of fixed radius. \citet{belkin07} 
 \citet{garciatrillos18} extend these results to the regime where the radius $r
 \to 0$ as $n \to \infty$. 
 
-These results are of fundamental importance. However, they remain silent on the following natural question: do the spectra of these continuum operators induce a partition of the sample space which is ``good'' in some sense? \citet{shi2009,schiebinger2015,garciatrillos19} address this question, showing that spectral algorithms will recover the latent labels in certain well-conditioned nonparametric mixture models. These works are probably the most similar to our own: the conditioning of these mixture models depend on population-level functionals resembling the population-level normalized cut and conductance introduced above, and the resulting bounds on the error of spectral clustering are comparable to those we establish in Theorem~\ref{thm:volume_ssd_ub}. However, these results focus on global rather than local methods, and impose global rather than local conditions on $\Pbb$. Moreover, they do not explicitly consider recovery of density clusters, which is an important concern of our work. We comment further on the relationship between our results and these works after Theorem~\ref{thm:volume_ssd_ub}.
+These results are of fundamental importance. However, they remain silent on the following natural question: do the spectra of these continuum operators induce a partition of the sample space which is ``good'' in some sense? \citet{shi2009,schiebinger2015,garciatrillos19,hoffmann2019} address this question, showing that spectral algorithms will recover the latent labels in certain well-conditioned nonparametric mixture models. These works are probably the most similar to our own: the conditioning of these mixture models depend on population-level functionals resembling the population-level normalized cut and conductance introduced above, and the resulting bounds on the error of spectral clustering are comparable to those we establish in Theorem~\ref{thm:volume_ssd_ub}. However, these results focus on global rather than local methods, and impose global rather than local conditions on $\Pbb$. Moreover, they do not explicitly consider recovery of density clusters, which is an important concern of our work. We comment further on the relationship between our results and these works after Theorem~\ref{thm:volume_ssd_ub}.
 
-\paragraph{Density clustering.} For a given threshold $\lambda \in (0,\infty)$, let \smash{$\mathbb{C}_f(\lambda)$} denote the connected components of the density upper level set $\{x \in \Rd: f(x) > \lambda\}$. In the density clustering problem, initiated by~\cite{hartigan1975}, the goal is to recover $\mathbb{C}_{f}(\lambda)$. By now, density clustering (and the related problem of level-set estimation) are relatively well-understood. \citet{polonik1995,rigollet2009} study density clustering under the symmetric set difference
-metric, \citet{tsybakov1997,singh2009} describe minimax optimal level-set
-estimators under Hausdorff loss and
-\citet{hartigan1981,chaudhuri2010,balakrishnan2013,kpotufe11} consider
-consistent estimation of the cluster tree $\{\mathbb{C}_f(\lambda): \lambda \in (0,\infty)\}$. \textcolor{red}{Add, at a minimum, references to Larry + Ale and Ingo's papers.}
+\paragraph{Density clustering.} For a given threshold $\lambda \in (0,\infty)$, let \smash{$\mathbb{C}_f(\lambda)$} denote the connected components of the density upper level set $\{x \in \Rd: f(x) \geq \lambda\}$. In the density clustering problem, initiated by~\cite{hartigan1975}, the goal is to recover $\mathbb{C}_{f}(\lambda)$. By now, density clustering (and the related problem of level-set estimation) are quite well-understood. For instance, \citet{polonik1995,rigollet2009, rinaldo2010, steinwart2015} study density clustering under the symmetric set difference
+metric, \citet{tsybakov1997,singh2009,jiang2017} describe minimax optimal level-set and cluster estimators under Hausdorff loss, and
+\citet{hartigan1981,chaudhuri2010,kpotufe11,balakrishnan2013,steinwart2017,wang2019} consider
+consistent estimation of the cluster tree $\{\mathbb{C}_f(\lambda): \lambda \in (0,\infty)\}$.
 
 We emphasize that our goal is
-not to improve on these results, nor to offer a better algorithm for level set
-estimation, but rather to better understand the implications of our general theory by applying it within an already well-studied framework. Indeed, seen as a density clustering algorithm, PPR has none 
-of the optimality guarantees found in the aforementioned works. We should also note that since we study a local algorithm, our interest will be in a local version of the density clustering problem, where the goal is to recover a single density cluster $\mc{C}_{\lambda} \in \mathbb{C}_f(\lambda)$. 
+not to improve on these results, nor to offer a better algorithm for density clustering. Indeed, seen as a density clustering algorithm, PPR has none 
+of the optimality guarantees found in the aforementioned works. Rather, we hope to better understand the implications of our general theory by applying it within an already well-studied framework. We should also note that since we study a local algorithm, our interest will be in a local version of the density clustering problem, where the goal is to recover a single density cluster $\mc{C}_{\lambda} \in \mathbb{C}_f(\lambda)$. 
+
+\subsection{Organization}
+We now outline the rest of the paper.
+\begin{itemize}
+	\item In Section~\ref{sec:ub_symmetric_set_difference}, we show that under certain conditions the sample normalized cut $\Phi_{n,r}(\mc{C}[X])$ and conductance $\Psi_{n,r}(\mc{C}[X])$ are close to their population level counterparts $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$. As a consequence, we find that $\Delta(\wh{C},\mc{C}[X])$ is small whenever $\Phi_{\Pbb,r}(\mc{C})$ is small relative to $\Psi_{\Pbb,r}(\mc{C})^2$, giving the first population-level guarantees for local clustering in a nonparametric statistical context.
+	\item In Section~\ref{sec:ppr_density_cluster}, we focus on the special case where the candidate cluster $\mc{C} = \mc{C}_{\lambda}$ is a \emph{$\lambda$-density cluster}---that is, a connected component of the upper level set $\{x: f(x) \geq \lambda\}$---an object of central interest in the statistical clustering literature, dating back to the work of \citet{hartigan1981}. We derive specific upper bounds on the normalized cut $\Phi_{\Pbb,r}(\mc{C}_{\lambda})$ and conductance $\Psi_{\Pbb,r}(\mc{C}_{\lambda})$. These upper bounds depend on $\lambda$ as well as some other natural parameters, and immediately result in an upper bound on $\Delta(\wh{C},\mc{C}[X])$ in the density cluster setting (Theorem~\ref{thm:density_cluster_volume_ssd_ub}).
+	\item In Section~\ref{sec:lower_bound}, we prove a negative result: we give a hard distribution $\Pbb$ with corresponding density cluster $\mc{C}_{\lambda}$ for which the symmetric set difference $\Delta(\wh{C},\mc{C}_{\lambda}[X])$ is provably large.
+	\item In Section~\ref{sec:experiments} we empirically investigate some of our conclusions, before ending with some discussion in Section~\ref{sec:discussion}.
+\end{itemize}
+
+\textcolor{red}{(TODO): Edit this, based on whether or not the Main Results section passes muster. }
 
 \section{Recovery of a generic cluster with PPR}
 \label{sec:ub_symmetric_set_difference}
@@ -459,7 +494,7 @@ Therefore, setting (for instance) $\alpha = \frac{\Psi(G[C])^2}{2\log(1/\pi_{\mi
 
 \subsection{Improved bounds on mixing time} 
 \label{subsec:mixing_time}
-Having reviewed the conclusions of~\cite{zhu2013}, we return now to our own setting, where the data is not a fixed graph $G$ but instead random samples $\{x_1,\ldots,x_n\}$, and our goal is to recover a candidate cluster $\mc{C} \subset \Rd$. Ideally, we would like to apply~\eqref{eqn:zhu_ub2} with $C = \mc{C}[X]$ and $G = G_{n,r}$, replace $\Phi_{n,r}(\mc{C}[X])$ and $\Psi_{n,r}(\mc{C}[X])$ by $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$ inside~\eqref{eqn:zhu_ub2}, and thereby obtain an upper bound on $\Delta(\wh{C};\mc{C}[X])$ that depends only on $\Pbb$ and $\mc{C}$. Unfortunately, however, there is a catch: when the graph $G = G_{n,r}$ and the candidate cluster $C = \mc{C}[X]$, as $n \to \infty$ the sample normalized cut $\Phi_{n,r}(\mc{C}[X])$ and conductance $\Psi_{n,r}(\mc{C}[X])$ each converge to their population-level analogues, but $\pi_{\min}\bigl(G_{n,r}\bigl[\mc{C}[X]\bigr]\bigr) \asymp 1/n$. Therefore the right hand side of~\eqref{eqn:zhu_ub2} grows at a $\log n$ rate, rendering~\eqref{eqn:zhu_ub2} a vacuous upper bound when the number of samples is sufficiently large.
+Having reviewed the conclusions of~\cite{zhu2013}, we return now to our own setting, where the data is not a fixed graph $G$ but instead random samples $\{x_1,\ldots,x_n\}$, and our goal is to recover a candidate cluster $\mc{C} \subset \Rd$. Ideally, we would like to apply~\eqref{eqn:zhu_ub2} with $C = \mc{C}[X]$ and $G = G_{n,r}$, replace $\Phi_{n,r}(\mc{C}[X])$ and $\Psi_{n,r}(\mc{C}[X])$ by $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$ inside~\eqref{eqn:zhu_ub2}, and thereby obtain an upper bound on $\Delta(\wh{C};\mc{C}[X])$ that depends only on $\Pbb$ and $\mc{C}$. Unfortunately, however, there is a catch: when the graph $G = G_{n,r}$ and the candidate cluster $C = \mc{C}[X]$, as $n \to \infty$ the sample normalized cut $\Phi_{n,r}(\mc{C}[X])$ and conductance $\Psi_{n,r}(\mc{C}[X])$ each converge to their population-level analogues, but $\pi_{\min}\bigl(G_{n,r}\bigl[\mc{C}[X]\bigr]\bigr) \asymp 1/n$.\footnote{For sequences $(a_n)$ and $(b_n)$, we say $a_n \asymp b_n$ if there exists a constant $c \geq 1$ such that $a_n/c \leq b_n \leq c a_n$ for all $n \in \mathbb{N}$.} Therefore the right hand side of~\eqref{eqn:zhu_ub2} grows at a $\log n$ rate, rendering~\eqref{eqn:zhu_ub2} a vacuous upper bound when the number of samples is sufficiently large.
 
 To fix this, in Proposition~\ref{prop:pointwise_mixing_time} we improve the upper bound on mixing time given in~\eqref{eqn:mixing_time_cheeger}. Specifically, in~\eqref{eqn:pointwise_mixing_time} the ``start penalty'' of $\log(1/\pi_{\min}(G))$ is replaced by $\log(1/s(G))$, where $s(G)$ is the \emph{local spread} of $G$, defined as
 \begin{equation*}
@@ -485,53 +520,58 @@ In Propositions~\ref{prop:sample_to_population_1} and~\ref{prop:sample_to_popula
 \label{eqn:local_spread}
 s_{\Pbb,r}(\mc{C}) := \min_{x \in \mc{C}} \biggl\{\frac{\bigl(\deg_{\wt{\Pbb},r}(x)\bigr)^2}{\vol_{\wt{\Pbb},r}(\mc{C})} \biggr\},
 \end{equation}
-where $\deg_{\wt{\Pbb},r}(x) := \int_{\Rd} \1\{\|y - x\| \leq r\} \,d\wt{\Pbb}(y)$ is the expected degree of $x$ in $G_{n,r}\bigl[\mc{C}[X]\bigr]$. 
+where $\deg_{\wt{\Pbb},r}(x) := \int_{\Rd} \1\{\|y - x\| \leq r\} \,d\wt{\Pbb}(y)$ is the expected degree of $x$ in $G_{n,r}\bigl[\mc{C}[X]\bigr]$ (normalized by a factor of $1/(n - 1)$.)
 
 To establish these bounds, we impose the following regularity conditions on $\wt{\Pbb}$ and $\mc{C}$.
 \begin{enumerate}[label=(A\arabic*)]
-	\item 
-	\label{asmp:domain} 
-	The candidate cluster $\mc{C} \subseteq \Rd$ for $d \geq 2$, is a bounded, connected, open set with Lipschitz boundary. 
 	\item 
 	\label{asmp:bounded_density} 
 	The distribution $\wt{\Pbb}$ has a density $\wt{f}: \mc{C} \to (0,\infty)$ such that there exist $f_{\min} \leq 1 \leq f_{\max}$ for which
 	\begin{equation*}
 	(\forall x \in \mc{C})~~ f_{\min} \leq \wt{f}(x) \leq f_{\max}.
 	\end{equation*}
+	\item 
+	\label{asmp:domain} 
+	The candidate cluster $\mc{C} \subseteq \Rd$ is a bounded, connected, open set. If $d \geq 2$ then it has a Lipschitz boundary. 
 \end{enumerate}
-In what follows, we use $b_1,b_2,\ldots$ and $B_1,B_2,\ldots$ to refer to constants that may depend on $\Pbb$ and $\mc{C}$, but do not depend on $n$ or $\delta$. We explicitly keep track of all constants in our proofs.
+In what follows, we use $b_1,b_2,\ldots$ and $B_1,B_2,\ldots$ to refer to positive constants that may depend on $\Pbb$,$\mc{C}$, and $r$, but do not depend on $n$ or $\delta$. We explicitly keep track of all constants in our proofs.
 \begin{proposition}
 	\label{prop:sample_to_population_1}
-	Fix $\delta \in (0,1/3)$. Suppose $\mc{C}$ and $\wt{\Pbb}$ satisfy~\ref{asmp:domain} and~\ref{asmp:bounded_density}. There exist positive constants $b_1$ and $b_2$ such that each of the following statements hold.
+	Fix $\delta \in (0,1/3)$. Suppose $\mc{C}$ and $\wt{\Pbb}$ satisfy~\ref{asmp:bounded_density} and~\ref{asmp:domain}. There exist positive constants $b_1$ and $b_2$ such that each of the following statements hold.
 	\begin{itemize}
 		\item With probability at least $1 - 3\exp\{-b_1\delta^2n\}$,
 		\begin{equation}
 		\label{eqn:sample_to_population_normalized_cut}
 		\Phi_{n,r}(\mc{C}[X]) \leq (1 + 3\delta) \Phi_{\Pbb,r}(\mc{C}).
 		\end{equation}
-		\item With probability at least $1 - (n + 2)\exp\{-b_2\delta^2n\}$,
+		\item For any $n \in \mathbb{N}$ for which 
+		\begin{equation}
+		\label{eqn:sample_to_population_local_spread_sample_complexity}
+		\frac{1}{n} \leq \delta \cdot \frac{2\Pbb(\mc{C})}{3}
+		\end{equation}
+		the following inequality holds with probability at least \smash{$1 - (n + 2)\exp\{-b_2\delta^2n\}$}:
 		\begin{equation}
 		\label{eqn:sample_to_population_local_spread}
-		s_{n,r}(\mc{C}[X]) \geq (1 - 3\delta) s_{\Pbb,r}(\mc{C}).
+		s_{n,r}(\mc{C}[X]) \geq (1 - 4\delta) s_{\Pbb,r}(\mc{C}).
 		\end{equation}
 	\end{itemize}
 \end{proposition}
-Let $p_d := 3/4$ if $d = 2$, and else $p_d := 1/d$ for $d \geq 3$. 
+Let $p_d := 1/2$ if $d = 1$, $p_d := 3/4$ if $d = 2$, and otherwise $p_d := 1/d$ for $d \geq 3$. 
 \begin{proposition}
 	\label{prop:sample_to_population_2}
-	Fix $\delta \in (0,1/2)$. Suppose $\mc{C}$ and $\wt{\Pbb}$ satisfy~\ref{asmp:domain} and~\ref{asmp:bounded_density}. Then there exist positive constants $B_1$,$B_2$, and $b_3$ such that for any $n \in \mathbb{N}$ for which
+	Fix $\delta \in (0,1/2)$. Suppose  $\wt{\Pbb}$ and $\mc{C}$ satisfy~\ref{asmp:bounded_density} and~\ref{asmp:domain}. Then there exist positive constants $B_1$,$B_2$, and $b_3$ such that for any $n \in \mathbb{N}$ for which
 	\begin{equation}
 	\label{eqn:sample_to_population_conductance_sample_complexity}
-	\frac{(\log n)^{p_d}}{n^{1/d}} \leq \delta \cdot B_1,
+	\frac{(\log n)^{p_d}}{\min\{n^{1/2},n^{1/d}\}} \leq \delta \cdot B_1,
 	\end{equation}
-	the following inequality holds with probability at least $1 - B_2/n - (n + 2)\exp\{-b_3n\}$:
+	the following inequality holds with probability at least $1 - B_2/n - (n + 1)\exp\{-b_3n\}$:
 	\begin{equation}
 	\label{eqn:sample_to_population_conductance}
 	\Psi_{n,r}(\mc{C}[X]) \geq (1 - 2\delta) \Psi_{\Pbb,r}(\mc{C}).
 	\end{equation}
 \end{proposition}
 
-A word on the proof techniques: the upper bound in~\eqref{eqn:sample_to_population_normalized_cut} follows by applying Hoeffding's inequality to control the deviations of $\cut_{n,r}(\mc{C}[X])$, $\vol_{n,r}(\mc{C}[X])$ and $\vol_{n,r}(\mc{C}^c[X])$ around their expectations (noting that each of these is an order-$2$ U-statistic). To prove the lower bound~\eqref{eqn:sample_to_population_local_spread}, we require a union bound to control the minimum degree $d_{\min}\bigl(G_{n,r}\bigl[\mc{C}[X]\bigr]\bigr)$, but otherwise the proof is similarly straightforward. On the other hand, the proof of~\eqref{eqn:sample_to_population_conductance} is considerably more complicated. Our proof relies on the recent results of \citep{garciatrillos16b}, who upper bound the  $\Leb^{\infty}$-optimal transport distance between $\mathbb{P}_n$ and $\mathbb{P}$. For further details, we refer to Appendix~\textcolor{red}{(?)}, where we prove~\eqref{eqn:sample_to_population_conductance}, as well as~\citep{garciatrillos16}, who establish the asymptotic convergence of the sample conductance.
+A word on the proof techniques: the upper bound in~\eqref{eqn:sample_to_population_normalized_cut} follows by applying Hoeffding's inequality to control the deviations of $\cut_{n,r}(\mc{C}[X])$, $\vol_{n,r}(\mc{C}[X])$ and $\vol_{n,r}(\mc{C}^c[X])$ around their expectations (noting that each of these is an order-$2$ U-statistic). To prove the lower bound~\eqref{eqn:sample_to_population_local_spread}, we require a union bound to control the minimum degree $d_{\min}\bigl(G_{n,r}\bigl[\mc{C}[X]\bigr]\bigr)$, but otherwise the proof is similarly straightforward. On the other hand, the proof of~\eqref{eqn:sample_to_population_conductance} is considerably more complicated. Our proof relies on the recent results of \citep{garciatrillos16b}, who upper bound the  $\Leb^{\infty}$-optimal transport distance between $\mathbb{P}_n$ and $\mathbb{P}$. For further details, we refer to Appendix~\textcolor{red}{(?)}, where we prove Proposition~\ref{prop:sample_to_population_2}, as well as~\citep{garciatrillos16}, who establish the asymptotic convergence of the sample conductance.
 
 \subsection{Cluster recovery}
 \label{subsec:cluster_recovery}
@@ -550,7 +590,7 @@ parameters. In particular, for $\delta \in (0,1/4)$ and a candidate cluster $\mc
 where
 \begin{equation}\
 \label{eqn:alpha_initialization}
-\alpha_{\Pbb,r}(\mc{C},\delta) := \frac{\ln(2)}{13} \cdot \frac{\Psi_{\Pbb,r}^2(\mc{C})}{\ln^2\Bigl(\frac{8}{(1 - 3\delta)s_{\Pbb,r}(\mc{C})}\Bigr)} 
+\alpha_{\Pbb,r}(\mc{C},\delta) := \frac{\ln(2)}{13} \cdot \frac{\Psi_{\Pbb,r}^2(\mc{C})}{\ln^2\Bigl(\frac{8}{(1 - 4\delta)s_{\Pbb,r}(\mc{C})}\Bigr)} 
 \end{equation}
 
 \begin{definition}
@@ -570,12 +610,12 @@ normalized cut.
 
 \begin{theorem}
 	\label{thm:volume_ssd_ub} 
-	Let $\mc{C} \subseteq \Rd$ and $\delta \in (0,1/4)$, and suppose that
+	Fix $\delta \in (0,1/4)$. Suppose $\wt{\Pbb}$ and $\mc{C}$ satisfy~\ref{asmp:bounded_density} and~\ref{asmp:domain}. Then there exists a positive constant $B_3$ such that for any $n \in \mathbb{N}$ which satisfies~\eqref{eqn:sample_to_population_local_spread_sample_complexity}, \eqref{eqn:sample_to_population_conductance_sample_complexity}, and
 	\begin{equation}
 	\label{eqn:volume_ssd_ub_sample_complexity}
-	\frac{(\log n)^{p_d}}{n^{1/d}} \leq \delta \cdot B_1,~~\textrm{and}~~\frac{(1 + \delta)}{(1 - \delta)^3} \cdot B_3 \leq n.
+	\frac{(1 + \delta)}{(1 - \delta)^4} \cdot B_3 \leq n,
 	\end{equation} 
-	With probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - 2(n + 2)\exp\{-b_2\delta^2n\} - (n + 2)\exp\{-b_3n\}$, the following statement holds: there exists a set $\mc{C}[X]^g \subseteq \mc{C}[X]$ of large volume, $\vol_{n,r}(\mc{C}[X]^g) \geq \vol_{n,r}(\mc{C}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized with respect to $\mc{C}$, and run with any seed node $v \in \mc{C}[X]^g$, then the PPR estimated cluster $\wh{C}$ satisfies
+	the following statement holds with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (2n + 2)\exp\{-b_2\delta^2n\} - (n + 1)\exp\{-b_3n\}$: there exists a set $\mc{C}[X]^g \subseteq \mc{C}[X]$ of large volume, $\vol_{n,r}(\mc{C}[X]^g) \geq \vol_{n,r}(\mc{C}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized with respect to $\mc{C}$, and run with any seed node $v \in \mc{C}[X]^g$, then the PPR estimated cluster $\wh{C}$ satisfies
 	\begin{equation}
 	\label{eqn:volume_ssd_ub}
 	\begin{aligned}
@@ -583,35 +623,36 @@ normalized cut.
 	\end{aligned}
 	\end{equation}
 \end{theorem}
-To summarize: if PPR is well-initialized within a candidate cluster $\mc{C}$, then the volume of the symmetric set difference between $\wh{C}$ and $\mc{C}[X]$ is upper bounded by the following function of the population-level functionals:
-\begin{equation*}
-\frac{\Delta(\wh{C};\mc{C}[X])}{\vol_{n,r}(\mc{C}[X])} \lesssim \Phi_{\Pbb,r}(\mc{C})  \cdot \frac{\log^2\bigl(1/s_{\Pbb,r}(\mc{C})\bigr)}{\Psi^2_{\Pbb,r}(\mc{C})}.
-\end{equation*}
-We now make some other remarks:
+% The following lines are commented out, because they are superseded by the informal statement of our theorem above.
+%
+% To summarize: if PPR is well-initialized within a candidate cluster $\mc{C}$, then the volume of the symmetric set difference between $\wh{C}$ and $\mc{C}[X]$ is upper bounded by the following function of the population-level functionals:
+% \begin{equation*}
+% \frac{\Delta(\wh{C};\mc{C}[X])}{\vol_{n,r}(\mc{C}[X])} \lesssim \Phi_{\Pbb,r}(\mc{C})  % \cdot \frac{\log^2\bigl(1/s_{\Pbb,r}(\mc{C})\bigr)}{\Psi^2_{\Pbb,r}(\mc{C})}.
+% \end{equation*}
+% 
+
+We now make some remarks:
 \begin{itemize}
 	\item It is useful to compare Theorem~\ref{thm:volume_ssd_ub} with what is already known regarding \emph{global} spectral clustering in the context of nonparametric statistics. \cite{schiebinger2015} consider the following variant of spectral clustering: first embed the data $X$ into $\Reals^{k}$ using the bottom $k$ eigenvectors of the degree-normalized Laplacian $I - D^{-1/2}AD^{-1/2}$, and then partition the embedded data into estimated clusters $\wh{C}_1,\ldots,\wh{C}_k$  using $k$-means clustering. They derive error bounds on the misclassification error that depend on a difficulty function $\varphi(\Pbb)$. In our context, where the goal is to successfully distinguish $\mc{C}$ and $\mc{C}^c$ and thus $k = 2$, this difficulty function is roughly
 	\begin{equation}
 	\label{eqn:schiebinger}
 	\varphi(\Pbb) \approx \sqrt{\Phi_{\Pbb,r}(\mc{C})} \cdot \max\biggl\{ \frac{1}{\Psi_{\Pbb,r}(\mc{C})^2}; \frac{1}{\Psi_{\Pbb,r}(\mc{C}^c)^2}\biggr\}.
 	\end{equation}
-	We point out two ways in which~\eqref{eqn:volume_ssd_ub} is a tighter bound than~\eqref{eqn:schiebinger}. First,~\eqref{eqn:schiebinger} depends on $\Psi_{\Pbb,r}(\mc{C}^c)$ in addition to $\Psi_{\Pbb,r}(\mc{C})$, and is thus a useful bound only if $\mc{C}^c$ and $\mc{C}$ are both internally well-connected. In contrast~\eqref{eqn:volume_ssd_ub} depends only on $\Psi_{\Pbb,r}(\mc{C})$, and is thus a useful bound if $\mc{C}$ has small conductance, regardless of the conductance of $\mc{C}^c$. This is intuitive: PPR is a local rather than global algorithm, and as such the analysis requires only local rather than global conditions. Second,~\eqref{eqn:schiebinger} depends on $\sqrt{\Phi_{\Pbb,r}(\mc{C})}$ rather than $\Phi_{\Pbb,r}(\mc{C})$, and since $\Phi_{\Pbb,r}(\mc{C}) \leq 1$ this results in a weaker bound.~\citep{schiebinger2015} provide experiments suggesting that the linear, rather than square-root, dependence is correct, and we theoretically confirm this in the local clustering setup. Of course, on the other hand~\eqref{eqn:volume_ssd_ub} depends on $\log^2(1/s_{\Pbb,r}(\mc{C}))$ which does not appear in~\eqref{eqn:schiebinger}. \\
-	\textcolor{red}{(TODO): Add a comment explaining why we get different bounds.}
+	We point out two ways in which~\eqref{eqn:volume_ssd_ub} is a tighter bound than~\eqref{eqn:schiebinger}. First,~\eqref{eqn:schiebinger} depends on $\Psi_{\Pbb,r}(\mc{C}^c)$ in addition to $\Psi_{\Pbb,r}(\mc{C})$, and is thus a useful bound only if $\mc{C}^c$ and $\mc{C}$ are both internally well-connected. In contrast~\eqref{eqn:volume_ssd_ub} depends only on $\Psi_{\Pbb,r}(\mc{C})$, and is thus a useful bound if $\mc{C}$ has small conductance, regardless of the conductance of $\mc{C}^c$. This is intuitive: PPR is a local rather than global algorithm, and as such the analysis requires only local rather than global conditions. Second,~\eqref{eqn:schiebinger} depends on $\sqrt{\Phi_{\Pbb,r}(\mc{C})}$ rather than $\Phi_{\Pbb,r}(\mc{C})$, and since $\Phi_{\Pbb,r}(\mc{C}) \leq 1$ this results in a weaker bound.~\citep{schiebinger2015} provide experiments suggesting that the linear, rather than square-root, dependence is correct, and we theoretically confirm this in the local clustering setup. Of course, on the other hand~\eqref{eqn:volume_ssd_ub} depends on $\log^2(1/s_{\Pbb,r}(\mc{C}))$ which does not appear in~\eqref{eqn:schiebinger}.
 	
 	\item Although Theorem~\ref{thm:volume_ssd_ub} is stated with respect to the exact PPR vector $p_v$, for a sufficiently small choice of $\varepsilon$, the 
 	application of \eqref{eqn:appr_error} within the proof of Theorem
-	\ref{thm:volume_ssd_ub} leads to an analogous result which holds for the aPPR vector \smash{$p_v^{(\varepsilon)}$}. We formally state and proof this result in our appendix (Corollary~\textcolor{red}{(?)}).
+	\ref{thm:volume_ssd_ub} leads to an analogous result which holds for the aPPR vector \smash{$p_v^{(\varepsilon)}$}. We formally state and prove this result in our appendix (Corollary~\textcolor{red}{(?)}).
 \end{itemize}
 
 \section{Recovery of a density cluster with PPR}
 \label{sec:ppr_density_cluster}
-We now apply the general theory established in the last section to the special case where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster---that is, a connected component of the upper level set $\{x: f(x) \geq \lambda\}$. We also derive a lower bound, giving a ``hard problem'' for which PPR will provably fail to recover a density cluster. Together, these results can be summarized as follows: PPR recovers a density cluster $\mc{C}_{\lambda}$ if and only if $\mc{C}_{\lambda}$ is \emph{well-conditioned}, both geometrically---meaning it is not too long and thin--- and vertically---meaning $f$ is approximately uniform inside $\mc{C}_{\lambda}$ while satisfying a low-noise condition near its boundary.
+We now apply the general theory established in the last section to the special case where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster---that is, a connected component of the upper level set $\{x: f(x) \geq \lambda\}$. We also derive a lower bound, giving a ``hard problem'' for which PPR will provably fail to recover a density cluster. Together, these results can be summarized as follows: PPR recovers a density cluster $\mc{C}_{\lambda}$ if and only if both $\mc{C}_{\lambda}$ and $f$ are well-conditioned, meaning that $\mc{C}_{\lambda}$ is not too long and thin, and that $f$ is approximately uniform inside $\mc{C}_{\lambda}$ while satisfying a low-noise condition near its boundary.
 
 \subsection{Recovery of well-conditioned density clusters}
 \label{subsec:recovery_well-conditioned_density_clusters}
 
-All results on density clustering assume the density $f$ satisfies some regularity conditions. A basic requirement is the need to avoid clusters which contain arbitrarily thin bridges or spikes, or more generally clusters which can be disconnected by removing a subset of (Lebesgue) measure $0$, and thus cannot be resolved by any finite number of samples. This requirement can be enforced in several different ways: for instance, many of the aforementioned works assume that the density $f$ is continuous, while~\cite{rinaldo2010} allow for discontinuous $f$ by defining the level sets with respect to a convolution $k \ast \mathbb{P}$ (where $k$ is a continuous kernel on $\Rd$ with compact support), and \cite{steinwart2015} takes the level set with respect to the lower semi-continuous version of $f$. We instead choose to follow the approach of~\cite{chaudhuri2010}, who assume the density is lower bounded on a thickened version of $\mc{C}_{\lambda}$, defined as $\mc{C}_{\lambda,\sigma} := \{x \in \Reals^d: \dist(x,\mc{C}) \leq \sigma\}$ for some $\sigma > 0$. (Here $\dist(x,\mc{C}) := \inf_{y \in \mc{C}} \|y - x\|$.) The set $\mc{C}_{\lambda,\sigma}$ is full dimensional with a smooth boundary, and thus no continuity assumption on $f$ is required. \\
-
-\textcolor{red}{(TODO): Follow the advice of Siva, don't irritate Ingo.}\\
+All results on density clustering assume the density $f$ satisfies some regularity conditions. A basic requirement is the need to avoid clusters which contain arbitrarily thin bridges or spikes, or more generally clusters which can be disconnected by removing a subset of (Lebesgue) measure $0$, and thus may not be resolved by any finite number of samples. To rule out such problematic clusters, we follow the approach of~\cite{chaudhuri2010}, who assume the density is lower bounded on a thickened version of $\mc{C}_{\lambda}$, defined as $\mc{C}_{\lambda,\sigma} := \{x \in \Reals^d: \dist(x,\mc{C}) < \sigma\}$ for a given $\sigma > 0$. The point is that regardless of the dimension of $\mc{C}_{\lambda}$, the set $\mc{C}_{\lambda,\sigma}$ is full dimensional. Under typical uniform continuity conditions, the requirement that the density be lower bounded over $\mc{C}_{\lambda,\sigma}$ will be satisfied. We note that such continuity conditions can be weakened---for instance,~\cite{rinaldo2010} define the level sets with respect to a convolution $k \ast \mathbb{P}$ (where $k$ is a continuous kernel on $\Rd$ with compact support), and \cite{steinwart2015} takes the level set with respect to the lower semi-continuous version of $f$---but do not pursue the matter further.
 
 In summary, our goal is to obtain upper bounds on $\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])$, for some fixed $\lambda$ and $\sigma > 0$. We have already derived upper bounds on the volume of the symmetric set difference that depend on some population-level functionals of the candidate cluster. What remains is to analyze these population-level functionals in the specific case where the candidate cluster is $\mc{C}_{\lambda,\sigma}$. To carry out this analysis, we will need to impose some conditions, and for the rest of this section we will assume the following.
 
@@ -657,7 +698,7 @@ In summary, our goal is to obtain upper bounds on $\Delta(\wh{C},\mc{C}_{\lambda
 	diameter under a measure preserving, Lipschitz transformation. 
 \end{enumerate}
 
-\emph{For convenience only}, we will also make the following assumption, 
+\emph{For convenience only}, we will also make the following assumption.
 \begin{enumerate}[label=(A\arabic*)]
 	\setcounter{enumi}{5}
 	\item
@@ -667,7 +708,7 @@ In summary, our goal is to obtain upper bounds on $\Delta(\wh{C},\mc{C}_{\lambda
 	$$
 	\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \leq \vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma}^c). 
 	$$
-	Roughly, this assumption ensures that with high probability $\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]) \leq (1 + \delta) \cdot \vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^c)$, and thus $\Phi_{n,r}(\mc{C}_{\lambda,\sigma}[X]) \leq (1 + \delta) \cdot \cut_{n,r}(\mc{C}_{\lambda,\sigma}[X])/\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])$. 
+	This assumption implies that the normalized cut of $\mc{C}_{\lambda,\sigma}$ will be equal to the ratio of $\cut_{\Pbb,r}(\mc{C}_{\lambda,\sigma})$ to $\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})$.
 \end{enumerate}
 
 \paragraph{Normalized cut, conductance, and local spread of a density cluster.} In Lemma~\ref{lem:density_cluster_local_spread}, Proposition~\ref{prop:density_cluster_normalized_cut}, and Proposition~\ref{prop:density_cluster_conductance}, we give bounds on the population-level local spread, normalized cut, and conductance of $\mc{C}_{\lambda,\sigma}$. These bounds depend on the various geometric parameters just introduced. 
@@ -711,20 +752,20 @@ Some remarks are in order:
 \noindent Applying these results along with Theorem~\ref{thm:volume_ssd_ub}, we obtain an upper bound on $\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])$. In what follows, $C_{1,\delta},C_{2,\delta},\ldots$ are constants which may depend on $\delta$, but not on $n$, $\Pbb$ or $\mc{C}_{\lambda,\sigma}$, and which we keep track of in our proofs.
 \begin{theorem}
 	\label{thm:density_cluster_volume_ssd_ub}
-	Let $C_{\lambda} \subseteq \Rd$ and $\delta \in (0,1/4)$. Suppose that $C_{\lambda,\sigma}$ satisfies Assumptions~\ref{asmp:lambda_bounded_density}-\ref{asmp:bounded_volume} for some $\lambda_{\sigma}, \Lambda_{\sigma}, \theta, \gamma, \rho$ and $L$, that $0 < r \leq \sigma/4d$, and that $n$ satisfies~\eqref{eqn:volume_ssd_ub_sample_complexity}. Then with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - 2(n + 2)\exp\{-b_2\delta^2n\} - (n + 2)\exp\{-b_3n\}$, the following statement holds: there exists a set $\mc{C}[X]^g \subseteq \mc{C}[X]$ of large volume, $\vol_{n,r}(\mc{C}[X]) \geq \vol_{n,r}(\mc{C}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized with respect to $\mc{C}$, and run with any seed node $v \in \mc{C}[X]^g$, then the PPR estimated cluster $\wh{C}$ satisfies
+	Let $C_{\lambda} \subseteq \Rd$ and $\delta \in (0,1/4)$. Suppose that $C_{\lambda,\sigma}$ satisfies Assumptions~\ref{asmp:domain}-\ref{asmp:bounded_volume} for some $\lambda_{\sigma}, \Lambda_{\sigma}, \theta, \gamma, \rho$ and $L$, that $0 < r \leq \sigma/4d$, and that the sample size $n$ satisfies the same conditions as in Theorem~\ref{thm:density_cluster_volume_ssd_ub}. Then with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (2n + 2)\exp\{-b_2\delta^2n\} - (n + 1)\exp\{-b_3n\}$, the following statement holds: there exists a set $\mc{C}[X]^g \subseteq \mc{C}[X]$ of large volume, $\vol_{n,r}(\mc{C}[X]) \geq \vol_{n,r}(\mc{C}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized with respect to $\mc{C}$, and run with any seed node $v \in \mc{C}[X]^g$, then the PPR estimated cluster $\wh{C}$ satisfies
 	\begin{equation}
 	\label{eqn:density_cluster_volume_ssd_ub}
 	\frac{\Delta(\wh{C};\mc{C}_{\lambda,\sigma}[X])}{\vol_{n,r}(\mc{C}[X])} \leq C_{1,\delta} \cdot d^3(d + 2) \cdot \frac{L^2\rho^2}{\sigma r} \cdot \frac{\Lambda_{\sigma}^2 \lambda (\lambda - \theta \frac{r^{\gamma}}{\gamma + 1})}{\lambda_{\sigma}^4} \cdot \log^2\biggl(C_{2,\delta}^{1/d} \frac{\Lambda_{\sigma}^{2/d} L\rho}{\lambda_{\sigma}^{2/d}2r}\biggr)
 	\end{equation}
 \end{theorem}
-Inequality~\eqref{eqn:density_cluster_volume_ssd_ub} shows the separate roles played by geometry and density in the ability of PPR to recover a density cluster. For instance, if the thickened density cluster $\mc{C}_{\lambda,\sigma}$ is both geometrically well-conditioned---i.e. $L^2\rho^2/(\sigma r) \approx 1$---and vertically well-conditioned---i.e. $\Lambda_{\sigma} \approx \lambda \approx \lambda_{\sigma}$ and $(\lambda - \theta r^{\gamma}/(\gamma + 1)) \ll \lambda$---then PPR will approximately recover it.  Some other remarks:
+As we have previously summarized, Theorem~\ref{thm:density_cluster_volume_ssd_ub} shows the separate roles played by geometry and density in the ability of PPR to recover a density cluster. Now, we make some other remarks:
 \begin{itemize}
 	\item Observe that while the diameter $\rho$ is absent from our upper bound on normalized cut in Proposition \ref{prop:density_cluster_normalized_cut}, it enters the ultimate bound in Theorem~\ref{thm:density_cluster_volume_ssd_ub} through the conductance. This reflects
 	(what may be regarded as) established wisdom regarding spectral partitioning
 	algorithms more generally \citep{guattery1995, hein2010}, but newly applied
 	to the density clustering setting: if the diameter $\rho$ is large, then PPR
 	may fail to recover $\mc{C}_{\lambda,\sigma}[X]$ even when $\mc{C}_{\lambda}$ is sufficiently well-conditioned to ensure that $\mc{C}_{\lambda,\sigma}[X]$ has a small normalized cut in $G_{n,r}$. This will be supported by simulations in Section \ref{sec:experiments}.   
-	\item Several modifications of global spectral clustering have been proposed with the intent of making such procedures essentially independent of the geometry of the density cluster $\mc{C}_{\lambda}$. For instance,~\citet{pelletier2011,arias-castro2009} introduce a cleaning step to remove low-degree vertices, whereas~\cite{little2020} use a weighted geometric graph, where the weights are computed with respect to a density-dependent distance. The resulting procedures come with stronger density cluster recovery guarantees. However, the key ingredient in such procedures is the explicitly density-dependent part of the algorithm, with spectral clustering functioning as more of a post-processing step. These methods are thus very different in spirit to PPR, which is a bona fide (local) spectral clustering algorithm. 
+	\item Several modifications of global spectral clustering have been proposed with the intent of making such procedures essentially independent of the geometry of the density cluster $\mc{C}_{\lambda}$. For instance,~\citet{pelletier2011,arias-castro2009} introduce a cleaning step to remove low-degree vertices, whereas~\cite{little2020} use a weighted geometric graph, where the weights are computed with respect to a density-dependent distance. The resulting procedures come with stronger density cluster recovery guarantees. However, the key ingredient in such procedures is the explicitly density-dependent part of the algorithm, and spectral clustering functions as more of a post-processing step. These methods are thus very different in spirit to PPR, which is a bona fide (local) spectral clustering algorithm. 
 	\item As mentioned in the discussion after Theorem~\ref{thm:volume_ssd_ub}, the population-level normalized cut and conductance also play a leading role in the analysis of global spectral clustering algorithms. It therefore seems likely that similar bounds to~\eqref{eqn:density_cluster_volume_ssd_ub} would apply to the output of global spectral clustering methods as well, but formalizing this is outside the scope of our work.
 	\item The symmetric set difference does not measure whether \smash{$\wh{C}$}
 	can (perfectly) distinguish any two distinct clusters \smash{$\mc{C}_{\lambda},\mc{C}_{\lambda}' \in \mathbb{C}_f(\lambda)$}. In Appendix~\textcolor{red}{(?)}, we show in Theorem~\textcolor{red}{(?)} that the PPR estimate $\wh{C}$ can in fact distinguish two distinct clusters $\mc{C}_{\lambda}$ and $\mc{C}_{\lambda}'$, but the result holds only under relatively restrictive conditions.
@@ -770,7 +811,7 @@ so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, we have
 	\label{fig:hard_case}
 \end{figure}
 
-\paragraph{Lower bound on symmetric set difference.}
+\subsection{Lower bound on symmetric set difference}
 As the following theorem demonstrates, even when Algorithm~\ref{alg:ppr} is
 reasonably initialized, if the density cluster \smash{$\mc{C}^{(1)}$} is 
 sufficiently geometrically ill-conditioned (in words, tall and thin) the cluster 
@@ -779,48 +820,44 @@ estimator $\wh{C}$ will fail to recover \smash{$\mc{C}^{(1)}$}. Let
 \label{eqn:lower_set}
 \mathcal{L} = \set{(x_1,x_2) \in \mathcal{X}: x_2 < 0}.
 \end{equation}
-In the following Theorem, the samples $x_1,\ldots,x_n$ are drawn from the distribution $\Pbb$ with density $f$ given by~\eqref{eqn:lb_density}. \textcolor{red}{(TODO): Clean this up.}
+
+In the following Theorem, $B_{1,\delta}$ and $B_{2,\delta}$ are constants which may depend on $\delta,\Pbb,\mc{C}_{\lambda,\sigma}$ and $r$, but not on $n$.
 \begin{theorem}
 	\label{thm:ppr_lb}
 	Fix $\delta \in (0,1/7)$. Assume the neighborhood graph radius $r < \sigma/2$, that
 	\begin{equation}
 	\label{eqn:ppr_lb_condition}
-	\max\biggl\{C_{3,\delta} \cdot \frac{r}{\rho} \cdot \ln\Bigl(C_{4,\delta} \frac{\rho\sigma}{r^2 \epsilon^2} \Bigr), \frac{C_{5,\delta}}{n} \cdot \frac{\rho \sigma}{r^2 \epsilon^2} \biggr\} < \frac{1}{18}~~\textrm{and}~~n \geq \frac{6 \sigma \rho (1 + \delta)}{(\sigma - 2r)(\rho - r) (1 - \delta)},
+	\max\biggl\{ B_{1,\delta} \cdot \frac{r}{\rho}, B_{2,\delta} \cdot \frac{1}{n} \biggr\} < \frac{1}{18}~~\textrm{and}~~n \geq 8 \frac{(1 + \delta)}{(1 - \delta)},
 	\end{equation} 
 	and that Algorithm~\ref{alg:ppr} is initialized using inputs $\alpha = 36 \cdot   
-	\Phi_{n,r}(\mathcal{L}[X])$, and $(L,U) = (0,1)$.  Then the following statement holds with probability at least $1 - B_3 \exp\set{- \delta^2 b_4 n/(3 + \delta)} - n \exp\{-\delta^2 b_5 n/(3 + \delta)\}$: there exists a set $\mc{C}[X]^g$ of large volume, \\ \smash{$\vol_{n,r}(\mc{C}[X]^g \cap 
-		\mc{C}^{(1)}[X]) \geq 6\vol_{n,r}(\mc{C}^{(1)}[X];G_{n,r})/49$}, such
+	\Phi_{n,r}(\mathcal{L}[X])$, and $(L,U) = (0,1)$.  Then the following statement holds with probability at least $1 - (B_5 + 2n + 10)\exp\{-n\delta^2 b_6\}$: there exists a set $\mc{C}[X]^g$ of large volume, \smash{$\vol_{n,r}(\mc{C}[X]^g \cap 
+		\mc{C}^{(1)}[X]) \geq \vol_{n,r}(\mc{C}^{(1)}[X];G_{n,r})/8$}, such
 	that for any seed node $v \in \mc{C}[X]^g$, the PPR estimated cluster
 	\smash{$\wh{C}$} satisfies    
 	\begin{equation}
 	\label{eqn:ppr_lb}
 	\frac{\sigma \rho}{r^2 n^2} \cdot \vol_{n,r}(\wh{C} \vartriangle
-	\mc{C}^{(1)}[X]) \geq \frac{1 - \delta}{2} -  C_{6,\delta} \cdot 
+	\mc{C}^{(1)}[X]) \geq \frac{1 - \delta}{2} -  C_{3,\delta} \cdot 
 	\frac{\sqrt{\sigma/\rho}}{\epsilon^2} \cdot \sqrt{ \log\left(C_{4,\delta} \cdot \frac{\rho \sigma}
 		{\epsilon^2 r^2}\right) \frac{\sigma}{r}},   
 	\end{equation} 
 \end{theorem}
-
-\textcolor{red}{(TODO): Check that the assumptions of the Theorem match those used in the proof.}
-
-We make a few remarks:
+We make a couple of remarks:
 \begin{itemize}
 	\item Theorem~\ref{thm:ppr_lb} is stated with respect to a particular hard case, where the density clusters are rectangular subsets of $\Reals^2$.  We chose this
 	setting to make the theorem simple to state, and our results are generalizable
-	to $\Reals^d$ and to non-rectangular clusters.
+	to $\Reals^d$ and to non-rectangular clusters. Technically, the rectangles $\mc{C}^{(0)},\mc{C}^{(1)},\mc{C}^{(2)}$ are not
+	$\sigma$-expansions due to their sharp corners. To fix this, one can   
+	simply modify these sets to have appropriately rounded corners, and our lower
+	bound arguments do not need to change significantly, subject to some
+	additional bookkeeping.  Thus we ignore this technicality in our subsequent
+	discussion. 
 	
 	\item Although we state our lower bound with respect to PPR run on a neighborhood graph, the conclusion is likely to hold for a much broader class of spectral clustering algorithms. In the proof of Theorem~\ref{thm:ppr_lb}, we rely heavily on the fact that when $\epsilon^2$ is sufficiently greater than $\sigma/\rho$, the normalized cut of $\mc{C}^{(1)}$ will be much larger than that of $\mathcal{L}$. In this case, not merely PPR but any algorithm that approximates the minimum normalized cut is unlikely to recover $\mc{C}^{(1)}$. In particular, local spectral clustering
 	algorithms based on truncated random walks \citep{spielman2013}, global spectral
 	clustering algorithms \citep{shi00}, and $p$-Laplacian based spectral embeddings
 	\citep{hein2010} all have provable upper bounds on the normalized cut of cluster
 	they output, and thus we expect that they would all fail to estimate $\mc{C}^{(1)}$.
-	
-	\item Technically, the rectangles $\mc{C}^{(0)},\mc{C}^{(1)},\mc{C}^{(2)}$ are not
-	$\sigma$-expansions due to their sharp corners. To fix this, one can   
-	simply modify these sets to have appropriately rounded corners, and our lower
-	bound arguments do not need to change significantly, subject to some
-	additional bookkeeping.  Thus we ignore this technicality in our subsequent
-	discussion. 
 \end{itemize}
 
 \subsection{Comparison between upper and lower bounds}
@@ -857,7 +894,7 @@ To facilitate comparisons between our upper
 and lower bounds set $r = \sigma/8$.  Then
 the following statements each hold with high probability. 
 \begin{itemize}
-	\item If the user-specified parameters satisfy~\eqref{eqn:initialization}, and
+	\item If the user-specified parameters satisfy~\eqref{eqn:initialization}, and for some $a \geq 0$,
 	\begin{equation*}
 	\frac{\epsilon}{1 - \epsilon} \leq \frac{a}{256 C_{1,\delta}} \left(\frac{\sigma}{\rho \log(\rho/\sigma \sqrt{C_{2,\delta}})}\right)^2,
 	\end{equation*}
@@ -878,17 +915,13 @@ the following statements each hold with high probability.
 \end{itemize}
 
 Jointly, these upper and lower bounds give a relatively precise characterization
-of what it means for a density cluster to be well- or poorly-conditioned for recovery using PPR. 
+of what it means for a density cluster to be well- or poorly-conditioned for recovery using PPR. \footnote{It is worth pointing out that the above conclusions are reliant on specific
+(albeit reasonable) ranges and choices of input parameters, which in some
+instances differ between the upper and lower bounds. We suspect that our lower
+bound continues to hold even when choosing input parameters as dictated by our
+upper bound, but do not pursue the details.}
 
-\begin{remark}
-	It is worth pointing out that the above conclusions are reliant on specific
-	(albeit reasonable) ranges and choices of input parameters, which in some
-	instances differ between the upper and lower bounds. We suspect that our lower
-	bound continues to hold even when choosing input parameters as dictated by our
-	upper bound, but do not pursue the details.
-\end{remark}
-
-Finally, it is not hard to show that in the example under consideration, classical
+Of course, it is not hard to show that in the example under consideration, classical
 plug-in density cluster estimators can consistently recover the
 $\sigma$-expansion $\mc{C}_{\lambda,\sigma}$ of a density cluster $\mc{C}_{\lambda}$, even if $\epsilon$ is
 large compared to $\sigma/\rho$. That PPR has trouble recovering density
@@ -901,12 +934,10 @@ forming the output cluster.
 \section{Experiments}
 \label{sec:experiments}
 
-We provide numerical experiments to investigate the tightness of our theoretical results in Section~\ref{sec:ppr_density_cluster}, and examine the performance of PPR on the ``two moons'' dataset. We defer details of the experimental settings to the appendix.   
+We provide numerical experiments to investigate the tightness of our theoretical results in Section~\ref{sec:ppr_density_cluster}, and compare the performance of PPR with a density clustering algorithm on the ``two moons'' dataset. We defer details of the experimental settings to the appendix.   
 
-\paragraph{Validating theoretical bounds.}
-We investigate the tightness of Lemma~\ref{lem:density_cluster_local_spread} and Propositions~\ref{prop:density_cluster_normalized_cut} and \ref{prop:density_cluster_conductance} via simulation. Figure \ref{fig:bounds} compares our bounds on normalized cut, conductance, and local spread of a density cluster with the actual empirically-computed quantities. In the first row we vary the diameter $\rho$ of the candidate cluster, in the second row we vary the thickness $\sigma$ of the candidate cluster, and in the last row we vary the magnitude $\theta$ of the density drop. In each case, we see that our bounds track closely with their empirical counterparts, and are loose by roughly an order of magnitude or less. The looseness in each of these bounds will propagate to our eventual upper bound on $\Delta(\wh{C},\mc{C}_{\sigma}[X])/\vol_{n,r}(\mc{C}_{\sigma}[X])$, which as a result is loose by several orders of magnitude. Nevertheless, for sufficiently well-conditioned enough densities our upper bound will be $\ll 1$; for instance, when $\sigma = \textcolor{red}{(?)}$, $\rho = \textcolor{red}{(?)}$ and $\theta = \textcolor{red}{(?)}$.\\
-
-\textcolor{red}{Alden for Ryan: the last couple of sentences are an attempt at what we discussed in our meeting. I am not satisfied with it, but could not do better.}
+\subsection{Validating theoretical bounds}
+We investigate the tightness of Lemma~\ref{lem:density_cluster_local_spread} and Propositions~\ref{prop:density_cluster_normalized_cut} and \ref{prop:density_cluster_conductance}--- i.e. the bounds on core graph functionals needed for the eventual density cluster recovery result in Theorem~\ref{thm:density_cluster_volume_ssd_ub}---via simulation. Figure \ref{fig:bounds} compares our bounds on normalized cut, conductance, and local spread of a density cluster with the actual empirically-computed quantities. In the first row we vary the diameter $\rho$ of the candidate cluster, in the second row we vary the thickness $\sigma$ of the candidate cluster, and in the last row we vary the magnitude $\theta$ of the density drop. In each case, it is encouraging to see that our bounds track closely with their empirical counterparts, and are loose by roughly an order of magnitude or less. On the other hand, the looseness in each of these bounds will propagate to our eventual upper bound on $\Delta(\wh{C},\mc{C}_{\sigma}[X])/\vol_{n,r}(\mc{C}_{\sigma}[X])$, which as a result is loose by several orders of magnitude. 
 
 \begin{figure}[htb]
 	\centering
@@ -917,15 +948,16 @@ We investigate the tightness of Lemma~\ref{lem:density_cluster_local_spread} and
 	\label{fig:bounds}
 \end{figure}
 
-\paragraph{Empirical behavior of PPR.} In Figure \ref{fig:moons}, to drive home 
+\subsection{Empirical behavior of PPR} 
+In Figure \ref{fig:moons}, to drive home 
 the implications of Section~\ref{sec:ppr_density_cluster}, we show the behavior of PPR,
-normalized cut, and the density clustering algorithm of \citet{chaudhuri2010} on
+as compared with the density clustering algorithm of \citet{chaudhuri2010} on
 the well-known ``two moons'' dataset (with added 2d Gaussian noise), considered
-a prototypical success story for spectral clustering algorithms. The first
-column shows the empirical density clusters $\mc{C}[X]$ and $\mc{C}'[X]$ for
+a prototypical success story for spectral clustering algorithms. We also examine the cluster which minimizes the normalized cut; as we have discussed previously, this can be as a middle ground between the geometric sensitivity of PPR, and the geometric insensitivity of density clustering. The first
+column shows the empirical density clusters $\mc{C}_{\lambda}[X]$ and $\mc{C}_{\lambda}'[X]$ for
 a particular threshold $\lambda$ of the density function; the second column
 shows the cluster recovered by PPR; the third column shows the global minimum
-normalized cut, computed according to the algorithm of \citet{szlam2010}; and
+normalized cut, computed according to the algorithm of \citet{bresson2013}; and
 the last column shows a cut of the density cluster tree estimator of
 \citet{chaudhuri2010}.  We can see the degrading ability of PPR to recover
 density clusters as the two moons become less well-separated. Of particular
@@ -958,7 +990,7 @@ geometrically well-conditioned density clusters.
 
 \section{Discussion}
 \label{sec:discussion}
-In this work, we have analyzed the behavior of PPR in the classical setup of nonparametric statistics. We have shown how PPR depends on the distribution $\Pbb$ through the population-level normalized cut, conductance, and local spread, and established upper bounds on the error with which PPR recovers an arbitrary candidate cluster $\mc{C} \subseteq \Rd$.  In the particularly important case where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster, we have shown that PPR recovers $\mc{C}_{\lambda}$ if and only if it is geometrically and vertically well-conditioned. We now conclude by summarizing several interesting directions for future work.
+In this work, we have analyzed the behavior of PPR in the classical setup of nonparametric statistics. We have shown how PPR depends on the distribution $\Pbb$ through the population-level normalized cut, conductance, and local spread, and established upper bounds on the error with which PPR recovers an arbitrary candidate cluster $\mc{C} \subseteq \Rd$.  In the particularly important case where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster, we have shown that PPR recovers $\mc{C}_{\lambda}$ if and only if both the density cluster and density are well-conditioned. We now conclude by summarizing a couple of interesting directions for future work.
 
 Letting the radius of the neighborhood graph shrink, $r \to 0$ as $n \to  
 \infty$, would be computationally attractive, as it would ensure that the graph 
@@ -967,9 +999,7 @@ this regime. Although the restriction to a kernel function fixed in $n$ is
 common in spectral clustering theory \citep{vonluxburg2008, schiebinger2015, singer2017},
 recent works~\citep{shi2015, calder2019, garciatrillos18, garciatrillos2020, yuan2020} have demonstrated that spectral methods have meaningful continuum limits when $r \to 0$ as $n \to \infty$, and given precise rates of convergence.~\cite{garciatrillos19} have applied these results to analyze global spectral clustering in the nonparametric mixture model, obtaining asymptotic upper bounds that do not depend on $r$; it seems plausible that similar bounds could be obtained for local spectral clustering with PPR, although the arguments would necessarily be quite different.
 
-In another direction, it would be very useful to find reasonable conditions under which the ratio $\Delta(\wh{C},\mc{C}[X])/\vol_{n,r}(\mc{C}[X])$ would tend to $0$ as $n \to \infty$. It seems likely that such a strong result would entail bounds on the $\Leb^{\infty}$-error of PPR. Although most results thus far derive bounds on the $\Leb^1$- or $\Leb^2$-error of spectral clustering methods, some recent works~\citep{dunson2020,calder2020} have established $\Leb^{\infty}$-bounds on the error with which the eigenvectors of a graph Laplacian matrix approximate the eigenvectors of a weighted Laplace-Beltrami operator. It is not clear whether the techniques used in these works can be applied to PPR.
-
-Finally, after reading our Section~\ref{sec:ppr_density_cluster}, the practitioner may be tempted to ask why they should estimate a density cluster using PPR, when other methods are available with superior statistical guarantees. A undoubtedly correct, if perhaps unsatisfying, answer is that the ``ideal'' cluster is entirely in the eye of the beholder. For instance, it is quite common to define an ideal cluster as one with a small normalized cut, in which case the cluster output by PPR may be quite preferable to standard density clustering procedures. On the other hand, it would also be interesting to know whether a (local) spectral method such as PPR converges more rapidly (as a function of $n$) than standard density clustering procedures. Such a question could be answered by comparing the sample complexity of spectral clustering methods with that of density clustering procedures, but to our knowledge, the sample complexity of spectral methods remains unknown.
+In another direction, it would be very useful to find reasonable conditions under which the ratio $\Delta(\wh{C},\mc{C}[X])/\vol_{n,r}(\mc{C}[X])$ would tend to $0$ as $n \to \infty$. It seems likely that such a strong result would entail bounds on the $\Leb^{\infty}$-error of PPR. Although most results thus far derive bounds only on the $\Leb^1$- or $\Leb^2$-error of spectral clustering methods, some recent works~\citep{dunson2020,calder2020} have established $\Leb^{\infty}$-bounds on the error with which the eigenvectors of a graph Laplacian matrix approximate the eigenvectors of a weighted Laplace-Beltrami operator. It is not clear whether the techniques used in these works can be applied to PPR.
 
 \section*{Acknowledgements}
 
