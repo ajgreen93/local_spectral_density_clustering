@@ -1,0 +1,432 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+\newcommand{\dist}{\mathrm{dist}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+	
+\title{Outline: Local Spectral Density Clustering}
+\date{}
+\maketitle
+
+\section{Introduction}
+
+\textbf{(1)} \textbf{Introduce spectral clustering.} The problem of clustering involves partitioning data into sets which satisfy some notion of within-set similarity and between-set difference. In this paper, we focus on spectral clustering, a powerful family of nonparametric clustering algorithms. \textcolor{red}{Perhaps rework this, to immediately introduce relevant results on spectral clustering in a statistical context.}
+
+\textbf{(2)} \textbf{Motivate local spectral clustering.} Spectral clustering suffers from known issues: it is insensitive to geometry, and computationally infeasible. For these reasons, there has been increased interest in local spectral clustering algorithm, and in particular Personal PageRank (PPR).
+
+\textbf{(3)} \textbf{Review what is known.} To date, most analysis of PPR clustering has focused on worst-case guarantees, with respect to an \textit{a priori} fixed graph $G$. For instance, \textcolor{red}{(Andersen et al.)} assume that PPR is appropriately seeded within a candidate cluster $C \subseteq V$, and relate the quality of a cluster estimate $\wh{C}$---as measured by the normalized cut
+\begin{equation}
+\label{eqn:normalized_cut}
+\end{equation}
+---to the normalized cut $\Phi(C;G)$ of the candidate cluster.
+\textcolor{red}{(Allen-Zhu et al.)} build on this: they introduce a second functional, the \emph{conductance} $\Psi(C;G)$,
+\begin{equation}
+\label{eqn:conductance}
+\end{equation}
+and show that if $\Phi(C;G)$ is much smaller than $\Psi(C;G)$, then (in addition to having a small normalized cut) the cluster estimate $\wh{C}$ approximately recovers $C$. 
+These works, however, are not applicable to the classic statistical setting, where the input data are random samples $\{X_1,\ldots,X_n\}$ drawn from a density $f$, the graph $G$ is a random geometric graph formed by the user, and the candidate cluster is a set $\mc{C} \subset \Rd$. 
+
+\textbf{(4)} \textbf{Establish the gap.} Our work operates in this latter setting, and addresses the following question:
+\begin{quote}
+	Under what conditions on the density $f$ and candidate cluster $\mc{C} \subset \Rd$ does the PPR cluster estimate $\wh{C}$ approximately recover $\mc{C}$?
+\end{quote}
+To answer this question, we introduce population-level versions of normalized cut (denoted by $\Phi_{\Pbb,r}(\mc{C})$) and conductance ($\Psi_{\Pbb,r}(\mc{C})$). We show that when $n$ is sufficiently large, with high probability the empirical quantities $\Phi_{n,r}(\mc{C}[X])$ and $\Psi_{n,r}(\mc{C}[X])$ are close to their population counterparts. As a result, we obtain meaningful upper bounds on the discrepancy between $\wh{C}$ and $\mc{C}$ which depend only on the density $f$ and candidate cluster $\mc{C}$. In the special case where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster---that is, a connected component of $\{x: f(x) \geq \lambda \}$---we establish specific bounds on $\Phi_{\Pbb,r}(\mc{C}_{\lambda})$ and $\Psi_{\Pbb,r}(\mc{C}_{\lambda})$ that depend on $\lambda$ as well as some other natural parameters. These immediately translate into an upper bound on the difference between $\wh{C}$ and $\mc{C}_{\lambda}$, giving new connections between spectral and density clustering.
+
+\textbf{(5)} \textbf{Organization.} The remainder of this paper is organized as follows. \textcolor{red}{(TODO)} 
+
+\section{Background and Setup}
+\textbf{(1)} \textbf{Summary of the section.} To more precisely summarize our results, we will first review how to run the PPR algorithm on a neighborhood graph, then define the population-level normalized cut and conductance, and introduce a metric to measure the difference between two clusters.
+
+\subsection{PPR on a neighborhood graph}
+
+\textbf{(2)} \textbf{PPR on a neighborhood graph.} To produce $\wh{C} \subset X$ involves three separate components---forming the neighborhood graph $G_{n,r}$ over the vertices $X$, computing the PPR vector $p$, and outputting a set $\mc{C}$ by a sweep cut.
+
+\subsection{Cluster estimation}
+
+\textbf{(3)} \textbf{Metric between clusters.} We now introduce a way to measure the quality of a cluster estimate: the size of the symmetric set difference $\wh{C} \vartriangle \mc{C}[X]$.
+
+\subsection{Population normalized cut and conductance}
+\textbf{(4)} \textbf{Definition of normalized cut and conductance.} Let the population-level \emph{cut} and \emph{volume} be given by,
+\begin{equation*}
+\mathrm{cut}_{\Pbb,r}(\mc{C},\mc{S}) := \int_{\mc{C}} \int_{\mc{S}} \1\{\|x - y\| \leq r\} \,d\Pbb(y) \,d\Pbb(x)~~ \mathrm{vol}_{\Pbb,r}(\mc{C}) := \int_{\mc{C}} \int_{\Rd} \1\{\|x - y\| \leq r\} \,d\Pbb(y) \,d\Pbb(x).
+\end{equation*}
+
+\begin{definition}[Population-level normalized cut]
+	For a set $\mc{C} \subset \Rd$, distribution $\Pbb$ with density $f$, and radius $r > 0$, the population normalized cut is
+	\begin{equation*}
+	\Phi_{\Pbb,r}(\mc{C}) := \frac{\mathrm{cut}_{\Pbb,r}(\mc{C},\mc{C}^c)}{\min\{\mathrm{vol}_{\Pbb,r}(\mc{C}), \mathrm{vol}_{\Pbb,r}(\mc{C}^c)\}}
+	\end{equation*}
+\end{definition}
+
+Let $\wt{\mathbb{P}}(\cdot) = \mathbb{P}(\cdot|x \in \mc{C})$ be the conditional distribution of $x$, i.e. the distribution with density function
+\begin{equation*}
+\wt{f}(x) :=
+\begin{cases*}
+\frac{1}{\mathbb{P}(\mc{C})} f(x),~~ & \textrm{if $x \in \mc{C}$} \\
+0,~~ & \textrm{otherwise.}
+\end{cases*}
+\end{equation*}
+
+\begin{definition}[Population-level conductance]
+	For a set $\mc{C} \subset \Rd$, distribution $\Pbb$ with density $f$, and radius $r > 0$, the population conductance is
+	\begin{equation*}
+	\Psi_{\mathbb{P},r}(\mc{C}) = \inf_{\mc{S} \subseteq \mc{C}} \Phi_{\wt{\Pbb},r}(\mc{S})
+	\end{equation*}
+\end{definition}
+
+\textcolor{red}{(TODO)}: (1) These functionals are the population-level analogues of the empirical quantities $\Phi_{n,r}(\mc{C}[X])$ and $\Psi_{n,r}(\mc{C}[X])$. (2) It is thus natural that they should play a prominent role in the analysis of spectral clustering. (3) Indeed, similar functionals are used by \textcolor{red}{(Shi, Schiebinger, Garcia-Trillos.)} in the analysis of \emph{global} spectral clustering in a statistical context. We will comment more on the connection between the results of these works, and our own results, in Section~\textcolor{red}{(?)}. 
+
+
+\subsection{Summary of results}
+\textbf{(5)} We can now detail our main contributions:
+
+\begin{itemize}
+	\item In Proposition~\ref{prop:sample_to_population}, we show that with high probability the empirical quantities $\Phi_{n,r}(\mc{C}[X])$ and $\Psi_{\mathbb{P},r}(\mc{C}[X])$ are close to their population-level counterparts $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$. As a consequence, we establish in Theorem~\ref{thm:volume_ssd_ub} that $\Delta(\wh{C},\mc{C}[X])$ is small when $\Phi_{\Pbb,r}(\mc{C})$ is small $\Phi_{\Pbb,r}(\mc{C})$. 
+	\item We specialize to the case where $\mc{C}$ is a \emph{$\lambda$-density cluster}---that is, a connected component of the upper level set $\{x: f(x) \geq \lambda\}$---and derive specific upper bounds on the normalized cut $\Phi(\mc{C})$ and conductance $\Psi(\mc{C})$, as a function of $\lambda$ as well as some other natural parameters. This immediately translates into an upper bound on $\Delta(\wh{C},\mc{C}[X])$ in the density cluster setting, giving new connections between spectral and density clustering.
+	\item We also introduce a notion of \emph{density cluster consistency}, and derive conditions under which $\wh{C}$ is a consistent estimate of the density cluster $\mc{C}$.
+	\item We give a lower bound, by exhibiting a hard class of densities $\mc{F}$ and corresponding density clusters $\mc{C}$ for which the symmetric set difference $\Delta(\wh{C},\mc{C}[X])$ will be provably large.
+\end{itemize}
+
+\section{Upper bound on the symmetric set difference metric}
+\label{sec:ub_symmetric_set_difference}
+
+\textbf{(1)} \textbf{Summary of the section.} In the main result (Theorem~\textcolor{red}{(?)}) of this section, we give a high probability upper bound on $\Delta(\wh{C}, \mc{C}[X])$, in terms of a pair of population-level functionals, the normalized cut $\Phi_{\Pbb,r}(\mc{C})$ and conductance $\Psi_{\Pbb,r}(\mc{C})$. We build to this Theorem slowly, revealing our general approach, which in essence consists of two modular steps: first, we build on some previous work (mentioned in the Introduction) to relate $\Delta(\wh{C}, \mc{C}[X])$ to sample-level functionals $\Phi_{n,r}(\mc{C})$ and $\Psi_{n,r}(\mc{C})$, and second we argue that when $n$ is large $\Phi_{n,r}(\mc{C})$ and $\Psi_{n,r}(\mc{C})$ can be suitably bounded by their population-level analogues $\Phi_{\Pbb,r}(\mc{C})$ and $\Psi_{\Pbb,r}(\mc{C})$.
+
+We begin by defining both sample- and population-level functionals, as well as reviewing their relevance to the (local) spectral clustering problem. 
+
+\subsection{Review of PPR on a fixed graph}
+
+\textbf{(8.3)} \textbf{Existing results in the graph clustering literature.} \textcolor{red}{(Allen-Zhu)} formalizes this intuition but in a different setup, where the input is an arbitrary graph $G = (V,E)$, and the PPR algorithm is properly initialized within a subset of vertices $C \subseteq V$. Loosely speaking, they show that the symmetric set difference metric $\Delta(\wh{C},C)$ is upper bounded whenever the graph normalized cut $\Phi(C;G)$ is sufficiently smaller than the squared graph conductance $\Psi(C;G)^2$, where
+\begin{equation*}
+\Psi(C;G) := \min_{S \subseteq C} \Phi(S;G[C]).
+\end{equation*}
+Since these results will play a major part in our analysis, in Lemma~\textcolor{red}{(?)} we restate them for the convenience of the reader.\footnote{Technically speaking, Lemma~3.4 of \textcolor{red}{(Allen-Zhu)} differs from Lemma~\ref{lem:zhu} by some constant factors, and for completeness we prove Lemma~\ref{lem:zhu} in our appendix. Nevertheless, to be clear the essential idea of Lemma~\ref{lem:zhu} is no different than that of \textcolor{red}{(Allen-Zhu)}, and we do not claim any novelty.}. Let $G = (V,E)$ be a undirected, unweighted, connected graph and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{\beta,v}$ is
+\begin{equation*}
+S_{\beta,v} = \set{u \in V: \frac{p_v^{(\varepsilon)}(u)}{\deg(u;G)} \geq \beta}.
+\end{equation*} 
+\begin{lemma}[Lemma~3.4 of \textcolor{red}{(Allen-Zhu)}]
+	\label{lem:zhu}
+	For some $C \subseteq V$, suppose that 
+	\begin{equation}
+	\label{eqn:zhu_condition}
+	\alpha \leq \min\Bigl\{\frac{1}{2000}, \frac{1}{2\tau_{\infty}(G[C])}\Bigr\},~~ \beta \leq \frac{1}{5\vol(C;G)},~~ \varepsilon \leq \frac{1}{25\vol(C;G)}
+	\end{equation}
+	Then there exists a set $C^g \subset C$ with $\vol(C^g;G) \geq \frac{1}{2}\vol(C^g;G)$ such that for any $v \in C^g$, the sweep cut $S_{\beta,v}$ satisfies
+	\begin{equation}
+	\label{eqn:zhu_ub}
+	\vol(C \vartriangle S_{\beta,v};G) \leq 6\frac{\Phi(C;G)}{\alpha \beta}.
+	\end{equation}
+\end{lemma}
+As further pointed out in \textcolor{red}{(Allen-Zhu)}, letting
+\begin{equation*}
+\pi_{\min}(G[C]) := \min_{v \in C} \frac{\deg(v;G[C])}{\vol(G[C])},
+\end{equation*}
+denote the minimum of the stationary distribution over $C$, it follows from Cheeger's inequality that 
+\begin{equation}
+\label{eqn:mixing_time_cheeger}
+\tau_{\infty}(G[C]) \leq \frac{\log( 1/\pi_{\min}(G[C]))}{\Psi(C;G)^2}.
+\end{equation}
+Therefore, setting (for instance) $\alpha = \frac{\Psi(C;G)^2}{2\log \vol(C;G)}$ and $\wh{C} = S_{\beta_0,v}$ for $\beta_0 = \frac{1}{5 \vol(C;G)}$, we obtain from~\eqref{eqn:zhu_ub} that 
+\begin{equation}
+\label{eqn:zhu_ub2}
+\frac{\vol(C \vartriangle \wh{C};G)}{\vol(C; G)} \leq 60\frac{\Phi(C;G) \log\bigl( 1/\pi_{\min}(G[C])\bigr)}{\Psi(C;G)^2}.
+\end{equation}
+
+\textbf{(9)} \textbf{Improved bounds on mixing time.} Having reviewed the conclusions of \textcolor{red}{(Allen-Zhu)}, we return now to our own setting, where the input data is not a fixed graph $G$ but instead random samples $\{X_1,\ldots,X_n\}$, and our goal is to recover the population set $\mc{C}$. Ideally, we would like to relate the sample normalized cut $\Phi(\mc{C}[X];G_{n,r}) := \Phi_{n,r}(\mc{C}[X])$ and sample conductance $\Psi(\mc{C}[X];G_{n,r})$ to their population analogues, and thereby obtain an upper bound on the symmetric set difference metric which depends only on population-level quantities. Indeed, this will be our general strategy. 
+
+Unfortunately, however, there is a catch: since $\pi_{\min}(G_{n,r}[C]) = O(1/n)$, in the limit as $n \to \infty$ the right hand side of~\eqref{eqn:zhu_ub2} grows like $\Omega(\log(n))$, rendering~\eqref{eqn:zhu_ub2} a vacuous upper bound.\footnote{In fact, $\pi_{\min}(G)$ is clearly at most $1/n$ for any graph $G$ with $n$ total vertices, not merely $G = G_{n,r}$. However, while in general it may be possible for $\Phi(C;G) \leq \frac{1}{\log(n)} \Psi(C;G)$, this will not be the case in our specific setting, where $G = G_{n,r}$ and $C = \mc{C}[X]$. Hence the need for a sharper bound.} Fortunately, while in the worst  case (over arbitrary input $G$) the ``start penalty'' $\log(1/\pi_{\min}(G_n,r[C]))$ is unavoidable, when $G$ is a geometric graph such as $G_{n,r}$ a better bound can be attained. Intuitively, this is because is in geometric graphs small sets---such as $S = \{v\}$ for any $v \in \mc{C}[X]$---are very good expanders. To precisely capture this, we introduce the \emph{local spread} functional $s(G)$, to delineate what counts as a small set:
+\begin{equation*}
+s(G) := \frac{9}{10} \cdot \min_{u \in V} \set{\deg(u; G)} \cdot \min_{u \in V} \set{\pi(u)}.
+\end{equation*}
+The idea is that a random walk will rapidly mix over any set $S \subseteq G$ for which $\vol(S) \leq s(G)$.\footnote{The prefactor $9/10$ in the definition of $s(G)$ is arbitrary. It can be altered to any constant less than $1$, and Proposition~\ref{prop:pointwise_mixing_time} will still hold after appropriate changes to the constants.} In Proposition~\ref{prop:pointwise_mixing_time}, we state an alternative bound that precisely captures this idea.
+\begin{proposition}
+	\label{prop:pointwise_mixing_time}
+	Assume $\min_{u \in V} \deg(u; G) \geq 10$. Then,
+	\begin{equation*}
+	\tau_{\infty}(G) \leq \frac{2}{\Psi^2(C; G)} \ln \left(\frac{320}{s(G)}\right)\log_2 \left(\frac{14}{s(G)}\right)  + 3 \log_2 \left(\frac{14}{s(G)}\right) + 3
+	\end{equation*}
+\end{proposition}
+Some remarks:
+\begin{itemize}
+	\item We emphasize that while Proposition~\ref{prop:pointwise_mixing_time} \emph{applies} to any graph $G$ (as long as the minimum degree is at least 10), it is particularly \emph{useful} when $G$ is a geometric graph. In this case, under some typical regularity conditions $s(G) = \Theta(1)$ (treating $r$ as fixed), removing the unwanted $O(\log(n))$ from the upper bound in~\eqref{eqn:zhu_ub2}. We give a precise upper bound on $s(\wt{G}_{n,r})$ in Proposition~\ref{prop:sample_to_population}.
+	\item Proof techniques, and related literature. \textcolor{red}{(TODO)}.
+\end{itemize}
+
+\subsection{Sample-to-population results}
+\textbf{(10)} \textbf{Sample-to-population results.} In Proposition~\ref{prop:sample_to_population}, we establish relationship between the sample normalized cut, conductance, and local spread, and their population-level analogues. 
+
+\begin{proposition}
+	\label{prop:sample_to_population}
+	\textcolor{red}{(TODO)}
+\end{proposition}
+
+\textbf{(11)} \textbf{Upper bound on the symmetric set difference metric.} Combining Lemma~\ref{lem:zhu}, Proposition~\ref{prop:pointwise_mixing_time} and~Proposition~\ref{prop:sample_to_population}, we arrive at Theorem~\ref{thm:volume_ssd_ub}, the main result of this section, which gives an upper bound on $\Delta(\wh{C},\mc{C}[X])$ that depends solely on population-level quantities.
+
+\begin{theorem}
+	\label{thm:volume_ssd_ub} 
+	\textcolor{red}{(TODO)}
+\end{theorem}
+
+Some remarks:
+\begin{itemize}
+	\item \textbf{Takeaway}
+	\item \textbf{(11.1)} \textbf{Comparison with other results.} Particularly the results of \textcolor{red}{(Schiebinger)}. 
+	\item \textbf{(11.2)} \textbf{Potential improvements.} Particularly with respect to the dependence on $r$.
+\end{itemize}
+
+\section{Density clustering}
+
+\textbf{(1)} \textbf{Summary of section.} We will demonstrate the usefulness of Theorem~\ref{thm:volume_ssd_ub}, by applying it in the setting where $\mc{C} = \mc{C}_{\lambda}$ is a $\lambda$-density cluster: that is, a connected component of an upper level set. In Proposition~\textcolor{red}{(?)}, we establish bounds on (a thickened version of) $\Phi(\mc{C})$ and $\Psi(\mc{C})$ in terms of $\lambda$ as well as some other parameters, and thereby on the volume of the symmetric set difference as well. In addition, we review a separate notion of consistency with particular relevance to the density clustering problem, and establish conditions under which local clustering with PPR is consistent in this sense. Finally, we derive a lower bound, giving a ``hard problem'' for which PPR will provably fail to recover a density cluster. Viewed as a whole, the results of this section can be summarized as follows: PPR recovers density clusters $\mc{C}$ if and only if they are \emph{geometrically well-conditioned}---meaning not too long and thin--- and \emph{vertically well-separated}---meaning they satisfy a low-noise condition.
+
+\subsection{Background}
+
+\textbf{(2)} \textbf{Background on density clustering.} Density clustering is a widely accepted way of defining the target cluster to be recovered.
+
+\textbf{(3)} \textbf{Handling difficulties with sets of topological measure zero.} \textcolor{red}{(TODO)}
+
+\subsection{Recovery of well-conditioned density clusters}
+\label{subsec:recovery_well-conditioned_density_clusters}
+
+\textbf{(4)} \textbf{Definition of geometrically well-conditioned and vertically well-separated sets.} The upper bound in Theorem~\ref{thm:volume_ssd_ub} will be small when  $\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \ll \Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})^2$ (and also when $s_{\Pbb,r}(\mc{C}_{\lambda,\sigma})$ is large). As mentioned, this will be the case when $\mc{C}_{\lambda,\sigma}$ is both \emph{geometrically well-conditioned}---meaning not too long and thin--- and \emph{vertically well-separated}---meaning $f(x)$ drops off sharply around the boundary of $\mc{C}_{\lambda,\sigma}$. We now introduce the parameters that, along with $\sigma$ and $\lambda$, allow us to precisely measure these properties.
+
+\textbf{(5)} \textbf{Upper bounds on population-level functionals.} In Propositions~\ref{prop:density_cluster_normalized_cut}-\ref{prop:density_cluster_conductance}, we establish bounds on $\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})$ in terms of the parameters just defined.
+
+\begin{proposition}
+	\label{prop:density_cluster_normalized_cut}
+	\textcolor{red}{(TODO)}
+\end{proposition}
+
+\begin{proposition}
+	\label{prop:density_cluster_conductance}
+	\textcolor{red}{(TODO)}
+\end{proposition}
+
+\textbf{(6)} Some remarks are in order:
+\begin{itemize}
+	\item \textbf{How Proposition~\ref{prop:density_cluster_conductance} is proved.}
+	\item \textbf{How we use the bi-Lipschitz assumption, and what we can do without it.}
+	\item \textbf{Constants.} The constants in Propositions~\ref{prop:density_cluster_normalized_cut} and~\ref{prop:density_cluster_conductance} are unlikely to be tight.
+\end{itemize}
+
+\textbf{(7)} Applying these propositions along with Theorem~\ref{thm:volume_ssd_ub}, we obtain an upper bound on $\Delta(\wh{C},\mc{C}_{\lambda,\sigma})$. 
+
+\begin{corollary}
+	\label{cor:density_cluster_volume_ssd_ub}
+	\textcolor{red}{(TODO)}
+\end{corollary}
+
+Some remarks:
+\begin{itemize}
+	\item \textbf{Compare with the ``blue-sky'' problem}. Offer potential improvements, through algorithms that more explicitly optimize for the minimum normalized cut (e.g. flow-based algorithms).
+	\item \textbf{Compare with ``density-defined-distance + spectral clustering'' algorithms.}
+	\item \textbf{Comparison with density clustering algorithms.}
+\end{itemize}
+
+\subsection{Consistency}
+
+\textbf{(8)} A common notion of consistency in the density clustering literature is \textcolor{red}{(cluster tree)} consistency. Corollary~\ref{cor:density_cluster_volume_ssd_ub} does not imply that $\wh{C}$ is a \textcolor{red}{(cluster tree)}-consistent estimator of $\mc{C}_{\lambda,\sigma}$. In Theorem~\ref{thm:density_cluster_consistent_recovery}, we show that when $\Delta(\wh{C},\mc{C}_{\lambda,\sigma})$ is sufficiently small, $\wh{C}$ is \textcolor{red}{(cluster tree)}-consistent.
+
+\begin{theorem}
+	\label{thm:density_cluster_consistent_recovery} \textcolor{red}{(TODO)}
+\end{theorem}
+
+\subsection{Negative result}
+\textbf{(9)} In this section, we exhibit a hard case for density clustering using PPR; that is, a distribution $\Pbb$ for which PPR is unlikely to recover a density
+cluster.
+
+\begin{theorem}
+\textcolor{red}{(TODO)}
+\end{theorem}
+
+Some remarks:
+\begin{itemize}
+	\item \textbf{Explanation of proof + implications.} Our lower bound is likely to apply to any algorithm which approximates the minimum normalized cut set, including not merely PPR but some of those mentioned above.
+	\item \textbf{Clarify the takeaway.} It is not a knock on PPR...
+\end{itemize}
+
+\section{Experiments}
+
+\section{Discussion}
+In this work, we have analyzed the behavior of PPR in a classical nonparametric statistics context.
+
+Some issues for future work:
+\begin{itemize}
+	\item \textbf{(Regime as $r \to 0$.)}
+	\item \textbf{(Stronger consistency guarantees under smoothness conditions.)}
+	\item \textbf{(Sample complexity.)}
+\end{itemize}
+	
+\end{document}

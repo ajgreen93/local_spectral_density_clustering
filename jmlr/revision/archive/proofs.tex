@@ -7,6 +7,9 @@
 \usepackage{algorithm}
 \usepackage{enumerate}
 \usepackage[shortlabels]{enumitem}
+\usepackage{graphics}
+\usepackage[export]{adjustbox} 
+\usepackage{subcaption}
 \usepackage{mathtools}
 \usepackage{tikz}
 \usepackage{verbatim}
@@ -987,19 +990,19 @@ We now review the relevant upper bound on $\Delta_{\infty}(\Pbb,\Pbb_n)$, which 
 	\label{asmp:domain} 
 	The distribution $\Pbb$ is defined on a bounded, connected, open domain $D \subseteq \Rd$. If $d \geq 2$ then additionally $D$ has Lipschitz boundary.
 \end{enumerate}
-When $d = 1$, it follows from Proposition~6.2 of \textcolor{red}{Dudley} that $\Delta_{\infty}(\Pbb,\Pbb_n) \leq B_4 \|F - F_n\|_{\infty}$ for some positive constant $B_4$, and in turn from the DKW inequality (\textcolor{red}{Massart}) that
+When $d = 1$, it follows from Proposition~6.2 of \textcolor{red}{Dudley} that $\Delta_{\infty}(\Pbb,\Pbb_n) \leq B_5 \|F - F_n\|_{\infty}$ for some positive constant $B_5$, and in turn from the DKW inequality (\textcolor{red}{Massart}) that
 \begin{equation}
 \label{eqn:ot_distance_1d}
-\Delta_{\infty}(\Pbb,\Pbb_n) \leq B_4 \sqrt{\frac{\ln(2n/B_2)}{n}}
+\Delta_{\infty}(\Pbb,\Pbb_n) \leq B_5 \sqrt{\frac{\ln(2n/B_2)}{n}}
 \end{equation}
 with probability at least $1 - B_2/n$.
 
 When $d \geq 2$, \cite{garciatrillos16b} derive an upper bound on the transportation distance $\Delta_{\infty}(\mbb{P},\mbb{P}_n)$.
 \begin{theorem}[Theorem~1.1 of \cite{garciatrillos16}]
 	\label{thm:garciatrillos16}
-	Suppose $\Pbb$ satisfies~\ref{asmp:domain} and~\ref{asmp:bounded_density}. Then, there exists positive constants $B_{2}$ and $B_4$ that do not depend on $n$, such that with probability at least $1 - B_2/n$:
+	Suppose $\Pbb$ satisfies~\ref{asmp:domain} and~\ref{asmp:bounded_density}. Then, there exists positive constants $B_{2}$ and $B_5$ that do not depend on $n$, such that with probability at least $1 - B_2/n$:
 	\begin{equation*}
-	\Delta_{\infty}(\mbb{P},\mbb{P}_n) \leq B_4 \cdot 
+	\Delta_{\infty}(\mbb{P},\mbb{P}_n) \leq B_5 \cdot 
 	\begin{dcases*}
 	\frac{\ln(n)^{3/4}}{n^{1/2}},&~~\textrm{if $d = 2$,} \\
 	\frac{\ln(n)^{1/d}}{n^{1/d}},&~~\textrm{if $d \geq 3$.}
@@ -1015,9 +1018,9 @@ Let $\mbb{Q}_1$ and $\mbb{Q}_2$ be probability measures, with $\mbb{Q}_1$ absolu
 	Let $\mbb{Q}_1$ be a probability measure that admits a density $g$ with respect to $\nu(\cdot)$, let $\mbb{Q}_2$ be an arbitrary probability measure, and let $T$ be a transportation map from $\mbb{Q}_1$ to $\mbb{Q}_2$. Suppose $\Delta_T(\mbb{Q}_1,\mbb{Q}_2) \leq r/(4(d - 1))$. It follows that
 	\begin{equation}
 	\label{eqn:conductance_lb_transportation_distance}
-	\Psi_r(\mbb{Q}_2) \geq \Psi_r(\mbb{Q}_1) \cdot \biggl(1 - \frac{2b_4\Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2}\biggr) - \frac{b_4 \Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2},
+	\Psi_r(\mbb{Q}_2) \geq \Psi_r(\mbb{Q}_1) \cdot \biggl(1 - \frac{2B_6\Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2}\biggr) - \frac{B_6 \Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2},
 	\end{equation}
-	where $b_4 := 2d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}$ is a positive constant that does not depend on $\mbb{Q}_2$. 
+	where $B_6 := 2d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}$ is a positive constant that does not depend on $\mbb{Q}_2$. 
 \end{proposition}
 We note that the lower bound can also be stated with respect to the $\infty$-optimal transport distance $\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2)$. 
 \begin{proof}[Proof (of Proposition~\ref{prop:conductance_lb_transportation_distance})]
@@ -1035,16 +1038,16 @@ We note that the lower bound can also be stated with respect to the $\infty$-opt
 	\end{equation}
 	For any $x \in \Rd$, the remainder terms can be upper bounded: since $\Delta_{12} \geq 0$,
 	\begin{equation*}
-	R_{r - 2\Delta_{12} ,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{1 - \Bigl(1 - \frac{2\Delta_{12}}{r}\Bigr)^d \Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq \underbrace{2 d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}}_{= b_4} \cdot \Delta_{12},
+	R_{r - 2\Delta_{12} ,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{1 - \Bigl(1 - \frac{2\Delta_{12}}{r}\Bigr)^d \Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq \underbrace{2 d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}}_{= B_6} \cdot \Delta_{12},
 	\end{equation*}
 	if $0 \leq \Delta_{12} \leq r/(4(d - 1))$,
 	\begin{equation*}
-	R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{\Bigl(1 + \frac{2\Delta_{12}}{r}\Bigr)^d - 1\Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq 2 b_4 \cdot \Delta_{12}.
+	R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{\Bigl(1 + \frac{2\Delta_{12}}{r}\Bigr)^d - 1\Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq 2 B_6 \cdot \Delta_{12}.
 	\end{equation*} 
 	Plugging these bounds on the remainder terms back into~\eqref{pf:conductance_lb_transportation_distance_1} and~\eqref{pf:conductance_lb_transportation_distance_2} respectively, we see that
 	\begin{align*}
-	\Phi_{\mbb{Q}_2,r}(\mc{S}) & \geq \frac{\cut_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) - b_4 \Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2b_4 \Delta_{12}} \\ & = \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S}))}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2b_4\Delta_{12}}\biggr) - \frac{b_4\Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2b_4\Delta_{12}} \\
-	& \overset{\eqref{pf:conductance_lb_transportation_distance_2}}{\geq} \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S}) - 2b_4\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}\biggr) - \frac{b_4\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}.
+	\Phi_{\mbb{Q}_2,r}(\mc{S}) & \geq \frac{\cut_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) - B_6 \Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2B_6 \Delta_{12}} \\ & = \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S}))}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2B_6\Delta_{12}}\biggr) - \frac{B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2B_6\Delta_{12}} \\
+	& \overset{\eqref{pf:conductance_lb_transportation_distance_2}}{\geq} \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S}) - 2B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}\biggr) - \frac{B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}.
 	\end{align*}
 	We would like to conclude by taking an infimum over $\mc{S}$ on both sides, but in order to ensure that the remainder term is small we must specially handle the case where $\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})$ is small. Let
 	\begin{equation*}
@@ -1052,7 +1055,7 @@ We note that the lower bound can also be stated with respect to the $\infty$-opt
 	\end{equation*}
 	On the one hand, taking an infimum over all sets $\mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)$, we have that
 	\begin{equation*}
-	\inf_{\mc{S}: \mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)} \Phi_{\mbb{Q}_2,r}(\mc{S}) \geq \Psi_{r}(\mbb{Q}_1) \cdot \biggl(1 - \frac{2 b_4 \Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}\biggr) - \frac{b_4\Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}
+	\inf_{\mc{S}: \mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)} \Phi_{\mbb{Q}_2,r}(\mc{S}) \geq \Psi_{r}(\mbb{Q}_1) \cdot \biggl(1 - \frac{2 B_6 \Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}\biggr) - \frac{B_6\Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}
 	\end{equation*}
 	On the other hand, we claim that 
 	\begin{equation}
@@ -1078,15 +1081,15 @@ d_{\min}(\wt{\Pbb}_n) = \frac{1}{\wt{n}} \bigl(d_{\min}(\wt{G}_{n,r}) + 1\bigr) 
 % Here I replaced a factor of (1 - 1/sqrt{2})^2 by 1/16, for convenience.
 On the other hand, taking
 \begin{equation*}
-b_5 := \frac{1}{2b_4}\Psi_r(\wt{\Pbb}) \cdot (1 - \Psi_r(\wt{\Pbb})) \cdot d_{\min}(\wt{\Pbb})^2,~~\textrm{and}~~ B_1 := \frac{1}{B_4}\min\Bigl\{\frac{b_5}{2\Psi_r(\wt{\Pbb})}, b_5, \frac{r}{4(d - 1)} \Bigr\},
+b_6 := \frac{1}{2B_6}\Psi_r(\wt{\Pbb}) \cdot (1 - \Psi_r(\wt{\Pbb})) \cdot d_{\min}(\wt{\Pbb})^2,~~\textrm{and}~~ B_1 := B_5 \Bigl(\min\Bigl\{\frac{b_6}{2\Psi_r(\wt{\Pbb})}, b_6, \frac{r}{4(d - 1)} \Bigr\}\Bigr)^{-1},
 \end{equation*}
 by~\eqref{eqn:ot_distance_1d} (if $d = 1$) or Theorem~\ref{thm:garciatrillos16} (if $d \geq 2$) along with~\eqref{eqn:sample_to_population_conductance_sample_complexity}, we have that
 \begin{equation*}
-\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_4 \frac{(\log n)^{p_d}}{\min\{n^{1/2},n^{1/d}\}} \leq \min\Bigl\{\frac{b_5}{2\Psi_r(\wt{\Pbb})}, b_5, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
+\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_5 \frac{(\log n)^{p_d}}{\min\{n^{1/2},n^{1/d}\}} \leq \min\Bigl\{\frac{b_6}{2\Psi_r(\wt{\Pbb})}, b_6, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
 \end{equation*}
 with probability at least $1 - B_2/n$. Therefore by Proposition~\ref{prop:conductance_lb_transportation_distance},
 \begin{equation*}
-\Psi_r(\wt{\Pbb}_n) \geq \Psi_r(\wt{\Pbb}) \cdot \biggl(1 - \frac{2b_4\Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2}\biggr) - \frac{b_4 \Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb}_N)}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2} \geq \Psi_r(\wt{\Pbb}) (1 - 2\delta)
+\Psi_r(\wt{\Pbb}_n) \geq \Psi_r(\wt{\Pbb}) \cdot \biggl(1 - \frac{2B_6\Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2}\biggr) - \frac{B_6 \Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb}_N)}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2} \geq \Psi_r(\wt{\Pbb}) (1 - 2\delta)
 \end{equation*}
 with probability at least $1 - B_2/n - (n + 1)\exp\{-nb_2/16\}$, establishing~\eqref{eqn:sample_to_population_conductance} upon taking $b_3 := b_2/16$.
 
@@ -1416,7 +1419,14 @@ s_{\Pbb,r}(\mc{X}) \geq \frac{\pi r^2 \epsilon^2}{2 \rho\sigma}
 \end{proof}
 
 \begin{proof}[Proof of~\eqref{eqn:local_spread_ub}.]
-	\textcolor{red}{(TODO)}
+	The statement follows since 
+	\begin{equation*}
+	d_{\min}(\Pbb) \geq \frac{\pi r^2}{2} \cdot \min_{x \in \mc{X}} f(x) = \frac{\pi r^2}{2} \cdot \frac{\epsilon}{\rho \sigma}
+	\end{equation*}
+	and
+	\begin{equation*}
+	\vol_{\Pbb,r}(\mc{X}) \leq d_{\max}(\Pbb) \leq \frac{\pi r^2}{2 \sigma \rho}.
+	\end{equation*}
 \end{proof}
 
 
@@ -1481,13 +1491,13 @@ We start by defining some constants, to make our proof statements easier to dige
 C_{3,\delta} & := \frac{72(1 + \delta)}{(1 - \delta)} \sqrt{8/3 + 8 \delta}
 ,&&C_{4,\delta} := \frac{72}{(1 - 3\delta)\pi}, \\
 B_{1,\delta} & := 768 \cdot (1 + 3\delta) \cdot \ln\Bigl(C_{4,\delta} \frac{\rho\sigma}{r^2 \epsilon^2} \Bigr),&&B_{2,\delta} := \frac{(1 + \delta)^2}{(1 - \delta)^2} \cdot \frac{\rho \sigma}{r^2 \epsilon^2} \\
-B_4 &:= \frac{6 \sigma \rho}{(\sigma - 2r)(\rho - r)},&&B_5 := 1 + \frac{12\sigma\rho}{r^2} + \frac{2\rho}{r} \\
-b_6 &:=  b_7 \wedge \cut_{\Pbb,r}(\mc{L}) \wedge d_{\min}(\Pbb)/14 \wedge \vol_{\Pbb,r}(\mc{L} \cap \mc{C}^{(1)}),&&b_7 := \vol_{\Pbb,r}(\mc{X})/4 \wedge \frac{\epsilon r^2}{4\rho\sigma} \wedge \frac{\pi r^3}{8\sigma \rho^2}.
+B_4 & := 1 + \frac{12\sigma\rho}{r^2} + \frac{2\rho}{r},&&b_4 :=  b_8 \wedge \cut_{\Pbb,r}(\mc{L}) \wedge d_{\min}(\Pbb)/14 \wedge \vol_{\Pbb,r}(\mc{L} \cap \mc{C}^{(1)}), \\
+b_8 &:= \vol_{\Pbb,r}(\mc{X})/4 \wedge \frac{\epsilon r^2}{4\rho\sigma} \wedge \frac{\pi r^3}{8\sigma \rho^2}.
 \end{align*}
 To prove Theorem~\ref{thm:ppr_lb}, we use Theorem~\ref{thm:normalized_cut_ppr}, Proposition~\ref{prop:sample_to_population_1} and~\eqref{eqn:ncut_lower_set} to show that the cluster estimate $\wh{C}$ must have a small normalized cut. On the other hand, in Lemma~\ref{lem:normalized_cut_lb} we establish that any set $Z \subseteq X$ which is close to $\mc{C}^{(1)}[X]$---meaning $\vol_{n,r}(Z \vartriangle \mc{C}^{(1)}[X])$ is small---has a large normalized cut.
 \begin{lemma}
 	\label{lem:normalized_cut_lb}
-	Fix $\delta \in (0,1)$. With probability at least $1 - B_5\exp\{-n\delta^2b_7\}$, the following statement holds:
+	Fix $\delta \in (0,1)$. With probability at least $1 - B_4\exp\{-n\delta^2b_8\}$, the following statement holds:
 	\begin{equation}
 	\label{eqn:normalized_cut_lb}
 	\Phi_{n,r}(Z) \geq \frac{(1 - \delta)^2}{2(1 + \delta)\pi} \left(1 - 2 \frac{\sigma \rho}{(1 - \delta) r^2 n^2} \vol_{n,r}(Z \vartriangle \mc{C}^{(1)}[X]) \right) \frac{\epsilon^2 r}{\sigma},~~\textrm{for all $Z \subseteq X$}.
@@ -1516,7 +1526,7 @@ and finally (v) that the maximum degree of $G_{n,r}$ is upper bounded,
 \begin{equation*}
 \frac{1}{n - 1}d_{\max}(G_{n,r}) \leq (1 + \delta) d_{\max}(\Pbb).
 \end{equation*}
-It follows from Lemma~\ref{lem:normalized_cut_lb}, Propositions~\ref{prop:sample_to_population_1} and \ref{prop:sample_to_population_2}, and Lemmas~\ref{lem:hoeffding_2} and~\ref{lem:bernstein_union} that these estimates are together satisfied with probability at least $1 - B_5\exp\{-n\delta^2b_7\} - 3\exp\{-n\delta^2 \cut_{\Pbb,r}(\mc{L})\} - (2n + 2)\exp\{-n\delta^2 \cdot d_{\min}(\Pbb)/14\} - 5\exp\{-n\delta^2 \vol_{\Pbb,r}(\mc{L} \cap \mc{C}^{(1)})\} \geq 1 - (B_5 + 2n + 10)\exp\{-n\delta^2 b_6\}$. 
+It follows from Lemma~\ref{lem:normalized_cut_lb}, Propositions~\ref{prop:sample_to_population_1} and \ref{prop:sample_to_population_2}, and Lemmas~\ref{lem:hoeffding_2} and~\ref{lem:bernstein_union} that these estimates are together satisfied with probability at least $1 - B_4\exp\{-n\delta^2b_8\} - 3\exp\{-n\delta^2 \cut_{\Pbb,r}(\mc{L})\} - (2n + 2)\exp\{-n\delta^2 \cdot d_{\min}(\Pbb)/14\} - 5\exp\{-n\delta^2 \vol_{\Pbb,r}(\mc{L} \cap \mc{C}^{(1)})\} \geq 1 - (B_4 + 2n + 10)\exp\{-n\delta^2 b_4\}$. 
 
 \begin{proof}[Proof (of Theorem~\ref{thm:ppr_lb})]
 	As mentioned, we would like to use Theorem~\ref{thm:normalized_cut_ppr} to upper bound $\Phi_{n,r}(\wh{C})$, and so we first verify that the conditions of Theorem~\ref{thm:normalized_cut_ppr} are met. In particular, we have each of the following.
@@ -1712,7 +1722,7 @@ and note that if $\delta \in (0,7/8)$ then $c_{1,\delta} > 0$. (In fact, we will
 	\label{eqn:density_cluster_consistent_recovery_sample_complexity}
 	\frac{1}{n} \leq \delta \cdot \frac{4\Pbb(\mc{C}_{\lambda,\sigma}')}{3}
 	\end{equation} 
-	and otherwise under the same conditions as Theorem~\ref{thm:volume_ssd_ub}, the following statement holds with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (n + 2)\exp\{-b_3n\} - 3(n + 3)\exp\{-b_6\delta^2n\}$: there exists a set $\mc{C}_{\lambda,\sigma}[X]^g \subseteq \mc{C}_{\lambda,\sigma}[X]$ of large volume, $\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^g) \geq \vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized and run with any seed node $v \in \mc{C}_{\lambda,\sigma}[X]^g$, and moreover
+	and otherwise under the same conditions as Theorem~\ref{thm:volume_ssd_ub}, the following statement holds with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (n + 2)\exp\{-b_3n\} - 3(n + 3)\exp\{-b_7\delta^2n\}$: there exists a set $\mc{C}_{\lambda,\sigma}[X]^g \subseteq \mc{C}_{\lambda,\sigma}[X]$ of large volume, $\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^g) \geq \vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])/2$, such that if Algorithm~\ref{alg:ppr} is $\delta$-well-initialized and run with any seed node $v \in \mc{C}_{\lambda,\sigma}[X]^g$, and moreover
 	\begin{equation}
 	\label{eqn:density_cluster_consistent_recovery_condition}
 	\kappa_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta) \leq c_{1,\delta} \cdot \frac{\min\bigl\{\Pbb(\mc{C}_{\lambda,\sigma})^2 \cdot d_{\min}(\wt{\Pbb})^2, \Pbb(\mc{C}_{\lambda,\sigma}')^2 \cdot d_{\min}(\Pbb')^2\bigl\}}{\vol_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}
@@ -1746,7 +1756,7 @@ and that
 \begin{equation}
 \frac{1}{n' - 1} d_{\min}(G_{n,r}') \geq (1 - \delta) \cdot d_{\min}(\Pbb').
 \end{equation}
-By Propositions~\ref{prop:sample_to_population_1}-\ref{prop:sample_to_population_2} and Lemmas~\ref{lem:hoeffding_2}-\ref{lem:bernstein_union}, these inequalities hold with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (n + 1)\exp\{-b_3n\} - (3n + 3)\exp\{-b_6\delta^2n\}$, taking $b_6 := b_2 \wedge \Pbb(\mc{C}_{\lambda,\sigma}') \cdot d_{\min}(\Pbb')/9$.
+By Propositions~\ref{prop:sample_to_population_1}-\ref{prop:sample_to_population_2} and Lemmas~\ref{lem:hoeffding_2}-\ref{lem:bernstein_union}, these inequalities hold with probability at least $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (n + 1)\exp\{-b_3n\} - (3n + 3)\exp\{-b_7\delta^2n\}$, taking $b_7 := b_2 \wedge \Pbb(\mc{C}_{\lambda,\sigma}') \cdot d_{\min}(\Pbb')/9$.
 
 % AJG: The term after \wedge is needed to condition on the two new inequalities.
 
@@ -1772,8 +1782,75 @@ completing the proof of Theorem~\ref{thm:density_cluster_consistent_recovery}.
 
 \section{Experimental Details}
 \label{sec:experimental_details}
+Finally, we detail the settings of our experiments, and include an additional figure.
 
-\textcolor{red}{(TODO)}
+\subsection{Experimental settings for Figure~\ref{fig:bounds}}
+Let $\mc{R}_{\sigma,\rho} = [-\sigma/2,\sigma/2] \times [-\rho/2,\rho/2]$ be the two-dimensional rectangle of width $\sigma$ and height $\rho$, centered at the origin. We sample $n = 8000$ points according to the density function $f_{\rho,\sigma,\lambda}$, defined over domain $\mc{X} = [-1,1]^2$ and parameterized by $\rho, \sigma$ and $\lambda$ as follows:
+\begin{equation}
+f_{\rho,\sigma,\lambda}(x) :=
+\begin{dcases}
+\lambda,~~& \textrm{if $x \in R_{\sigma,\rho} - (-.5,0)$ or $x \in R_{\sigma,\rho} + (-.5,0)$} \\
+\frac{4 - 2 \lambda \rho \sigma}{1 - 2\rho\sigma},~~& \textrm{if $x \in \mc{X}$, $x \not\in R_{\sigma,\rho} - (-.5,0)$ and $x \not\in R_{\sigma,\rho} + (-.5,0)$.}
+\end{dcases}
+\end{equation}
+Then $\theta := \lambda - \frac{4 - 2 \lambda \rho \sigma}{1 - 2\rho\sigma}$ measures the difference in density between the density clusters and the rest of the domain. The first column displays $n = 8000$ points sampled from three different parameterizations of $f_{\rho,\sigma,\lambda}$:
+\begin{align*}
+\rho &= .913, &&\sigma = .25, &&&(\lambda - \theta)/\lambda = .25 \tag{top panel} \\
+\rho &= (?), &&\sigma = (?), &&&(\lambda - \theta)/\lambda = (?) \tag{middle panel} \\
+\rho &= .5, &&\sigma = .25, &&&(\lambda - \theta)/\lambda = .12 \tag{bottom panel.}
+\end{align*}
+In each of the second, third, and fourth columns, we fix two parameters and vary the third. In the second column, we fix $\sigma = .25$, $(\lambda - \theta)/\lambda = .25$, and vary $\rho$ from $.25$ to $2$. In the third column, we \textcolor{red}{(?)}. In the fourth column, we fix $\rho = .5$, $\sigma = .25$ and vary $(\lambda - \theta)/\lambda$ from $.1$ to $.25$. In the second and fourth columns, we take $r = \sigma/8$; in the third column, where we vary $\sigma$, we take $r = .1/8$. 
+
+\subsection{Experimental settings for Figure \ref{fig:moons}}
+
+To form each of the three rows in Figure \ref{fig:moons}, 800 points are independently sampled following a 'two moons plus Gaussian noise model'. Formally, the (respective) generative models for the data are
+\begin{align}
+Z & \sim \textrm{Bern}(1/2), \theta \sim \textrm{Unif}(0, \pi) \\
+X(Z,\theta) & = 
+\begin{cases}
+\mu_1 + (r \cos(\theta), r \sin(\theta)) + \sigma \epsilon,~ & \text{if}~ Z = 1 \\
+\mu_2 + (r \cos(\theta), - r \sin(\theta)) + \sigma \epsilon,~ & \text{if}~ Z = 0
+\end{cases}
+\end{align}
+where 
+\begin{align*}
+\mu_1 & = (-.5, 0),~ \mu_2 = (0,0),~ \epsilon \sim N(0, I_2) \tag{row 1} \\
+\mu_1 & = (-.5, -.07),~ \mu_2 = (0,.07),~ \epsilon \sim N(0, I_2) \tag{row 2} \\
+\mu_1 & = (-.5, -.125),~ \mu_2 = (0,.125),~ \epsilon \sim N(0, I_2) \tag{row 3} 
+\end{align*}
+for $I_d$ the $d \times d$ identity matrix. The first column consists of the empirical density clusters $\mc{C}_{\lambda}[X]$ and $\mc{C}_{\lambda}'[X]$ for a particular threshold $\lambda$ of the density function; the second column shows the PPR plus minimum normalized sweep cut cluster, with hyperparameter $\alpha$ and all sweep cuts considered; the third column shows the global minimum normalized cut, computed according to the algorithm of \cite{szlam2010}; and the last column shows a cut of the density cluster tree estimator of \cite{chaudhuri2010}.
+
+\paragraph{Performance of PPR with high-dimensional noise.} Figure \ref{fig:moons_hd} is similar to Figure \ref{fig:moons} of the main text, but with parameters
+\begin{equation*}
+\mu_1 = (-.5, -.025),~ \mu_2 = (0,.025),~ \epsilon \sim N(0, I_{10}).
+\end{equation*}
+The gray dots in $(a)$ (as in the left-hand column of Figure \ref{fig:moons} in the main text) represent observations in low-density regions. While the PPR sweep cut $(b)$ has relatively high symmetric set difference with the chosen density cut, it still recovers separates $C_{\lambda}[X]$ and $\mc{C}_{\lambda}'[X]$, in the sense of Definition \ref{def:density_cluster_consistency}.
+
+\begin{figure}
+	\centering
+	\begin{adjustbox}{minipage=\linewidth,scale=0.8}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{../row4_true_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{../row4_ppr_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{../row4_conductance_cluster}
+			\caption{}
+		\end{subfigure}
+		\begin{subfigure}{.24\linewidth}
+			\includegraphics[width=\linewidth]{../row4_density_cluster}
+			\caption{}
+		\end{subfigure}
+		\caption{\it\small True density (column 1), PPR (column 2), minimum normalized
+			cut (column 3) and estimated density (column 4) clusters for two-moons with 10 dimensional noise. Seed node for PPR denoted by a black cross.} 
+		\label{fig:moons_hd}
+	\end{adjustbox}
+\end{figure}
+
 
 \clearpage
 \bibliographystyle{plainnat}

@@ -13,9 +13,9 @@ ncut_bound <- function(r,candidate_cluster,distribution){
   epsilon <- distribution$epsilon
   nu_domain <- attributes(distribution$domain)[["measure"]]
   n_mixtures <- distribution$n_mixtures
-  lambda <- epsilon / nu_domain + (1 - epsilon)/(n_mixtures * nu_cluster)
+  lambda <- (1 - epsilon)/(n_mixtures * nu_cluster)
   gamma <- 0
-  theta <- lambda - epsilon
+  theta <- lambda - epsilon/(nu_domain - 2*nu_cluster)
   
   # TODO: enforce!
   # stopifnot(r <= sigma/(4*d))

@@ -12,8 +12,11 @@
 #---------------------------------------#
 
 # How noisy should the pipeline be?
-verbose <- F
+verbose <- T
 
+# Should we include PPR?
+PPR <- F
+  
 # Dependencies
 library(magrittr)
 library(Matrix)
@@ -26,7 +29,8 @@ source("graph.R")
 source("sample.R")
 
 # Read configs.
-source("configs/2d_uniform_rectangles.R")
+configs_name <- "2d_uniform_rectangles_sigma"
+source(file.path("configs",paste0(configs_name,".R")))
 
 # Structures to save data.
 Xs <- vector(mode = "list",length = length(distributions))
@@ -76,12 +80,18 @@ for(iter in 1:n_iters)
     alpha <- tune_alpha(G_candidate_cluster,psi_hat)
     LU <- tune_LU(G_candidate_cluster)
     
-    p <- ppr(seed, alpha, G)
-    deg <- degree(G)
-    estimated_cluster <- best_sweep_cut(G,p/deg,LU)
-    Delta_hat <- volume_ssd(empirical_candidate_cluster,estimated_cluster,G)
+    if(PPR){
+      p <- ppr(seed, alpha, G)
+      deg <- degree(G)
+      estimated_cluster <- best_sweep_cut(G,p/deg,LU)
+      Delta_hat <- volume_ssd(empirical_candidate_cluster,estimated_cluster,G)
+    } else{
+      p <- rep(NA,n_samples)
+      estimated_cluster <- NA
+      Delta_hat <- NA
+    }
     
-    if(verbose & d == 2)
+    if(verbose & PPR & d == 2)
     {
       plot(X[,1],X[,2],xlim = c(-1,1),ylim = c(-1,1), main = c("Samples."))
       plot(X[estimated_cluster,1],X[estimated_cluster,2],xlim = c(-1,1),ylim = c(-1,1), main = c("Cluster estimate."))
@@ -123,33 +133,5 @@ for(iter in 1:n_iters)
 }
 
 # Save data
-save_directory <- file.path("data",gsub("[^[:alnum:]]", "", Sys.time()))
-for(directory in c(save_directory))
-{
-  dir.create(directory)
-}
-configs <- list(n_samples = n_samples,
-                n_iter = n_iters,
-                d = d,
-                n_mixtures = n_mixtures,
-                n_distributions = n_distributions,
-                distributions = distributions,
-                r = r,
-                seed_location = seed_location)
-save(configs, file = paste0(save_directory, '/configs.R'))
-save(Xs, file = paste0(save_directory, '/Xs.R'))
-save(ps, file = paste0(save_directory, '/ps.R'))
-save(empirical_candidate_clusters, file = paste0(save_directory, '/empirical_candidate_clusters.R'))
-save(estimated_clusters, file = paste0(save_directory, '/estimated_clusters.R'))
-
-save(hyperparameters, file = paste0(save_directory, '/hyperparameters.R'))
-
-save(empirical_ncuts, file = paste0(save_directory, '/empirical_ncuts.R'))
-save(empirical_conductances, file = paste0(save_directory, '/empirical_conductances.R'))
-save(empirical_local_spreads, file = paste0(save_directory, '/empirical_local_spreads.R'))
-save(empirical_normalized_volume_ssd, file = paste0(save_directory, '/empirical_normalized_volume_ssd.R'))
-
-save(population_ncuts, file = paste0(save_directory, '/population_ncuts.R'))
-save(population_conductances, file = paste0(save_directory, '/population_conductances.R'))
-save(population_local_spreads, file = paste0(save_directory, '/population_local_spreads.R'))
-save(population_condition_numbers, file = paste0(save_directory, '/population_condition_numbers.R'))
+save_file = file.path("data",paste0(configs_name,".rda"))
+save(list = ls(), file = save_file, compress = "xz")
