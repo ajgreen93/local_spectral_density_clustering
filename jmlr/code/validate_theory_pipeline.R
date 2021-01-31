@@ -29,7 +29,7 @@ source("graph.R")
 source("sample.R")
 
 # Read configs.
-configs_name <- "2d_uniform_rectangles_epsilon"
+configs_name <- "2d_uniform_rectangles_sigma"
 source(file.path("configs",paste0(configs_name,".R")))
 
 # Structures to save data.

@@ -150,7 +150,7 @@ conductance <- function(G, verbose = TRUE)
   n_runs <- 0                     # How many random initializations?
   n_iters <- 500                  # How many passes over numerator and denominator of ncut?
   n_iters_inloop <- 150           # How many steps of gradient descent?
-  g_0 <- fiedler_vector(G)
+  g_0 <- fiedler_vector(G)        # Initialization at 2nd eigenvector.
   deg <- degree(G)
   theta <- .99
   tol <- 10e-10
@@ -169,6 +169,13 @@ conductance <- function(G, verbose = TRUE)
     } else{
       p <- runif(n = n, min = 0, max = .33)
       h_0 <- g_0 * (2 * rbinom(n = n,size = 1,prob = p) - 1)
+    }
+    
+    # If the 2nd eigenvalue is 0, then fiedler_vector() may not have converged.
+    # In that case, the conductance is 0.
+    if(is.null(g_0)){
+      ncuts[kk] <- 0
+      next
     }
     f_0 <- h_0 - weighted_median(h_0,w = deg); f <- f_0/norm(f_0,type = "2")
     for(ii in 1:n_iters)
@@ -220,7 +227,7 @@ conductance <- function(G, verbose = TRUE)
       # 4. Center (according to degree weighted median) and normalize
       h <- as.numeric(u - weighted_median(u,deg)); f <- h/norm(h,type = "2")
       
-      # 5. If you terminated without improving the energy, take the previous estimate.
+      # 5. If you terminated without improving the energy, take the previous estimate
       if(energy(G,f) > energy(G,f_old)){
         f <- f_old
       }
@@ -229,17 +236,20 @@ conductance <- function(G, verbose = TRUE)
         break
       }
     }
+    
+    # Find the optimal sweep cut
+    opt_sweep_cut <- best_sweep_cut(G,f, c(-1,1))
     if(verbose)
     {
       logger::log_info("Outer loop iterations: ",ii,".")
       logger::log_info("Number of runs: ",kk,".")
       logger::log_info("Energy: ",round(energy(G,f),4),".")
-      logger::log_info("Ncut: ", round(ncut(best_sweep_cut(G,f, c(-1,1)),G),4),".")
+      logger::log_info("Ncut: ", round(ncut(opt_sweep_cut,G),4),".")
       # plot(X[f > 0,1],X[f > 0,2],xlim = c(-1,1), ylim = c(-1,1), 
       #      main = paste0("Run number = ",kk, 
       #                    ".Outer loop iteration = ",ii, ". "))
     }
-    ncuts[kk] <- ncut(best_sweep_cut(G,f, c(-1,1)),G)
+    ncuts[kk] <- ncut(opt_sweep_cut,G)
   }
   return(min(ncuts))
 }
@@ -312,7 +322,7 @@ fiedler_vector <- function(G,normalized = FALSE)
   
   tryCatch(
     RSpectra:::eigs_sym(L, k = 2, which = "SM")$vectors[,1],
-    warning = function(w){0}
+    warning = function(w){NULL}
   )
 }
 
@@ -354,14 +364,50 @@ ppr <- function(seed, alpha, G)
 #-----------------------------------------------------------------#
 # Clustering miscellanea
 #-----------------------------------------------------------------#
-best_sweep_cut <- function(G,f,bounds)
+best_sweep_cut <- function(G,f,bounds){
+  #-------------------------------------------------------------#
+  # A faster way to compute the best sweep cut.
+  # Naively computing the best sweep cut --- by separately computing all sweep cuts
+  # and taking the minimum --- costs O(n) matrix summations.
+  #
+  # By simply updating the candidate ncut as each additional vertex crosses
+  # from one side of the bipartition to the other, the computation can be
+  # reduced to O(n) vector summations.
+  #-------------------------------------------------------------#
+  n <- nrow(G)
+  f_order <- order(f,decreasing = T)
+  f_sort <- sort(f,decreasing = T)
+  vol <- volume(G)
+  
+  indx_min <- max(max(which(f_sort > bounds[2])),1)
+  indx_max <- min(min(which(f_sort < bounds[1])),n)
+  if(indx_min == indx_max){
+    return(f_order[1:indx_min])
+  }
+  
+  cluster <- f_order[1:indx_min]
+  cut <- numeric(indx_max - indx_min + 1)
+  vol <- numeric(indx_max - indx_min + 1)
+  cut[indx_min] <- cut(cluster,G)
+  vol[indx_min] <- volume(G[cluster,])
+  for(ii in (indx_min + 1):indx_max)
+  {
+    cluster <- c(cluster,f_order[ii])
+    neighborhood_ii <- G[f_order[ii],]
+    cut[ii] <- cut[ii - 1] + sum(neighborhood_ii) - 2*sum(neighborhood_ii[cluster])
+    vol[ii] <- vol[ii - 1] + sum(neighborhood_ii)
+  }
+  ncut <- cut/pmin(vol,volume(G) - vol)
+  return(f_order[1:which.min(ncut)])
+}
+
+best_sweep_cut_2 <- function(G,f,bounds)
 {
   n <- nrow(G)
   f_order <- order(f,decreasing = T)
   f_sort <- sort(f,decreasing = T)
   min_ncut <- 1
   candidate_cluster <- NULL
-  vol <- volume(G)
   
   indx_min <- max(max(which(f_sort > bounds[2])),1)
   indx_max <- min(min(which(f_sort < bounds[1])),n)

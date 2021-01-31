@@ -13,7 +13,7 @@
 # -----------------------------------------------------------------------------#
 
 # Global parameters
-n_samples <- 8000
+n_samples <- 10000
 n_iters <- 50
 d <- 2
 n_mixtures <- 2
@@ -48,7 +48,7 @@ attributes(domain) <- list("d" = d, "measure" = 4)
 # Parameters
 sigma <- rep(.25,n_distributions)
 rho <- rep(.5,n_distributions)
-density_ratio <- exp(seq(log(.1),log(.5),length.out = n_distributions))
+density_ratio <- exp(seq(log(.1),log(.25),length.out = n_distributions))
 epsilon <- density_ratio/(2*rho*sigma/(4 - 2*rho*sigma) + density_ratio)
 
 # Make distributions

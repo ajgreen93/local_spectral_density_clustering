@@ -9,9 +9,9 @@
 #----------------------------------------------------#
 
 # What is to be plotted?
-vectors <- NULL
+vectors <- "samples"
 quantities <- c("normalized_cut", "conductance","local_spread")
-parameter <- "rho"
+parameter <- "sigma"
 
 # Would you like to save plots to file?
 save_plots <- TRUE
@@ -42,6 +42,10 @@ population_bounds <- population_bounds[quantities]
 
 # Data for plotting
 parameter_values <- get(parameter)
+if(parameter == "epsilon"){
+  parameter <- "density_ratio"
+  parameter_values <- 2*rho*sigma/(4 - 2*rho*sigma) * epsilon/(1 - epsilon)
+}
 
 for(ii in 1:n_quantities)
 {
@@ -51,14 +55,23 @@ for(ii in 1:n_quantities)
 } 
 
 # Generic plotting functions.
-generic_2ddata_plot <- function(X,colors,pch){
-  plot(X[,1],X[,2],col = colors, pch = 16, xlab = "x1", ylab = "x2")
+generic_2ddata_plot <- function(X,colors,subsample = FALSE,cex = 2){
+  if(subsample){
+    n <- nrow(X)
+    indx <- sample(1:n,size = 8000)
+    X <- X[indx,]
+    colors <- colors[indx]
+  }
+  plot(X[,1],X[,2],col = colors, pch = 16, xlab = "x1", ylab = "x2",
+       cex.lab = cex, cex.axis = cex)
 }
 
 generic_quantity_plot <- function(x, list_of_ys, log = "xy", xlab = "diameter", ylab = "y",
                       colors, pchs, lwd = 2, cex = cex){
   ylims <- c(.5 * min(unlist(list_of_ys)), 2 * max(unlist(list_of_ys)))
   xlims <- c(min(x),max(x))
+  xlab <- gsub("_", " ", xlab)
+  ylab <- gsub("_", " ", ylab)
   plot(x = x,y = list_of_ys[[1]], ylim = ylims, type = "n",log = log, xlab = xlab,ylab = ylab,
        cex.lab = cex, cex.axis = cex)
   grid(lwd = 3*lwd)
@@ -88,6 +101,7 @@ if(save_plots){
 }
 
 # Plot the samples, the normalized (by degree) PPR vector, and resulting sweep cut
+subsample <- TRUE
 plot_vectors <- if(is.null(vectors)) FALSE else TRUE
 if(plot_vectors){
   ppr_color_transform <- sqrt
@@ -103,7 +117,6 @@ if(plot_vectors){
     library(RANN)
     library(reshape2)
     source("graph.R")
-    r <- r[ii]
     G <- neighborhood_graph(X,r)
     p_norm <- ifelse(is.na(p/degree(G)),0,p/degree(G))
     
@@ -123,7 +136,7 @@ if(plot_vectors){
         plot_path <- file.path(plot_dir,file_name)
         pdf(plot_path, 8, 8)
       }
-      generic_2ddata_plot(X,colors_for_each_plot[[plot_name]])
+      generic_2ddata_plot(X,colors_for_each_plot[[plot_name]],subsample)
       if(save_plots){dev.off()}
     }
   }

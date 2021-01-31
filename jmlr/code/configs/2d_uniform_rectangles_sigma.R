@@ -14,7 +14,7 @@
 
 
 # Global parameters
-n_samples <- 8000
+n_samples <- 40000
 n_iters <- 50
 d <- 2
 n_mixtures <- 2
@@ -47,9 +47,9 @@ domain <- function(x)
 attributes(domain) <- list("d" = d, "measure" = 4)
 
 # Parameters
-sigma <- exp(seq(log(.25),log(.5),length.out = 10))
-rho <- rep(1.5,length = n_distributions)
-epsilon <- .25/(2*rho*sigma/(4 - 2*rho*sigma) + .25)
+sigma <- exp(seq(log(.1),log(.2),length.out = n_distributions))
+rho <- rep(1.8,length = n_distributions)
+epsilon <- .05/(2*rho*sigma/(4 - 2*rho*sigma) + .05)
 
 # Make distributions
 make_distribution_jj <- function(jj){
