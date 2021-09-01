@@ -337,9 +337,9 @@ Combining Corollary~\ref{cor:mixing_time_PPR} and Theorem~\ref{thm:acl_3} leads 
 		\item $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, and
 		\item $\frac{20\Phi(C)}{1 + 10\Phi(C)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$.
 	\end{itemize}
-Set $\alpha = 10\Phi(C)$. Then, for any $v \in C_{\alpha}$,
+Suppose $10\Phi(C) \leq \alpha \leq 20\Phi(C)$. Then, there exists a subset $C_{\alpha} \subset C$ with $\vol(C_{\alpha}) \geq \vol(C)/2$ such that for any $v \in C_{\alpha}$,
 \begin{equation*}
-\Phi(p(\alpha,\chi_v)) \leq \sqrt{1600\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi(C)}
+\Phi(p(\alpha,\chi_v)) \leq \sqrt{3200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi(C)}
 \end{equation*}
 \end{theorem}
 
@@ -347,57 +347,56 @@ Set $\alpha = 10\Phi(C)$. Then, for any $v \in C_{\alpha}$,
 
 Let $\mathcal{X} \subseteq \Reals^d$ be a compact domain, and let $\mathbb{P}$ be a probability distribution defined on $\mathcal{X}$ with density $f$. Sample $X = \set{x_1,\ldots,x_n}$ independently from $f$. For a given radius $r \in (0,\infty)$, the neighborhood graph $G := G_{n,r}$ has vertices $V = X$, and edges $E = \set{(x_i,x_j): \abs{x_i - x_j} \leq r}$. 
 
-To apply Theorem~\ref{thm:mixing_time_PPR_contrapositive} to the specific case of $G$ a neighborhood graph, we will need estimates on the degree and volume graph functionals. These estimates will rely on certain regularity properties of $\mathcal{X}$ and $f$. In particular, we will assume
-\begin{itemize}
-	\label{asmp:regularity_conditions}
-	\item There exist $\lambda_{\min}$ and $\lambda_{\max}$ such that for any $x \in \mathcal{X}$:
+To apply Theorem~\ref{thm:conductance_ppr} when $G$ is a random geometric graph, we will need estimates on the degree and volume graph functionals. These estimates will rely on certain regularity properties of $\mathcal{X}$ and $f$. In particular, we will assume
+\begin{enumerate}[(A)]
+	\item 
+	\label{asmp:regularity_condition_1}
+	There exist $\lambda_{\min}$ and $\lambda_{\max}$ such that for any $x \in \mathcal{X}$:
 	\begin{equation*}
 	0 < \lambda_{\min} < f(x) < \lambda_{\max} < \infty.
 	\end{equation*}
-	\item There exists some $a > 0$ such that for any $r >0 $ and any $x \in \mathcal{X}$,
+	\item
+	\label{asmp:regularity_condition_2}
+	There exists some $a > 0$ such that for any $r >0 $ and any $x \in \mathcal{X}$,
 	\begin{equation*}
-	\nu(B(x,r) \cap \mathcal{X}) \geq \frac{r^d}{a},
+	\nu(B(x,r) \cap \mathcal{X}) \geq \frac{\nu_d r^d}{a},
 	\end{equation*}
 	where $\nu(\cdot)$ is Lebesgue measure on $\Reals^d$ and $B(x,r)$ is the ball centered at $x$ of radius $r$. 
-\end{itemize}
-We collect our bounds on graph functionals in the following Lemma.
+\end{enumerate}
+We collect our bounds on graph functionals in the following Lemma. Let $\mathcal{S} \subset \mathcal{X}$.
 \begin{lemma}
 	\label{lem:graph_functional_concentration}
-	Suppose $\mathcal{X}$ and $f$ satisfy the regularity properties. Fix $\mathcal{S} \subseteq \mathcal{X}$, and write $\mathcal{S}[X] = \mathcal{X} \cap \set{x_1,\ldots,x_n}$.  For any $\delta \in (0,1)$, suppose
-	\begin{equation}
-	\label{eqn:graph_functional_concentration_1}
-	n \geq a \frac{(1 + \delta)}{(1 - \delta)^2} \cdot \frac{\lambda_{\max}}{\lambda_{\min}} \max\set{\frac{1}{\Pbb(\mathcal{S})}, \frac{10a}{(1-\delta)\lambda_{\min}\nu_dr^d}}.
-	\end{equation}
-	Then there exists constants $c_1,c_2$ independent of $n$ such that following statements hold with probability at least $1 - c_1n\exp\{-c_2n\}$:
+	Let $X = \set{x_1,\ldots,x_n}$ be sampled independently from $\Pbb$, and let $G := G_{n,r}$ be a neighborhood graph over $X$. Suppose $\mathcal{X}$ and $f$ satisfy the regularity properties \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}. Then, for any $\delta \in (0,1)$ and any $r \in (0,\infty)$, there exists numbers $c_1 := c_1(f,\mathcal{X},a)$ and $c_2 := c_2(f,\mathcal{X},a)$ independent of the sample size $n$ such that each of the following bounds hold with probability at least $1 - c_1n\exp\set{-c_2n}$:
 	\begin{itemize}
-		\item $\abs{\mathcal{S}[X]} \geq \frac{d_{\max}}{d_{\min}}$, 
-		\item $\frac{d_{\max}}{2d_{\min}^2} < \frac{1}{20}$. 
+		\item $(1 - \delta) \lambda_{\min} \frac{\nu_dr^d}{a} n \leq d_{\min} \leq d_{\max} \leq (1 + \delta) \lambda_{\min} \frac{\nu_dr^d}{a}n$, 
+		\item $(1 - \delta) \mathbb{P}(\mathcal{S}) n \leq \abs{\mathcal{S}[X]} \leq (1 - \delta) \mathbb{P}(\mathcal{S}) n$,
+		\item $(1 - \delta) \mathbb{E}[\vol(\mathcal{S}[X])] \leq \vol(\mathcal{S}[X]) \leq (1 + \delta) \mathbb{E}[\vol(\mathcal{S}[X])]$,
+		\item $(1 - \delta) \mathbb{E}[\mathrm{cut}(\mathcal{S}[X])] \leq \mathrm{cut}(\mathcal{S}[X]) \leq (1 + \delta) \mathbb{E}[\mathrm{cut}(\mathcal{S}[X])]$,
 	\end{itemize}
-	If additionally
-	\begin{equation}
-	\label{eqn:graph_functional_concentration_2}
-	\mathbb{E}[\vol(\mathcal{S}[X])] \leq 2\frac{(1 - \delta)}{(1 + \delta)} \mathbb{E}[\vol((\mathcal{X}\setminus\mathcal{S})[X])]
-	\end{equation}
-	then $\vol(\mathcal{S}[X]) \leq \frac{2}{3} \vol(G)$ with probability at least $1 - c_3n\exp\{-c_4n\}$, where $c_3,c_4$ are constants independent of $n$. 
 \end{lemma}
+The bounds on $d_{\min}$ and $d_{\max}$ follow from standard reasoning, in which we i) use the regularity conditions \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2} to upper and lower bound the expected degree $\mathbb{E}(d(x_i))$ over all $x_i$, ii) apply Bernstein's inequality to obtain bounds on the deviation $\abs{d(x_i) - \mathbb{E}d(x_i)}$ for a given $i$, and  iii) apply a union bound. Bernstein's inequality also leads to a bound on the deviation of $\abs{S[X]}$ from its mean. Finally, the functionals $\vol(\mathcal{S}[X])$ and $\mathrm{cut}(\mathcal{S}[X])$ are U-statistics and therefore by Hoeffding's inequality concentrate around their respective expectations.
 
-Together Lemma~\ref{lem:graph_functional_concentration} and Theorem~\ref{thm:mixing_time_PPR_contrapositive} imply the following result.
+Lemma~\ref{lem:graph_functional_concentration} implies that when the sample size is sufficiently large, the conditions of Theorem~\ref{thm:conductance_ppr} will be met. We therefore obtain the following upper bound on the normalized cut of PPR computed on a neighborhood graph.
 \begin{corollary}
 	\label{cor:conductance_ppr_neighborhood_graph}
-	Fix $\mathcal{S} \subset \mathcal{X}$, and $\delta \in (0,1)$. Suppose 
-	\begin{itemize}
-		\item $\mathcal{X}$ and $f$ satisfy the regularity properties,
-		\item  $\mathcal{S}$ satisfies \eqref{eqn:graph_functional_concentration_2} for any $r \in (0,\infty)$, and
-		\item The sample size $n$ satisfies \eqref{eqn:graph_functional_concentration_1},
-		\item The normalized cut $\Phi(\mathcal{S}[X]) \leq \frac{1}{200}$.
-	\end{itemize}.
-	Set $\alpha = \Phi(\mathcal{S}[X])$. For any $v \in \mathcal{S}[X]_{\alpha}$,
+	Fix $\mathcal{S} \subset \mathcal{X}$, radius $r \in (0,\infty)$, and $\delta \in (0,1/7]$. Suppose $\mathcal{X}$ and $f$ satisfy the regularity properties \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}, that
+	\begin{equation}
+	\label{eqn:graph_functional_concentration_1}
+	n \geq a \frac{(1 + \delta)}{(1 - \delta)^2} \cdot \frac{\lambda_{\max}}{\lambda_{\min}} \max\set{\frac{1}{\Pbb(\mathcal{S})}, \frac{10a}{(1-\delta)\lambda_{\min}\nu_dr^d}},
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn:graph_functional_concentration_2}
+	\mathbb{E}[\vol(\mathcal{S}[X])] \leq 2\frac{(1 - \delta)}{(1 + \delta)} \mathbb{E}[\vol((\mathcal{X}\setminus\mathcal{S})[X])],
+	\end{equation}
+	and that $\Phi_{\Pbb}(\mathcal{S}) \leq \frac{1}{200(1 + \delta)}$. Set $\alpha = 15\Phi_{\Pbb}(\mathcal{S})$. Then, there exists a set $\mathcal{S}[X]_{\alpha} \subset \mathcal{S}[X]$ with $\vol(\mathcal{S}[X]_{\alpha}) \leq \vol(\mathcal{S}[X])/2$, such that for any $v \in \mathcal{S}[X]_{\alpha}$,
 	\begin{equation*}
-	\Phi(p(\alpha,\chi_v)) \leq \sqrt{1600\left\{2\log\left(\frac{a}{(1 - \delta)\lambda_{\min}\nu_d r^d}\right) + \log 20\right\} \Phi(\mathcal{S}[X])}
+	\Phi(p(\alpha,\chi_v)) \leq \sqrt{3200\left\{2\log\left(\frac{a}{(1 - \delta)\lambda_{\min}\nu_d r^d}\right) + \log 20\right\} \Phi(\mathcal{S}[X])}
 	\end{equation*}
-	with probability at least $1 - cn\exp\set{-cn}$. 
+	with probability at least $1 - c_1n\exp\set{-c_2n}$.
 \end{corollary}
-The important takeaway is that $\Phi(p) \lesssim \sqrt{\Phi(\mathcal{S}[X])}$ (where we write $a_n \lesssim b_n$ when there exists constant $c$ such that $a_n \leq c b_n$ for all $n$.) In particular, we have eliminated the factor of $\log(\vol(G))$ which made upper bounds derived from Theorem~\ref{thm:acl_2} facile as $n,\vol(G) \to \infty$. 
+The important takeaway is that $\Phi(p) \lesssim \sqrt{\Phi(\mathcal{S}[X])}$ (where we write $a_n \lesssim b_n$ when there exists constant $c$ such that $a_n \leq c b_n$ for all $n$.) In particular, we have eliminated the factor of $\log(\vol(G))$ which made upper bounds derived from Theorem~\ref{thm:acl_2} facile as the sample size $n$ and the volume $\vol(G) \to \infty$. 
+
 
 \section{Implications for Density Clustering Lower Bound.}
 
@@ -410,7 +409,7 @@ and let $\mathbb{P}$ be the mixture distribution
 \mathbb{P} = \frac{1 - \epsilon}{2} \Psi_1 + \frac{1 - \epsilon}{2} \Psi_2 + \frac{\epsilon}{2} \Psi_0
 \end{equation*}
 where $\Psi_m$ is the uniform distribution over $\mathcal{C}_m$ for $m = 0,1,2$. 
-The density function $f$ of $\Pbb$ is clearly
+The density function $f$ of $\Pbb$ is simply
 \begin{equation*}
 f(x) = \frac{1}{\rho\sigma}\left(\frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_1) + \frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_2) + \frac{\epsilon}{2}\1(x \in \mathcal{C}_0)  \right)
 \end{equation*}
@@ -419,11 +418,11 @@ so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, $\mathbb{C}_{f}(\lambda
 Sample $x_1,\ldots,x_n$ from $f$, and form the neighborhood graph $G$. Let $p(\alpha,\chi_v)$ be a PPR vector defined on $G$, and suppose our goal is to recover $\mathcal{C}_1$ using $\widehat{C} = \argmin_{i = 1,\ldots,n} \Phi(S_j)$, the minimum conductance sweep cut of $p$. As the following Lemma demonstrates, even when $p(\alpha,\chi_v)$ is reasonably initialized, if the density cluster $\mathcal{C}_1$ is sufficiently geometrically ill-conditioned there are many seed nodes $v \in \mathcal{C}_1$ such that $\widehat{C}$ will fail to recover $\mathcal{C}_1$.
 
 \begin{theorem}
-	Let \textcolor{red}{$\alpha = 10 \Phi_{n,r}(\mathcal{L}[X])$} and $r = \sigma/4$. Suppose $\frac{r}{\sigma} < \frac{1}{6400}$. Then, there exists a set $C_{\alpha}$ with $\abs{C_{\alpha} \cap \mathcal{C}_1[X]} \geq \abs{\mathcal{C}_1[X]}/6$ such that for any $v \in C_{\alpha}$, the minimum conductance sweep cut $\widehat{C}$ of $p(\alpha,\chi_v)$,
+	Let $\alpha = 15\Phi_{\Pbb}(\mathcal{L})$ and $r = \frac{1}{4}\sigma$. Suppose $\sigma < \frac{\rho}{1600}$. Then, there exists a set $C_{\alpha}$ with $\abs{C_{\alpha} \cap \mathcal{C}_1[X]} \geq \abs{\mathcal{C}_1[X]}/6$ such that for any $v \in C_{\alpha}$, the minimum conductance sweep cut $\widehat{C}$ of $p(\alpha,\chi_v)$ satisfies
 	\begin{equation*}
-	\frac{\abs{\widehat{C} \triangle \mathcal{C}_1[X]}}{n} \geq 1 - c \frac{1}{\epsilon^2} \sqrt{\log\left(\frac{\rho \sigma}{\epsilon\sigma^d}\right)\frac{\sigma}{\rho}}
+	\frac{\Delta(\widehat{C},\mathcal{C}_1[X])}{n} \geq 1 - c \frac{1}{\epsilon^2} \sqrt{\log\left(\frac{\rho \sigma}{\epsilon\sigma^d}\right)\frac{\sigma}{\rho}}
 	\end{equation*}
-	with probability at least $1 - c_1 n \exp\set{-c_2n}$, where $c_1,c_2$ are constants which do not depend on $n$.
+	with probability at least $1 - c_1 n \exp\set{-c_2n}$, where $c, c_1,c_2$ are constants which do not depend on $n$.
 \end{theorem}
 \begin{proof}
 	Let $\mathcal{L}$ be the bottom half of the rectangle $\mathcal{X}$,
@@ -432,7 +431,7 @@ Sample $x_1,\ldots,x_n$ from $f$, and form the neighborhood graph $G$. Let $p(\a
 	\end{equation*}
 	We will take for granted that with probability at least $1 - c_1 n \exp\set{-c_2n}$, the following two statements are true
 	\begin{enumerate}
-		\item $\Phi(\mathcal{L}[X]) \leq 32 \frac{r}{\rho}$, and
+		\item $\Phi_{n,r}(\mathcal{L}[X]) \leq 32 \frac{r}{\rho}$, and
 		\item For any set $A \subset X$,
 		\begin{equation}
 		\label{eqn:conductance_C1}
@@ -449,8 +448,6 @@ Sample $x_1,\ldots,x_n$ from $f$, and form the neighborhood graph $G$. Let $p(\a
 	\end{equation*}
 	Plugging in $r = \sigma/4$, and solving for $\frac{\abs{\widehat{C} \triangle \mathcal{C}_1[X]}}{n}$, we obtain the desired result.
 \end{proof}
-
-
 
 \section{Proofs.}
 
@@ -549,19 +546,36 @@ h(K_0) & \leq p(S_j) \leq p(\set{v}) + p(S_j \setminus \set{v}) \\
 where the last line follows since $K_0 = \vol(S_j) \geq \abs{S_j}\cdot d_{\min}$.
 
 \subsection{Proof of Theorem~\ref{thm:conductance_ppr}.}
-Since $\alpha = 10\Phi(C)$ and $v \in C_{\alpha}$, by Theorem~\ref{thm:acl_3},
+Since $\alpha \geq 10\Phi(C)$ and $v \in C_{\alpha}$, by Theorem~\ref{thm:acl_3},
 \begin{equation*}
 p(\alpha,\chi_v)(C) \geq \frac{9}{10}.
 \end{equation*}
 This inequality along with the assumption $\vol(C) \leq \frac{2}{3}\vol(G)$ implies that $p(\alpha,\chi_v)(C) - \frac{\vol(C)}{\vol(G)} \geq \frac{1}{5}$. Since we assume $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, the hypothesis of Theorem~\ref{thm:mixing_time_PPR_contrapositive} is satisfied with $\delta = 1/5$, and we have
 \begin{equation*}
-\Phi(p(\alpha,\chi_v)) \leq \sqrt{\frac{160\Phi(C)\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+\Phi(p(\alpha,\chi_v)) \leq \sqrt{\frac{320\Phi(C)\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
 \end{equation*}
 Finally, we assume $\frac{20\Phi(C)}{1 + 10\Phi(C)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$ which implies that
 \begin{equation*}
 \delta' = \delta - \frac{20\alpha}{1 + 10\alpha} + \frac{d_{\max}}{2d_{\min}^2} \geq \frac{1}{10} 
 \end{equation*}
 completing the proof of the theorem.
+
+\subsection{Proof of Corollary~\ref{cor:conductance_ppr_neighborhood_graph}.}
+
+Since we assume $\mathcal{X}$ and $f$ satisfy the regularity conditions \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}, the inequalities in Lemma~\ref{lem:graph_functional_concentration} hold with probability at least $1 - n c_5 \exp\set{-c_6n}$. We will condition on these inequalities throughout.
+
+We now verify that the conditions required to apply Theorem~\ref{thm:conductance_ppr} are met. The first two results in Lemma \ref{lem:graph_functional_concentration} imply that $\frac{d_{\max}}{d_{\min}} \lesssim \abs{S[X]}$ and $\frac{d_{\max}}{d_{\min}^2} \lesssim 1$; the lower bound on $n$ given in \eqref{eqn:graph_functional_concentration_1} ensures that these bounds hold exactly.
+
+Since we additionally assume that $\Phi_{\Pbb}(\mathcal{S}) \leq \frac{1 - \delta}{200(1 + \delta)}$, the third and fourth results in Lemma \ref{lem:graph_functional_concentration} imply the third condition in Theorem~\ref{thm:conductance_ppr} is also met. Finally, setting $\alpha = 15\Phi_{\Pbb}(\mathcal{S})$, these results imply that
+\begin{equation*}
+10 \Phi(S)\leq 15\frac{(1 - \delta)}{1 + \delta} \Phi(S)\leq \alpha \leq 15\frac{(1 + \delta)}{1 - \delta} \Phi(S) \leq 20 \Phi(S)
+\end{equation*}
+where the first and last inequalities follow since $\delta \leq 1/7$. We may therefore apply Theorem~\ref{thm:conductance_ppr} and obtain that
+\begin{equation*}
+\Phi(p(\alpha,\chi_v)) \leq \sqrt{3200\left\{\log\left(\frac{\vol(G)}{d_{\min}^2}\right) + \log 20\right\} \Phi(C)}
+\end{equation*}
+Using the (potentially loose) bound $\vol(G) \leq n^2$, Corollary~\ref{cor:conductance_ppr_neighborhood_graph} follows from the first result in Lemma~\ref{lem:graph_functional_concentration}.
+
 \section{Technical results.}
 
 The following Lemma relates $p(S)$ to itself. It is Lemma~5 in \textcolor{red}{Anderson,Chung,Lang}.
@@ -614,6 +628,7 @@ Next, we provide some very crude bounds on the maximum value the PPR vector $p(\
 \end{proof}
 
 \subsection{Concentration Inequalities.}
+\label{subsec:concentration}
 
 \paragraph{Bernstein's inequality.}
 
@@ -643,5 +658,36 @@ Therefore, with probability at least $1 - 2 \exp\left(-\frac{\delta^2 \mu_h p_h}
 \begin{equation*}
 (1 - \delta) \mu_h \leq U_n \leq (1 + \delta) \mu_h.
 \end{equation*}
+
+\section{Old Stuff.}
+\subsection{Proof of Lemma~\ref{lem:graph_functional_concentration}.}
+Each statement in Lemma~\ref{lem:graph_functional_concentration} is a standard consequence of the concentration results of \ref{subsec:concentration}. For each $i = 1,\ldots,n$, conditional on $x_i$ the degree functional $d(x_i)$ follows a binomial distribution $d(x_i) \sim \textrm{Bin}(n - 1, \Pbb(B(x_i,r)))$. Moreover by the regularity properties, for any $x \in \mathcal{X}$,
+\begin{equation*}
+\lambda_{\min} \frac{\nu_d r^d}{a} \leq \Pbb(B(x,r)) \leq \lambda_{\max} \nu_d r^d.
+\end{equation*}
+Therefore, for any $\delta > 0$, applying Bernstein's inequality and a union bound yields
+\begin{equation}
+\label{eqn:graph_functional_concentration_pf1}
+\lambda_{\min} (1 - \delta) \frac{\nu_d r^d}{a} n \leq d_{\min} \leq d_{\max} \leq  \lambda_{\max} (1 - \delta) \nu_d r^d n
+\end{equation}
+with probability at least $1 - 2 n\exp\set{-\frac{\delta^2 n \lambda_{\min} \nu_d r^d}{a\left(1 + \frac{\delta}{3}\right)}}$. Additionally $\abs{S[X]} \sim \mathrm{Bin}(n, \Pbb(S))$, and therefore
+\begin{equation}
+\label{eqn:graph_functional_concentration_pf2}
+(1 - \delta) \Pbb(\mathcal{S}) n \leq \abs{S[X]}
+\end{equation}
+with probability at least $1 - \exp\set{-\frac{\delta^2n\Pbb(\mathcal{S})}{1 + \frac{\delta}{3}}}$. 
+
+The inequalities \eqref{eqn:graph_functional_concentration_pf1} and \eqref{eqn:graph_functional_concentration_pf2} imply that with high probability $\frac{d_{\max}}{d_{\min}} \lesssim \abs{S[X]}$ and $\frac{d_{\max}}{d_{\min}^2} \lesssim 1$; the lower bound on $n$ given in \eqref{eqn:graph_functional_concentration_1} ensures that these bounds hold exactly.
+
+Finally, the statement $\vol\bigl(\mathcal{S}[X]\bigr) \leq \frac{2}{3}\vol(G)$ is equivalent to $\vol\bigl(\mathcal{X}\setminus\mathcal{S}[X]\bigr) \geq \frac{1}{2}\vol\bigl(\mathcal{S}[X]\bigr)$. For any set $\mathcal{A} \subseteq \Reals^d$, the volume $\vol\bigl(\mathcal{A}[X]\bigr)$ is a $U$-statistic, since it can be written as
+\begin{equation*}
+\vol\bigl(\mathcal{A}[X]\bigr) = \sum_{i = 1}^{m} \sum_{j \neq i} \underbrace{\frac{\1(x_i \in \mathcal{S}) \vee \1(x_j \in \mathcal{S})}{2} \1(\norm{x_i - x_j} \leq r)}_{h_\mathcal{A}(x_i,x_j)}
+\end{equation*}
+Let $p_{h_\mathcal{A}} = \mathbb{E}[h_\mathcal{A}(X_1,X_2)]$ for $X_1$ and $X_2$ independent random variables with distribution $\Pbb$. By Hoeffding's inequality for $U$-statistics we have
+\begin{equation}
+\label{eqn:graph_functional_concentration_pf3}
+\vol\bigl(\mathcal{S}[X]\bigr) \leq (1 + \delta)\mathbb{E}\left[\vol(\mathcal{S}[X])\right], \quad \vol\bigl(\mathcal{S}[X]\bigr) \leq (1 - \delta)\mathbb{E}\left[\vol(\mathcal{X}\setminus\mathcal{S}[X])\right]
+\end{equation}
+with probability at least $1 - 2\exp\set{-\frac{\delta^2 (n - 1)^2 \min\{p_{h_\mathcal{S}}, p_{h_{\mathcal{X}\setminus{\mathcal{S}}}}\}}{4}}$. If \eqref{eqn:graph_functional_concentration_pf3} is satisfied, then by~\eqref{eqn:graph_functional_concentration_2} the inequality $\vol\bigl(\mathcal{X}\setminus\mathcal{S}[X]\bigr) \geq \frac{1}{2}\vol\bigl(\mathcal{S}[X]\bigr)$ holds, and therefore $\vol\bigl(\mathcal{S}[X]\bigr) \leq \frac{2}{3}\vol(G)$.
 
 \end{document}
