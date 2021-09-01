@@ -7,3 +7,9 @@
 *.blg
 *.txt
 *.log
+
+# CODE #
+#################
+data/*
+jmlr/code/data/*
+jmlr/code/plots/*
