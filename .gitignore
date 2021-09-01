@@ -16,3 +16,4 @@ jmlr/code/data/*
 jmlr/code/plots/*
 *.Rhistory
 save_data/*
+*/archive/*
