@@ -14,3 +14,4 @@
 data/*
 jmlr/code/data/*
 jmlr/code/plots/*
+*.Rhistory
