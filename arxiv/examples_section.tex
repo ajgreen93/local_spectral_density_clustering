@@ -142,58 +142,6 @@
 
 \newcommand{\sbcomment}[1]{{\color{red} \bf{{{{SB --- #1}}}}}}
 
-%\newtheoremstyle{aldenthm}
-%{6pt} % Space above
-%{6pt} % Space below
-%{\itshape} % Body font
-%{} % Indent amount
-%{\bfseries} % Theorem head font
-%{.} % Punctuation after theorem head
-%{.5em} % Space after theorem head
-%{} % Theorem head spec (can be left empty, meaning `normal')
-
-%\theoremstyle{aldenthm}
-%\newtheorem{theorem}{Theorem}
-%\newtheorem{definition}{Definition}
-%\newtheorem{lemma}{Lemma}
-%\newtheorem{proposition}{Proposition}
-%\newtheorem{corollary}{Corollary}
-
-%\newtheoremstyle{aldenrmrk}
-%{6pt} % Space above
-%{6pt} % Space below
-%{} % Body font
-%{} % Indent amount
-%{\itshape} % Theorem head font
-%{.} % Punctuation after theorem head
-%{.5em} % Space after theorem head
-%{} % Theorem head spec (can be left empty, meaning `normal')
-%
-%\theoremstyle{aldenrmrk}
-%\newtheorem{remark}{Remark}
-%%%%%% End Alden
-
-%\title{Local Spectral Clustering of Density Upper Level Sets}
-
-% The \author macro works with any number of authors. There are two commands
-% used to separate the names and addresses of multiple authors: \And and \AND.
-%
-% Using \And between authors leaves it to LaTeX to determine where to break the
-% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
-% authors names on the first line, and the last on the second line, try using
-% \AND instead of \And before the third author name.
-%
-%\author{
-%Alden Green \And
-%Sivaraman Balakrishnan \And
-%Ryan J. Tibshirani}
-%
-%\begin{document}
-%\maketitle
-%
-%\vspace{0.1in}
-%\begin{abstract}
-
 
 \newcommand{\widgraph}[2]{\includegraphics[keepaspectratio,width=#1]{#2}}
 \newcommand{\Like}{\ensuremath{\mathcal{L}}}
@@ -291,159 +239,624 @@
 	
 	\end{center}
 
-\section{Examples}
-\label{sec:examples}
+\section{Lower bound.}
+\label{sec:lower_bound.}
 
-In this section, we demonstrate the implications of our theory, and compare the performance of PPR density clustering to some alternatives, by walking through a series of examples. In all of these examples, the generative model under consideration will be a mixture of uniform distributions, plus some noise distribution. To formally define this model, we specify a support $\mathcal{X}$ and disjoint subsets $\mathcal{C}_1,\ldots,\mathcal{C}_M$ of $\mathcal{X}$, where $M \geq 2$ is the number of mixture components. We sample the background noise uniformly over $\mathcal{C}_0 = \mathcal{X} \setminus \bigcup_{m = 1}^{M} \mathcal{C}_m$, and let $\epsilon \in [0,1]$ be the fraction of background noise. The mixture distribution $\Pbb$ is therefore
+To show a lower bound for density clustering using PPR, we exhibit a hard case: that is, a distribution $\Pbb$ for which PPR is unlikely to recover a density cluster. Let $\mathcal{C}_{\sigma}^{(0)}$, $\mathcal{C}_{\sigma}^{(1)}$, and $\mathcal{C}_{\sigma}^{(2)}$ be rectangles in $\Reals^2$, 
 \begin{equation*}
-\Pbb = \frac{1 - \epsilon}{M} \sum_{m = 1}^{M} \Psi_m + \epsilon \Psi_0,
+\mathcal{C}_{\sigma}^{(0)} = \biggl[-\frac{\sigma}{2}, \frac{\sigma}{2}\biggr] \times \biggl[-\frac{\rho}{2}, \frac{\rho}{2}\biggr], \quad \mathcal{C}_{\sigma}^{(1)} = \mathcal{C}_{\sigma}^{(0)} - \set{(\sigma,0)}, \quad \mathcal{C}_{\sigma}^{(2)} = \mathcal{C}_{\sigma}^{(0)} + \set{(\sigma,0)} \tag{$0 < \sigma < \rho$}
 \end{equation*}
-where $\Psi_m$ is the uniform distribution over $\Cset_m$. 
-
-Note that when $\epsilon$ is sufficiently small, for an appropriate choice of threshold $\lambda$ the density clustering will be $\Cbb_f(\lambda) = \set{\Cset_1,\ldots,\Cset_M}$. In this setup, therefore, estimating a density cluster is equivalent to recovering a mixture component.
-\subsection{1d uniform example.}
-
-We show the performance of our bounds in a mixture of uniforms in $\Reals$, and compare with the bound obtained via a global spectral clustering approach.
-
-\subsection{General uniform example.}
-
-We show the performance of our bounds in a mixture of uniforms in $\Reals^d$, and compare with the bound obtained via a density estimation approach.
-
-\subsection{Lower bound.}
-
-The theory we have developed so far gives tighter guarantees for plug-in density cluster estimators than for PPR. However, in both cases these are merely upper bounds on the clustering error. Now, we provide accompanying lower bounds for the PPR algorithm. These will demonstrate that there exist densities for which consistent estimation of density clusters is still possible, but for which \emph{PPR} will provably fail to recover density clusters (with high probability.) Moreover, they will show that the difficulty function $\kappa(\Cset)$ exhibits the right dependence on (some of) the geometric parameters we have introduced.
-
-Our hard case will be a mixture of $2$-uniforms with background noise. Given $0 < \sigma < \rho$, let $\mathcal{X} = [-1.5\sigma,1.5\sigma] \times [-.5\rho,.5\rho]$, and let $\Cset_1 = [-1.5\sigma,-.5\sigma] \times [.5\rho,1.5\rho]$, $\Cset_2 = [.5\sigma,1.5\sigma] \times [-.5\rho,.5\rho]$, so that the background noise is sampled over $\Cset_0 = [-.5\sigma,.5\sigma] \times [-.5\rho,.5\rho]$. We denote the resulting model by $\Pbb(\sigma,\rho,\epsilon)$ to emphasize the dependence of the distribution on the parameters of interest. 
-
-\section{Technical results.}
-
-\subsection{Lower bound.}
-
-Let $\Sset = [-1.5\sigma,1.5\sigma] \times [-\rho/2,0]$. Let the \emph{cut} and \emph{volume} functionals be defined for $\Aset \subset \Rd$ as follows:
+and let $\mathbb{P}$ be the mixture distribution over $\mathcal{X} = \mathcal{C}_{\sigma}^{(0)} \cup \mathcal{C}_{\sigma}^{(1)} \cup \mathcal{C}_{\sigma}^{(2)}$ given by
 \begin{equation*}
-\cut_{\Pbb,r}(\Aset) := \int_{\Aset} \int_{\mathcal{X} \setminus \Aset} \1(\norm{x - y} \leq r) \,d\Pbb(x) \,d\Pbb(y), \vol_{\Pbb,r}(\Aset) := \int_{\Aset} \int_{\mathcal{X}} \1(\norm{x - y} \leq r) \,d\Pbb(x) \,d\Pbb(y)
+\mathbb{P} = \frac{1 - \epsilon}{2} \Psi_1 + \frac{1 - \epsilon}{2} \Psi_2 + \frac{\epsilon}{2} \Psi_0,
 \end{equation*}
-and the \emph{normalized cut},
+where $\Psi_m$ is the uniform distribution over $\mathcal{C}_m$ for $m = 0,1,2$. 
+The density function $f$ of $\Pbb$ is simply
+\begin{equation}
+\label{eqn:lb_density}
+f(x) = \frac{1}{\rho\sigma}\left(\frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(1)}) + \frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(2)}) + \frac{\epsilon}{2}\1(x \in \mathcal{C}_{\sigma}^{(0)})  \right)
+\end{equation}
+so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, $\mathbb{C}_{f}(\lambda) = \set{\mathcal{C}_{\sigma}^{(1)}, \mathcal{C}_{\sigma}^{(2)}}$. 
+
+\subsection{Lower bound for PPR.}
+
+As the following theorem demonstrates, even when Algorithm~\textcolor{red}{1} is reasonably initialized, if the density cluster $\mathcal{C}_{\sigma}^{(1)}$ is sufficiently geometrically ill-conditioned the cluster estimator $\widehat{C}$ will fail to recover $\mathcal{C}_{\sigma}^{(1)}$. Let
+\begin{equation}
+\label{eqn:lower_set}
+\mathcal{L} = \set{(x_1,x_2) \in \mathcal{X}: x_2 < 0}.
+\end{equation}
+\begin{theorem}
+	\label{thm:ppr_lb}
+	Suppose $r < \frac{1}{40}\rho \wedge \frac{1}{4}\sigma$,  $\alpha = 65 \Phi_{\Pbb}(\mathcal{L})$, and $(L,U) = (0,1)$ are inputs to Algorithm~\textcolor{red}{1}. Then, for any
+	\begin{equation}
+	\label{eqn:lb_sample_size}
+	n \geq \max\set{\frac{64}{\epsilon^2 \rho \sigma \pi r^2}, \frac{8}{\epsilon}}
+	\end{equation}
+	the following statement holds: there exists a set $C^{g} \subset \Xbf$ with $\vol(C^g \cap \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \geq \frac{1}{10}\vol_{n,r}(\mathcal{C}_{\sigma}^{(1)}[\Xbf])$ such that for any seed node $v \in C^g$, the estimator $\widehat{C}$ computed by Algorithm~\textcolor{red}{1} has symmetric set difference with $\Csig^{(1)}[\Xbf]$ of volume at least
+	\begin{equation}
+	\label{eqn:ppr_lb}
+	\frac{\sigma \rho}{r^2}\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{n^2} \geq \frac{1}{4} -  c \frac{\sqrt{\frac{\sigma}{\rho}}}{\epsilon^2} \sqrt{ \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}
+	\end{equation}
+	with probability at least $1 - c_1 n \exp\set{-c_2n}$, where $c$ is a universal constant and $c_1,c_2$ are constants which do not depend on $n$.
+	Consequently, if
+	\begin{equation*} 
+	\epsilon^2 > \frac{c}{8} \sqrt{\frac{\sigma}{\rho}} \cdot \sqrt{ \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\frac{\sigma}{r}}
+	\end{equation*}
+	then with high probability $\frac{\sigma \rho}{r^2}\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{n^2}$ is at least $1/8$. 
+\end{theorem}
+
+Note that the factor of $\frac{\sigma}{r^2}$ on the left hand side of \eqref{eqn:ppr_lb} is a constant multiple of $(1/\vol_{\Pbb,r}(\Csig^{(1)}))$; hence the left hand side is directly comparable to $\frac{\vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf])}{\vol_{n,r}(\Csig^{(1)}[\Xbf])}$, which is the quantity we upper bound in Theorem~\textcolor{red}{1}.
+
+Theorem~\ref{thm:ppr_lb} is stated with respect to a particular hard case, where the density clusters are rectangular subsets of $\Reals^2$. Although we picked this setting to make the theorem statement simple, our results are easily generalized to $\Reals^d$ and to non-rectangular clusters. Additionally, although we state our lower bound with respect to PPR run on neighborhood graph, the conclusion is likely to hold for a much broader class of spectral clustering algorithms. In the proof of Theorem~\ref{thm:ppr_lb}, we rely heavily on the fact that when $\epsilon^2$ is sufficiently greater than $\frac{\sigma}{\rho}$, the normalized cut of $\Cset_1$ will be much larger than that of $\mathcal{L}$. In this case, not merely PPR but any algorithm which approximates the minimum normalized cut is unlikely to recover $\Cset_1$. Local spectral clustering algorithms based on truncated random walks \textcolor{red}{Spielman and Teng}, global spectral clustering algorithms \textcolor{red}{Shi and Malik}, and $p$-Laplacian based spectral embeddings \textcolor{red}{Buhler and Hein} all have provable upper bounds on the normalized cut of cluster they output, and thus it stands to reason that all the aforementioned approaches should struggle to estimate $\Cset_1[\Xbf]$.
+
+\subsection{Comparison with upper bound.}
+
+To better digest the implications of Theorem~\ref{thm:ppr_lb}, we apply our upper bound to the density function $f$ given in \eqref{eqn:lb_density}. Observe that $\Csig^{(1)}$ satisfies each of the assumptions~\textcolor{red}{(A1) - (A5).} In particular
+\begin{enumerate}[label=(A\arabic*)]
+	\item The density $f(x) = \frac{1 - \epsilon}{2 \rho \sigma}$ for all $x \in \Csig^{(1)}$.
+	\item The clusters $\Csig^{(1)}$ and $\Csig^{(2)}$ are separated, $\dist(\Csig^{(1)}, \Csig^{(2)}) \geq \sigma$. 
+	\item The density $f(x) = \frac{\epsilon}{\rho\sigma}$ for all $x$ such that $0 < \dist(x,\Csig^{(1)}) \leq \sigma$. Therefore for all such $x$,
+	\begin{equation*}
+	\inf_{x' \in \Csig^{(1)}} f(x') - f(x)  > \left\{\frac{1 - \epsilon}{2} - \epsilon \right\} \frac{1}{\rho \sigma}.
+	\end{equation*}
+	\item The set $\Csig^{(1)}$ is itself convex, and has diameter $\rho$.
+	\item By symmetry, $\vol_{\Pbb,r}(\Csig^{(1)}) = \vol_{\Pbb,r}(\Csig^{(2)})$ and therefore $\vol_{\Pbb,r}(\Csig^{(1)}) \leq \frac{1}{2}\vol_{\Pbb,r}(\Reals^d)$. 
+\end{enumerate}
+
+%Technically, this density does not fit nicely into the setup of Theorem~\textcolor{red}{1}, because the sets $\Cset_{\sigma}^{(m)}$ ($ m = 1,2$) play the role of both the $\sigma$-expanded sets and the density clusters themselves. However, this truly is only a technical objection. One could modify the distribution $\Pbb$ by adding a small amount of mass to the $\sigma$-interior $\Cset^{(m)} = \set{x \in \Cset_{\sigma}^{(m)}: \dist(x,\partial\Cset_{\sigma}) \geq \sigma}$. Appropriately choosing a threshold $\lambda > \frac{(1 - \epsilon)}{2\rho\sigma}$, the resulting $\lambda$-density clusters would be $\Cbb_f(\lambda) = \set{\Cset^{(1)},\Cset^{(2)}}$, and their $\sigma$-expansions would resemble the rectangles $\Csig^{(1)}, \Csig^{(2)}$ except with slightly rounded corners. 
+%Alternatively, one could directly modify Lemma~\textcolor{red}{6} -- an auxiliary Lemma, used in the proof of Theorem~\textcolor{red}{3}, which establishes an upper bound on the Lebesgue measure of $\Csig + B(0,r)$ -- to hold under the assumption $\Csig$ is a rectangle of width $\sigma$ rather than a $\sigma$-expansion. The proof of this Lemma is the only time we use the fact that $\Csig$ is a $\sigma$-expansion of a density cluster. \textcolor{red}{(Ryan and Siva.)}
+
+\begin{remark}Technically, the rectangles $\Csig^{(1)}$ and $\Csig^{(2)}$ are not $\sigma$-expansions due to their sharp corners. To fix this, one can either modify the upper bound (specifically, Lemma~\textcolor{red}{6}) to hold with respect to rectangles of width $\sigma$, or change the sets $\Csig^{(1)}$ and $\Csig^{(2)}$ to be rectangles with rounded corners. As these details do not meaningfully change our conclusions, for simplicity we will keep our upper and lower bounds as is.
+\end{remark}
+
+If the user-specified parameters are initialized according to \textcolor{red}{(14)}, we may apply Theorem~\textcolor{red}{1}. This implies that there exists a set $\Csig^{(1)}[\Xbf] \subset \Csig^{(1)}$ with $\vol_{n,r}(\Csig[\Xbf]^g) \geq \frac{1}{2}\vol_{n,r}(\Csig[\Xbf])$ such that for any seed node $v \in \Csig^{(1)}[\Xbf]$, the estimated cluster $\widehat{C}$ output by Algorithm 1 satisfies the following upper bound:
+\begin{equation*}
+\vol_{n,r}(\widehat{C} \vartriangle \Csig^{(1)}[\Xbf]) \leq c \cdot \kappa(\Cset^{(1)}) \cdot \vol_{n,r}(\Csig^{(1)}[\Xbf])
+\end{equation*}
+where the condition number is given by
+\begin{equation*}
+\kappa(\Cset^{(1)}) = c \frac{\epsilon}{\sigma}\left(\frac{\rho^2}{r}\log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2r}\right) + c\right).
+\end{equation*}
+
+To facilitate comparisons between our upper and lower bounds, assume $\frac{1}{4}\sigma \leq \frac{1}{40}\rho$ and set $r = \frac{1}{4}\sigma$. 
+For some universal constant $c > 0$, the following statements each hold with high probability:
+\begin{itemize}
+\item If the user-specified parameters satisfy \textcolor{red}{(14)} and for $b > 0$,
+\begin{equation*}
+\epsilon < c\frac{b\sigma^2}{\rho^2 \log^2\left(\frac{\Lambda_{\sigma}}{\lambda_{\sigma}^2\sigma}\right)}
+\end{equation*}
+then $\Delta(\widehat{C}, \mathcal{C}^{(1)}[\Xbf]) \leq b \cdot  \vol_{n,r}(\mathcal{C}^{(1)}[\Xbf])$.
+\item If the user-specified parameters are given as in Theorem~\ref{thm:ppr_lb}, and 
+\begin{equation*}
+\epsilon > c\left({\frac{\sigma}{\rho}} \log\left(\frac{\rho \sigma}{\epsilon^2 r^2}\right)\right)^{1/4}
+\end{equation*}
+then $\Delta(\widehat{C}, \mathcal{C}^{(1)}[\Xbf]) \geq \frac{1}{8} \vol_{n,r}(\mathcal{C}^{(1)}[\Xbf])$.
+\end{itemize}
+
+Jointly, these upper and lower bounds give a relatively precise characterization of what it means for a density cluster to be well- or poorly-geometrically conditioned for recovery using PPR.
+
+\begin{remark}
+	It is worth pointing out that the above conclusions are reliant on specific (albeit reasonable) ranges and choices of input parameters, which in some instances differ between the upper and lower bounds. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. 
+\end{remark}
+
+%It is worth pointing out that both our lower and upper bounds are stated with respect to specific choices of the input parameters to Algorithm~\ref{alg:ppr}, and that these choices are in fact different in the case of the teleportation parameter $\alpha$ and sweep cut range $(L,U)$. At a high level, we do not believe this substantially weakens the takeaway messages of our work: if a density cluster $\mathcal{C}$ is geometrically well-conditioned, then a reasonable initialization of PPR will recover $\Csig[\Xbf]$ with low error, whereas if it is geometrically poorly-conditioned, then a different but also reasonable initialization of PPR will fail to recover $\Csig[\Xbf]$. Of course, it would be more satisfying if both our upper and lower bounds could be stated with respect to the same choices of these input parameters. Unfortunately, it is not at all obvious how to prove such a claim, as to the best of our knowledge all existing work on PPR assumes similar initialization conditions to the ones we assume; effectively, that the algorithm is well-initialized with respect to the set $S \subset G$ one is interested in recovering. We suspect that our lower bound continues to hold even when choosing input parameters as dictated by our upper bound; however, proving this is currently beyond our technical grasp, and is a matter for future work. Even so, we reiterate our belief that in tandem our upper and lower bounds represent a substantial step forward in characterizing the behavior of local clustering algorithms in a statistical context \textcolor{red}{(Ryan and Siva)}.
+
+\begin{remark}
+	We also note that our lower bound is of course specific to the PPR algorithm. As mentioned previously, density clustering is a well-studied problem, and in particular under our assumptions classical plug-in density cluster estimators can consistently recover the $\sigma$-expansion $\Csig$ of a density cluster $\Cset$, even when $\epsilon$ is large compared to $\frac{\sigma}{\rho}$. That PPR has difficulty recovering density clusters which can be easily estimated by standard plug-in approaches is not surprising, nor is it a knock on PPR. Rather, it simply reflects that while classical density clustering approaches are specifically designed to identify high-density regions regardless of their geometry, PPR considers geometry as well as density when deciding upon the optimal cluster.
+\end{remark}
+
+
+
+\clearpage
+
+
+\section{Proof of Lower Bound.}
+
+To prove Theorem~\ref{thm:ppr_lb}, we will proceeding according to the following steps:
+\begin{enumerate}
+	\item We study the spectral partitioning properties of PPR on an arbitrary graph $G$, and show that when suitably initialized inside a subset $S \subset V$, the normalized cut of the PPR sweep cut is upper bounded by (a function of) $\Phi(S)$. 
+	\item We specialize to the graph $G = G_{n,r}$ and the subset $\mathcal{L}[\Xbf] \subset \Xbf$, and show that the normalized cut $\Phi_{n,r}(\mathcal{L}[\Xbf])$ is small (with high probability) when the diameter $\rho$ is large.
+	\item We reason that for the input parameters given in Theorem~\ref{thm:ppr_lb}, the output of Algorithm~\textcolor{red}{1} $\widehat{C}$ must therefore also have small normalized cut.
+	\item On other hand, we show that when the noise parameter $\epsilon$ is not too small, the empirical density cluster $\Csig^{(1)}[\Xbf]$ will have large normalized cut $\Phi_{n,r}(\Csig^{(1)}[\Xbf])$. In fact, we generalize this to hold for any set $A \subset \Xbf$ for which the symmetric set distance metric $\Delta(A,\Cset_1[\Xbf])$ is small.
+	\item We conclude that the symmetric set distance metric $\Delta(\widehat{C},\Csig^{(1)}[\Xbf])$ must not be small.
+\end{enumerate}
+
+We devote the subsequent sections to proving each of the aforementioned steps.
+
+\subsection{Spectral partitioning properties of PPR.}
+
+Let $G = (V,E)$ be an undirected, unweighted graph with $m = \abs{E}$ total edges, defined on vertices $V = \set{v_1, \ldots, v_n}$. Let $C$ be a subset of the vertices $V$, Recall that for a given $\beta \in (0,1)$ the sweep cut 
+\begin{equation*}
+S_{\beta,v} = \set{u \in V: \frac{p_v(u)}{\deg(u;G)} > \beta}
+\end{equation*} 
+The following theorem relates the normalized cut of the sweep sets $\Phi(S_{\beta};G)$ to the normalized cut of $C$; it is stated with respect to the graph functionals 
+\begin{equation*}
+d_{\max} := \max_{u \in V} \deg(u;G), ~~\textrm{and}~~ d_{\min} := \min_{u \in V} \deg(u;G).
+\end{equation*}
+\begin{theorem}
+	\label{thm:conductance_ppr}
+	Let $C \subseteq V$ satisfy the following conditions:
+	\begin{itemize}
+		\item $\vol(C;G) \leq \frac{2}{3}\vol(G)$,
+		\item $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, and
+		\item $\frac{20\Phi(C;G)}{1 + 10\Phi(C;G)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$.
+	\end{itemize}
+	Suppose $60\Phi(C;G) \leq \alpha \leq 70\Phi(C;G)$, and let $(L,U) = (0,1)$. Then, there exists a subset $C^g \subset C$ with $\vol(C^g;G) \geq \frac{5}{6}\vol(C;G)$ such that for any $v \in C^g$ the following statement holds: For the PPR vector $p_v := p(v,\alpha;G)$, the minimum conductance sweep cut set satisfies 
+	\begin{equation*}
+	\min_{\beta \in (0,1)}\Phi(S_{\beta,v};G) \leq \sqrt{11200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi(C;G)}
+	\end{equation*}
+\end{theorem}
+Although this theorem appears quite similar to standard results in the PPR literature -- for instance, Theorem 6 of \textcolor{red}{Anderson,Chung,Lang} -- crucially the above bound depends on $\log\left(\frac{m}{d_{\min}^2}\right)$ rather than $\log m$. In the case where $d_{\min} \asymp n$, this amounts to replacing a factor of $O(\log m)$ by a factor of ${O}(1)$, and therefore allows us to obtain meaningful results in the limit as $m \to \infty$. 
+
+Notwithstanding these improvements, the proof of Theorem~\ref{thm:conductance_ppr} follows the same general outline as the proof of Theorem~6 of \textcolor{red}{Anderson,Chung,Lang}. We now walk through this outline step by step, modifying the results of \textcolor{red}{Anderson,Chung,Lang} as needed. As with their work, we begin by proving a mixing time bound on the PPR vector $p_v$.
+
+\subsubsection{Mixing time of PPR.}
+
+To quantify the mixing of a PPR vector $p_v$, we introduce the function $p[\cdot]: [0,2m] \to [0,1]$. For $j = 1,\ldots,n$, let $\beta_j$ be the smallest value of $\beta \in (0,1)$ such that $S_{\beta_j}$ contains at least $j$ vertices. (For notational ease, we will write $S_{i} := S_{\beta_i}$, so that $S_1,S_2,\ldots,S_n$ comprise the $n$ unique sweep cuts of $p_v$.)
+For each $j = 1,\ldots,n$, we let $p[\vol(S_j)] =  \sum_{u \in S} p_v(u)$. Additionally, we let $p[0] = 0$ and $p[2m] = 1$. Finally, we extend $p[\cdot]$  by piecewise interpolation to be defined everywhere on its domain. The mixedness of the PPR vector is then measured by the function $h:[0,2m] \to [0,1]$, defined as 
+\begin{equation*}
+h(k) = p[k] - \frac{k}{2m}.
+\end{equation*}
+Next, for a given $0 \leq K_0 \leq m$, let 
+\begin{equation*}
+L_{K_0}(k) = \frac{2m - K_0 - k}{2m - 2K_0}h(K_0) + \frac{k - K_0}{2m - 2K_0}h(2m - K_0)
+\end{equation*}
+be the linear interpolator of $h(K_0)$ and $h(2m - K_0)$, and additionally let
+\begin{equation*}
+C(K_0) = \max\set{\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}}: K_0 < k < 2m - K_0}.
+\end{equation*}
+where we use the notation $\overline{k} := \min\{k, 2m - k\}$.
+
+Theorem~\ref{thm:mixing_time_PPR} implies that if the PPR random walk is not well mixed, then some sweep cut of $p_v$ must have small normalized cut.
+\begin{theorem}
+	\label{thm:mixing_time_PPR}
+	Let $p_v = p(v,\alpha;G)$ be a PPR vector, and let $\phi$ be any constant in $[0,1]$. Then, either the following bound holds for any integer $t$, any $0 < K_0 < m$, and any $k \in [K_0,2m - K_0]$:
+	\begin{equation}
+	\label{eqn:mixing_time_PPR}
+	h(k) \leq \alpha t + L_{K_0}(k) + C(K_0)\sqrt{\overline{k}}\left(1 - \frac{\phi^2}{8}\right)^t
+	\end{equation}
+	or else there exists some sweep cut $S_j$ of $p_v$ such that $\Phi(S_j;G) < \phi$.
+\end{theorem}
+
+\begin{proof}[Proof (of Theorem~\ref{thm:mixing_time_PPR}).]
+The proof of Theorem~\ref{thm:mixing_time_PPR} is essentially a combination of the proofs of Theorem~3 in \textcolor{red}{Anderson,Chung,Lang} and Theorem 1.2 in \textcolor{red}{Lovasz and Simonovits.} We will show that if $\Phi(S_j) > \phi$ for each $j = 1,\ldots,n$, then \eqref{eqn:mixing_time_PPR} holds for all $t$ and any $k \in (K_0,2m - K_0)$.
+
+We proceed by induction on $t$. Our base case will be $t = 0$. Observe that $C(K_0) \cdot \sqrt{\overline{k}} \geq  h(k) - L_{K_0}(k)$ for all $k \in [K_0,2m - K_0]$, which implies
+\begin{equation*}
+L_{K_0}(k) + C(K_0) \cdot \sqrt{\overline{k}} \geq h(k).
+\end{equation*}
+
+Now, we proceed with the inductive step. By the definition of $L_{K_0}$, the inequality~\eqref{eqn:mixing_time_PPR} holds when $k = K_0$ or $k = 2m - K_0$. We will additionally show that~\eqref{eqn:mixing_time_PPR} holds for every $k_j = \vol(S_j), j = 1,2,\ldots,n$ such that $k_j \in [K_0, 2m - K_0]$. Once this is shown, the concavity of the expression on the right hands side of~\eqref{eqn:mixing_time_PPR} implies that the inequality holds for all $k \in [K_0,2m - K_0]$.
+
+By Lemma 5 of \textcolor{red}{Anderson,Chung,Lang}, we have that
+\begin{align}
+p[k_j] & \leq \alpha + \frac{1}{2}  \left(p[k_j - \abs{\partial(S_j)}] + p[k_j + \abs{\partial{S_j}}]  \right) \nonumber\\
+& \leq \alpha + \frac{1}{2} \left(p[k_j - \Phi(S_j) \overline{k}_j] + p[k_j + \Phi(S_j) \overline{k}_j]  \right) \nonumber \\
+& \leq \alpha + \frac{1}{2} \left(p[k_j - \phi \overline{k}_j] + p[k_j + \phi \overline{k}_j]\right) \nonumber
+\end{align}
+and subtracting $k_j/2m$ from both sides, we get
+\begin{equation}
+\label{eqn:mixing_time_PPR_pf1}
+h(k_j) \leq \alpha + \frac{1}{2} \bigl(h(k_j - \phi \overline{k}_j) + h(k_j +  \phi \overline{k}_j) \bigr)
+\end{equation}
+From this point, we divide our analysis into cases. 
+
+\textbf{Case 1.}
+Assume $k_j - 2 \phi \overline{k}_j$ and $k_j + 2 \phi \overline{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to \eqref{eqn:mixing_time_PPR_pf1}, yielding
+\begin{align*}
+h(k_j) & \leq \alpha + \alpha(t-1) \frac{1}{2}\biggl(L_{K_0}(k_j - \phi \overline{k}_j) + L_{K_0}(k_j + \phi \overline{k}_j) + C(K_0)\bigl(\sqrt{\overline{k_j - \phi \overline{k}_j}} + \sqrt{\overline{k_j + \phi \overline{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+& \leq \alpha t + L_{K_0}(k) + \frac{1}{2}\biggl(C(K_0)\bigl(\sqrt{\overline{k_j - \phi \overline{k}_j}} + \sqrt{\overline{k_j + \phi \overline{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+& \leq \alpha t + L_{K_0}(k) + \frac{1}{2}\biggl(C(K_0)\bigl(\sqrt{\overline{k}_j - \phi \overline{k}_j} + \sqrt{\overline{k}_j + \phi \overline{k}_j}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr).
+\end{align*}
+A Taylor expansion of $\sqrt{1 + \phi}$ around $\phi = 0$ yields the following bound:
+\begin{equation*}
+\sqrt{1 + \phi} + \sqrt{1 - \phi} \leq 2 - \frac{\phi^2}{4},
+\end{equation*}
+and therefore
+\begin{equation*}
+h(k_j) \leq  \alpha t + L_{K_0}(k) + \frac{C(K_0)}{2}\cdot \sqrt{\overline{k}_j}\cdot\left(2 - \frac{\phi^2}{4}\right)\left(1 - \frac{\phi^2}{8}\right)^{t-1} = \alpha t + L_{K_0}(k) + C(K_0)\sqrt{\overline{k}_j}\left(1 - \frac{\phi^2}{8}\right)^{t}.
+\end{equation*}
+
+\textbf{Case 2.}
+
+Now, assume one of $k_j - 2 \phi \overline{k}_j$ or $k_j + 2 \phi \overline{k}_j$ is not in $[K_0,2m  - K_0]$. Without loss of generality assume $k_j < m$, so that (i) we have $k_j - 2 \phi \overline{k}_j < K_0$ and (ii) $k_j + (k_j - K_0) \leq 2m - K_0$. By the concavity of $h$, and applying the inductive hypothesis to $h(2k_j - K_0)$, we have
+\begin{align*}
+h(k_j) & \leq \alpha + \frac{1}{2}\Bigl(h(K_0) + h\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
+& \leq\alpha + \frac{\alpha(t - 1)}{2} + \frac{1}{2}\Bigl(L_{K_0}(K_0) + L_{K_0}(2k_j - K_0\bigr) + C(K_0)\sqrt{\overline{2k_j - K_0}}\left(1 - \frac{\phi^2}{8}\right)^{t - 1}\Bigr) \\
+& \leq \alpha t + L_{K_0}(k_j) + C(K_0) \frac{\sqrt{2\overline{k}_j}}{2} \left(1 - \frac{\phi^2}{8}\right)^{t - 1} \\
+& \leq \alpha t + L_{K_0}(k_j) + C(K_0) \sqrt{\overline{k}_j} \cdot \left(1 - \frac{\phi^2}{8}\right)^{t}
+\end{align*}
+\end{proof}
+
+As a sanity check, we confirm that Theorem~\ref{thm:mixing_time_PPR} is no weaker than Theorem~3 of \textcolor{red}{Anderson, Chung,Lang}. It is not hard to show that $h(k) \leq \min\{1,\sqrt{k}\}$, and therefore that $C(K_0) \leq 1$ for any $K_0$. Setting $K_0 = 0$ in Theorem~\ref{thm:mixing_time_PPR}, we therefore recover Theorem~3 of \textcolor{red}{Anderson, Chung,Lang}.
+
+We now proceed to identify when Theorem~\ref{thm:mixing_time_PPR} may offer some improvement on Theorem~3 of \textcolor{red}{Anderson, Chung,Lang}, by showing when we can upper bound $C(K_0) << 1$. The critical point is that since $h(k)$ is concave and $L_{K_0}(K_0) = h(K_0)$ the upper bound
+\begin{equation*}
+\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}} \leq h'(K_0) \sqrt{k}
+\end{equation*}
+holds whenever $k < m$. For similar reasons, when $k > m$, 
+\begin{equation*}
+\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}} \leq -h'(2m - K_0) \sqrt{2m - k}.
+\end{equation*} 
+(Since $h$ is not differentiable at points $k = \vol(S_j)$, here we use $h'$ to denote the left derivative of $h$ whenever $k < m$, and the right derivative of $h$ whenever $k \geq m$)  
+
+The following Lemma gives good estimates for $h'(K_0)$ and $h'(2m - K_0)$, and a resulting upper bound on $C(K_0)$.
+\begin{lemma}
+	\label{lem:linearization_bound}
+	There exists $K_0 \in \set{0,\deg(v;G)}$ such that
+	\begin{equation}
+	\label{eqn:left_derivative}
+	h'(K_0) \leq  \frac{1}{2d_{\min}^2}.
+	\end{equation}
+	Additionally, for all $K_0 \in [0,2m]$,
+	\begin{equation}
+	\label{eqn:right_derivative}
+	h'(2m - K_0) \geq -\frac{d_{\max}}{d_{\min}\vol(G)}.
+	\end{equation}
+	As a result,
+	\begin{equation*}
+	C(K_0) \leq \frac{\sqrt{m}}{d_{\min}^2}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}[Proof (of Lemma~\ref{lem:linearization_bound}).]
+	The result of the Lemma is obvious once we show \eqref{eqn:left_derivative} and \eqref{eqn:right_derivative}. To show either inequality, it will be useful to work with an alternative representation of $h$. In particular,  whenever $\vol(S_j) \leq k < \vol(S_{j + 1})$ (where we let $S_0 = \emptyset$), the function $h(k)$ may be written as
+	\begin{equation}
+	\label{eqn:lovasz_simonovits}
+	h(k) = \sum_{i = 0}^{j} \left(p_v(u_{(i)}) - \pi(u_{(i)};G)\right) + \frac{\bigl(k - \vol(S_j;G)\bigr)}{\deg(u_{(j + 1)};G)} \left(p_v(u_{(j+1)}) - \pi(u_{(j+1)};G)\right) 
+	\end{equation}
+	where the vertices are ordered $\frac{p_v(u_{(1)})}{\deg(u_{(1)};G)} \geq \frac{p_v(u_{(2)})}{\deg(u_{(2)};G)} \geq \cdots \geq \frac{p_v(u_{(n)})}{\deg(u_{(n)};G)}$, and as usual $\pi(u;G) = \frac{\deg(u;G)}{\vol(G)}$. 
+	
+	From this representation, it is not hard to verify that the left derivative $h'(k)$ can be upper bounded
+	\begin{equation}
+	\label{eqn:linearization_bound_pf1}
+	h'(k) \leq \frac{p(v_{(j + 1)})}{\deg(v_{(j + 1)};G)}
+	\end{equation}
+	
+	We now upper bound $p(u)$ uniformly over all $u$ except the seed node $v$. For any $u \in V$ besides the seed node $v$, we can show by induction that
+	\begin{equation*}
+	e_v W^t(u) \leq \frac{1}{2 d_{\min}}
+	\end{equation*} 
+	for any $t \geq 0$, and therefore
+	\begin{equation}
+	\label{eqn:linearization_bound_pf2}
+	p(\alpha,\chi_v)(u) = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \chi_v W^t(u) \leq  \frac{1}{2d_{\min}}.
+	\end{equation}
+	As a result, by \eqref{eqn:linearization_bound_pf1}, for either $K_0 = \deg(v;G)$ (in the case where $v_{(1)} = v$) or otherwise for $K_0 = 0$, the inequality $h'(K_0) \leq \frac{1}{2d_{\min}^2}$ holds, proving \eqref{eqn:left_derivative}. The inequality \eqref{eqn:right_derivative} follows immediately from the representation \eqref{eqn:lovasz_simonovits}, since
+	\begin{equation*}
+	h'(k) \geq -\frac{\pi(v_{(j+1)})}{d(v_{(j + 1)})} \geq -\frac{\pi_{\max}}{d_{\min}},
+	\end{equation*}
+	and the proof of the Lemma is therefore complete.
+\end{proof}
+
+To apply Theorem~\ref{thm:mixing_time_PPR}, we must also upper bound the linear interpolator $L_{K_0}(k)$. Of course, trivially $L_{K_0}(k) \leq \max\set{h(K_0), h(2m - K_0)}$ for all $k$. As it happens, this observation will lead to a sufficient upper bound on $L_{K_0}$.
+\begin{lemma}
+	\label{lem:interpolator_bound}
+	Assume $s = \chi_v$ for some $v \in V$. Let $K_0 = \vol(S_j)$ for some $j = 0,\ldots,n$. Then, 
+	\begin{equation*}
+	h(2m - K_0) \leq \frac{K_0}{2m} ~\mathrm{and}~ h(K_0) \leq \frac{K_0}{2d_{\min}^2} + \frac{2\alpha}{1 + \alpha}.
+	\end{equation*}
+	and as a result for any $k \in \Reals$,
+	\begin{equation*}
+	L_{K_0}(k) \leq \frac{2\alpha}{1 + \alpha} + \frac{K_0}{2d_{\min}^2}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}[Proof (of Lemma~\ref{lem:interpolator_bound})]
+	We make use of the representation~\eqref{eqn:lovasz_simonovits} to prove the desired upper bounds on $h(2m - K_0)$ and $h(K_0)$. We first upper bound $h(2m - K_0)$,
+	\begin{align*}
+	h(2m - K_0) & = \sum_{i = 1}^{j} p(v_{(i)}) - \pi(v_{(i)}) \\
+	& \leq 1 - \sum_{i = 1}^{j} \pi(v_{(i)}) \\
+	& = 1 - \sum_{i = 1}^{j} \frac{d(v_{i})}{2m} = \frac{K_0}{2m}.
+	\end{align*}
+	
+	We will upper bound $h(K_0)$ by $p[\vol(S_j)] \leq p_v(v) + \sum_{u \in S_j \setminus \set{v}}p_v(u)$. In the proof of Lemma~\ref{lem:linearization_bound} we have already given an upper bound on $p_v(u)$ when $u \neq v$. Now, we additionally observe that for all $t$,
+	\begin{equation*}
+	e_vW^t(v) \leq \frac{1}{2d_{\min}} + \left(\frac{1}{2}\right)^t
+	\end{equation*}
+	and therefore $p_v(v) \leq \frac{1}{2d_{\min}} + \frac{2\alpha}{1 + \alpha}$.
+	As a result,
+	\begin{equation}
+	h(K_0) \leq \frac{2\alpha}{1 + \alpha} + \frac{\abs{S_j}}{2d_{\min}} \leq \frac{2\alpha}{1 + \alpha} + \frac{K_0}{2d_{\min}^2},
+	\end{equation}
+	where the latter inequality follows since $K_0 = \vol(S_j) \geq \abs{S_j}\cdot d_{\min}$.
+\end{proof}
+
+Combining Theorem~\ref{thm:mixing_time_PPR}, Lemma~\ref{lem:linearization_bound} and Lemma~\ref{lem:interpolator_bound}, we have the following result.
+\begin{corollary}
+	\label{cor:mixing_time_PPR}
+	Let $p_v = p(v,\alpha;G)$ be a PPR vector with seed node $v \in V$, and let $\phi$ be any constant in $[0,1]$. Then, either the following bound holds for any integer $t$ and any $k \in [d_{\max},2m - d_{\min}]$:
+	\begin{equation*}
+	h(k) \leq \alpha t + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\sqrt{m}}{d_{\min}^2} \cdot \sqrt{\overline{k}} \left(1 - \frac{\phi^2}{8}\right)^{t}
+	\end{equation*}
+	or there exists some sweep cut $S_j$ of $p_v$ such that $\Phi(S_j;G) < \phi$.
+\end{corollary}
+
+We arrive now at the main result of this section. It is similar in form to Theorem 2 of \textcolor{red}{Anderson,Chung,Lang} but reflects the improvements due to using Corollary~\ref{cor:mixing_time_PPR}. To simplify notation, we will write the total mass placed by $p_v$ on a subset $S \subset V$ as $p_v(S) := \sum_{u \in S} p_v(u)$.
+\begin{theorem}
+	\label{thm:mixing_time_PPR_contrapositive}
+	Let $p_v = p(v,\alpha;G)$ be a PPR vector with seed node $v \in V$. Suppose there exists some $\delta > \frac{2\alpha}{1 + \alpha} + \frac{d_{\max}}{2d_{\min}^2}$, such that
+	\begin{equation}
+	\label{eqn:mixing_time_PPR_contrapositive_1}
+	p_v(S) - \frac{\vol(S;G)}{\vol(G)} > \delta
+	\end{equation}
+	for a set $S$ with cardinality $\abs{S} \geq \frac{d_{\max}}{d_{\min}}$. Then there exists a sweep cut $S_j$ of $p$, such that
+	\begin{equation*}
+	\Phi(S_j) < \sqrt{\frac{16\alpha\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+	\end{equation*}
+	where $\delta' = \delta - \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2}$. 
+\end{theorem}
+\begin{proof}
+	Suppose the assumption of the theorem is satisified, that is there exists a set $S \subset V$ with cardinality $\abs{S} \geq \frac{d_{\max}}{d_{\min}}$ which satisfies \eqref{eqn:mixing_time_PPR_contrapositive_1}. Then for $j = \abs{S}$ the sweep cut $S_j$ has volume at least $d_{\max}$, and by hypothesis $h(\vol(S_j)) >  \delta$.
+	
+	Now, letting
+	\begin{equation*}
+	t = \frac{8}{\phi^2}\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}, \quad \phi^2 = \frac{16\alpha\set{\log\left(\frac{m}{d_{\min}^2}\right) + \log(\frac{2}{\delta'})}}{\delta'}
+	\end{equation*}
+	we have that
+	\begin{equation*}
+	\alpha t + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\sqrt{m}}{d_{\min}^2} \cdot \sqrt{\overline{k}} \left(1 - \frac{\phi^2}{8}\right)^{t} \leq \frac{\delta'}{2} + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\delta'}{2} < \delta,
+	\end{equation*}
+	and the Theorem follows by Corollary~\ref{cor:mixing_time_PPR}.
+\end{proof}
+
+\subsubsection{Improved Local Partitioning with PPR.}
+
+As in \textcolor{red}{Anderson,Chung,Lang}, the mixing time results of the previous section lead to an upper bound on the normalized cut $\Phi(\widehat{C};G)$. First, we restate a theorem of \textcolor{red}{Anderson,Chung,Lang} which lower bounds the probability mass $p(v,\alpha;G)(C)$ as a function of the normalized cut $\Phi(C)$. 
+
+\begin{theorem}
+	\label{thm:acl_3}
+	For any set $C$ and any constant $\alpha$, there exists a subset $C^g \subset C$ with $\vol(C^g;G) \geq \frac{5}{6}\vol(C;G)$, such that for any vertex $v \in C^g$, the PPR vector $p(v,\alpha;G)$ satisfies
+	\begin{equation*}
+	p(v,\alpha;G) \geq 1 - 6\frac{\Phi(C;G)}{\alpha}.
+	\end{equation*}
+\end{theorem}
+We are now in a position to prove Theorem~\ref{thm:conductance_ppr} by combining Corollary~\ref{cor:mixing_time_PPR} and Theorem~\ref{thm:acl_3}.
+
+\begin{proof}[Proof (of Theorem~\ref{thm:conductance_ppr})]
+	Since $\alpha \geq 60\Phi(C)$ and $v \in C^g$, by Theorem~\ref{thm:acl_3},
+	\begin{equation*}
+	p_v(C) \geq \frac{9}{10}.
+	\end{equation*}
+	This inequality along with the assumption $\vol(C) \leq \frac{2}{3}\vol(G)$ implies that $p_v(C) - \frac{\vol(C)}{\vol(G)} \geq \frac{1}{5}$. Since we assume $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, the hypothesis of Theorem~\ref{thm:mixing_time_PPR_contrapositive} is satisfied with $\delta = 1/5$. Therefore, the minimum conductance sweep cut satisfies
+	\begin{equation*}
+	\min_{j = 1,\ldots,n} \Phi(S_j;G) \leq \sqrt{\frac{1120\cdot \Phi(C;G)\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+	\end{equation*}
+	Finally, we assume $\frac{20\Phi(C)}{1 + 10\Phi(C)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$ which implies that
+	\begin{equation*}
+	\delta' = \delta - \frac{20\alpha}{1 + 10\alpha} + \frac{d_{\max}}{2d_{\min}^2} \geq \frac{1}{10} 
+	\end{equation*}
+	completing the proof of the theorem.
+\end{proof}
+
+\subsection{Normalized cut of $\mathcal{L}[\Xbf]$.}
+
+Recall that for any set $\mathcal{A} \subset \mathcal{X}$, the $\Pbb$-weighted \emph{cut} and \emph{volume} functionals can be written as
+\begin{equation*}
+\cut_{\Pbb,r}(\Aset) = \int_{\Aset} \int_{\mathcal{X} \setminus \Aset} \1(\norm{x - y} \leq r) \,d\Pbb(x) \,d\Pbb(y), \vol_{\Pbb,r}(\Aset):= \int_{\Aset} \int_{\mathcal{X}} \1(\norm{x - y} \leq r) \,d\Pbb(x) \,d\Pbb(y),
+\end{equation*}
+and the continuous \emph{normalized cut} is
 \begin{equation*}
 \Phi_{\Pbb,r}(\Aset) := \frac{\cut_{\Pbb,r}(\Aset)}{\min\{\vol_{\Pbb,r}(\Aset),\vol_{\Pbb,r}(\mathcal{X} \setminus \Aset)\}}.
 \end{equation*}
 
-\textbf{1.} We first upper bound the normalized cut $\Phi_{\Pbb,r}(\Sset)$ and lower bound the normalized cut $\Phi_{\Pbb,r}(\Cset_1)$, using the geometric parameters $\sigma$ and $\rho$, the \textcolor{red}{drop parameter} $\epsilon$, and the radius $r$. Our bounds will be crude, but will display the right dependence on these parameters, and so will be sufficient for our purposes.
+We now upper bound the normalized cut $\Phi_{\Pbb,r}(\mathcal{L})$ as a function of the diameter $\rho$, and the neighborhood graph radius $r$. Our bounds will be simple and not tight, but will display the right dependence on these parameters, and so will be sufficient for our purposes.
 
-We begin with the upper bound on $\Phi_{\Pbb,r}(\Sset)$. Note that only points $x = (x_1,x_2)$ such that $-r < x_2 < 0$ contribute to the cut of $\Sset$. Letting $f$ be the density function of $\Pbb$, we have
+To upper bound $\cut_{\Pbb,r}(\mathcal{L})$, note that for any $x = (x_1,x_2) \in \mathcal{L}$, if $x_2 \leq -r$ the ball $B(x,r)$ and the set $\mathcal{X}\setminus\mathcal{L}$ are disjoint. This implies
 \begin{align*}
-\cut_{\Pbb,r}(\Sset) & \leq \Pbb(\set{x \in \mathcal{X}: -r < x_2 < 0}) \cdot \max_{x \in \mathcal{X}} \Pbb(B(x,r)) \\
-& \leq \frac{3 r}{\rho} \cdot \frac{\nu_d r^d}{\sigma \rho}.
+\cut_{\Pbb,r}(\mathcal{L}) & \leq \Pbb(\set{x \in \mathcal{X}: -r < x_2 < 0}) \cdot \max_{x \in \mathcal{X}} \Pbb(B(x,r)) \\
+& \leq \frac{r}{2 \rho} \cdot \frac{\pi r^2}{2 \sigma \rho}.
 \end{align*}
-By symmetry, $\vol_{\Pbb,r}(\Sset) = \vol_{\Pbb,r}(\mathcal{X} \setminus \Sset)$, and therefore it is sufficient to lower bound $\vol_{\Pbb,r}(\Sset)$. We have
+By symmetry, $\vol_{\Pbb,r}(\mathcal{L}) = \vol_{\Pbb,r}(\mathcal{X} \setminus \mathcal{L})$, and therefore to upper bound $\Phi_{\Pbb,r}(\mathcal{L})$, it is sufficient to lower bound $\vol_{\Pbb,r}(\mathcal{L})$. We have
 \begin{align*}
-\vol_{\Pbb,r}(\Sset) & \geq \Pbb(\set{x \in \Cset_1 \cap \Sset: \dist(x, \partial \Cset_1) > r}) \cdot \frac{\nu_d r^d}{\sigma \rho} \\
-& = \frac{(\sigma - 2r)(\rho - r)}{2 \sigma \rho} \cdot \frac{\nu_d r^d}{\sigma \rho}  \\
-& \geq \frac{3\nu_d r^d}{16\sigma \rho},
+\vol_{\Pbb,r}(\mathcal{L}) & \geq \Pbb(\set{x \in \Cset_1 \cap \mathcal{L}: \dist(x, \partial \Cset_1) > r}) \cdot \frac{\pi r^2}{2 \sigma \rho} \\
+& = \frac{(\sigma - 2r)(\rho - r)}{2 \sigma \rho} \cdot \frac{\nu_d r^d}{2 \sigma \rho}  \\
+& \geq \frac{3}{16} \cdot \frac{\pi r^2}{2 \sigma \rho}
 \end{align*}
-where the last inequality follows since $r \leq \sigma/4$ and $\sigma < \rho$. Therefore,
-\begin{equation*}
-\Phi_{\Pbb,r}(\Sset) \leq 16 \frac{r}{\rho}.
-\end{equation*}
-Similar manipulations yield a lower bound on $\Phi_{\Pbb,r}(\Cset_1)$. We use our estimates of the volume of spherical caps from \textcolor{red}{A.6} to obtain a lower bound on $\cut_{\Pbb,r}(\Cset_1)$, 
-\begin{align*}
-\cut_{\Pbb,r}(\Cset_1) & \geq \Pbb(\set{x \in \Cset_1: \dist(x,\Cset_0) < r/32}) \cdot \frac{\nu(\textrm{cap}_{r}(\frac{31r}{32})) \epsilon}{2\rho\sigma} \\
-& \geq \frac{r (1 - \epsilon)}{32 \sigma} \cdot \frac{3 \nu_d r^d \epsilon}{16\rho\sigma}.
-\end{align*}
-and we can immediately upper bound the volume of $\Cset_1$,
-\begin{equation*}
-\vol_{\Pbb,r}(\Cset_1) \leq (1 - \epsilon) \cdot  \frac{(1 - \epsilon)}{\rho \sigma} \nu_d r^d.
-\end{equation*}
-Observe that $\vol_{\Pbb,r}(\mathcal{X} \setminus \Cset_1) \geq \vol_{\Pbb,r}(\Cset_2) = \vol_{\Pbb,r}(\Cset_1)$. Therefore,
-\begin{equation}
-\label{eqn:lb_proof_2}
-\Phi_{\Pbb,r}(\Cset_1) \geq  \frac{\epsilon r}{256 \sigma}.
-\end{equation}
+where the last inequality follows since $r \leq \frac{1}{4}\sigma < \frac{1}{4}\rho$. Therefore, $\Phi_{\Pbb,r}(\mathcal{L}) \leq \frac{8r}{3\rho}.$
 
-\textbf{2.} The upper bound \eqref{eqn:lb_proof_2} can be extended to hold for all sets $\Aset$ with small symmetric set difference $\Aset \triangle \Cset_1$. Formally,
-\begin{equation}
-\label{eqn:continuity_normalized_cut}
-\Phi_{\Pbb,r}(\Aset) \geq \frac{1}{2\pi} \cdot \frac{\epsilon^2r}{\sigma} \bigl(1 - 4 \cdot \Pbb(\Aset \triangle \Cset_1 )\bigr)
-\end{equation}
-The proof of \eqref{eqn:continuity_normalized_cut} is somewhat involved, and we defer it to the following section.
-
-\textbf{3.} We now convert from population to sample normalized cut. \textit{Claim 1:} There exist constants $c_1,c_2$ which may depend on $(\epsilon, \rho, \sigma)$ such that the following statements holds with respect to $c_1,c_2$: For all $n$ such that
-\begin{equation*}
-c_1 \cdot \left(\frac{\log n}{n}\right)^{1/d} \leq r,
-\end{equation*}
-the sample normalized cut of $\Aset$ is lower bounded
-\begin{equation*}
-\Phi_{n,r}(\Aset) \geq \frac{\Phi_{\Pbb,r}(\Aset)}{4} \quad \textrm{for all $\Aset \subset \Rd$,}
-\end{equation*}  
-and the sample normalized cut of $\Sset$ is upper bounded,
-\begin{equation*}
-\Phi_{n,r}(\Sset) \leq \frac{\Phi_{\Pbb,r}(\Sset)}{2}
-\end{equation*}
-with probability at least $1 - \frac{c_2}{n}$. 
-
-\textbf{4.}
-
-We prove this claim in a following section.
-
-\subsubsection{Proof of \eqref{eqn:continuity_normalized_cut}}
-To prove \eqref{eqn:continuity_normalized_cut}, we will need to upper bound the cut of $\Aset$, and lower bound the volume. We begin by upper bounding the cut, which will be the more difficult of the two. To obtain the desired result, we will need to discretize $\Aset$. For simplicity, without loss of generality assume $\rho$ and $\sigma$ are constant multiples of $r$. For $i = 0,\ldots,\frac{6\sigma}{r} - 1$ and $j = 0,\ldots, \frac{2\rho}{r} - 1$, let
-\begin{equation*}
-B_{ij} = \left[\frac{-3\sigma + ir}{2}, \frac{-3\sigma + (i + 1)r}{2}\right] \times \left[\frac{-\rho + jr}{2}, \frac{-\rho + (j + 1)r}{2}\right] 
-\end{equation*}
-and let $\mathfrak{B} = \set{B_{ij}}$ be the collection of all such boxes. Our discrete version of $\mathcal{A}$ will be a subsets of $\mathfrak{B}$,
-\begin{equation*}
-\overline{\mathcal{A}} := \set{B_{ij} \in \mathfrak{B}: \Pbb(B_{ij} \cap \mathcal{A}) \geq \frac{\Pbb(B_{ij})}{2}}.
-\end{equation*}
-(Note that $\mathcal{C}_1 = \bigcup \overline{\Cset}_1$ where $\overline{\Cset}_1 = \set{B_{ij}: i \in 0,\ldots,\frac{2\sigma}{r} - 1 }$, and is therefore effectively already discretized.)
-The discretization of $\Aset$ is useful for several reasons. First, we use it to lower bound the cut of the continuous set $\Aset$. Define the boundary of the discretized set $\overline{\mathcal{A}}$ to be 
-\begin{equation*}
-\overline{\partial \Aset} = \set{B_{ij} \in \overline{\mathcal{A}}: \exists B_{lk} \in \mathfrak{B} ~\textrm{such that}~\abs{l - i} + \abs{k - j} = 1, B_{lk} \not\in \overline{\mathcal{A}}}.
-\end{equation*}
-All boxes in the boundary $\overline{\partial \Aset}$ contribute substantially to the cut of $\Aset$,
-\begin{equation}
-\label{eqn:lb_proof}
-\cut_{\Pbb,r}(\mathcal{\Aset}) \geq \sum_{B_{ij} \in \overline{\partial\mathcal{A}}} \frac{\Pbb(B_{ij}) \cdot \min_{k,l} \Pbb(B_{kl})}{4}
-\end{equation}
-Moreover, the symmetric set difference $\Aset \triangle \Cset_1$ can be related to the symmetric set difference $\overline{\Aset} \triangle \overline{\Cset}_1$,
-\begin{equation}
-\label{eqn:lb_proof_1}
-\Pbb(\Aset \triangle \Cset_1) \geq \sum_{B \in \overline{\Aset} \triangle \overline{\Cset}_1} \frac{\Pbb(B_{ij})}{2}.
-\end{equation}
-Next, divide $\mathcal{X}$ into rectangles horizontally, $\mathfrak{R}_j = \set{B_{ij}: i = 0,\ldots,\frac{6\sigma}{r} - 1}$. We divide our analysis into cases. For each $j$, one of
-\begin{enumerate}[(i)]
-	\item $\overline{\Aset} \cap \mathfrak{R}_j = \emptyset$, and therefore $(\overline{\Aset} \triangle \overline{\Cset}_1) \cap \mathfrak{R}_j = \overline{\Cset}_1 \cap \mathfrak{R}_j$, or
-	\item $\overline{\Aset} \cap \mathfrak{R}_j = \mathfrak{R}_j$, and therefore $(\overline{\Aset} \triangle \overline{\Cset}_1) \cap \mathfrak{R}_j \supset \overline{\Cset}_2 \cap \mathfrak{R}_j$, or
-	\item $\overline{\partial\mathcal{A}} \cap \mathfrak{R}_j \neq \emptyset$.
-\end{enumerate}
-occurs. Moreover, (a) for every row $\mathfrak{R}_j$, $\abs{\overline{\Cset}_1 \cap \mathfrak{R}_j} =  \abs{\overline{\Cset}_2 \cap \mathfrak{R}_j} = \frac{2\sigma}{r}$, and (b) for every $B_{ij} \in \overline{\Cset}_1 \cup \overline{\Cset}_2$, the probability
-\begin{equation*}
-\Pbb(B_{ij}) \geq  \frac{r^2(1 - \epsilon)}{4\rho \sigma}.
-\end{equation*}
-Therefore, letting $J_1 = \set{j: \textrm{(i) occurs}}$, and similarly $J_2 = \set{j: \textrm{(ii) occurs}}$ and  $J_3 = \set{j: \textrm{(iii) occurs}}$, we have from \eqref{eqn:lb_proof_1} that
-\begin{align*}
-\Pbb(\Aset \triangle \Cset_1) & \geq \sum_{j = 0}^{\frac{2\rho}{r} - 1} \sum_{B \in (\overline{\Aset} \triangle \overline{\Cset}_1) \cap \mathfrak{R}_j} \frac{\Pbb(B_{ij})}{2} \\
-& \geq \left(\abs{J_1} + \abs{J_2}\right) \cdot \frac{\sigma}{r} \cdot \frac{r^2(1 - \epsilon)}{4\rho \sigma} \\
-& = \left(\frac{2\rho}{r} - \abs{J_3}\right) \frac{r(1 - \epsilon)}{4\rho}
-\end{align*}
-Rearranging, we obtain
-\begin{equation*}
-\abs{J_3} \geq \frac{2\rho}{r}\left(1 - \frac{2\Pbb(\Aset \triangle \Cset_1)}{1 - \epsilon}\right) \geq \frac{2\rho}{r}\left(1 - 4\Pbb(\Aset \triangle \Cset_1)\right)
-\end{equation*}
-since \textcolor{red}{$\epsilon < 1/2$.} From \eqref{eqn:lb_proof} and the prior inequality, we have
+Then, Lemma~\ref{lem:graph_functional_concentration} implies that the graph functionals $\cut_{n,r}(\mathcal{L}[\Xbf])$ and $\vol_{n,r}(\mathcal{L}[\Xbf])$--and in turn $\Phi_{n,r}(\mathcal{L}[\Xbf])$-- concentrate around their expectations. Precisely, we have that 
 \begin{align}
-\cut_{\Pbb,r}(\Aset) & \geq \sum_{j = 0}^{\frac{2\rho}{r} - 1} \sum_{B_{ij}} \frac{\Pbb(B_{ij}) \cdot \min_{k,l} \Pbb(B_{kl})}{4} \nonumber \\
-& \geq \abs{J_3} \frac{r^4\epsilon^2}{16\rho^2\sigma^2} \nonumber \\
-& \geq \frac{\epsilon r}{2\sigma} \cdot \frac{r^2 \epsilon}{\rho\sigma} \cdot \bigl(1 - 4\Pbb(\Aset \triangle \Cset_1)\bigr) \label{eqn:lb_proof_3}
+\Phi_{n,r}(\mathcal{L}[\Xbf]) & = \frac{\cut_{n,r}(\mathcal{L}[\Xbf])}{\min\set{\vol_{n,r}(\mathcal{L}[\Xbf]),\vol_{n,r}((\mathcal{X}\setminus\mathcal{L})[\Xbf])}} \nonumber \\
+& \leq \frac{3}{2}\Phi_{\Pbb,r}(\Aset) \leq \frac{4 r}{\rho} \label{eqn:lb_pf2}
 \end{align}
+with probability at least $1 - 3\exp\{-\frac{1}{25}n(\cut_{\Pbb,r}(\mathcal{L}))^2\}$. 
 
-We provide the following very crude upper bound on $\vol_{\Pbb,r}(\Aset)$,
-\begin{equation*}
-\vol_{\Pbb,r}(\Aset) \leq \vol_{\Pbb,r}(\mathcal{X}) \leq \frac{\pi r^2}{\rho \sigma},
-\end{equation*}
-which along with~\eqref{eqn:lb_proof_3} results in an upper bound on the normalized cut of $\Aset$,
-\begin{equation*}
-\Phi_{\Pbb,r}(\Aset) \leq \frac{1}{2\pi} \cdot \frac{\epsilon^2r}{\sigma} \bigl(1 - 4 \cdot \Pbb(\Aset \triangle \Cset_1 )\bigr).
-\end{equation*}
+\subsection{Normalized cut of $\widehat{C}$.}
 
-\subsubsection{Proof of Claim 1.}
+We will use Lemma~\ref{lem:graph_functional_concentration} to show that the set $\mathcal{L}[X] \subset X$ and the neighborhood graph $G_{n,r}$ satisfy the required conditions of Theorem~\ref{thm:conductance_ppr}. This Theorem will imply an upper bound on the normalized cut of $\widehat{C}$. 
+
+Note that $\mathcal{X}$ and $f$ satisfy the regularity conditions~\ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}, with parameters $\lambda_{\min} = \frac{\epsilon}{\rho\sigma}, \lambda_{\max} = \frac{1}{2\rho\sigma}$, and $a = 4, R = \frac{1}{4}\sigma$. We therefore have that for any $\delta \in (0,1)$ and any $r \in (0,\frac{1}{4}\sigma)$, each of the following inequalities are satisfied with probability at least $1 - 2n\exp\set{-\frac{\pi\epsilon r^2\delta^2n}{8 \rho \sigma(1 + \frac{\delta}{3})}} - 6 \exp\set{-n\delta^2(\cut_{\Pbb,r}(\mathcal{L}[\Xbf]))^2}$: 
+\begin{itemize}
+	\item $\frac{(1 - \delta)\epsilon \pi r^2}{4\rho \sigma}n \leq d_{\min} \leq d_{\max} \leq \frac{(1 + \delta)\pi r^2}{2\rho \sigma }n$, 
+	\item $\frac{(1 - \delta)}{2} n \leq \abs{\mathcal{L}[\Xbf]} \leq \frac{(1 + \delta)}{2} n$, 
+	\item $\vol_{n,r}(\mathcal{L}[\Xbf]) \leq (1 + \delta)\vol_{\Pbb,r}(\mathcal{L}) = \frac{(1 + \delta)}{2} \vol_{\Pbb,r}(\mathcal{X}) \leq \frac{(1 + \delta)}{2} \vol(G_{n,r})$, and
+	\item $(1 - \delta) \cut_{\Pbb,r}(\mathcal{L}[\Xbf]) \leq \cut_{n,r}(\mathcal{L}[\Xbf]) \leq (1 + \delta) \cut_{\Pbb,r}(\mathcal{L}[\Xbf])$.
+\end{itemize}
+We now condition on these inequalities, and letting $\delta = \frac{2}{67}$ we verify that under the setup of Theorem~\ref{thm:ppr_lb}, each of the conditions of Theorem~\ref{thm:conductance_ppr} are met:
+\begin{itemize}
+	\item $\vol(\mathcal{L}[X]) \leq \frac{(1 + \delta)}{2(1 - \delta)}\vol(G_{n,r}) \leq \frac{2}{3}\vol(G_{n,r})$ since $\delta < 1/7$,
+	\item $\abs{\mathcal{L}[X]} \geq \frac{n(1 - \delta)}{2} \geq \frac{2(1 + \delta)}{(1 - \delta)\epsilon} \geq \frac{d_{\max}}{d_{\min}}$ and $\frac{d_{\max}}{2d_{\min}^2} \leq \frac{8(1 + \delta)}{(1 - \delta)^2 \epsilon^2 \rho \sigma \pi r^2} \cdot \frac{1}{n} \leq \frac{1}{10}$ by \eqref{eqn:lb_sample_size},
+	\item $\Phi_{n,r}(\mathcal{L}[X]) \leq \frac{4r}{\rho} \leq \frac{1}{10}$, by assumption on $r$ and $\rho$, and
+	\item $60\Phi_{n,r}(\mathcal{L}[X]) \leq \frac{60(1 + \delta)}{1 - \delta}\Phi_{\Pbb,r}(\mathcal{L}) \leq \alpha \leq \frac{65(1 + \delta)}{1 - \delta}\Phi_{n,r}(\mathcal{L}[X]) \leq 70\Phi_{n,r}(\mathcal{L}[X])$ since $\delta < 2/67$. 
+\end{itemize}
+
+We may therefore apply Theorem~\ref{thm:conductance_ppr}, which allow us to upper bound the minimum conductance sweep cut $\min_{\beta \in (0,1)}\Phi(S_{\beta,v};G)$ or equivalently the output of Algorithm~\textcolor{red}{1}.
+
+To be precise, we have that there exists a set $\mathcal{L}[\Xbf]^g \subset \mathcal{L}[\Xbf]$ with $\vol_{n,r}(\mathcal{L}[\Xbf]^g) \geq \frac{5}{6} \vol_{n,r}(\mathcal{L}[\Xbf])$, such that the following statement holds for any $v \in \mathcal{L}[\Xbf]^g$: when Algorithm~\textcolor{red}{1} is run with inputs $\Xbf, r < \frac{1}{4}\sigma,\alpha = 65 \Phi_{\Pbb,r}(\mathcal{L}[\Xbf]),v \in \mathcal{L}[\Xbf]^g$ and $(L,U) = (0,1)$, the resulting PPR cluster estimate $\widehat{C}$ satisfies
+\begin{align}
+\Phi_{n,r}(\widehat{C}) & \leq \sqrt{11200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi_{n,r}(\mathcal{L[X]})} \nonumber \\
+& \leq \sqrt{89600\left\{\log\left(\frac{\rho \sigma}{\epsilon^2 \pi r^2}\right) + \log 20\right\} \frac{r}{\rho}} \label{eqn:lb_pf4} 
+\end{align}
+with probability at least $1 - 2n\exp\set{-\frac{\pi\epsilon r^2 n}{8978 \rho \sigma}} - 6 \exp\set{-\frac{1}{1123}(\cut_{\Pbb,r}(\mathcal{L}))^2n}$ (where the latter inequality follows from \eqref{eqn:lb_pf2} and Lemma~\ref{lem:graph_functional_concentration}.)
+
+\subsection{Lower bound on normalized cut.}
+
+The precise statement we will prove is contained in the following Lemma.
+\begin{lemma}
+	\label{lem:normalized_cut_lb}
+	The normalized cut $\Phi_{n,r}(A)$ is upper bounded
+	\begin{equation*}
+	\Phi_{n,r}(A) \geq \frac{1}{12\pi} \left(1 - 4\frac{\sigma \rho}{r^2 n^2} \vol_{n,r}(A \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma}
+	\end{equation*}
+	uniformly over all $A \subset X$ with probability at least $1 - \exp\set{-2n\delta^2(\vol_{\Pbb,r}(\mathcal{X}))^2} - \frac{12\sigma \rho}{r^2} \exp\set{-\frac{\delta^2\epsilon r^2 n}{\rho \sigma(3 + \delta)}} - \frac{2\rho}{r}\exp\set{-\frac{\delta^2\pi r^3n}{2\sigma\rho^2(3 + \delta)}}$.
+\end{lemma}
+\begin{proof}
+	To lower bound the normalized cut $\Phi_{n,r}(A)$, we must lower bound $\cut_{n,r}(A)$ and upper bound $\vol_{n,r}(A)$. A naive upper bound on the volume is simply 
+	\begin{equation}
+	\label{eqn:normalized_cut_lb_pf4}
+	\vol_{n,r}(A) \leq \vol_{n,r}(G_{n,r}) \overset{(i)}{\leq} (1 + \delta)  \vol_{\Pbb,r}(\mathcal{X}) n^2 \leq (1 + \delta)\frac{\pi r^2}{\rho \sigma} n^2
+ 	\end{equation}
+	where $(i)$ holds with probability at least $1 - \exp\set{-2n\delta^2(\vol_{\Pbb,r}(\mathcal{X}))^2}$, and it turns out this will suffice for our purposes. (Here and in the rest of this proof we take $\delta = 1/2$.)
+	
+	We turn to lower bounding $\cut_{n,r}(A)$. We will approximate the cut of $A$ by discretizing the space $\mathcal{X}$ into bins, relate the cut of $A$ to the boundary of the binned set $\overline{A}$, and then lower bound the size of the boundary of $\overline{A}$.
+	
+	Let $(k_1,k_2)$ for $k_1 \in \bigl[\frac{6\sigma}{r}\bigr], k_2 \in \bigl[\frac{2\rho}{r}\bigr]$ be the upper right hand corner of the cube
+	\begin{equation*}
+	Q_{(k_1,k_2)} = \biggl[-\frac{3\sigma}{2} + \frac{(k_1 - 1)}{2}r, -\frac{3\sigma}{2} + \frac{k_1}{2}r\biggr] \times \biggl[-\frac{\rho}{2} + \frac{(k_2 - 1)}{2}r, -\frac{\rho}{2} + \frac{k_2}{2}r\biggr]
+	\end{equation*}
+	and let $\overline{Q} = \set{Q_{(k_1,k_2)}: k_1 \in \left[\frac{6\sigma}{r}\right], k_2 \in \bigl[\frac{2\rho}{r}\bigr]}$ be the collection of such cubes. For a set $A \subset X$ we define the binned set $\overline{A} \subset \overline{Q}$ as follows
+	\begin{equation*}
+	\overline{A} := \set{Q \in \overline{Q}: \Pbb_n(A \cap Q) \geq \frac{1}{2}\Pbb_n(Q)},
+	\end{equation*}
+	and we let 
+	\begin{equation*}
+	\partial \overline{A} := \set{Q_{(k_1,k_2)} \in \overline{A}: \exists (\ell_1,\ell_2) \in \Bigl[\frac{3\sigma}{r}\Bigr] \times \Bigl[\frac{\rho}{r}\Bigr]~~\textrm{such that}~~Q_{(\ell_1,\ell_2)} \not\in \overline{A}, \norm{k - \ell}_1 = 1}.
+	\end{equation*}
+	be the boundary set of $\overline{A}$ in $\overline{Q}$. Intuitively, every point $x_i \in A$ in the boundary set of $\overline{A}$ will have many edges to $X\setminus A$. Formally, letting $Q_{\min} := \min_{Q \in \overline{Q}} \mathbb{P}_n(Q)$, we have
+	\begin{equation}
+	\label{eqn:normalized_cut_lb_pf1}
+	\cut_{n,r}(A) \geq \cut_{n,r}(A \cap \set{x_i \in \overline{A}}) \geq \frac{1}{4} \abs{\partial \overline{A}} Q_{\min}^2,
+	\end{equation}
+	where the last inequality follows since for every cube $Q_k \in \partial\overline{A}$, there exists a cube $Q_\ell \not\in \overline{A}$ such that $\norm{i - j}_1 \leq 1$, and since each cube has side length $r/2$, this implies that for every $x_i \in Q_k$ and $x_j \in Q_\ell$ the edge $(x_i,x_j)$ belongs to $G_{n,r}$. 
+	
+	Now we move on lower bounding the size of the boundary $\abs{\partial\overline{A}}$. To do so, we divide $\mathcal{X}$ into slices horizontally. Let $R_k = \set{(x_1,x_2) \in \mathcal{X}: x_2 \in \bigl[-\frac{\rho}{2} + \frac{(k - 1)}{2}r, -\frac{\rho}{2} + \frac{k}{2}r\bigr]}$ be the $k$th horizontal slice, and $\overline{R}_k = \set{Q_{(k_1,k)} \in \overline{Q}:k_1 \in [\frac{6\sigma}{r}]}$ be the binned version of $R_k$. For each $k$, either
+	\begin{enumerate}
+		\item $\overline{R}_k \cap \overline{A} = \emptyset$, in which case
+		\begin{equation*}
+		\vol_{n,r}\Bigl( \bigl(A \vartriangle C_1[\Xbf]\bigr) \cap R_k \Bigr) \geq \frac{1}{2}\vol_{n,r}(C_1[\Xbf] \cap R_k), ~~ \textrm{or}
+		\end{equation*}
+		\item $\overline{R}_k \cap \overline{A} = \overline{R}_k$, in which case
+		\begin{equation*}
+		\vol_{n,r}\Bigl( \bigl(A \vartriangle C_1[\Xbf]\bigr) \cap R_k \Bigr) \geq \frac{1}{2}\vol_{n,r}(C_2[\Xbf] \cap R_k), ~~\textrm{or}
+		\end{equation*}
+		\item $\overline{R}_k \cap \partial \overline{A} \neq \emptyset$.
+	\end{enumerate}
+	Let $N(R)$ be the number of slices for which $\overline{R}_k \cap \partial \overline{A} \neq \emptyset$. By the cases elucidated above, letting
+	\begin{equation*} R_{\min} := \min_{k}\Bigl\{\vol_{n,r}(C_1[\Xbf] \cap R_k) \wedge \vol_{n,r}(C_2[\Xbf] \cap R_k)\Bigr\}
+	\end{equation*} 
+	we obtain the following lower bound on the volume of the symmetric set difference,
+	\begin{equation}
+	\label{eqn:normalized_cut_lb_pf2}
+	\vol_{n,r}(A \vartriangle C_1[\Xbf]) \geq \frac{1}{2} R_{\min}  \left[\frac{2\rho}{r} - N(R)\right].
+	\end{equation}
+	Finally note that $\abs{\partial\overline{A}} \geq N(R)$. Therefore combining \eqref{eqn:normalized_cut_lb_pf1} and \eqref{eqn:normalized_cut_lb_pf2}, we have that
+	\begin{align}
+	\cut_{n,r}(A) & \geq \frac{1}{4}N(R) Q_{\min}^2 \nonumber \\
+	& \geq \frac{1}{2}\left(\frac{\rho}{r} - \frac{\vol_{n,r}(A \vartriangle C_1[\Xbf])}{R_{\min}}\right) Q_{\min}^2 \label{eqn:normalized_cut_lb_pf3}
+	\end{align}
+	for all $A \subset \Xbf$.
+	
+	It remains to lower bound the random quantities $R_{\min}$ and $Q_{\min}$.
+	To do so, we first lower bound the expected probability of any cell $Q$,
+	\begin{align*}
+	\min_{Q \in \overline{Q}} \Pbb(Q) \geq \frac{\epsilon r^2}{\rho \sigma}.
+	\end{align*}
+	and the expected volume of $\mathcal{C}_{\sigma}^{(1)}[\Xbf] \cap R_k$ and $\mathcal{C}_{\sigma}^{(2)}[\Xbf] \cap R_k$,
+	\begin{equation}
+	\vol_{\Pbb,r}(\mathcal{C}_{\sigma}^{(1)} \cap R_k) = \vol_{\Pbb,r}(\mathcal{C}_{\sigma}^{(2)} \cap R_k) \geq \frac{\pi r^3}{2 \sigma \rho^2} \label{eqn:normalized_cut_lb_pf5}
+	\end{equation}
+	
+	Since $Q_{\min}$ and $R_{\min}$ are obtained by taking the minimum of functionals over a fixed number of sets in $n$, they concentrate tightly around their means. Specifically, note that the total number of cubes is $\abs{\overline{Q}} = \frac{12 \sigma \rho}{r^2}$, and the total number of horizontal slices is $\frac{2\rho}{r}$. Along with \eqref{eqn:normalized_cut_lb_pf3} and \eqref{eqn:normalized_cut_lb_pf5}, by Lemma~\ref{lem:bernstein_union} 
+	\begin{equation*}
+	Q_{\min} \geq (1 - \delta)\frac{\epsilon r^2}{\rho \sigma} ~~\textrm{and}~~ R_{\min} \geq \frac{(1 - \delta)}{2}\frac{\pi r^3}{\sigma \rho^2 },
+	\end{equation*}
+	with probability at least $1 - \frac{12\sigma \rho}{r^2} \exp\set{-\frac{\delta^2\epsilon r^2 n}{\rho \sigma(3 + \delta)}} - \frac{2\rho}{r}\exp\set{-\frac{\delta^2\pi^2 r^6n}{4\sigma^2\rho^4}}$. Combining these lower bounds with \eqref{eqn:normalized_cut_lb_pf4} and \eqref{eqn:normalized_cut_lb_pf3}, we obtain
+	\begin{equation*}	
+	\Phi_{n,r}(A) \geq \frac{(1 - \delta)^2}{2(1 + \delta)\pi} \left(1 - 2 \frac{\sigma \rho}{(1 - \delta) r^2 n^2} \vol_{n,r}(A \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma},
+	\end{equation*}
+	and plugging in $\delta = 1/2$ yields the claim of Lemma~\ref{lem:normalized_cut_lb}.
+\end{proof}
+
+\paragraph{Conclusion.}
+Combining \eqref{eqn:lb_pf4} and Lemma~\ref{lem:normalized_cut_lb}, we have that there exists a set $\mathcal{L}[\Xbf]^g \subset \mathcal{L}[\Xbf]$ with $\vol_{n,r}(\mathcal{L}[\Xbf]^g) \geq \frac{5}{6}\vol_{n,r}(\mathcal{L}[\Xbf])$ such that for any seed node $v \in \mathcal{L}[\Xbf]^g$, the following bounds hold:
+\begin{equation*}
+ \frac{1}{12\pi} \left(1 - 4\frac{\sigma \rho}{r^2 n^2} \vol_{n,r}(\widehat{C} \vartriangle \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \right) \frac{\epsilon^2 r}{\sigma} \leq \Phi_{n,r}(\widehat{C}) \leq \sqrt{89600\left\{\log\left(\frac{\rho \sigma}{\epsilon^2 \pi r^2}\right) + \log 20\right\} \frac{r}{\rho}},
+\end{equation*}
+Finally, we show that the volume of $\mathcal{L}[\Xbf]^g$ is sufficiently large to ensure that it includes many points in $\mathcal{C}_{\sigma}^{(1)}[\Xbf]$:
+\begin{align*}
+\vol_{n,r}(\mathcal{L}[\Xbf]^g \cap \mathcal{C}_{\sigma}^{(1)}[\Xbf]) & \geq  \vol_{n,r}(\mathcal{L}[\Xbf]^g) - \vol_{n,r}((\mathcal{L}[\Xbf]^g \cap (\mathcal{C}_{\sigma}^{(0)} \cup \mathcal{C}_{\sigma}^{(2)})[\Xbf])[\Xbf]) \\
+& \geq \frac{5}{6}\vol_{n,r}(\mathcal{L}[\Xbf]) - \vol_{n,r}((\mathcal{L} \cap (\mathcal{C}_{\sigma}^{(0)} \cup \mathcal{C}_{\sigma}^{(1)})[\Xbf])[\Xbf]) \\
+& \geq \frac{5}{6}\vol_{n,r}((\mathcal{L} \cap \mathcal{C}_{\sigma}^{(1)})[\Xbf]) - \frac{1}{6}\vol_{n,r}(\mathcal{L}[\Xbf]) \\
+& \geq \left(\frac{5}{6}(1 - \delta) - \frac{1}{2}(1 + \delta)\right)\vol_{\Pbb,r}( \mathcal{L} \cap \Csig^{(1)}) \\
+& \geq \frac{(1 - \delta)}{2}\left(\frac{5}{6}(1 - \delta) - \frac{1}{2}(1 + \delta)\right)\vol_{n,r}(\mathcal{C}_{\sigma}^{(1)}[\Xbf])
+\end{align*}
+where the final two inequalities follow from Lemma~\ref{lem:graph_functional_concentration} and hold with probability at least $1 - 3\exp\set{-n\delta^2(\vol_{\Pbb,r}( \mathcal{L} \cap \Csig^{(1)}))^2}$. Setting $\delta = 1/13$, we have that $\vol_{n,r}(\mathcal{L}[\Xbf]^g \cap \mathcal{C}_{\sigma}^{(1)}[\Xbf]) \geq \frac{1}{10}\vol_{n,r}(\mathcal{C}_{\sigma}^{(1)}[\Xbf])$.
+
+\section{Concentration Inequalities.}
+
+Let $f$ be a density function, defined on the domain $\mathcal{X}$. In our theory, we frequently appeal to concentration of degree and volume graph functionals around their means. In this section, we establish that this concentration holds under certain regularity conditions on $f$. In particular, we will assume
+\begin{enumerate}[(A)]
+	\item 
+	\label{asmp:regularity_condition_1}
+	There exist $\lambda_{\min}$ and $\lambda_{\max}$ such that for any $x \in \mathcal{X}$:
+	\begin{equation*}
+	0 < \lambda_{\min} < f(x) < \lambda_{\max} < \infty.
+	\end{equation*}
+	\item
+	\label{asmp:regularity_condition_2}
+	There exists some $a,R > 0$ such that for any $0 < r < R$ and any $x \in \mathcal{X}$,
+	\begin{equation*}
+	\nu(B(x,r) \cap \mathcal{X}) \geq \frac{\nu_d r^d}{a},
+	\end{equation*}
+	where $\nu(\cdot)$ is Lebesgue measure on $\Reals^d$ and $B(x,r)$ is the ball centered at $x$ of radius $r$. 
+\end{enumerate}
+We collect our bounds on graph functionals in the following Lemma. 
+\begin{lemma}
+	\label{lem:graph_functional_concentration}
+	Let $X = \set{x_1,\ldots,x_n}$ be sampled independently from $\Pbb$, let $G := G_{n,r}$ be a neighborhood graph over $X$, and let $\mathcal{S}$ be a subset of $\mathcal{X}$. Suppose the density $f$ of $\Pbb$ satisfies the regularity conditions \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}. Then, for any $\delta \in (0,1)$ and any $r \in (0,R)$, there exists numbers $c_1 := c_1(f)$ and $c_2 := c_2(f)$ independent of the sample size $n$ such that each of the following bounds hold.
+	
+	With probability at least $1 - 2n\exp\set{-\frac{\frac{1}{2}\delta^2 \frac{\lambda_{\min} \nu_d r^d}{a}n}{1 + \frac{\delta}{3}}}$,
+	\begin{equation*}
+	(1 - \delta) \lambda_{\min} \frac{\nu_dr^d}{a} n \leq d_{\min} \leq d_{\max} \leq (1 + \delta) \lambda_{\min} \frac{\nu_dr^d}{a}n.
+	\end{equation*}
+	
+	With probability at least $1 - 2\exp\set{-2n\delta^2\Pbb(S)^2}$,
+	\begin{equation*}
+	(1 - \delta) \mathbb{P}(\mathcal{S}) n \leq \abs{\mathcal{S}[X]} \leq (1 - \delta) \mathbb{P}(\mathcal{S}) n.
+	\end{equation*}
+	
+	With probability at least $1 - 2\exp\set{-n\delta^2\vol_{\Pbb,r}(\mathcal{S})^2}$,
+	\begin{equation*}
+	(1 - \delta) n (n - 1) \vol_{\Pbb,r}(\mathcal{S}) \leq \vol_{n,r}(\mathcal{S}[X]) \leq (1 + \delta) n (n - 1) \vol_{\Pbb,r}(\mathcal{S}).
+	\end{equation*}
+	
+	Finally, with probability at least $1 - 2\exp\set{-n\delta^2\cut_{\Pbb,r}(\mathcal{S})^2}$,
+	\begin{equation*}
+	(1 - \delta) n (n - 1) \cut_{\Pbb,r}(\mathcal{S}) \leq \cut_{n,r}(\mathcal{S}[X]) \leq (1 + \delta) n (n - 1) \cut_{\Pbb,r}(\mathcal{S}).
+	\end{equation*}	
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lem:graph_functional_concentration}]
+The bounds on $d_{\min}$ and $d_{\max}$ follow from standard reasoning, in which we first use the regularity conditions \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2} to upper and lower bound the expected degree $\mathbb{E}(\deg_{n,r}(x_i))$ over all $x_i$,
+\begin{equation*}
+\lambda_{\min} \frac{\nu_d r^d}{a} \leq \min_{i = 1,\ldots,n} \mathbb{E}(\deg_{n,r}(x_i)) \leq \max_{i = 1,\ldots,n} \mathbb{E}(\deg_{n,r}(x_i)) \leq \lambda_{\max} \nu_d r^d,
+\end{equation*}
+and then apply Bernstein's inequality and a union bound (formally, Lemma) to control the maximal deviation $\deg_{n,r}(x_i) - \mathbb{E}(\deg_{n,r}(x_i))$. We state this second step as a separate Lemma, as it will be useful in contexts besides the proof of Lemma~\ref{lem:graph_functional_concentration}.
+
+Hoeffding's inequality for binomial random variables leads to a bound on the deviation of $\abs{S[X]}$ from its mean. Finally, the functionals $\vol(\mathcal{S}[X])$ and $\mathrm{cut}(\mathcal{S}[X])$ are U-statistics and therefore by Hoeffding's inequality concentrate around their respective expectations.
+\end{proof}
+
+\begin{lemma}[Union bound.]
+	\label{lem:bernstein_union}
+	For $M \geq 1$, let $\mathcal{A}_1,\ldots,\mathcal{A}_M$ be subsets of $\Reals^d$. Denote the minimum probability mass among these sets as $p_{\min} := \min_{m = 1,\ldots,M} \Pbb(\mathcal{A}_m)$, and likewise let $p_{\max} := \max_{m = 1,\ldots,M} \Pbb(\mathcal{A}_m)$. Then
+	\begin{equation*}
+	(1 - \delta)p_{\min} \leq \min_{m = 1,\ldots,M} \Pbb_n(\mathcal{A}_m) \leq \max_{m = 1,\ldots,M} \Pbb_n(\mathcal{A}_m) \leq (1 + \delta)p_{\max}
+	\end{equation*}
+	with probability at least $1 - 2 M \exp\left\{-\frac{\frac{1}{3}\delta^2p_{\min}n}{1 + \frac{\delta}{3}}\right\}$. 
+	
+	Similarly, for $r > 0$ let $v_{\min} = \min_{m = 1,\ldots,M} \vol_{\Pbb,r}(\mathcal{A}_m)$ and $v_{\max} = \max_{m = 1,\ldots,M} \vol_{\Pbb,r}(\mathcal{A}_m)$. Then
+	\begin{equation*}
+	(1 - \delta)v_{\min} \leq \min_{m = 1,\ldots,M} \vol_{n,r}(\mathcal{A}_m) \leq \max_{m = 1,\ldots,M} \vol_{n,r}(\mathcal{A}_m) \leq (1 + \delta)v_{\max}
+	\end{equation*}
+	with probability at least $1 - 2M \exp\set{-\delta^2 v_{\min}^2n}$. 
+\end{lemma}
+
 \end{document}
