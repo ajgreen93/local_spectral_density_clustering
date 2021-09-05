@@ -1,20 +1,20 @@
 \noindent The proofs of our major theorems largely consist of (at most) three modular parts.
 \begin{enumerate}
 	\item \textbf{Fixed graph results.} Results which hold with respect to an arbitrary graph $G$, and are stated with respect to functionals (i.e. normalized cut, conductance, and local spread) of $G$;
-	\item \textbf{Sample-to-population results.} For the specific choice $G = G_{n,r}$, w  e relate the aforementioned functionals to their population analogues. 
-	\item \textbf{Bounds on population functionals.} (In the case of density clustering only.) When the candidate cluster is a $\lambda$-density cluster, we bound the population functionals by a function of $\lambda$, as well as the other relevant parameters introduced in Section~\ref{sec:ppr_density_cluster}.
+	\item \textbf{Sample-to-population results.} For the specific choice $G = G_{n,r}$, results relating the aforementioned functionals to their population analogues. 
+	\item \textbf{Bounds on population functionals.} (In the case of density clustering only.) When the candidate cluster is a $\lambda$-density cluster, bounds on population functionals as a function of $\lambda$, as well as the other relevant parameters introduced in Section~\ref{sec:ppr_density_cluster}.
 \end{enumerate}
 
 Appendices \ref{apdx:fixed_graph}-\ref{apdx:density_cluster_population_functionals} will correspond to each of these three parts. In Appendix~\ref{apdx:pf_major_theorems}, we will combine these parts to prove the major theorems of our main text, Theorems~\ref{thm:volume_ssd_ub} and~\ref{thm:density_cluster_volume_ssd_ub}, as well as our negative result, Theorem~\ref{thm:ppr_lb}. In Appendix~\ref{apdx:appr_misclassification_error} we derive upper bounds for the aPPR vector, and show that under certain conditions the PPR vector can perfectly separate two density clusters. Finally, in Appendix~\ref{apdx:experimental_details} we give relevant details regarding our experiments.
 
 \section{Fixed graph results}
 \label{apdx:fixed_graph}
-In this appendix, we give all results that hold with respect to an arbitrary graph $G$. For the convenience of the reader, we begin by reviewing some notation from the main text, and also introduce some new notation. 
+In this section, we give all results that hold with respect to an arbitrary graph $G$. For the convenience of the reader, we begin by reviewing some notation from the main text, and also introduce some new notation. 
 
 \paragraph{Notation.}
-The graph $G = (V,E)$ is an undirected and connected but otherwise arbitrary graph, defined over vertices $V = \{1,\ldots,n\}$ with $m = |E|$ total edges. The adjacency matrix of $G$ is $A$, the degree matrix is $D$, and the lazy random walk matrix over $G$ is $W = (I + D^{-1}A)/2$. If the lazy random walk originates at a node $v$, the distribution of the lazy random walk $q_v^{(t)} := q(v,t;G)$ after $t$ steps is $q_v^{(t)} := e_v W^t$, with stationary distribution $\pi := \pi(G) := \lim_{t \to \infty} q_v^{(t)}$ with entries $\pi(u) = \deg(u;G)/\vol(u;G)$.
+The graph $G = (V,E)$ is an undirected and connected but otherwise arbitrary graph, defined over vertices $V = \{1,\ldots,n\}$ with $m = |E|$ total edges. The adjacency matrix of $G$ is $A$, the degree matrix is $D$, and the lazy random walk matrix over $G$ is $W = (I + D^{-1}A)/2$. The lazy random walk originating at node $v \in V$ has distribution $q(v,t;G) = e_vW^t$ after $t$ steps; we use the notational shorthand $q_v^{(t)} := q(v,t;G)$. The stationary distribution of the lazy random walk is $\pi := \pi(G) := \lim_{t \to \infty} q_v^{(t)}$ is given by $\pi(u) = \deg(u;G)/\vol(u;G)$.
 
-For a starting distribution $s$ (by distribution we mean a vector with non-negative entries), the PPR vector $p_s = p(s,\alpha;G)$ is the solution of
+For a starting distribution $s$ (by distribution we mean a vector with non-negative entries), the PPR vector $p_s = p(s,\alpha;G)$ is the solution to
 \begin{equation}
 \label{eqn:ppr}
 p_s = \alpha s + (1 - \alpha) p_s W.
@@ -40,7 +40,7 @@ The conductance of $V$ is abbreviated as $\Psi(G) := \Psi(V;G)$, and likewise fo
 & d_{\max}(G) := d_{\max}(V;G),~~ && d_{\min}(G) := d_{\min}(V; G)
 \end{aligned}
 \end{equation*}
-We note that $d_{\min}(G)^2 \leq d_{\min}(G) \cdot n \leq \vol(G) \leq n \cdot d_{\max}(G)$, and that for any $S \subseteq V$, $|S| \cdot d_{\min}(G) \leq \vol(S;G)$ (where $|S|$ is the cardinality of $S$.)
+We note that $d_{\min}(G)^2 \leq d_{\min}(G) \cdot n \leq \vol(G) \leq d_{\max}(G) \cdot n$, and that for any $S \subseteq V$, $|S| \cdot d_{\min}(G) \leq \vol(S;G)$ (where $|S|$ is the cardinality of $S$.)
 
 \paragraph{Organization.} In the following sections we establish: (Section \ref{subsec:pf_lem_zhu}) an upper bound on the misclassification error of PPR in terms of $\alpha$ and $\Phi(C;G)$ (Lemma~\ref{lem:zhu}), and an analogous result for aPPR (Corollary~\ref{cor:zhu}); (Section \ref{subsec:ppr_uniform_bounds}) a uniform bound on the perturbations of the PPR vector, to be used later in the proof of Theorem~\ref{thm:density_cluster_consistent_recovery} (consistency of PPR);  (Section \ref{subsec:lovasz_simonovits_bounds}) upper bounds on the mixedness of $q_v^{(t)}$ (as a function of $t$) and $p_v$ (as a function of $\alpha$), which will be helpful in the proofs of Proposition~\ref{prop:pointwise_mixing_time} and Theorem~\ref{thm:ppr_lb}; (Section \ref{subsec:pf_prop_pointwise_mixing_time}) an upper bound on $\tau_{\infty}(G)$ in terms of $\Psi(G)$ and $s(G)$ (Proposition~\ref{prop:pointwise_mixing_time}); and (Section \ref{subsec:ppr_spectral_partitioning}) an upper bound on the normalized cut $\Phi(\wh{C};G)$ in terms of $\Phi(C;G)$, to be used later in the proof of Theorem~\ref{thm:ppr_lb} (negative example). 
 
@@ -67,7 +67,7 @@ As mentioned in the main text, Lemma~\ref{lem:zhu} is equivalent, up to constant
 	p_v(C^c) \leq 2\frac{\Phi(C;G)}{\alpha}.
 	\end{equation}
 \end{itemize}
-teWe use~\eqref{pf:zhu1}-\eqref{pf:zhu3} to separately upper bound $\vol(S_{\beta,v} \setminus C;G)$, $\vol(C^{\mathrm{int}} \setminus S_{\beta,v};G)$ and $\vol(C^{\mathrm{bdry}} \setminus S_{\beta,v};G)$; here $C^{\mathrm{int}} \cup C^{\mathrm{bdry}} = C$ is a partition of $C$, with
+We use~\eqref{pf:zhu1}-\eqref{pf:zhu3} to separately upper bound $\vol(S_{\beta,v} \setminus C;G)$, $\vol(C^{\mathrm{int}} \setminus S_{\beta,v};G)$ and $\vol(C^{\mathrm{bdry}} \setminus S_{\beta,v};G)$; here $C^{\mathrm{int}} \cup C^{\mathrm{bdry}} = C$ is a partition of $C$, with
 \begin{equation*}
 C^{\mathrm{int}} := \Bigl\{u \in C: \deg(u;\wt{G}) > \bigl(1 - \alpha \cdot \beta \cdot \vol(C;G)\bigr) \deg(u;G) \Bigr\},
 \end{equation*}
@@ -78,7 +78,6 @@ First we upper bound $\vol(S_{\beta,v} \setminus C;G)$. Observe that for any $u 
 \label{pf:zhu3.5}
 \vol(S_{\beta,v} \setminus C; G) \leq \frac{p_v(C^c)}{\beta} \leq 2\frac{\Phi(C;G)}{\beta \cdot \alpha}.
 \end{equation} 
-
 Next we upper bound $\vol(C^{\mathrm{int}} \setminus S_{\beta,v};G)$. From~\eqref{pf:zhu1} and~\eqref{pf:zhu2} we see that 
 \begin{equation*}
 p_v(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(\wt{G})\bigr) \cdot \wt{\pi}(u) - \wt{p}_{\ell}(u)~~\textrm{for all $u \in C$.}
@@ -109,7 +108,6 @@ and we conclude that
 \label{pf:zhu5}
 \vol(C^{\mathrm{int}} \setminus S_{\beta,v}; G) \leq \frac{3\Phi(C;G)}{\alpha\beta}.
 \end{equation}
-
 Finally, we upper bound $\vol(C^{\mathrm{bdry}} \setminus S_{\beta,v};G)$. Indeed, for any $u \in C^{\mathrm{bdry}}$,
 \begin{equation*}
 \frac{1}{\vol(C;G)}\sum_{w \not\in C} \1((u,w) \in E) \geq \alpha \cdot \beta \cdot \deg(u;G)
@@ -193,7 +191,7 @@ s^{(t)} & := e_v(W \wt{I})^t W (I - \wt{I}),~~&& s = \sum_{t = 0}^{\infty} (1 - 
 \end{equation}
 In the above, $\wt{I} \in \Reals^{n \times n}$ is a diagonal matrix with $I_{uu} = 1$ if $u \in C$ and $0$ otherwise, and $\wt{D}$ is the diagonal matrix with $\wt{D}_{uu} = \deg(u;\wt{G})$ if $u \in C$, and $0$ otherwise. 
 
-These quantities admit a natural interpretation in terms of random walks. For $u \in C$, $\ell^{(t)}(u)$ is the probability that a lazy random walk over $G$ originating at $v$ stays within $\wt{G}$ for $t$ steps, arriving at $u$ on the $t$th step, and then ``leaks out'' of $C$ on the $(t + 1)$st step. On the other hand, for $u \not\in C$, $s^{(t)}(u)$ is the probability that a lazy random walk over $G$ originating at $v$ stays within $\wt{G}$ for $t$ steps and is then ``soaked up'' into $u$ on the $(t + 1)$st step. The vectors $\ell$ and $s$ then give the total mass leaked and soaked, respectively, by the PPR vector. 
+These quantities admit a natural interpretation in terms of random walks. For $u \in C$, $\ell^{(t)}(u)$ is the probability that a lazy random walk over $G$ originating at $v$ stays within $C$ for $t$ steps, arriving at $u$ on the $t$th step, and then ``leaks out'' of $C$ on the $(t + 1)$st step. On the other hand, for $u \not\in C$, $s^{(t)}(u)$ is the probability that a lazy random walk over $G$ originating at $v$ stays within $C$ for $t$ steps and is then ``soaked up'' into $u$ on the $(t + 1)$st step. The vectors $\ell$ and $s$ then give the total mass leaked and soaked, respectively, by the PPR vector. 
 
 Three properties of $\ell$ and $s$ are worth pointing out. First, $\mathrm{supp}(\ell) \subseteq C \setminus C_o$ and $\mathrm{supp}(s) \subseteq V \setminus C$. Second, $\|\ell^{(t)}\|_1 = \|s^{(t)}\|_1$ for all $t \in \mathbb{N}$, and so $\|\ell\|_1 = \|s\|_1$. Third, for any $u \in V \setminus C$, $p_v(u) = p_s(u)$. The first two properties are immediate. The third property follows by the law of total probability, which implies that
 \begin{equation*}
@@ -213,7 +211,7 @@ p_v(u) = \alpha \sum_{\tau = 0}^{\infty} \sum_{t = 0}^{\tau} (1 - \alpha)^{\tau}
 	\begin{equation*}
 	p_v(u) \geq \frac{3}{4}\bigl(1 - \alpha \cdot \tau_{\infty}(\wt{G})\bigr) \cdot \wt{\pi}(u) - \wt{p}_{\ell}(u)~~\textrm{for all $u \in C$,}
 	\end{equation*}
-	where $\ell$ has support $\mathrm{supp}(\ell) \subseteq C$ with $\|\ell\|_1 \leq 2\Phi(C;G)/\alpha$. Recalling that $u \in C_{o}$ implies that $u \not\in \mathrm{supp}(C_{o})$, as a consequence of~\eqref{pf:interpolator_bound_max_entry}, 
+	where $\ell$ has support $\mathrm{supp}(\ell) \subseteq C$ with $\|\ell\|_1 \leq 2\Phi(C;G)/\alpha$. Recalling that $u \in C_{o}$ implies that $u \not\in \mathrm{supp}(\ell)$, as a consequence of~\eqref{pf:interpolator_bound_max_entry}, 
 	\begin{equation*}
 	\wt{p}_{\ell}(u) \leq \frac{\|\ell\|_1}{d_{\min}(\wt{G})}~~\textrm{for all $u \in C_{o}$,}
 	\end{equation*}
@@ -387,7 +385,7 @@ In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,
 	\begin{equation*}
 	q_v^{(t)}(u) = \frac{1}{2}q_v^{(t - 1)}(u) + \frac{1}{2}\sum_{w \in V}q_v^{(t - 1)}(w,u) = \frac{1}{2} \sum_{w \in V} \bigl(q_v^{(t - 1)}(u,w) + q_v^{(t - 1)}(w,u)\bigr),
 	\end{equation*}
-	and consequentially for any $S \subset V$,
+	and consequently for any $S \subset V$,
 	\begin{align*}
 	q_v^{(t)}(S) & = \frac{1}{2}\bigl\{q_v^{(t - 1)}(\mathrm{in}(S)) +  q_v^{(t - 1)}(\mathrm{out}(S))\bigr\} \\
 	& = \frac{1}{2}\bigl\{q_v^{(t - 1)}\bigl(\mathrm{in}(S) \cup \mathrm{out}(S)\bigr) +  q_v^{(t - 1)}\bigl(\mathrm{in}(S) \cap \mathrm{out}(S)\bigr)\bigr\}
@@ -410,11 +408,11 @@ In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,
 	At this point, we divide our analysis into cases.
 	
 	\textbf{Case 1.}
-	Assume $k_j - \Psi(G) \wb{k}_j$ and $k_j + 2 \Psi(G) \wb{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to both terms on the right hand side of~\eqref{pf:mixing_random_walk_inductive_step_h} and obtain the following:
+	Assume $k_j - \Psi(G) \wb{k}_j$ and $k_j + 2 \Psi(G) \wb{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to both terms on the right hand side of~\eqref{pf:mixing_random_walk_inductive_step_h}, and obtain the following:
 	\begin{align*}
 	h^{(t)}(k_j) & \leq \frac{1}{2}\biggl(L_{K_0}\bigl(k_j - \Psi(G) \wb{k}_j; h^{(t_0)}\bigr) + L_{K_0}\bigl(k_j + \Psi(G) \wb{k}_j; h^{(t_0)}\bigr) \biggr) ~~+ \\
-	& \quad~ \frac{1}{2}C\bigl(K_0; h^{(t_0)}\bigr) \cdot \Bigl(\sqrt{\wb{k_j - \Psi(G) \wb{k}_j}} + \sqrt{\wb{k_j + \Psi(G) \wb{k}_j}}\Bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \\
-	& = L_{K_0}(k;h^{(t_0)}) + \frac{1}{2}\biggl(C(K_0;h^{t_0})\bigl(\sqrt{\wb{k_j - \Psi(G) \wb{k}_j}} + \sqrt{\wb{k_j + \Psi(G) \wb{k}_j}}\bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \biggr) \\
+	& \quad~ \frac{1}{2}C\bigl(K_0; h^{(t_0)}\bigr) \cdot \Bigl(\sqrt{\overline{k_j - \Psi(G) \wb{k}_j}} + \sqrt{\overline{k_j + \Psi(G) \wb{k}_j}}\Bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \\
+	& = L_{K_0}(k;h^{(t_0)}) + \frac{1}{2}\biggl(C(K_0;h^{t_0})\bigl(\sqrt{\overline{k_j - \Psi(G) \wb{k}_j}} + \sqrt{\overline{k_j + \Psi(G) \wb{k}_j}}\bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \biggr) \\
 	& \leq L_{K_0}(k;h^{(t_0)}) + \frac{1}{2}\biggl(C(K_0;h^{(t_0)})\bigl(\sqrt{\wb{k}_j - \Psi(G) \wb{k}_j} + \sqrt{\wb{k}_j + \Psi(G) \wb{k}_j}\bigr)\left(1 - \frac{\Psi(G)^2}{8}\right)^{t-t_0 - 1} \biggr).
 	\end{align*}
 	A Taylor expansion of $\sqrt{1 + \Psi(G)}$ around $\Psi(G) = 0$ yields the following bound:
@@ -431,7 +429,7 @@ In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,
 	\begin{align*}
 	h^{(t)}(k_j) & \overset{(\textrm{i})}{\leq} \frac{1}{2}\Bigl(h^{(t - 1)}(K_0) + h^{(t - 1)}\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
 	& \overset{(\textrm{ii})}{\leq} \frac{1}{2}\Bigl(h^{(t_0)}(K_0) + h^{(t)}\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
-	& \overset{(\textrm{iii})}{\leq}\frac{1}{2}\Bigl(L_{K_0}(K_0;h^{(t_0)}) + L_{K_0}(2k_j - K_0; h^{(t_0)}\bigr) + C(K_0;h^{(t_0)})\sqrt{\wb{2k_j - K_0}}\left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0 - 1}\Bigr) \\
+	& \overset{(\textrm{iii})}{\leq}\frac{1}{2}\Bigl(L_{K_0}(K_0;h^{(t_0)}) + L_{K_0}(2k_j - K_0; h^{(t_0)}\bigr) + C(K_0;h^{(t_0)})\sqrt{\overline{2k_j - K_0}}\left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0 - 1}\Bigr) \\
 	& \leq L_{K_0}(k_j; h^{(t_0)}) + C(K_0;h^{(t_0)}) \frac{\sqrt{2\wb{k}_j}}{2} \left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0 - 1} \\
 	& \leq L_{K_0}(k_j;h^{(t_0)}) + C(K_0;h^{(t_0)}) \sqrt{\wb{k}_j} \cdot \left(1 - \frac{\Psi(G)^2}{8}\right)^{t - t_0}
 	\end{align*}
@@ -464,8 +462,8 @@ In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,
 	Assume $k_j - 2 \phi \wb{k}_j$ and $k_j + 2 \phi \wb{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to \eqref{eqn:mixing_time_PPR_pf1}, yielding
 	\begin{align*}
 	h^{(\alpha)}(k_j) & \leq \alpha +~~ \\
-	& ~~ \alpha(t-1) \frac{1}{2}\biggl(L_{K_0}(k_j - \phi \wb{k}_j) + L_{K_0}(k_j + \phi \wb{k}_j) + C(K_0;h^{(\alpha)})\bigl(\sqrt{\wb{k_j - \phi \wb{k}_j}} + \sqrt{\wb{k_j + \phi \wb{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
-	& \leq \alpha t + L_{K_0}(k;h^{(\alpha)}) + \frac{1}{2}\biggl(C(K_0;h^{(\alpha)})\bigl(\sqrt{\wb{k_j - \phi \wb{k}_j}} + \sqrt{\wb{k_j + \phi \wb{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+	& ~~ \alpha(t-1) \frac{1}{2}\biggl(L_{K_0}(k_j - \phi \wb{k}_j) + L_{K_0}(k_j + \phi \wb{k}_j) + C(K_0;h^{(\alpha)})\bigl(\sqrt{\overline{k_j - \phi \wb{k}_j}} + \sqrt{\overline{k_j + \phi \wb{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+	& \leq \alpha t + L_{K_0}(k;h^{(\alpha)}) + \frac{1}{2}\biggl(C(K_0;h^{(\alpha)})\bigl(\sqrt{\overline{k_j - \phi \wb{k}_j}} + \sqrt{\overline{k_j + \phi \wb{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
 	& \leq \alpha t + L_{K_0}(k;h^{(\alpha)}) + \frac{1}{2}\biggl(C(K_0;h^{(\alpha)})\bigl(\sqrt{\wb{k}_j - \phi \wb{k}_j} + \sqrt{\wb{k}_j + \phi \wb{k}_j}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr).
 	\end{align*}
 	and therefore
@@ -546,7 +544,7 @@ In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,
 	
 \subsection{Proof of Proposition~\ref{prop:pointwise_mixing_time}}
 \label{subsec:pf_prop_pointwise_mixing_time}
-To prove Proposition~\ref{prop:pointwise_mixing_time}, we will upgrade from an upper bound on the total variation distance between $q_v^{(t)}$ and $\pi$ to the desired uniform upper bound. The \emph{total variation distance} between distributions $q$ and $p$ is
+To prove Proposition~\ref{prop:pointwise_mixing_time}, we first give an upper bound on the total variation distance between $q_v^{(t)}$ and its limiting distribution $\pi$, then upgrade to the desired uniform upper bound~\eqref{eqn:pointwise_mixing_time}. The \emph{total variation distance} between distributions $q$ and $p$ is
 \begin{equation*}
 \mathrm{TV}(q,p) := \frac{1}{2}\sum_{u \in v} \bigl|q(u) - p(u)\bigr|
 \end{equation*}
@@ -558,40 +556,37 @@ so that Theorem~\ref{thm:mixing_time_rw} gives an upper bound on $\mathrm{TV}(q_
 
 \begin{lemma}
 	\label{lem:tv_to_pointwise}
-	For any $t \in \mathbb{N}$,
+	For any $t_{\ast} \in \mathbb{N}$,
 	\begin{equation*}
-	\max_{u \in V} \Bigl\{\frac{\pi(u) - q_v^{(t + 1)}(u)}{\pi(u)}\Bigr\} \leq \frac{2 \cdot \mathrm{TV}(q_v^{(t)}, \pi)}{s(G)}.
+	\max_{u \in V} \Bigl\{\frac{\pi(u) - q_v^{(t_{\ast} + 1)}(u)}{\pi(u)}\Bigr\} \leq \frac{1}{s(G)} \biggl(\sum_{t = 0}^{t_{\ast}} \frac{\mathrm{TV}(q_v^{(t)}, \pi)}{2^{t_{\ast} - t}} + \frac{\mathrm{TV}(q_v^{(0)}, \pi)}{2^{t_{\ast}}}\biggr).
 	\end{equation*}
 \end{lemma}
-
 The proof of Proposition~\ref{prop:pointwise_mixing_time} is then straightforward.
 \paragraph{Proof of Proposition~\ref{prop:pointwise_mixing_time}.}
-	Put $t_{\ast} = 8/(\Psi(G)^2) \ln(4/s(G)) + 4$. We will use Theorem~\ref{thm:mixing_time_rw} to show that $\mathrm{TV}(q_v^{(t_{\ast})},\pi) \leq 1/4$. This will in turn imply (\cite{montenegro2002} pg. 13) that for $\tau_{\ast} = t_{\ast} \log_2(8/s(G))$,
-	\begin{equation*}
-	\mathrm{TV}(q_v^{(\tau_{\ast})},\pi) \leq \frac{1}{8}s(G),
-	\end{equation*}
-	and applying Lemma~\ref{lem:tv_to_pointwise} gives
-	\begin{equation*}
-	\max_{u \in V} \Bigl\{\frac{\pi(u) - q_v^{(\tau_{\ast} + 1)}(u)}{\pi(u)}\Bigr\} \leq \frac{1}{4}.
-	\end{equation*}
-	Taking maximum over all $v \in V$, we conclude that $\tau_{\infty}(G) \leq \tau_{\ast} + 1$, which implies the claim of Proposition~\ref{prop:pointwise_mixing_time}.
-	
-	It remains to show that $\mathrm{TV}(q_v^{(t_{\ast})},\pi) \leq 1/4$. Choosing $t_0 = 4$ in the statement of Theorem~\ref{thm:mixing_time_rw}, we have that
+	Put $T = 8/(\Psi(G)^2) \ln(4/s(G)) + 4$. We will use Theorem~\ref{thm:mixing_time_rw} to show that $\mathrm{TV}(q_v^{(T)},\pi) \leq 1/4$. This will in turn imply (\cite{montenegro2002} pg. 13) that for all $t \geq t_{\ast} := T \log_2(32/s(G))$,
+	\begin{equation}
+	\label{pf:pointwise_mixing_time_1}
+	\mathrm{TV}(q_v^{(t)},\pi) \leq \frac{1}{32}s(G).
+	\end{equation}
+	Finally, let $\tau_{\ast} = t_{\ast} + 4\log_2(1/s(G))$. Applying Lemma~\ref{lem:tv_to_pointwise} gives
 	\begin{align*}
-	\mathrm{TV}(q_v^{(t_{\ast})},\pi) & \leq \frac{1}{16} + \frac{d_{\max}(G)}{d_{\min}(G)^2} + \frac{1}{2s(G)} \Bigl(1 - \frac{\Psi(G)^2}{8}\Bigr)^{t_{\ast} - 4} \\
-	& \leq \frac{1}{8} + \frac{1}{2s(G)} \Bigl(1 - \frac{\Psi(G)^2}{8}\Bigr)^{t_{\ast} - 4} \\
-	& \leq \frac{1}{8} + \frac{1}{2s(G)} \exp\Bigl(-\frac{\Psi(G)^2}{8}(t_{\ast} - 4)\Bigr) = \frac{1}{4},
+	\max_{u \in V} \Bigl\{\frac{\pi(u) - q_v^{(\tau_{\ast} + 1)}(u)}{\pi(u)}\Bigr\} & \leq \frac{1}{s(G)}\biggl(\sum_{t = 0}^{\tau_{\ast}} \frac{\mathrm{TV}(q_v^{(t)}, \pi)}{2^{\tau_{\ast} - t}} + \frac{\mathrm{TV}(q_v^{(0)}, \pi)}{2^{\tau_{\ast}}}\biggr) \\
+	& = \frac{1}{s(G)}\biggl(\sum_{t = t_{\ast} + 1}^{\tau_{\ast}} \frac{\mathrm{TV}(q_v^{(t)}, \pi)}{2^{\tau_{\ast} - t}} + \sum_{t = 0}^{t_{\ast}} \frac{\mathrm{TV}(q_v^{(t)}, \pi)}{2^{\tau_{\ast} - t}} + \frac{\mathrm{TV}(q_v^{(0)}, \pi)}{2^{\tau_{\ast}}}\biggr) \\
+	& \leq \frac{1}{4},
+	\end{align*}
+	where the final inequality follows from~\eqref{pf:pointwise_mixing_time_1} and the crude upper bound $\mathrm{TV}(q,\pi) \leq 1$, which holds for any distribution $q$. Taking maximum over all $v \in V$, we conclude that $\tau_{\infty}(G) \leq \tau_{\ast} + 1$, which implies the claim of Proposition~\ref{prop:pointwise_mixing_time}.
+	
+	It remains to show that $\mathrm{TV}(q_v^{(T)},\pi) \leq 1/4$. Choosing $t_0 = 4$ in the statement of Theorem~\ref{thm:mixing_time_rw}, we have that
+	\begin{align*}
+	\mathrm{TV}(q_v^{(T)},\pi) & \leq \frac{1}{16} + \frac{d_{\max}(G)}{d_{\min}(G)^2} + \frac{1}{2s(G)} \Bigl(1 - \frac{\Psi(G)^2}{8}\Bigr)^{T - 4} \\
+	& \leq \frac{1}{8} + \frac{1}{2s(G)} \Bigl(1 - \frac{\Psi(G)^2}{8}\Bigr)^{T - 4} \\
+	& \leq \frac{1}{8} + \frac{1}{2s(G)} \exp\Bigl(-\frac{\Psi(G)^2}{8}(T - 4)\Bigr) = \frac{1}{4},
 	\end{align*}
 	where the middle inequality follows by assumption.
 
 \paragraph{Proof of Lemma~\ref{lem:tv_to_pointwise}.}
-	We proceed by induction. In the base case $t = 0$, we have that
-	\begin{equation*}
-	\max_{u \in V} \Bigl\{\frac{\pi(u) - q_v^{(t + 1)}(u)}{\pi(u)}\Bigr\} \leq 1 \leq 2(1 - \pi(v)) \leq 2\frac{\mathrm{TV}(q_v^{(0)},\pi)}{s(G)},
-	\end{equation*},
-	where the second inequality follows since $\pi(v) \leq d_{\max}(G)/(2m) \leq d_{\max}(G)/d_{\min}(G)^2 \leq 1/16$. 
-	
-	To prove the inductive step, the key observation is the following equivalence (see equation (16) of \citep{morris2005}):
+	Our goal will be to establish the recurrence relation~\eqref{pf:tv_to_pointwise_2}. 
+	To derive~\eqref{pf:tv_to_pointwise_2}, the key observation is the following equivalence (see equation (16) of \citep{morris2005}):
 	\begin{align}
 	\label{pf:tv_to_pointwise_1}
 	\frac{\pi(u) - q_v^{(t + 1)}(u)}{\pi(u)} & = \sum_{w \in V} \bigl(\pi(w) - q_v^{(t)}(w) \bigr) \cdot \Bigl(\frac{q_w^{(1)}(u) - \pi(u)}{\pi(u)}\Bigr) \nonumber \\
@@ -608,14 +603,19 @@ The proof of Proposition~\ref{prop:pointwise_mixing_time} is then straightforwar
 	\bigl(\pi(u) - q_v^{(t)}(u) \bigr) \cdot \Bigl(\frac{q_u^{(1)}(u) - \pi(u)}{\pi(u)}\Bigr) \leq \bigl(\pi(u) - q_v^{(t)}(u) \bigr) \cdot \Bigl(\frac{1/2 - \pi(u)}{\pi(u)}\Bigr) \leq \frac{\pi(u) - q_v^{(t)}(u)}{2\pi(u)},
 	\end{align*}
 	so that we obtain the recurrence relation
-	\begin{equation*}
+	\begin{equation}
+	\label{pf:tv_to_pointwise_2}
 	\frac{\pi(u) - q_v^{(t + 1)}(u)}{\pi(u)} \leq \frac{\mathrm{TV}(q_v^{(t)},\pi) }{s(G)} +\frac{\pi(u) - q_v^{(t)}(u)}{2\pi(u)}.
-	\end{equation*}
-	Then by the inductive hypothesis $\bigl(\pi(u) - q_v^{(t)}(u)\bigr)/\bigl(2\pi(u)\bigr) \leq \mathrm{TV}(q_v^{(t - 1)},\pi)/s(G)$, and consequentially
+	\end{equation}
+	From~\eqref{pf:tv_to_pointwise_2} alogn with the initial condition
 	\begin{equation*}
-	\frac{\pi(u) - q_v^{(t + 1)}(u)}{\pi(u)} \leq \frac{\mathrm{TV}(q_v^{(t)},\pi) }{s(G)} + \frac{\mathrm{TV}(q_v^{(t - 1)},\pi) }{s(G)} \leq 2\frac{\mathrm{TV}(q_v^{(t)},\pi)}{s(G)}.
+	\Bigl\{\frac{\pi(u) - q_v^{(1)}(u)}{\pi(u)}\Bigr\} \leq 1 \leq 2(1 - \pi(v)) \leq 2\frac{\mathrm{TV}(q_v^{(0)},\pi)}{s(G)},
 	\end{equation*}
-	This completes the proof of Lemma~\ref{lem:tv_to_pointwise}.
+	---where the second inequality follows because $\pi(v) \leq d_{\max}(G)/(2m) \leq d_{\max}(G)/d_{\min}(G)^2 \leq 1/16$---we obtain the upper bound
+	\begin{equation*}
+	\frac{\pi(u) - q_v^{(t + 1)}(u)}{\pi(u)} \leq \frac{1}{s(G)} \biggl(\sum_{t = 0}^{t_{\ast}} \frac{\mathrm{TV}(q_v^{(t)}, \pi)}{2^{t_{\ast} - t}} + \frac{\mathrm{TV}(q_v^{(0)}, \pi)}{2^{t_{\ast}}}\biggr).
+	\end{equation*}
+	This inequality holds for each $u \in V$, and taking the maximum over $u$ completes the proof of Lemma~\ref{lem:tv_to_pointwise}.
 
 \subsection{Spectral partitioning properties of PPR}
 \label{subsec:ppr_spectral_partitioning}
@@ -693,7 +693,7 @@ We use Bernstein's inequality to control the deviations of the empirical probabi
 	\begin{equation*}
 	(1 - \delta) \Pbb(\mathcal{S}) \leq \Pbb_n(\mathcal{S})~~\textrm{and}~~\Pbb_n(\mathcal{S}) \leq (1 + \delta)\Pbb(\mathcal{S}),
 	\end{equation*}
-	hold with probability at least $1 - \exp\set{-n\delta^2\Pbb(\mathcal{S})/(2 + 2\delta)} \leq 1 - \exp\set{-n\delta^2\Pbb(\mathcal{S})/4}$. 
+	hold with probability at least $1 - \exp\set{-n\delta^2\Pbb(\mathcal{S})/(2 + 2\delta)} \geq 1 - \exp\set{-n\delta^2\Pbb(\mathcal{S})/4}$. 
 \end{lemma}
 
 Many graph functionals are order-2 U-statistics, and we use Bernstein's inequality to control the deviations of these functionals from their expectations. Recall that $U_n$ is an order-2 U-statistic with kernel $\varphi: \Rd \times \Rd \to \Reals$ if 
@@ -707,7 +707,7 @@ We write $\norm{\varphi}_{\infty} = \sup_{x,y} |\varphi(x,y)|$.
 	\begin{equation*}
 	(1 - \delta) \mathbb{E}U_n \leq U_n~~\textrm{and}~~ U_n\leq (1 + \delta) \mathbb{E}U_n,
 	\end{equation*}
-	hold with probability at least $1 - \exp\{-n\delta^2 \Ebb U_n/(4 + 4\delta/3)\} \leq 1 - \exp\{-n\delta^2 \Ebb U_n/6\}$.
+	hold with probability at least $1 - \exp\{-n\delta^2 \Ebb U_n/(4 + 4\delta/3)\} \geq 1 - \exp\{-n\delta^2 \Ebb U_n/6\}$.
 \end{lemma}
 
 Finally, we use Lemma~\ref{lem:bernstein_union}---a combination of Bernstein's inequality and a union bound---to upper and lower bound $d_{\max}(G_{n,r})$ and $d_{\min}(G_{n,r})$. For measurable sets $\mc{S}_1,\ldots,\mc{S}_M$, we denote $p_{\min} := \min_{m = 1,\ldots,M} \Pbb(\mathcal{A}_m)$, and likewise let $p_{\max} := \max_{m = 1,\ldots,M} \Pbb(\mathcal{A}_m)$
@@ -838,9 +838,9 @@ Let $\mbb{Q}_1$ and $\mbb{Q}_2$ be probability measures, with $\mbb{Q}_1$ absolu
 	Let $\mbb{Q}_1$ be a probability measure that admits a density $g$ with respect to $\nu(\cdot)$, let $\mbb{Q}_2$ be an arbitrary probability measure, and let $T$ be a transportation map from $\mbb{Q}_1$ to $\mbb{Q}_2$. Suppose $\Delta_T(\mbb{Q}_1,\mbb{Q}_2) \leq r/(4(d - 1))$. It follows that
 	\begin{equation}
 	\label{eqn:conductance_lb_transportation_distance}
-	\Psi_r(\mbb{Q}_2) \geq \Psi_r(\mbb{Q}_1) \cdot \biggl(1 - \frac{2B_6\Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2}\biggr) - \frac{B_6 \Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2},
+	\Psi_r(\mbb{Q}_2) \geq \Psi_r(\mbb{Q}_1) \cdot \biggl(1 - \frac{B_6\Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2}\biggr) - \frac{B_6 \Delta_T(\mbb{Q}_1,\mbb{Q}_2)}{\bigl(1 - \Psi_r(\mbb{Q}_1)\bigr) \cdot \bigl(d_{\min}(\mbb{Q}_2)\bigr)^2},
 	\end{equation}
-	where $B_6 := 2d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}$ is a positive constant that does not depend on $\mbb{Q}_2$. 
+	where $B_6 := 4d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}$ is a positive constant that does not depend on $\mbb{Q}_2$. 
 \end{proposition}
 We note that the lower bound can also be stated with respect to the $\infty$-optimal transport distance $\Delta_{\infty}(\mbb{Q}_1,\mbb{Q}_2)$. 
 \paragraph{Proof of Proposition~\ref{prop:conductance_lb_transportation_distance}.}
@@ -856,18 +856,18 @@ We note that the lower bound can also be stated with respect to the $\infty$-opt
 	\label{pf:conductance_lb_transportation_distance_2}
 	\vol_{\mbb{Q}_2,r}(\mc{S}) \leq \vol_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) + \int R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x)  \,d\mbb{Q}_1(x).
 	\end{equation}
-	For any $x \in \Rd$, the remainder terms can be upper bounded: since $\Delta_{12} \geq 0$,
+	For any $x \in \Rd$, since $0 \leq \Delta_{12} \leq r/(4(d - 1))$, the remainder terms can be upper bounded as follows:
 	\begin{equation*}
-	R_{r - 2\Delta_{12} ,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{1 - \Bigl(1 - \frac{2\Delta_{12}}{r}\Bigr)^d \Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq \underbrace{2 d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}}_{= B_6} \cdot \Delta_{12},
+	R_{r - 2\Delta_{12} ,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{1 - \Bigl(1 - \frac{2\Delta_{12}}{r}\Bigr)^d \Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq \underbrace{4 d \nu_d r^{d - 1} \cdot \max_{x \in \Rd}\{g(x)\}}_{= B_6} \cdot \Delta_{12},
 	\end{equation*}
-	if $0 \leq \Delta_{12} \leq r/(4(d - 1))$,
+	and
 	\begin{equation*}
-	R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{\Bigl(1 + \frac{2\Delta_{12}}{r}\Bigr)^d - 1\Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq 2 B_6 \cdot \Delta_{12}.
+	R_{r,\mbb{Q}_1}^{(2\Delta_{12})}(x) \leq \nu_dr^d\Bigl\{\Bigl(1 + \frac{2\Delta_{12}}{r}\Bigr)^d - 1\Bigr\} \cdot \max_{x \in \Rd}\{g(x)\} \leq B_6 \cdot \Delta_{12}.
 	\end{equation*} 
 	Plugging these bounds on the remainder terms back into~\eqref{pf:conductance_lb_transportation_distance_1} and~\eqref{pf:conductance_lb_transportation_distance_2} respectively, we see that
 	\begin{align*}
-	\Phi_{\mbb{Q}_2,r}(\mc{S}) & \geq \frac{\cut_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) - B_6 \Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2B_6 \Delta_{12}} \\ & = \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S}))}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2B_6\Delta_{12}}\biggr) - \frac{B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + 2B_6\Delta_{12}} \\
-	& \overset{\eqref{pf:conductance_lb_transportation_distance_2}}{\geq} \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S}) - 2B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}\biggr) - \frac{B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}.
+	\Phi_{\mbb{Q}_2,r}(\mc{S}) & \geq \frac{\cut_{\mbb{Q}_1,r}\bigl(T^{-1}(\mc{S})\bigr) - B_6 \Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + B_6 \Delta_{12}} \\ & = \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S}))}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + B_6\Delta_{12}}\biggr) - \frac{B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) + B_6\Delta_{12}} \\
+	& \overset{\eqref{pf:conductance_lb_transportation_distance_2}}{\geq} \Phi_{\mbb{Q}_1,r}(T^{-1}(\mc{S})) \cdot \biggl(\frac{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S}) - B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}\biggr) - \frac{B_6\Delta_{12}}{\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})}.
 	\end{align*}
 	We would like to conclude by taking an infimum over $\mc{S}$ on both sides, but in order to ensure that the remainder term is small we must specially handle the case where $\wb{\vol}_{\mbb{Q}_2,r}(\mc{S})$ is small. Let
 	\begin{equation*}
@@ -875,7 +875,7 @@ We note that the lower bound can also be stated with respect to the $\infty$-opt
 	\end{equation*}
 	On the one hand, taking an infimum over all sets $\mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)$, we have that
 	\begin{equation*}
-	\inf_{\mc{S}: \mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)} \Phi_{\mbb{Q}_2,r}(\mc{S}) \geq \Psi_{r}(\mbb{Q}_1) \cdot \biggl(1 - \frac{2 B_6 \Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}\biggr) - \frac{B_6\Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}
+	\inf_{\mc{S}: \mc{S} \in \mathfrak{L}_{r}(\mbb{Q}_1,\mbb{Q}_2)} \Phi_{\mbb{Q}_2,r}(\mc{S}) \geq \Psi_{r}(\mbb{Q}_1) \cdot \biggl(1 - \frac{B_6 \Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}\biggr) - \frac{B_6\Delta_{12}}{(1 - \Psi_r(\mbb{Q}_1)) \cdot d_{\min}(\mbb{Q}_2)^2}
 	\end{equation*}
 	On the other hand, we claim that 
 	\begin{equation}
@@ -893,22 +893,22 @@ First, we note that
 \begin{equation*}
 \Psi_r(\wt{\mbb{P}}) = \Psi_{\wt{\mbb{P}},r}(\mathrm{supp}(\wt{\mbb{P}})) = \Psi_{\Pbb,r}(\mc{C}), ~~\textrm{and}~~\Psi_{r}(\wt{\mbb{P}}_n) = \Psi_{\wt{\mbb{P}}_n, r}(\mathrm{supp}(\wt{\mbb{P}}_n)) = \Psi_{n,r}(\mc{C}[X]),
 \end{equation*}
-so that we may apply Proposition~\ref{prop:conductance_lb_transportation_distance} to get a lower bound on $\Psi_{n,r}(\mc{C}[X])$ in terms of $\Psi_{\Pbb,r}(\mc{C})$, $\Delta_{\infty}(\wt{\Pbb}, \wt{\Pbb}_n)$, and $d_{\min}(\wt{\Pbb}_{n})$. We now use the bounds we have derived on transportation distance and minimum degree. From the derivations in Section~\ref{subsec:sample_to_population_conductance}, it follows with probability at least $1 - (n + 1)\exp\{-nb_2/16\}$ that,
+so that we may apply Proposition~\ref{prop:conductance_lb_transportation_distance} to get a lower bound on $\Psi_{n,r}(\mc{C}[X])$ in terms of $\Psi_{\Pbb,r}(\mc{C})$, $\Delta_{\infty}(\wt{\Pbb}, \wt{\Pbb}_n)$, and $d_{\min}(\wt{\Pbb}_{n})$. To begin, we recall from Section~\ref{subsec:sample_to_population_local_spread} that the lower bound on minimum degree,
 \begin{equation*}
-d_{\min}(\wt{\Pbb}_n) = \frac{1}{\wt{n}} \bigl(d_{\min}(\wt{G}_{n,r}) + 1\bigr) \geq \frac{1}{\sqrt{2}} d_{\min}(\wt{\Pbb}).
+d_{\min}(\wt{\Pbb}_n) = \frac{1}{\wt{n}} \bigl(d_{\min}(\wt{G}_{n,r}) + 1\bigr) \geq \frac{1}{\sqrt{2}} d_{\min}(\wt{\Pbb}),
 \end{equation*}
 % Here I replaced a factor of (1 - 1/sqrt{2})^2 by 1/16, for convenience.
-On the other hand, taking
+is satisfied with probability at least $1 - (n + 1)\exp\{-nb_2/16\}$. On the other hand, taking
 \begin{equation*}
-b_6 := \frac{1}{2B_6}\Psi_r(\wt{\Pbb}) \cdot (1 - \Psi_r(\wt{\Pbb})) \cdot d_{\min}(\wt{\Pbb})^2,~~\textrm{and}~~ B_1 := B_5 \Bigl(\min\Bigl\{\frac{b_6}{2\Psi_r(\wt{\Pbb})}, b_6, \frac{r}{4(d - 1)} \Bigr\}\Bigr)^{-1},
+b_6 := \frac{1}{B_6}\Psi_r(\wt{\Pbb}) \cdot (1 - \Psi_r(\wt{\Pbb})) \cdot d_{\min}(\wt{\Pbb})^2,~~\textrm{and}~~ B_1 := B_5 \Bigl(\min\Bigl\{b_6, \frac{r}{4(d - 1)} \Bigr\}\Bigr)^{-1},
 \end{equation*}
 by~\eqref{eqn:ot_distance_1d} (if $d = 1$) or Theorem~\ref{thm:garciatrillos16} (if $d \geq 2$) along with~\eqref{eqn:sample_to_population_conductance_sample_complexity}, we have that
 \begin{equation*}
-\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_5 \frac{(\log n)^{p_d}}{\min\{n^{1/2},n^{1/d}\}} \leq \min\Bigl\{\frac{b_6}{2\Psi_r(\wt{\Pbb})}, b_6, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
+\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n) \leq B_5 \frac{(\log n)^{p_d}}{\min\{n^{1/2},n^{1/d}\}} \leq \min\Bigl\{b_6, \frac{r}{4(d - 1)} \Bigr\} \cdot \delta
 \end{equation*}
-with probability at least $1 - B_2/n$. Therefore by Proposition~\ref{prop:conductance_lb_transportation_distance},
+with probability at least $1 - B_2/n$. Finally, appealing first to  Proposition~\ref{prop:conductance_lb_transportation_distance} and then to the bounds we have just established on $d_{\min}(\wt{\Pbb}_n)$ and $\Delta_{\infty}(\wt{\Pbb},\wt{\Pbb}_n)$, we conclude that the sample conductance is lower bounded,
 \begin{equation*}
-\Psi_r(\wt{\Pbb}_n) \geq \Psi_r(\wt{\Pbb}) \cdot \biggl(1 - \frac{2B_6\Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2}\biggr) - \frac{B_6 \Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb}_N)}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2} \geq \Psi_r(\wt{\Pbb}) (1 - 2\delta)
+\Psi_r(\wt{\Pbb}_n) \geq \Psi_r(\wt{\Pbb}) \cdot \biggl(1 - \frac{B_6\Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2}\biggr) - \frac{B_6 \Delta_{\infty}(\wt{\Pbb}_n,\wt{\Pbb})}{\bigl(1 - \Psi_r(\wt{\Pbb})\bigr) \cdot \bigl(d_{\min}(\wt{\Pbb}_n)\bigr)^2} \geq \Psi_r(\wt{\Pbb}) (1 - 2\delta)
 \end{equation*}
 with probability at least $1 - B_2/n - (n + 1)\exp\{-nb_2/16\}$, establishing~\eqref{eqn:sample_to_population_conductance} upon taking $b_3 := b_2/16$.
 
@@ -991,7 +991,7 @@ An immediate implication of~\eqref{eqn:overlap_balls_2} is that for any $x \in \
 	\label{lem:convex_isoperimetric_inequality}
 	For any partition $(\mc{R}_1,\mc{R}_2,\mc{R}_3)$ of a convex set $\mc{K} \subseteq \Rd$, it holds that
 	\begin{equation*}
-	\nu(\Omega_3) \geq 2\frac{\mathrm{dist}(\mc{R}_1, \mc{R}_2)}{\mathrm{diam}(\mc{K})} \min(\nu(\mc{R}_1), \nu(\mc{R}_2)).
+	\nu(\mc{R}_3) \geq 2\frac{\mathrm{dist}(\mc{R}_1, \mc{R}_2)}{\mathrm{diam}(\mc{K})} \min(\nu(\mc{R}_1), \nu(\mc{R}_2)).
 	\end{equation*}
 \end{lemma}
 \citet{abbasi-yadkori2016a} points out that if $\mc{S}$ is the image of a convex set under a Lipschitz measure-preserving mapping $g: \Rd \to \Rd$, a similar inequality can be obtained.
@@ -999,11 +999,11 @@ An immediate implication of~\eqref{eqn:overlap_balls_2} is that for any $x \in \
 	\label{cor:nonconvex_isoperimetric_inequality}
 	Suppose $\mc{S}$ is the image of a convex set $\mathcal{K}$ under a mapping $g:\Rd \to \Rd$ such that
 	\begin{equation*}
-	\|g(x) - g(y)\| \leq L \cdot \|x - y\|,~~\textrm{for all $x,y \in \mc{K}$, and}~~\det(\nabla g(x)) = 1~~\textrm{for all $x \in \mc{K}$.}
+	\|g(x) - g(y)\| \leq M \cdot \|x - y\|,~~\textrm{for all $x,y \in \mc{K}$, and}~~\det(\nabla g(x)) = 1~~\textrm{for all $x \in \mc{K}$.}
 	\end{equation*}
 	Then for any partition $(\Omega_1,\Omega_2,\Omega_3)$ of $\mc{S}$, 
 	\begin{equation*}
-	\nu(\Omega_3) \geq 2\frac{\mathrm{dist}(\Omega_1, \Omega_2)}{\diam(\mc{K}) L} \min(\nu(\Omega_1), \nu(\Omega_2)).
+	\nu(\Omega_3) \geq 2\frac{\mathrm{dist}(\Omega_1, \Omega_2)}{\diam(\mc{K}) M} \min(\nu(\Omega_1), \nu(\Omega_2)).
 	\end{equation*}
 \end{corollary}
 
@@ -1057,7 +1057,7 @@ We use~\eqref{eqn:reverse_isoperimetric_inequality_2} along with Assumption~\ref
 	\end{equation*}
 	The last inequality follows since $\mc{A}_1(\sigma),\ldots,\mc{A}_N(\sigma)$ are disjoint subsets of the closure of $\mc{C}_{\sigma}$.
 	
-	It remains to verify that $x \mapsto \nu\bigl(\mc{A}_j(s)\bigr)/\nu\bigl(B(x_j,s)\bigr)$ is monotonically non-increasing. For any $0 < s < t$ and $j = 1,\ldots,N$, suppose $x \in \mc{A}_j(T) - \{x_j\}$, meaning $x \in B(0,t)$ and $x \not\in B(x_i - x_j,t)$ for any $i = 1,\ldots,j - 1$. Thus $(s/t)x \in B(0,s)$, and
+	It remains to verify that $s \mapsto \nu\bigl(\mc{A}_j(s)\bigr)/\nu\bigl(B(x_j,s)\bigr)$ is monotonically non-increasing. For any $0 < s < t$ and $j = 1,\ldots,N$, suppose $x \in \mc{A}_j(T) - \{x_j\}$, meaning $x \in B(0,t)$ and $x \not\in B(x_i - x_j,t)$ for any $i = 1,\ldots,j - 1$. Thus $(s/t)x \in B(0,s)$, and
 	\begin{equation*}
 	\|(s/t)x - (x_i - x_j)\| \geq \|x - (x_i - x_j)\| - \|x - (s/t)x\| > t - (1 - s/t)\|x\| \geq t - (1 - s/t)t = s,
 	\end{equation*}
@@ -1137,16 +1137,16 @@ The claim of Proposition~\ref{prop:density_cluster_normalized_cut} follows upon 
 The following Lemma lower bounds the population-level uniform conductance $\Psi_{\nu,r}(\mc{C}_{\lambda,\sigma})$.
 \begin{lemma}
 	\label{lem:uniform_density_cluster_conductance}
-	Suppose $\mc{C}_{\lambda,\sigma}$ satisfies Assumption~\ref{asmp:embedding} with respect to some $\rho \in (0,\infty)$ and $L \in [1,\infty)$. For any $0 < r \leq \sigma \cdot \sqrt{2\pi/(d + 2)}$, it holds that
+	Suppose $\mc{C}_{\lambda,\sigma}$ satisfies Assumption~\ref{asmp:embedding} with respect to some $\rho \in (0,\infty)$ and $M \in [1,\infty)$. For any $0 < r \leq \sigma \cdot \sqrt{2\pi/(d + 2)}$, it holds that
 	\begin{equation}
 	\label{eqn:uniform_density_cluster_conductance}
-	\Psi_{\nu,r}(\mc{C}_{\lambda,\sigma}) \geq \Bigl(1 - \frac{r}{4\rho L}\Bigr) \cdot \Bigl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\Bigr)^2 \cdot \frac{\sqrt{2\pi}}{36} \cdot \frac{r}{\rho L \sqrt{d + 2}}.
+	\Psi_{\nu,r}(\mc{C}_{\lambda,\sigma}) \geq \Bigl(1 - \frac{r}{4\rho M}\Bigr) \cdot \Bigl(1 - \frac{r}{\sigma}\sqrt{\frac{d + 2}{2\pi}}\Bigr)^2 \cdot \frac{\sqrt{2\pi}}{36} \cdot \frac{r}{\rho M \sqrt{d + 2}}.
 	\end{equation}
 \end{lemma}
 Noting that $\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \geq \Psi_{\nu,r}(\mc{C}_{\lambda,\sigma}) \cdot \lambda_{\sigma}^2/\Lambda_{\sigma}^2$, Proposition~\ref{prop:density_cluster_conductance} follows from~\eqref{eqn:uniform_density_cluster_conductance}. 
 
 \paragraph{Proof of Lemma~\ref{lem:uniform_density_cluster_conductance}.}
-	For ease of notation, throughout this proof we write $\wt{\nu}$ for the uniform probability measure over $\mc{C}_{\lambda,\sigma}$, put $\ell \nu_d r^d := \min_{x \in \mc{C}_{\lambda,\sigma}}\nu(B(x,r) \cap \mc{C}_{\sigma})$ and $a := r/(2\rho L)$. 
+	For ease of notation, throughout this proof we write $\wt{\nu}$ for the uniform probability measure over $\mc{C}_{\lambda,\sigma}$, put $\ell \nu_d r^d := \min_{x \in \mc{C}_{\lambda,\sigma}}\nu(B(x,r) \cap \mc{C}_{\sigma})$ and $a := r/(2\rho M)$. 
 	
 	Let $\mc{S}$ be an arbitrary measurable subset of $\mc{C}_{\lambda,\sigma}$, and let $\mc{R} = \mc{C}_{\lambda,\sigma} \setminus \mc{S}$. For a given $\delta \in (0,1)$, let the $\delta$-interior of $\mc{S}$ be 
 	\begin{equation*}
@@ -1166,7 +1166,7 @@ Noting that $\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \geq \Psi_{\nu,r}(\mc{C}_{\l
 		\begin{equation*}
 		\nu(\mc{C}_{\lambda,\sigma})^2 \cdot \vol_{\wt{\nu},r}(\mc{S}) = \int_{\mc{C}_{\lambda,\sigma}} \int_{\mc{S}} \1(\|x - y\| \leq r) \,dy \,dx \leq \nu_d r^d \nu(\mc{S})
 		\end{equation*}
-		and likewise for $\vol_{\wt{\nu},r}(\mc{S})$. Therefore,
+		and likewise for $\vol_{\wt{\nu},r}(\mc{R})$. Therefore,
 		\begin{equation}
 		\label{pf:uniform_density_cluster_conductance_1}
 		\Phi_{\wt{\nu},r}(\mc{S}) \geq \frac{\delta \ell \cdot \nu(\mc{B}^{\delta})}{2 \cdot \min\{\nu(\mc{S}), \nu(\mc{R})\}}.
@@ -1175,7 +1175,7 @@ Noting that $\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \geq \Psi_{\nu,r}(\mc{C}_{\l
 		Applying Corollary~\ref{cor:nonconvex_isoperimetric_inequality}, we have that
 		\begin{equation}
 		\label{pf:uniform_density_cluster_conductance_2}
-		\nu(\mc{B}^{\delta}) \geq \frac{2 \cdot \mathrm{dist}(\mc{S}^{\delta},\mc{R}^{\delta})}{\rho L} \cdot \min\bigl\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\bigr\}.
+		\nu(\mc{B}^{\delta}) \geq \frac{2 \cdot \mathrm{dist}(\mc{S}^{\delta},\mc{R}^{\delta})}{\rho M} \cdot \min\bigl\{\nu(\mc{S}^{\delta}),\nu(\mc{R}^{\delta})\bigr\}.
 		\end{equation}
 		\item \textbf{Lebesgue measure of $\delta$-interiors.} Suppose $\nu(\mc{S}^{\delta}) \leq (1 - a) \cdot \nu(\mc{S})$ or $\nu(\mc{R}^{\delta}) \leq (1 - a) \cdot \nu(\mc{R})$. Then 
 		$\nu(\mc{B}^{\delta}) \geq a \cdot \min\{\nu(\mc{S}), \nu(\mc{R})\}$, and combined with~\eqref{pf:uniform_density_cluster_conductance_1} we have that $\Phi_{\wt{\nu},r}(\mc{S}) \geq \delta a \ell/2$. Otherwise,
@@ -1201,7 +1201,7 @@ Noting that $\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma}) \geq \Psi_{\nu,r}(\mc{C}_{\l
 	\end{itemize}	
 	Combining~\eqref{pf:uniform_density_cluster_conductance_1}-\eqref{pf:uniform_density_cluster_conductance_4} and taking $\delta = 1/3$ implies that
 	\begin{equation*}
-	\Phi_{\wt{\nu},r}(\mc{S}) \geq \min\biggl\{(1 - a) \cdot \frac{r}{\rho L} \cdot \frac{\ell^2}{9} \cdot \sqrt{\frac{2\pi}{d + 2}}, \frac{a\ell}{6}\biggr\}
+	\Phi_{\wt{\nu},r}(\mc{S}) \geq \min\biggl\{(1 - a) \cdot \frac{r}{\rho M} \cdot \frac{\ell^2}{9} \cdot \sqrt{\frac{2\pi}{d + 2}}, \frac{a\ell}{6}\biggr\}
 	\end{equation*}
 	and the claim follows from~\eqref{eqn:uniform_local_conductance}, which implies that $\ell \geq 1/2 \cdot (1 - r/\sigma)\sqrt{2\pi/(d + 2)}$.
 
@@ -1269,13 +1269,13 @@ By Propositions~\ref{prop:sample_to_population_1} and \ref{prop:sample_to_popula
 % AJG: The presence of a pre-factor of 4 in the second term, instead of 3, accounts for the extra upper bound needed on the vol_{n,r}(\mc{C}[X]). The presence of a pre-factor of (2n + 2) in the third term, instead of (n + 2), accounts for the extra upper bound needed on d_{\max}(\wt{G}_{n,r}).
 
 \paragraph{Proof of Theorem~\ref{thm:volume_ssd_ub}.}
-We use Lemma~\ref{lem:zhu} to upper bound $\Delta(\wh{C},\mc{C}[X])$. In order to do so, we must verify that the tuning parameters $\alpha$ and $(L,U)$ satisfy the condition \eqref{eqn:zhu_condition} of this lemma, i.e. that $\alpha \leq 1/\bigl(2\tau_{\infty}(\wt{G}_{n,r})\bigr)$ and $U \leq 1/\bigl(5 \vol_{n,r}(\mc{C}[X])\bigr)$. In order to verify the upper bound on $\alpha$, we will use Proposition~\ref{prop:conductance_lb_transportation_distance} to upper bound $\tau_{\infty}(\wt{G}_{n,r})$, which we may validly apply because
+We use Lemma~\ref{lem:zhu} to upper bound $\Delta(\wh{C},\mc{C}[X])$. In order to do so, we must verify that the tuning parameters $\alpha$ and $(L,U)$ satisfy the condition \eqref{eqn:zhu_condition} of this lemma, i.e. that $\alpha \leq 1/\bigl(2\tau_{\infty}(\wt{G}_{n,r})\bigr)$ and $U \leq 1/\bigl(5 \vol_{n,r}(\mc{C}[X])\bigr)$. In order to verify the upper bound on $\alpha$, we will use Proposition~\ref{prop:pointwise_mixing_time} to upper bound $\tau_{\infty}(\wt{G}_{n,r})$, which we may validly apply because
 \begin{equation*}
 \frac{d_{\max}(\wt{G}_{n,r})}{\bigl(d_{\min}(\wt{G}_{n,r})\bigr)^2} \leq \frac{(1 + \delta)}{(1 - \delta)^2} \cdot \frac{d_{\max}(\wt{\Pbb})}{(\wt{n} - 1) \cdot \bigl(d_{\min}(\wt{\Pbb})\bigr)^2} \leq \frac{(1 + \delta)}{(1 - \delta)^4} \cdot \frac{d_{\max}(\wt{\Pbb})}{n\Pbb(\mc{C})\bigl(d_{\min}(\wt{\Pbb})\bigr)^2} \leq \frac{1}{16}.
 \end{equation*}
 The last inequality in the above follows by taking $B_3 := 16 \cdot d_{\max}(\wt{\Pbb})/\bigl(d_{\min}(\wt{\Pbb})\bigr)^2$ in~\eqref{eqn:volume_ssd_ub_sample_complexity}.
 
-Therefore by Proposition~\ref{prop:conductance_lb_transportation_distance}, along with inequalities~\eqref{eqn:sample_to_population_local_spread} and~\eqref{eqn:sample_to_population_conductance} and the initialization conditions~\eqref{eqn:initialization} and \eqref{eqn:alpha_initialization}, we have that $\alpha \leq 1/45 \wedge 1/\bigl(2\tau_{\infty}(\wt{G}_{n,r})\bigr)$.  
+Therefore by Proposition~\ref{prop:pointwise_mixing_time}, along with inequalities~\eqref{eqn:sample_to_population_local_spread} and~\eqref{eqn:sample_to_population_conductance} and the initialization conditions~\eqref{eqn:initialization} and \eqref{eqn:alpha_initialization}, we have that $\alpha \leq 1/45 \wedge 1/\bigl(2\tau_{\infty}(\wt{G}_{n,r})\bigr)$.  
 On the other hand, by the upper bound on $\vol_{n,r}(\mc{C}[X])$ given in~\eqref{pf:volume_ssd_ub_1} and the initialization condition~\eqref{eqn:initialization}, we have that $U \leq 1/\bigl(5 \vol_{n,r}(\mc{C}[X])\bigr)$. In summary, we have confirmed that the condition~\eqref{eqn:zhu_condition} is satisfied.
 
 Invoking Lemma~\ref{lem:zhu}, we conclude that there exists a set $\mc{C}[X]^g \subset \mc{C}[X]$ of volume at least $\vol_{n,r}(\mc{C}[X]^g) \geq \vol_{n,r}(\mc{C}[X])/2$, such that for any $\beta \in (L,U)$,
@@ -1288,11 +1288,11 @@ Noting that $\wh{C} = S_{\beta,v}$ for some $\beta \in (L,U)$, the claimed upper
 From Theorem~\ref{thm:volume_ssd_ub}, we have with probability $1 - B_2/n - 4\exp\{-b_1\delta^2n\} - (2n + 2)\exp\{-b_2\delta^2n\} - (n + 1)\exp\{-b_3n\}$, there exists a set $\mc{C}_{\lambda,\sigma}[X]^g \subset \mc{C}_{\lambda,\sigma}[X]$ of volume at least $\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X]^g) \geq \vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])/2$, such that
 \begin{align*}
 \frac{\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])}{\vol_{n,r}(\mc{C}_{\lambda,\sigma}[X])} & \leq 60 \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)} \cdot \frac{\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}{\alpha_{\Pbb,r}(\mc{C}_{\lambda,\sigma},\delta)} \\
-& \leq \frac{780}{\ln(2)} \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)} \cdot \frac{\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}{\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})^2} \cdot \ln^2\Bigl(\frac{8}{(1 - 3\delta) s_{\Pbb,r}(\mc{C})}\Bigr)
+& \leq \frac{1020}{\ln(2)} \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)} \cdot \frac{\Phi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})}{\Psi_{\Pbb,r}(\mc{C}_{\lambda,\sigma})^2} \cdot \ln^2\Bigl(\frac{32}{(1 - 3\delta) s_{\Pbb,r}(\mc{C})}\Bigr)
 \end{align*}
 The claimed upper bound~\eqref{eqn:density_cluster_volume_ssd_ub} on $\Delta(\wh{C},\mc{C}_{\lambda,\sigma}[X])$ then follows from the bounds~\eqref{eqn:density_cluster_local_spread}-\eqref{eqn:density_cluster_conductance} on the population-level local spread, normalized cut, and conductance of $\mc{C}_{\lambda,\sigma}$, noting that the condition $r \leq \sigma/(4d)$ implies that $(1 - r/(4\rho L)) \geq 1 - 1/16$ and $1 - r/\sigma \cdot \sqrt{(d + 2)/(2\pi)} \geq 1 - 1/\sqrt{32}$, and taking
 \begin{equation*}
-C_{1,\delta} := \frac{898560}{\pi \cdot \ln(2) \cdot (1 - 1/16)^2 \cdot (1 - 1/\sqrt{32})^4} \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)},~~\textrm{and}~~C_{2,\delta} := \frac{36}{(1 - 1/\sqrt{32})} \cdot \frac{1}{1-3\delta}.
+C_{1,\delta} := \frac{1175040}{\pi \cdot \ln(2) \cdot (1 - 1/16)^2 \cdot (1 - 1/\sqrt{32})^4} \cdot \frac{(1 + 3\delta)(1 + 2\delta)}{(1 - 4\delta)^2(1 - 2\delta)},~~\textrm{and}~~C_{2,\delta} := \frac{144}{(1 - 1/\sqrt{32})} \cdot \frac{1}{1-3\delta}.
 \end{equation*}
 
 \subsection{Proof of Theorem~\ref{thm:ppr_lb}}
@@ -1353,11 +1353,11 @@ It follows from Lemma~\ref{lem:normalized_cut_lb}, Propositions~\ref{prop:sample
 		\vol_{n,r}(X) \geq n(n - 1)(1 - \delta) \vol_{\Pbb,r}(\mc{X}) \geq 2n(n - 1) (1 - \delta) \vol_{\Pbb,r}(\mc{L}) \geq 2\frac{(1 - \delta)}{(1 + \delta)} \vol_{n,r}(\mc{L}[X]) \geq \frac{3}{2} \vol_{n,r}(\mc{L}[X]).
 		\end{equation}
 		Therefore the upper bound in condition~\eqref{eqn:normalized_cut_ppr_vol} is satisfied.
-		\item By~\eqref{eqn:ncut_lower_set}, the normalized cut of $\mc{L}$ satisfies the following lower bound,
+		\item By~\eqref{eqn:ncut_lower_set}, the normalized cut of $\mc{L}$ satisfies the following upper bound,
 		\begin{equation}
 		\Phi_{n,r}(\mc{L}[X]) \leq (1 + 3\delta) \cdot \Phi_{\Pbb,r}(\mc{L}) \leq (8/3 + 8\delta) \cdot  \frac{r}{\rho}, 
 		\end{equation}
-		and by~\eqref{eqn:local_spread_ub} the local spread of $\mc{X}$ satisfies the following upper bound,
+		and by~\eqref{eqn:local_spread_ub} the local spread of $\mc{X}$ satisfies the following lower bound,
 		\begin{equation}
 		s_{n,r}(X) \geq (1 - 3\delta) \cdot s_{\Pbb,r}(\mc{X}) \geq (1 - 3\delta) \cdot \frac{\pi r^2}{2\rho\sigma}.
 		\end{equation}
@@ -1393,7 +1393,7 @@ It follows from Lemma~\ref{lem:normalized_cut_lb}, Propositions~\ref{prop:sample
 	
 	We turn to lower bounding $\cut_{n,r}(Z)$, which is considerably more involved. We will approximate the cut of $Z$ by discretizing the space $\mathcal{X}$ into bins, relate the cut of $Z$ to the boundary of the binned set $\overline{Z}$, and then lower bound the size of the boundary of $\overline{Z}$.
 	
-	Let $(k_1,k_2)$ for $k_1 \in \bigl[\frac{6\sigma}{r}\bigr], k_2 \in \bigl[\frac{2\rho}{r}\bigr]$ be the upper right  corner of the cube
+	Let $(k_1,k_2)$ for $k_1 \in \bigl[\frac{6\sigma}{r}\bigr], k_2 \in \bigl[\frac{2\rho}{r}\bigr]$ be the upper right  corner of the cube\footnote{Here we are assuming, without loss of generality, that $6\sigma/r \in \mathbb{N}$ and $2\rho/r \in \mathbb{N}$, and using the notation $[x] = \{1,\ldots,x\}$ for $x \in \mathbb{N}$.}
 	\begin{equation*}
 	Q_{(k_1,k_2)} = \biggl[-\frac{3\sigma}{2} + \frac{(k_1 - 1)}{2}r, -\frac{3\sigma}{2} + \frac{k_1}{2}r\biggr] \times \biggl[-\frac{\rho}{2} + \frac{(k_2 - 1)}{2}r, -\frac{\rho}{2} + \frac{k_2}{2}r\biggr]
 	\end{equation*}
@@ -1403,7 +1403,7 @@ It follows from Lemma~\ref{lem:normalized_cut_lb}, Propositions~\ref{prop:sample
 	\end{equation*}
 	and we let 
 	\begin{equation*}
-	\partial \overline{Z} := \set{Q_{(k_1,k_2)} \in \overline{Z}: \exists (\ell_1,\ell_2) \in \Bigl[\frac{3\sigma}{r}\Bigr] \times \Bigl[\frac{\rho}{r}\Bigr]~~\textrm{such that}~~Q_{(\ell_1,\ell_2)} \not\in \wb{Z}, \norm{k - \ell}_1 = 1}.
+	\partial \overline{Z} := \set{Q_{(k_1,k_2)} \in \overline{Z}: \exists (\ell_1,\ell_2) \in \Bigl[\frac{3\sigma}{r}\Bigr] \times \Bigl[\frac{\rho}{r}\Bigr]~~\textrm{such that}~~Q_{(\ell_1,\ell_2)} \not\in \wb{Z}, \norm{(k_1,k_2) - (\ell_1,\ell_2)}_1 = 1}.
 	\end{equation*}
 	be the boundary set of $\overline{Z}$ in $\overline{Q}$. Intuitively, every point $x_i \in Z$ in the boundary set of $\overline{Z}$ will have many edges to $X\setminus Z$. Formally, letting $Q_{\min} := \min_{Q \in \overline{Q}} \Pbb_n(Q)$, we have
 	\begin{equation}
@@ -1567,7 +1567,7 @@ By Propositions~\ref{prop:sample_to_population_1}-\ref{prop:sample_to_population
 
 % AJG: The term after \wedge is needed to condition on the two new inequalities.
 \paragraph{Proof of Theorem~\ref{thm:density_cluster_consistent_recovery}.}
-We have already verified in the proof of Theorem~\ref{thm:volume_ssd_ub} that $\alpha \leq 1/(2\tau_{\infty}(\wt{G}_{n,r}))$, and we may therefore apply Lemma~\ref{lem:ppr_uniform_bound}, which gives an upper bound on $p_v(u)$ for all $u \in \mc{C}_{\lambda,\sigma}[X]_o$ and a lower bound on $p_v(u')$ for all $p_v(u')$ for all $u' \in \mc{C}_{\lambda,\sigma}'[X]_o$. These bounds are useful because $r \leq \sigma$, which implies that $\mc{C}_{\lambda}[X] \subseteq\mc{C}_{\lambda,\sigma}[X]_o$ and likewise that $C_{\lambda}'[X] \subseteq\mc{C}_{\lambda,\sigma}'[X]_o$. We will show that these bounds in turn imply~\eqref{eqn:ppr_gap}, from which the claim of the theorem follows.
+We have already verified in the proof of Theorem~\ref{thm:volume_ssd_ub} that $\alpha \leq 1/(2\tau_{\infty}(\wt{G}_{n,r}))$, and we may therefore apply Lemma~\ref{lem:ppr_uniform_bound}, which gives a lower bound on $p_v(u)$ for all $u \in \mc{C}_{\lambda,\sigma}[X]_o$ and an upper bound on $p_v(u')$ for all $p_v(u')$ for all $u' \in \mc{C}_{\lambda,\sigma}'[X]_o$. These bounds are useful because $r \leq \sigma$, which implies that $\mc{C}_{\lambda}[X] \subseteq\mc{C}_{\lambda,\sigma}[X]_o$ and likewise that $C_{\lambda}'[X] \subseteq\mc{C}_{\lambda,\sigma}'[X]_o$. We will show that these bounds in turn imply~\eqref{eqn:ppr_gap}, from which the claim of the theorem follows.
 
 We begin with the lower bound in~\eqref{eqn:ppr_gap}. From (in order) Lemma~\ref{lem:ppr_uniform_bound}, our assorted probabilistic estimates, and the assumed lower bound~\eqref{eqn:density_cluster_consistent_recovery_condition} on $\kappa_{\Pbb,r}(\mc{C},\delta)$, we have that for all $u \in \mc{C}_{\lambda}[X]$,
 \begin{align*}
