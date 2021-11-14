@@ -366,7 +366,7 @@ h_q(k) = \sum_{i = 0}^{j} \left(q(u_{(i)}) - \pi(u_{(i)})\right) + \frac{\bigl(k
 \paragraph{Proof of Theorem~\ref{thm:mixing_time_PPR}.}
 	The proof of Theorem~\ref{thm:mixing_time_PPR} follows immediately from Lemmas~\ref{lem:mixing_time_PPR},~\ref{lem:interpolator_bound_ppr} and~\ref{lem:linearization_bound}, taking $K_0 = 0$ if $u_{(1)} \neq v$ and otherwise $K_0 = \deg(v;G)$. 
 
-\subsubsection{Proofs of Lemmas}
+\subsubsection{Proofs of lemmas}
 In what follows, for a distribution $q$ and vertices $u,w \in V$, we write $q(u,w) := q(u)/d(u) \cdot 1\{(u,w) \in E\}$, and similarly for a collection of dyads $\wt{E} \subseteq V \times V$ we write $q(\wt{E}) := \sum_{(u,w) \in \wt{E}} q(u,w)$. 
 \paragraph{Proof of Lemma~\ref{lem:mixing_random_walk}.}
 	 We will prove Lemma~\ref{lem:mixing_random_walk} by induction on $t$. In the base case $t = t_0$, observe that $C(K_0;h^{(t_0)}) \cdot \sqrt{\wb{k}} \geq h^{(t_0)}(k) - L_{K_0}(k;h^{(t_0)})$ for all $k \in [K_0, 2m - K_0]$, which implies 
@@ -916,7 +916,7 @@ with probability at least $1 - B_2/n - (n + 1)\exp\{-nb_2/16\}$, establishing~\e
 \label{apdx:density_cluster_population_functionals}
 In this appendix, we prove Lemma~\ref{lem:density_cluster_local_spread} (in Section~\ref{subsec:density_cluster_local_spread}), Proposition~\ref{prop:density_cluster_normalized_cut} (in Section~\ref{subsec:density_cluster_ncut}), and Proposition~\ref{prop:density_cluster_conductance} (in Section~\ref{subsec:density_cluster_conductance}), by establishing bounds on the population-level local spread, normalized cut, and conductance of a thickened density cluster $\mc{C}_{\lambda,\sigma}$. In these proofs, we make use of some estimates on the volume of spherical caps (given in Section~\ref{subsec:spherical_caps}); some isoperimetric inequalities (Section~\ref{subsec:isoperimetric_inequalities}), and some reverse isoperimetric inequalities (Section~\ref{subsec:reverse_isoperimetric_inequalities}). Finally, in Section~\ref{subsec:density_cluster_hard_case}, for the hard case distribution $\Pbb$ defined in~\eqref{eqn:lb_density} and $\mc{L}$ defined in~\eqref{eqn:lower_set}, we establish bounds on the population-level normalized cut $\Phi_{\Pbb,r}(\mc{L})$ and local spread $s_{\Pbb,r}(\mc{X})$; these will be useful in the proof of Theorem~\ref{thm:ppr_lb}. Throughout, we write $\nu_d := \nu(B(0,1))$ for the Lebesgue measure of a $d$-dimensional unit ball.
 
-\subsection{Balls, Spherical Caps, and Associated Estimates}
+\subsection{Balls, spherical caps, and associated estimates}
 \label{subsec:spherical_caps}
 In this section, we derive lower bounds on the volume of the intersection between two balls in $\Rd$, and the volume of a spherical cap. Results of this type are well-known, but since we could not find exactly the statements we desire, for completeness we also supply proofs. We use the notation $B(x,r)$ for a ball of radius $r$ centered at $x \in \Rd$, and $\mathrm{cap}_{r}(h)$ for a spherical cap of height $h$ and radius $r$. Recall that the Lebesgue measure of a spherical cap is
 \begin{equation*}
@@ -1240,7 +1240,8 @@ s_{\Pbb,r}(\mc{X}) \geq \frac{\pi r^2 \epsilon^2}{2 \rho\sigma}
 	\begin{equation*}
 	\vol_{\Pbb,r}(\mc{X}) \leq d_{\max}(\Pbb) \leq \frac{\pi r^2}{2 \sigma \rho}.
 	\end{equation*}
-\section{Proof of Major Theorems}
+
+\section{Proof of major theorems}
 \label{apdx:pf_major_theorems}
 We now prove the three major theorems of our paper: Theorem~\ref{thm:volume_ssd_ub} (in Section~\ref{subsec:pf_volume_ssd_ub}), Theorem~\ref{thm:density_cluster_volume_ssd_ub}, and Theorem~\ref{thm:ppr_lb}.  Throughout, we use the notation $\wt{n} = |\mc{C}[X]|$ and $\wt{G}_{n,r} = G_{n,r}\bigl[\mc{C}[X]\bigr]$ as defined above.
 
@@ -1488,7 +1489,7 @@ It follows from Lemma~\ref{lem:normalized_cut_lb}, Propositions~\ref{prop:sample
 	\end{equation*}
 	for all $Z \subseteq X$.
 
-\section{Additional results: aPPR and Consistency of PPR}
+\section{Additional results: aPPR and consistency of PPR}
 \label{apdx:appr_misclassification_error}
 In this appendix, we prove two additional results regarding PPR remarked upon in our main text. In Section~\ref{subsec:appr_volume_ssd_ub}, we show that clustering using the aPPR vector satisfies an equivalent guarantee to Theorem~\ref{thm:volume_ssd_ub}. In Section~\ref{subsec:consistent_recovery_density_clusters}, we show that the PPR vector can perfectly distinguish two distinct density clusters $\mc{C}_{\lambda},\mc{C}_{\lambda}'$. 
 
@@ -1611,7 +1612,7 @@ An equivalent derivation implies the upper bound in~\eqref{eqn:ppr_gap}: for all
 \end{align*}
 completing the proof of Theorem~\ref{thm:density_cluster_consistent_recovery}.
 
-\section{Experimental Details}
+\section{Experimental details}
 \label{apdx:experimental_details}
 Finally, we detail the settings of our experiments, and include an additional figure.
 
