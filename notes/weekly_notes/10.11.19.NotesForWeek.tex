@@ -1,0 +1,693 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\newcommand{\Holder}{H{\"o}lder}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\Leb}{\mathcal{L}}
+\newcommand{\dist}{\mathrm{dist}}
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes for week of 10/4/19 - 10/11/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $G = (V,E)$ be an undirected, unweighted graph with $m = \abs{E}$ total edges, defined on vertices $v_1, \ldots, v_n$. Let $A = (A_{ij})$ be the adjacency matrix of $G$, $W = (D^{-1}A + I)/2$ be the lazy random walk matrix over $G$, and for $s \in \Reals^n$ and $\alpha \in [0,1]$, define the PPR vector
+\begin{equation*}
+p(\alpha,s) = \alpha s + (1 - \alpha) s p(\alpha,s)W.
+\end{equation*}
+(We will often drop the dependence on $\alpha,s$ and denote the PPR vector as $p$.)
+
+Order the vertices $v_{(1)},\ldots,v_{(n)}$ so that $p(v_{(1)})/d(v_{(1)}) \geq \ldots, p(v_{(n)})/d(v_{(n)})$, where $d(v_i) = \sum_{i = 1}^{n} A_{ij}$ is the degree of $v_i$. We refer to
+\begin{equation*}
+S_j = \set{v_{(1)},\ldots,v_{(j)}}
+\end{equation*}
+as the $j$th sweep cut of the PPR vector.
+
+It is known that if there exists a set $S \subset V$ with small normalized cut, then when the PPR vector is properly initialized, some sweep cut $S_j$ of the PPR vector will itself have small normalized cut. Normalized cut is defined as
+\begin{equation*}
+\Phi(S) = \frac{\sum_{v_i \in S}\sum_{v_j \in S^c} A_{ij}}{\min{\vol(S),2m - \vol(S)}}
+\end{equation*}
+where $\vol(S) = \sum_{v_i \in S} d(v_i)$ is the volume of $S$.
+
+The proof that PPR is a good local partitioning algorithm (i.e. it concentrates on sets of small normalized cut) is heavily dependent on mixing time results for the PPR vector. We now give these results, before stating and proving some improvements.
+
+\section{Mixing of the PPR vector.}
+
+To quantify the mixing of the PPR vector, we introduce the function $p[\cdot]: [0,2m] \to [0,1]$. For $k_j = \vol(S_j)$ for some sweep cut $S_j$, we let $p[k_j] = p(S_j)$, where we adopt the convention $p(S) = \sum_{v_i \in S} p_i$ for a vector $p \in \Reals^n$. We then define $p[\cdot]$ over its domain by interpolating between $0, p[k_1], \ldots, p[k_n]$. The mixedness of the PPR vector is then measured by the function $h:[0,2m] \to [0,1]$
+\begin{equation*}
+h(k) = p[k] - \frac{k}{2m}.
+\end{equation*}
+
+\subsection{Previous work.}
+
+The following theorem, given by \textcolor{red}{Anderson,Chung,Lang}, gives an upper bound on $h(k)$ as a function of $\Phi(p)$, where $\Phi(p) = \min_{j = 1,\ldots,n} \Phi(S_j)$ is the smallest normalized cut of any sweep cut of $p$. 
+\begin{theorem}[Theorem 3 of \textcolor{red}{ACL}]
+	\label{thm:acl_1}
+	Let $p = p(\alpha,s)$ be a PPR vector, and let $\phi$ be any constant in $[0,1]$. Then, either the following bound holds for any integer $t$ and any $k \in [0,2m]$:
+	\begin{equation*}
+	h(k) \leq \alpha t + \sqrt{\overline{k}}\left(1 - \frac{\phi^2}{8}\right)^t.
+	\end{equation*}
+	(where $\overline{k} = \min\set{k,2m-k}$), or $\Phi(p) < \phi$. 
+\end{theorem}
+
+The following result is essentially the contrapositive of Theorem \ref{thm:acl_1}.
+\begin{theorem}
+	\label{thm:acl_2}
+	If there exists a set $S \subset V$ and a constant $\delta \geq \frac{2}{\sqrt{m}}$ satisfying
+	\begin{equation*}
+	p(\alpha,s) - \frac{\vol(S)}{2m} > \delta,
+	\end{equation*}
+	then
+	\begin{equation*}
+	\Phi(p) < \sqrt{\frac{18\alpha \log(m)}{\delta}}.
+	\end{equation*}
+\end{theorem}
+
+\subsection{Improved bounds.}
+
+The presence of the factor of $\sqrt{\log(m)}$ is antagonistic to any work trying to prove consistency results, meaning results when $\abs{V} \to \infty$. We therefore state and prove alternatives to Theorems~\ref{thm:acl_1} and \ref{thm:acl_2}, which allow us to avoid this factor of $\sqrt{\log(m)}$ under certain conditions. These theorems are related to the mixing time results proved by \textcolor{red}{Lovasz,Simonovits}. To state them, we must introduce some additional notation.For a given $0 \leq K_0 \leq m$, let 
+\begin{equation*}
+L_{K_0}(k) = \frac{2m - K_0 - k}{2m - 2K_0}h(K_0) + \frac{k - K_0}{2m - 2K_0}h(2m - K_0)
+\end{equation*}
+be the linear interpolator of $h(K_0)$ and $h(2m - K_0)$. Additionally, let
+\begin{equation*}
+C(K_0) = \max\set{\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}}: K_0 < k < 2m - K_0}.
+\end{equation*}
+\begin{theorem}
+	\label{thm: mixing_time_PPR}
+	Let $p = p(\alpha,s)$ be a PPR vector, and let $\phi$ be any constant in $[0,1]$. Then, either the following bound holds for any integer $t$, any $0 < K_0 < m$, and any $k \in [K_0,2m - K_0]$:
+	\begin{equation}
+	\label{eqn:mixing_time_PPR}
+	h(k) \leq \alpha t + L_{K_0}(k) + C(K_0)\sqrt{\overline{k}}\left(1 - \frac{\phi^2}{8}\right)^t
+	\end{equation}
+	or $\Phi(p) < \phi$.
+\end{theorem}
+
+As a sanity check, we confirm that Theorem~\ref{thm: mixing_time_PPR} is no weaker than Theorem~\ref{thm:acl_1}. It is not hard to show that $h(k) \leq \min\{1,\sqrt{k}\}$, and therefore that $C(K_0) \leq 1$ for any $K_0$. Setting $K_0 = 0$ in Theorem~\ref{thm: mixing_time_PPR}, we therefore recover Theorem~\ref{thm:acl_1}.
+
+We now proceed to identify when Theorem~\ref{thm: mixing_time_PPR} may offer some improvement on Theorem~\ref{thm:acl_1}, by showing when we can upper bound $C(K_0) << 1$. The critical point is that since $h(k)$ is concave and $L_{K_0}(k) = h(k)$ when $k = K_0$, the upper bound
+\begin{equation*}
+\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}} \leq h'(K_0) \sqrt{k}.
+\end{equation*}
+holds whenever $k < m$. For similar reasons, when $k > m$, 
+\begin{equation*}
+\frac{h(k) - L_{K_0}(k)}{\sqrt{\overline{k}}} \leq -h'(2m - K_0) \sqrt{2m - k}.
+\end{equation*} 
+(Since $h$ is not differentiable at points $k = \vol(S_j)$, here we use $h'$ to denote the left derivative of $h$ whenever $k < m$, and the right derivative of $h$ whenever $k \geq m$)  
+
+The following Lemma gives good estimates for $h'(K_0)$ and $h'(2m - K_0)$, and a resulting upper bound on $C(K_0)$. Let $d_{\min}$ and $d_{\max}$ be the minimum and maximum degrees of $G$, respectively. 
+\begin{lemma}
+	\label{lem:linearization_bound}
+	Assume $s = \chi_v$ for some $v \in V$. If $S_1 = \set{v}$, let $K_0 = d(v)$ otherwise let $K_0 = 0$. Then, 
+	\begin{equation}
+	\label{eqn:left_derivative}
+	h'(K_0) \leq  \frac{1}{2d_{\min}^2}.
+	\end{equation}
+	Additionally, for all $K_0 \in [0,2m]$,
+	\begin{equation}
+	\label{eqn:right_derivative}
+	h'(2m - K_0) \geq \frac{d_{\max}}{d_{\min}\vol(G)}.
+	\end{equation}
+	As a result,
+	\begin{equation*}
+	C(K_0) \leq \frac{\sqrt{m}}{d_{\min}^2}.
+	\end{equation*}
+\end{lemma}
+
+To bring Theorem~\ref{thm: mixing_time_PPR} to bear, we must also upper bound the linear interpolator $L_{K_0}(k)$. Of course, trivially $L_{K_0}(k) \leq \max\set{h(K_0), h(2m - K_0)}$ for all $k$. As it happens, this observation will lead to a sufficient upper bound on $L_{K_0}$.
+\begin{lemma}
+	\label{lem:interpolator_bound}
+	Assume $s = \chi_v$ for some $v \in V$. Let $K_0 = \vol(S_j)$ for some $j = 0,\ldots,n$. Then, 
+	\begin{equation*}
+	h(2m - K_0) \leq \frac{K_0}{2m} ~\mathrm{and}~ h(K_0) \leq \frac{K_0}{2d_{\min}^2} + \frac{2\alpha}{1 + \alpha}.
+	\end{equation*}
+	Therefore, for any $k \in \Reals$,
+	\begin{equation*}
+	L_{K_0}(k) \leq \frac{2\alpha}{1 + \alpha} + \frac{K_0}{2d_{\min}^2}.
+	\end{equation*}
+\end{lemma}
+
+Combining Theorem~\ref{thm: mixing_time_PPR}, Lemma~\ref{lem:linearization_bound} and Lemma~\ref{lem:interpolator_bound}, we have the following result.
+\begin{corollary}
+	\label{cor:mixing_time_PPR}
+	Let $p = p(\alpha,\chi_v)$ be a PPR vector with seed node $v \in V$, and let $\phi$ be any constant in $[0,1]$. Then, either the following bound holds for any integer $t$ and any $k \in [d(v),2m - d(v)]$:
+	\begin{equation*}
+	h(k) \leq \alpha t + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\sqrt{m}}{d_{\min}^2} \cdot \sqrt{\overline{k}} \left(1 - \frac{\phi^2}{8}\right)^{t}
+	\end{equation*}
+	or $\Phi(p) < \phi$.
+\end{corollary}
+\begin{proof}
+	If $S_1 = \set{v}$, choose $K_0 = d(v)$; otherwise, choose $K_0 = 0$. As a result, Lemma~\ref{lem:linearization_bound} holds. Then, apply Theorem~\ref{thm: mixing_time_PPR} and Lemma~\ref{lem:interpolator_bound}.
+\end{proof}
+It is worth briefly comparing Corollary~\ref{cor:mixing_time_PPR} to Theorem~\ref{thm:acl_1}. Corollary~\ref{cor:mixing_time_PPR} will give better estimates of $h(k)$ when $\alpha$ is small, the degrees $d(u)$ are relatively uniform across $u \in V$, and $\frac{\sqrt{m}}{d_{\min}^2} << 1$, i.e. $d_{\min} >> \sqrt{n}$. This last point is the key: it reflects the fact that, all else being equal, random walks mix faster on graphs where all the very small sets (e.g singletons) have very large expansion. More nuanced improvements of this nature are discussed further in \textcolor{red}{Kannan,Lovasz,Montenegro}, albeit with respect to continuous space random walks, rather than the case of PPR over a graph we consider here.
+
+We are now in a position to state the main result of this section. It is similar in form to Theorem~\ref{thm:acl_2}, but reflects the improvements due to using Corollary~\ref{cor:mixing_time_PPR} as opposed to Theorem~\ref{thm:acl_1}.
+\begin{theorem}
+	\label{thm:mixing_time_PPR_contrapositive}
+	Let $p = p(\alpha,\chi_v)$ be a PPR vector with seed node $v \in V$. Suppose there exists some $\delta > \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2}$, such that
+	\begin{equation}
+	\label{eqn:mixing_time_PPR_contrapositive_1}
+	p(S) - \frac{\vol(S)}{\vol(G)} > \delta
+	\end{equation}
+	for a set $S$ with cardinality $\abs{S} \geq \frac{d_{\max}}{d_{\min}}$. Then there exists a sweep cut $S_j$ of $p$, such that
+	\begin{equation*}
+	\Phi(S_j) < \sqrt{\frac{16\alpha\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+	\end{equation*}
+	where $\delta' = \delta - \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2}$. 
+\end{theorem}
+\begin{proof}
+	Suppose the assumption of the theorem is satisified, that is there exists a set $S \subset V$ with cardinality $\abs{S} \geq \frac{d_{\max}}{d_{\min}}$ which satisfies \eqref{eqn:mixing_time_PPR_contrapositive_1}. Then for $j = \abs{S}$ the sweep cut $S_j$ has volume at least $d_{\max}$, and by hypothesis $h(\vol(S_j)) >  \delta$.
+	
+	Now, letting
+	\begin{equation*}
+	t = \frac{8}{\phi^2}\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}, \quad \phi^2 = \frac{16\alpha\set{\log\left(\frac{m}{d_{\min}^2}\right) + \log(\frac{2}{\delta'})}}{\delta'}
+	\end{equation*}
+	we have that
+	\begin{equation*}
+	\alpha t + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\sqrt{m}}{d_{\min}^2} \cdot \sqrt{\overline{k}} \left(1 - \frac{\phi^2}{8}\right)^{t} \leq \frac{\delta'}{2} + \frac{2\alpha}{1 + \alpha} + \frac{d(v)}{2d_{\min}^2} + \frac{\delta'}{2} < \delta,
+	\end{equation*}
+	and the Theorem follows by Corollary~\ref{cor:mixing_time_PPR}.
+\end{proof}
+
+\section{Improved Local Partitioning with PPR.}
+
+As in \textcolor{red}{Anderson,Chung,Lang}, the mixing time results of the previous section lead to an upper bound on the conductance of the PPR vector $\Phi(p) = \min_{j = 1,\ldots,n} \Phi(S_j)$. First, we restate a theorem of \textcolor{red}{ACL} which lower bounds the probability mass $p(\alpha,s)(C)$ as a function of the normalized cut $\Phi(C)$.
+\begin{theorem}
+	\label{thm:acl_3}
+	For any set $C$ and any constant $\alpha$, there exists a subset $C_{\alpha} \subset C$ with $\vol(C_{\alpha}) \geq \vol(C)/2$, such that for any vertex $v \in C_{\alpha}$, the PPR vector $p(\alpha,\chi_v)$ satisfies
+	\begin{equation*}
+	p(\alpha,\chi_v)(C) \geq 1 - \frac{\Phi(C)}{\alpha}.
+	\end{equation*}
+\end{theorem}
+
+Combining Corollary~\ref{cor:mixing_time_PPR} and Theorem~\ref{thm:acl_3} leads to an upper bound on $\Phi(p)$.
+\begin{theorem}
+	\label{thm:conductance_ppr}
+	Let $C$ be a set satisfying
+	\begin{itemize}
+		\item $\vol(C) \leq \frac{2}{3}\vol(G)$,
+		\item $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, and
+		\item $\frac{20\Phi(C)}{1 + 10\Phi(C)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$.
+	\end{itemize}
+Suppose $10\Phi(C) \leq \alpha \leq 20\Phi(C)$. Then, there exists a subset $C_{\alpha} \subset C$ with $\vol(C_{\alpha}) \geq \vol(C)/2$ such that for any $v \in C_{\alpha}$,
+\begin{equation*}
+\Phi(p(\alpha,\chi_v)) \leq \sqrt{3200\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log 20\right\} \Phi(C)}
+\end{equation*}
+\end{theorem}
+
+\section{Local Partitioning of Neighborhood Graphs.}
+
+Let $\mathcal{X} \subseteq \Reals^d$ be a compact domain, and let $\mathbb{P}$ be a probability distribution defined on $\mathcal{X}$ with density $f$. Sample $X = \set{x_1,\ldots,x_n}$ independently from $f$. For a given radius $r \in (0,\infty)$, the neighborhood graph $G := G_{n,r}$ has vertices $V = X$, and edges $E = \set{(x_i,x_j): \abs{x_i - x_j} \leq r}$. 
+
+To apply Theorem~\ref{thm:conductance_ppr} when $G$ is a random geometric graph, we will need estimates on the degree and volume graph functionals. These estimates will rely on certain regularity properties of $\mathcal{X}$ and $f$. In particular, we will assume
+\begin{enumerate}[(A)]
+	\item 
+	\label{asmp:regularity_condition_1}
+	There exist $\lambda_{\min}$ and $\lambda_{\max}$ such that for any $x \in \mathcal{X}$:
+	\begin{equation*}
+	0 < \lambda_{\min} < f(x) < \lambda_{\max} < \infty.
+	\end{equation*}
+	\item
+	\label{asmp:regularity_condition_2}
+	There exists some $a > 0$ such that for any $r >0 $ and any $x \in \mathcal{X}$,
+	\begin{equation*}
+	\nu(B(x,r) \cap \mathcal{X}) \geq \frac{\nu_d r^d}{a},
+	\end{equation*}
+	where $\nu(\cdot)$ is Lebesgue measure on $\Reals^d$ and $B(x,r)$ is the ball centered at $x$ of radius $r$. 
+\end{enumerate}
+We collect our bounds on graph functionals in the following Lemma. Let $\mathcal{S} \subset \mathcal{X}$.
+\begin{lemma}
+	\label{lem:graph_functional_concentration}
+	Let $X = \set{x_1,\ldots,x_n}$ be sampled independently from $\Pbb$, and let $G := G_{n,r}$ be a neighborhood graph over $X$. Suppose $\mathcal{X}$ and $f$ satisfy the regularity properties \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}. Then, for any $\delta \in (0,1)$ and any $r \in (0,\infty)$, there exists numbers $c_1 := c_1(f,\mathcal{X},a)$ and $c_2 := c_2(f,\mathcal{X},a)$ independent of the sample size $n$ such that each of the following bounds hold with probability at least $1 - c_1n\exp\set{-c_2n}$:
+	\begin{itemize}
+		\item $(1 - \delta) \lambda_{\min} \frac{\nu_dr^d}{a} n \leq d_{\min} \leq d_{\max} \leq (1 + \delta) \lambda_{\min} \frac{\nu_dr^d}{a}n$, 
+		\item $(1 - \delta) \mathbb{P}(\mathcal{S}) n \leq \abs{\mathcal{S}[X]} \leq (1 - \delta) \mathbb{P}(\mathcal{S}) n$,
+		\item $(1 - \delta) \mathbb{E}[\vol(\mathcal{S}[X])] \leq \vol(\mathcal{S}[X]) \leq (1 + \delta) \mathbb{E}[\vol(\mathcal{S}[X])]$,
+		\item $(1 - \delta) \mathbb{E}[\mathrm{cut}(\mathcal{S}[X])] \leq \mathrm{cut}(\mathcal{S}[X]) \leq (1 + \delta) \mathbb{E}[\mathrm{cut}(\mathcal{S}[X])]$,
+	\end{itemize}
+\end{lemma}
+The bounds on $d_{\min}$ and $d_{\max}$ follow from standard reasoning, in which we i) use the regularity conditions \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2} to upper and lower bound the expected degree $\mathbb{E}(d(x_i))$ over all $x_i$, ii) apply Bernstein's inequality to obtain bounds on the deviation $\abs{d(x_i) - \mathbb{E}d(x_i)}$ for a given $i$, and  iii) apply a union bound. Bernstein's inequality also leads to a bound on the deviation of $\abs{S[X]}$ from its mean. Finally, the functionals $\vol(\mathcal{S}[X])$ and $\mathrm{cut}(\mathcal{S}[X])$ are U-statistics and therefore by Hoeffding's inequality concentrate around their respective expectations.
+
+Lemma~\ref{lem:graph_functional_concentration} implies that when the sample size is sufficiently large, the conditions of Theorem~\ref{thm:conductance_ppr} will be met. We therefore obtain the following upper bound on the normalized cut of PPR computed on a neighborhood graph.
+\begin{corollary}
+	\label{cor:conductance_ppr_neighborhood_graph}
+	Fix $\mathcal{S} \subset \mathcal{X}$, radius $r \in (0,\infty)$, and $\delta \in (0,1/7]$. Suppose $\mathcal{X}$ and $f$ satisfy the regularity properties \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}, that
+	\begin{equation}
+	\label{eqn:graph_functional_concentration_1}
+	n \geq a \frac{(1 + \delta)}{(1 - \delta)^2} \cdot \frac{\lambda_{\max}}{\lambda_{\min}} \max\set{\frac{1}{\Pbb(\mathcal{S})}, \frac{10a}{(1-\delta)\lambda_{\min}\nu_dr^d}},
+	\end{equation}
+	and
+	\begin{equation}
+	\label{eqn:graph_functional_concentration_2}
+	\mathbb{E}[\vol(\mathcal{S}[X])] \leq 2\frac{(1 - \delta)}{(1 + \delta)} \mathbb{E}[\vol((\mathcal{X}\setminus\mathcal{S})[X])],
+	\end{equation}
+	and that $\Phi_{\Pbb}(\mathcal{S}) \leq \frac{1}{200(1 + \delta)}$. Set $\alpha = 15\Phi_{\Pbb}(\mathcal{S})$. Then, there exists a set $\mathcal{S}[X]_{\alpha} \subset \mathcal{S}[X]$ with $\vol(\mathcal{S}[X]_{\alpha}) \leq \vol(\mathcal{S}[X])/2$, such that for any $v \in \mathcal{S}[X]_{\alpha}$,
+	\begin{equation*}
+	\Phi(p(\alpha,\chi_v)) \leq \sqrt{3200\left\{2\log\left(\frac{a}{(1 - \delta)\lambda_{\min}\nu_d r^d}\right) + \log 20\right\} \Phi(\mathcal{S}[X])}
+	\end{equation*}
+	with probability at least $1 - c_1n\exp\set{-c_2n}$.
+\end{corollary}
+The important takeaway is that $\Phi(p) \lesssim \sqrt{\Phi(\mathcal{S}[X])}$ (where we write $a_n \lesssim b_n$ when there exists constant $c$ such that $a_n \leq c b_n$ for all $n$.) In particular, we have eliminated the factor of $\log(\vol(G))$ which made upper bounds derived from Theorem~\ref{thm:acl_2} facile as the sample size $n$ and the volume $\vol(G) \to \infty$. 
+
+
+\section{Implications for Density Clustering Lower Bound.}
+
+To show a lower bound for density clustering using PPR, we exhibit a hard case: that is, a distribution $\Pbb$ for which PPR is unlikely to recover a density cluster. Let $\mathcal{C}_0$, $\mathcal{C}_1$, and $\mathcal{C}_2$ be rectangles in $\Reals^2$, 
+\begin{equation*}
+\mathcal{C}_0 = \left[-\frac{3\sigma}{2}, -\frac{\sigma}{2}\right] \times \left[-\frac{\rho}{2}, \frac{\rho}{2}\right], \quad \mathcal{C}_1 = \mathcal{C}_0 + (\sigma,0), \quad \mathcal{C}_2 = \mathcal{C}_0 + (2\sigma,0)
+\end{equation*}
+and let $\mathbb{P}$ be the mixture distribution
+\begin{equation*}
+\mathbb{P} = \frac{1 - \epsilon}{2} \Psi_1 + \frac{1 - \epsilon}{2} \Psi_2 + \frac{\epsilon}{2} \Psi_0
+\end{equation*}
+where $\Psi_m$ is the uniform distribution over $\mathcal{C}_m$ for $m = 0,1,2$. 
+The density function $f$ of $\Pbb$ is simply
+\begin{equation*}
+f(x) = \frac{1}{\rho\sigma}\left(\frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_1) + \frac{1 - \epsilon}{2}\1(x \in \mathcal{C}_2) + \frac{\epsilon}{2}\1(x \in \mathcal{C}_0)  \right)
+\end{equation*}
+so that for any $\epsilon < \lambda < (1 - \epsilon)/2$, $\mathbb{C}_{f}(\lambda) = \set{\mathcal{C}_1, \mathcal{C}_2}$. 
+
+Sample $x_1,\ldots,x_n$ from $f$, and form the neighborhood graph $G$. Let $p(\alpha,\chi_v)$ be a PPR vector defined on $G$, and suppose our goal is to recover $\mathcal{C}_1$ using $\widehat{C} = \argmin_{i = 1,\ldots,n} \Phi(S_j)$, the minimum conductance sweep cut of $p$. As the following Lemma demonstrates, even when $p(\alpha,\chi_v)$ is reasonably initialized, if the density cluster $\mathcal{C}_1$ is sufficiently geometrically ill-conditioned there are many seed nodes $v \in \mathcal{C}_1$ such that $\widehat{C}$ will fail to recover $\mathcal{C}_1$.
+
+\begin{theorem}
+	Let $\alpha = 15\Phi_{\Pbb}(\mathcal{L})$ and $r = \frac{1}{4}\sigma$. Suppose $\sigma < \frac{\rho}{1600}$. Then, there exists a set $C_{\alpha}$ with $\abs{C_{\alpha} \cap \mathcal{C}_1[X]} \geq \abs{\mathcal{C}_1[X]}/6$ such that for any $v \in C_{\alpha}$, the minimum conductance sweep cut $\widehat{C}$ of $p(\alpha,\chi_v)$ satisfies
+	\begin{equation*}
+	\frac{\Delta(\widehat{C},\mathcal{C}_1[X])}{n} \geq 1 - c \frac{1}{\epsilon^2} \sqrt{\log\left(\frac{\rho \sigma}{\epsilon\sigma^d}\right)\frac{\sigma}{\rho}}
+	\end{equation*}
+	with probability at least $1 - c_1 n \exp\set{-c_2n}$, where $c, c_1,c_2$ are constants which do not depend on $n$.
+\end{theorem}
+\begin{proof}
+	Let $\mathcal{L}$ be the bottom half of the rectangle $\mathcal{X}$,
+	\begin{equation*}
+	\mathcal{L} = \left[-\frac{3\sigma}{2}, \frac{3\sigma}{2}\right] \times \left[-\frac{\rho}{2},\frac{\rho}{2}\right].
+	\end{equation*}
+	We will take for granted that with probability at least $1 - c_1 n \exp\set{-c_2n}$, the following two statements are true
+	\begin{enumerate}
+		\item $\Phi_{n,r}(\mathcal{L}[X]) \leq 32 \frac{r}{\rho}$, and
+		\item For any set $A \subset X$,
+		\begin{equation}
+		\label{eqn:conductance_C1}
+		\Phi(A) \geq \frac{\epsilon^2 r}{\sigma}\left(1 - \frac{\abs{\widehat{C} \triangle \mathcal{C}_1[X]}}{n(1 - \epsilon)}\right)
+		\end{equation}
+	\end{enumerate}
+	It can be shown that $\mathcal{L}$ and $\mathcal{X},f$ satisfy all of the conditions of Corollary~\ref{cor:conductance_ppr_neighborhood_graph}. Therefore, choosing $\alpha = 10 \Phi_{n,r}(\mathcal{L}[X])$, there exists a set $C_{\alpha}$ with $\vol(C_{\alpha}) \geq \vol(\mathcal{L}[X])/2$ such that 
+	\begin{equation*}
+	\Phi(\widehat{C}) \leq c \sqrt{\log\left(\frac{\rho \sigma}{\epsilon\sigma^d}\right) \Phi(\mathcal{L}[X])} \leq c \sqrt{\log\left(\frac{\rho \sigma}{\epsilon\sigma^d}\right) \frac{r}{\rho}}.
+	\end{equation*}
+	Combining this inequality with \eqref{eqn:conductance_C1}, we have
+	\begin{equation*}
+	\frac{\epsilon^2 r}{\sigma}\left(1 - \frac{\abs{\widehat{C} \triangle \mathcal{C}_1[X]}}{n(1 - \epsilon)}\right) \leq c \sqrt{\log\left(\frac{\rho \sigma}{\epsilon\sigma^d}\right) \frac{r}{\rho}}.
+	\end{equation*}
+	Plugging in $r = \sigma/4$, and solving for $\frac{\abs{\widehat{C} \triangle \mathcal{C}_1[X]}}{n}$, we obtain the desired result.
+\end{proof}
+
+\section{Proofs.}
+
+\subsection{Proof of Theorem~\ref{thm: mixing_time_PPR}.}
+The proof of Theorem~\ref{thm: mixing_time_PPR} is essentially a combination of the proofs of Theorem~\ref{thm:acl_1} and Theorem 1.2 in \textcolor{red}{Lovasz and Simonovits.} We will show that if $\Phi(p) > \phi$, then \eqref{eqn:mixing_time_PPR} holds for all $t$ and any $k \in (K_0,2m - K_0)$.
+
+We proceed by induction on $t$. Our base case will be $t = 0$. Observe that $C(K_0) \cdot \sqrt{\overline{k}} \geq  h(k) - L_{K_0}(k)$ for all $k \in [K_0,2m - K_0]$, which implies
+\begin{equation*}
+L_{K_0}(k) + C(K_0) \cdot \sqrt{\overline{k}} \geq h(k).
+\end{equation*}
+
+Now, we proceed with the inductive step. We will show that~\eqref{eqn:mixing_time_PPR} holds for every $k_j = \vol(S_j), j = 1,2,\ldots,n$ such that $k_j \in [K_0, 2m - K_0]$. Once this is shown, it holds for all $k \in [K_0,2m - K_0]$ by the concavity of the square root function.
+
+By Lemma~\ref{lem:acl_1}, we have
+\begin{align}
+p[k_j] & \leq \alpha s(S_j) + \frac{1 - \alpha}{2} \left(p[k_j +  \abs{\partial(S_j)}] + p[k_j - \abs{\partial{S_j}}]  \right) \nonumber \\
+& \leq \alpha + \frac{1}{2}  \left(p[k_j - \abs{\partial(S_j)}] + p[k_j + \abs{\partial{S_j}}]  \right) \nonumber\\
+& \leq \alpha + \frac{1}{2} \left(p[k_j - \Phi(S_j) \overline{k}_j] + p[k_j + \Phi(S_j) \overline{k}_j]  \right) \nonumber \\
+& \leq \alpha + \frac{1}{2} \left(p[k_j - \phi \overline{k}_j] + p[k_j + \phi \overline{k}_j]\right) \nonumber
+\end{align}
+and subtracting $k_j/2m$ from both sides, we get
+\begin{equation}
+\label{eqn:mixing_time_PPR_pf1}
+h(k_j) \leq \alpha + \frac{1}{2} \bigl(h(k_j - \phi \overline{k}_j) + h(k_j +  \phi \overline{k}_j) \bigr)
+\end{equation}
+From this point, we divide our analysis into cases. 
+
+\textbf{Case 1.}
+Assume $k_j - 2 \phi \overline{k}_j$ and $k_j + 2 \phi \overline{k}_j$ are both in $[K_0,2m  - K_0]$. We are therefore in a position to apply our inductive hypothesis to \eqref{eqn:mixing_time_PPR_pf1}, yielding
+\begin{align*}
+h(k_j) & \leq \alpha + \alpha(t-1) \frac{1}{2}\biggl(L_{K_0}(k_j - \phi \overline{k}_j) + L_{K_0}(k_j + \phi \overline{k}_j) + C(K_0)\bigl(\sqrt{\overline{k_j - \phi \overline{k}_j}} + \sqrt{\overline{k_j + \phi \overline{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+& \leq \alpha t + L_{K_0}(k) + \frac{1}{2}\biggl(C(K_0)\bigl(\sqrt{\overline{k_j - \phi \overline{k}_j}} + \sqrt{\overline{k_j + \phi \overline{k}_j}}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr) \\
+& \leq \alpha t + L_{K_0}(k) + \frac{1}{2}\biggl(C(K_0)\bigl(\sqrt{\overline{k}_j - \phi \overline{k}_j} + \sqrt{\overline{k}_j + \phi \overline{k}_j}\bigr)\left(1 - \frac{\phi^2}{8}\right)^{t-1} \biggr).
+\end{align*}
+A Taylor expansion of $\sqrt{1 + \phi}$ around $\phi = 0$ yields the following bound (see Lemma \ref{lem:taylor_expansion}):
+\begin{equation*}
+\sqrt{1 + \phi} + \sqrt{1 - \phi} \leq 2 - \frac{\phi^2}{4}
+\end{equation*}
+and therefore
+\begin{equation*}
+h(k_j) \leq  \alpha t + L_{K_0}(k) + \frac{C(K_0)}{2}\cdot \sqrt{\overline{k}_j}\cdot\left(2 - \frac{\phi^2}{4}\right)\left(1 - \frac{\phi^2}{8}\right)^{t-1} = \alpha t + L_{K_0}(k) + C(K_0)\sqrt{\overline{k}_j}\left(1 - \frac{\phi^2}{8}\right)^{t}.
+\end{equation*}
+
+\textbf{Case 2.}
+
+Now, assume one of $k_j - 2 \phi \overline{k}_j$ or $k_j + 2 \phi \overline{k}_j$ is not in $[K_0,2m  - K_0]$. Without loss of generality assume $k_j < m$, so that (i) we have $k_j - 2 \phi \overline{k}_j < K_0$ and (ii) $k_j + (k_j - K_0) \leq 2m - K_0$. By the concavity of $h$, and applying the inductive hypothesis when valid, we have
+\begin{align*}
+h(k_j) & \leq \alpha + \frac{1}{2}\Bigl(h(K_0) + h\bigl(k_j + (k_j - K_0)\bigr)\Bigr) \\
+& \leq\alpha + \frac{\alpha(t - 1)}{2} + \frac{1}{2}\Bigl(L_{K_0}(K_0) + L_{K_0}(2k_j - K_0\bigr) + C(K_0)\sqrt{\overline{2k_j - K_0}}\left(1 - \frac{\phi^2}{8}\right)^{t - 1}\Bigr) \\
+& \leq \alpha t + L_{K_0}(k_j) + C(K_0) \frac{\sqrt{2\overline{k}_j}}{2} \left(1 - \frac{\phi^2}{8}\right)^{t - 1} \\
+& \leq \alpha t + L_{K_0}(k_j) + C(K_0) \sqrt{\overline{k}_j} \cdot \left(1 - \frac{\phi^2}{8}\right)^{t}
+\end{align*}
+
+\subsection{Proof of Lemma~\ref{lem:linearization_bound}.}
+The result of the Lemma is obvious once we show \eqref{eqn:left_derivative} and \eqref{eqn:right_derivative}. 
+
+Assume $k < m$, and let $\vol(S_j) \leq k < \vol(S_{j + 1})$ (where we let $S_0 = \emptyset$. The function $h$ has the following representation:
+\begin{equation}
+\label{eqn:lovasz_simonovits}
+h(k) = \sum_{i = 0}^{j} \left(p(v_{(i)}) - \pi(v_{(i)})\right) + \frac{k - \vol(S_j)}{d(v_{(j + 1)})} \left(p(v_{(j+1)}) - \pi(v_{(j+1)})\right) 
+\end{equation}
+where $\pi(s) = d(s)/\vol(G)$. 
+
+From this representation, it is not hard to verify that the left derivative $h'(k)$ can be upper bounded
+\begin{equation}
+\label{eqn:linearization_bound_pf1}
+h'(k) \leq \frac{p(v_{(j + 1)})}{d(v_{(j + 1)})}
+\end{equation}
+
+By Lemma~\ref{lem:crude_ppr_bound}, if $v_{(1)} = v$, then
+\begin{equation*}
+p(\alpha,s)(v_{(2)}) \leq \frac{1}{2d_{\min}},
+\end{equation*}
+and if $v_{(1)} \neq v$ then the same inequality holds with respect to $p(\alpha,s)(v_{(1)})$. 
+As a result, by \eqref{eqn:linearization_bound_pf1}, for either $K_0 = d(v)$ (in the case where $v_{(1)} = v$) or otherwise for $K_0 = 0$, the inequality $h'(K_0) \leq \frac{1}{2d_{\min}^2}$ holds, proving \eqref{eqn:left_derivative}.
+
+Now assume $k \geq m$. The inequality \eqref{eqn:right_derivative} follows almost immediately from the representation \eqref{eqn:lovasz_simonovits}, since
+\begin{equation*}
+h'(k) \geq -\frac{\pi(v_{(j+1)})}{d(v_{(j + 1)})} \geq -\frac{\pi_{\max}}{d_{\min}}.
+\end{equation*}
+
+\subsection{Proof of Lemma~\ref{lem:interpolator_bound}.}
+We make use of the representation~\ref{eqn:lovasz_simonovits} to prove the desired upper bounds on $h(2m - K_0)$ and $h(K_0)$. We first upper bound $h(2m - K_0)$,
+\begin{align*}
+h(2m - K_0) & = \sum_{i = 1}^{j} p(v_{(i)}) - \pi(v_{(i)}) \\
+& \leq 1 - \sum_{i = 1}^{j} \pi(v_{(i)}) \\
+& = 1 - \sum_{i = 1}^{j} \frac{d(v_{i})}{2m} = \frac{K_0}{2m}.
+\end{align*}
+
+To upper bound $h(K_0)$, we invoke the crude bounds of Lemma~\ref{lem:crude_ppr_bound},
+\begin{align*}
+h(K_0) & \leq p(S_j) \leq p(\set{v}) + p(S_j \setminus \set{v}) \\
+& \leq \frac{2\alpha}{1 + \alpha} + \frac{\abs{S_j}}{2d_{\min}} \\
+& \leq \frac{2\alpha}{1 + \alpha} + \frac{K_0}{2d_{\min}^2},
+\end{align*}
+where the last line follows since $K_0 = \vol(S_j) \geq \abs{S_j}\cdot d_{\min}$.
+
+\subsection{Proof of Theorem~\ref{thm:conductance_ppr}.}
+Since $\alpha \geq 10\Phi(C)$ and $v \in C_{\alpha}$, by Theorem~\ref{thm:acl_3},
+\begin{equation*}
+p(\alpha,\chi_v)(C) \geq \frac{9}{10}.
+\end{equation*}
+This inequality along with the assumption $\vol(C) \leq \frac{2}{3}\vol(G)$ implies that $p(\alpha,\chi_v)(C) - \frac{\vol(C)}{\vol(G)} \geq \frac{1}{5}$. Since we assume $\abs{C} \geq \frac{d_{\max}}{d_{\min}}$, the hypothesis of Theorem~\ref{thm:mixing_time_PPR_contrapositive} is satisfied with $\delta = 1/5$, and we have
+\begin{equation*}
+\Phi(p(\alpha,\chi_v)) \leq \sqrt{\frac{320\Phi(C)\left\{\log\left(\frac{m}{d_{\min}^2}\right) + \log\left(\frac{2}{\delta'}\right)\right\}}{\delta'}}
+\end{equation*}
+Finally, we assume $\frac{20\Phi(C)}{1 + 10\Phi(C)} + \frac{d_{\max}}{2d_{\min}^2} \leq \frac{1}{10}$ which implies that
+\begin{equation*}
+\delta' = \delta - \frac{20\alpha}{1 + 10\alpha} + \frac{d_{\max}}{2d_{\min}^2} \geq \frac{1}{10} 
+\end{equation*}
+completing the proof of the theorem.
+
+\subsection{Proof of Corollary~\ref{cor:conductance_ppr_neighborhood_graph}.}
+
+Since we assume $\mathcal{X}$ and $f$ satisfy the regularity conditions \ref{asmp:regularity_condition_1} and \ref{asmp:regularity_condition_2}, the inequalities in Lemma~\ref{lem:graph_functional_concentration} hold with probability at least $1 - n c_5 \exp\set{-c_6n}$. We will condition on these inequalities throughout.
+
+We now verify that the conditions required to apply Theorem~\ref{thm:conductance_ppr} are met. The first two results in Lemma \ref{lem:graph_functional_concentration} imply that $\frac{d_{\max}}{d_{\min}} \lesssim \abs{S[X]}$ and $\frac{d_{\max}}{d_{\min}^2} \lesssim 1$; the lower bound on $n$ given in \eqref{eqn:graph_functional_concentration_1} ensures that these bounds hold exactly.
+
+Since we additionally assume that $\Phi_{\Pbb}(\mathcal{S}) \leq \frac{1 - \delta}{200(1 + \delta)}$, the third and fourth results in Lemma \ref{lem:graph_functional_concentration} imply the third condition in Theorem~\ref{thm:conductance_ppr} is also met. Finally, setting $\alpha = 15\Phi_{\Pbb}(\mathcal{S})$, these results imply that
+\begin{equation*}
+10 \Phi(S)\leq 15\frac{(1 - \delta)}{1 + \delta} \Phi(S)\leq \alpha \leq 15\frac{(1 + \delta)}{1 - \delta} \Phi(S) \leq 20 \Phi(S)
+\end{equation*}
+where the first and last inequalities follow since $\delta \leq 1/7$. We may therefore apply Theorem~\ref{thm:conductance_ppr} and obtain that
+\begin{equation*}
+\Phi(p(\alpha,\chi_v)) \leq \sqrt{3200\left\{\log\left(\frac{\vol(G)}{d_{\min}^2}\right) + \log 20\right\} \Phi(C)}
+\end{equation*}
+Using the (potentially loose) bound $\vol(G) \leq n^2$, Corollary~\ref{cor:conductance_ppr_neighborhood_graph} follows from the first result in Lemma~\ref{lem:graph_functional_concentration}.
+
+\section{Technical results.}
+
+The following Lemma relates $p(S)$ to itself. It is Lemma~5 in \textcolor{red}{Anderson,Chung,Lang}.
+\begin{lemma}
+	\label{lem:acl_1}
+	For each $j \in [1,n-1]$,
+	\begin{equation*}
+	p[\vol(S_j)] \leq \alpha s(S_j) + \frac{1 - \alpha}{2} \left(p[\vol(S_j) + \abs{\partial(S_j)}] + p[\vol(S_j) - \abs{\partial{S_j}}]  \right)
+	\end{equation*}
+	where $\partial{S} = \set{u \in S: \exists v \in S^c, (u,v) \in E}$ is the boundary of $S$.
+\end{lemma}
+
+The following Lemma provides some Taylor expansions of the functions $\sqrt{1 + x}$ and $\sqrt{1 - x}$ about $x = 0$.
+\begin{lemma}
+	\label{lem:taylor_expansion}
+	For any $x \in [0,1]$,
+	\begin{equation*}
+	\sqrt{1 + x} \leq 1 + \frac{x}{2} - \frac{x^2}{8} + \frac{x^3}{16}
+	\end{equation*}
+	and
+	\begin{equation*}
+	\sqrt{1 - x} \leq 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16}.
+	\end{equation*}
+\end{lemma}
+
+Next, we provide some very crude bounds on the maximum value the PPR vector $p(\alpha,\chi_v)$ can attain.
+\begin{lemma}
+	\label{lem:crude_ppr_bound}
+	For every $u \in V$,
+	\begin{equation*}
+	p(\alpha,\chi_v) \leq \1(u = v)\frac{2\alpha}{1 + \alpha} + \frac{1}{2d_{\min}}.
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	For any $u \in V$ besides the seed node $v$, we can show by induction that
+	\begin{equation*}
+	e_v W^t(u) \leq \frac{1}{2 d_{\min}}
+	\end{equation*} 
+	for any $t \geq 0$, and therefore
+	\begin{align*}
+	p(\alpha,\chi_v)(u) & = \alpha \sum_{t = 0}^{\infty} (1 - \alpha)^t \chi_v W^t(u) \\
+	& \leq  \frac{1}{2d_{\min}}.
+	\end{align*}
+	
+	When $u = v$, we have that 
+	\begin{equation*}
+	\chi_v W^t(v) \leq \frac{1}{2^t} + \frac{1}{2d_{\min}}
+	\end{equation*}
+	and the result follows.
+\end{proof}
+
+\subsection{Concentration Inequalities.}
+\label{subsec:concentration}
+
+\paragraph{Bernstein's inequality.}
+
+Let $S_m$ be a binomial random variable, $S_m \sim \textrm{Bin}(n,p)$, and let $\mu = np$.  Then, Bernstein's inequality gives
+\begin{equation*}
+P\left(\abs{S_m - \mu} \geq \delta \mu \right) \leq 2 \exp\set{- \frac{\frac{1}{2}\delta^2\mu}{1 + \frac{\delta}{3}}}
+\end{equation*}
+for any $\delta > 0$. Now suppose $S_{m1},\ldots,S_{mm}$ are each binomial random variables, with $S_{mj} \sim \textrm{Bin}(n,p_j)$. Taking a union bound over $j = 1,\ldots,m$, we have that
+\begin{equation*}
+P\left(\max_{j = 1,\ldots,m}\abs{S_m - \mu_j} \geq \delta \mu_j \right) \leq 2 n \exp\set{- \frac{\frac{1}{2}\delta^2\mu_{\min}}{1 + \frac{\delta}{3}}} 
+\end{equation*}
+where $\mu_{\min} = \min_{j = 1,\ldots,n} \mu_j$. Similarly letting $\mu_{\max} = \max_{j = 1,\ldots,n} \mu_j$, we have that with probability at least $1 - 2 n \exp\set{- \frac{\frac{1}{2}\delta^2\mu_{\min}}{1 + \frac{\delta}{3}}}$,
+\begin{equation*}
+(1 - \delta) \mu_{\min} \leq S_{mj} \leq (1 + \delta) \mu_{\max}, \quad \textrm{for all $j = 1,\ldots,m$.}
+\end{equation*}
+
+\paragraph{Hoeffding's Inequality for U-statistics.}
+Let $U_m$ be a degree-2 U-statistic with kernel $h$, i.e.
+\begin{equation*}
+U_m = \sum_{i = 1}^{m} \sum_{j \neq i} h(X_i,X_j).
+\end{equation*}
+where $X_1,\ldots, X_m$ are i.i.d random variables. Let $\mu_h = \mathbb{E}(U_m) = n(n-1)\mathbb{E}(h(X_1),h(X_2)) =:n(n-1)p_h$, and assume $\norm{h}_{\infty} \leq 1$. Then, Hoeffding's inequality gives
+\begin{equation*}
+P(\abs{U_n - \mu} \geq \delta \mu) \leq 2 \exp\left(-\frac{\delta^2 \mu_h p_h}{4}\right).
+\end{equation*}
+Therefore, with probability at least $1 - 2 \exp\left(-\frac{\delta^2 \mu_h p_h}{4}\right)$,
+\begin{equation*}
+(1 - \delta) \mu_h \leq U_n \leq (1 + \delta) \mu_h.
+\end{equation*}
+
+\section{Old Stuff.}
+\subsection{Proof of Lemma~\ref{lem:graph_functional_concentration}.}
+Each statement in Lemma~\ref{lem:graph_functional_concentration} is a standard consequence of the concentration results of \ref{subsec:concentration}. For each $i = 1,\ldots,n$, conditional on $x_i$ the degree functional $d(x_i)$ follows a binomial distribution $d(x_i) \sim \textrm{Bin}(n - 1, \Pbb(B(x_i,r)))$. Moreover by the regularity properties, for any $x \in \mathcal{X}$,
+\begin{equation*}
+\lambda_{\min} \frac{\nu_d r^d}{a} \leq \Pbb(B(x,r)) \leq \lambda_{\max} \nu_d r^d.
+\end{equation*}
+Therefore, for any $\delta > 0$, applying Bernstein's inequality and a union bound yields
+\begin{equation}
+\label{eqn:graph_functional_concentration_pf1}
+\lambda_{\min} (1 - \delta) \frac{\nu_d r^d}{a} n \leq d_{\min} \leq d_{\max} \leq  \lambda_{\max} (1 - \delta) \nu_d r^d n
+\end{equation}
+with probability at least $1 - 2 n\exp\set{-\frac{\delta^2 n \lambda_{\min} \nu_d r^d}{a\left(1 + \frac{\delta}{3}\right)}}$. Additionally $\abs{S[X]} \sim \mathrm{Bin}(n, \Pbb(S))$, and therefore
+\begin{equation}
+\label{eqn:graph_functional_concentration_pf2}
+(1 - \delta) \Pbb(\mathcal{S}) n \leq \abs{S[X]}
+\end{equation}
+with probability at least $1 - \exp\set{-\frac{\delta^2n\Pbb(\mathcal{S})}{1 + \frac{\delta}{3}}}$. 
+
+The inequalities \eqref{eqn:graph_functional_concentration_pf1} and \eqref{eqn:graph_functional_concentration_pf2} imply that with high probability $\frac{d_{\max}}{d_{\min}} \lesssim \abs{S[X]}$ and $\frac{d_{\max}}{d_{\min}^2} \lesssim 1$; the lower bound on $n$ given in \eqref{eqn:graph_functional_concentration_1} ensures that these bounds hold exactly.
+
+Finally, the statement $\vol\bigl(\mathcal{S}[X]\bigr) \leq \frac{2}{3}\vol(G)$ is equivalent to $\vol\bigl(\mathcal{X}\setminus\mathcal{S}[X]\bigr) \geq \frac{1}{2}\vol\bigl(\mathcal{S}[X]\bigr)$. For any set $\mathcal{A} \subseteq \Reals^d$, the volume $\vol\bigl(\mathcal{A}[X]\bigr)$ is a $U$-statistic, since it can be written as
+\begin{equation*}
+\vol\bigl(\mathcal{A}[X]\bigr) = \sum_{i = 1}^{m} \sum_{j \neq i} \underbrace{\frac{\1(x_i \in \mathcal{S}) \vee \1(x_j \in \mathcal{S})}{2} \1(\norm{x_i - x_j} \leq r)}_{h_\mathcal{A}(x_i,x_j)}
+\end{equation*}
+Let $p_{h_\mathcal{A}} = \mathbb{E}[h_\mathcal{A}(X_1,X_2)]$ for $X_1$ and $X_2$ independent random variables with distribution $\Pbb$. By Hoeffding's inequality for $U$-statistics we have
+\begin{equation}
+\label{eqn:graph_functional_concentration_pf3}
+\vol\bigl(\mathcal{S}[X]\bigr) \leq (1 + \delta)\mathbb{E}\left[\vol(\mathcal{S}[X])\right], \quad \vol\bigl(\mathcal{S}[X]\bigr) \leq (1 - \delta)\mathbb{E}\left[\vol(\mathcal{X}\setminus\mathcal{S}[X])\right]
+\end{equation}
+with probability at least $1 - 2\exp\set{-\frac{\delta^2 (n - 1)^2 \min\{p_{h_\mathcal{S}}, p_{h_{\mathcal{X}\setminus{\mathcal{S}}}}\}}{4}}$. If \eqref{eqn:graph_functional_concentration_pf3} is satisfied, then by~\eqref{eqn:graph_functional_concentration_2} the inequality $\vol\bigl(\mathcal{X}\setminus\mathcal{S}[X]\bigr) \geq \frac{1}{2}\vol\bigl(\mathcal{S}[X]\bigr)$ holds, and therefore $\vol\bigl(\mathcal{S}[X]\bigr) \leq \frac{2}{3}\vol(G)$.
+
+\end{document}

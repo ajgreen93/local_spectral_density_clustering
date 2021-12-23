@@ -1,0 +1,269 @@
+\documentclass{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclarePairedDelimiterX{\seminorm}[1]{\lvert}{\rvert}{#1}
+
+% Make a widecheck symbol (thanks, Stack Exchange!)
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+	<5> <6> <7> <8> <9> <10>
+	<10.95> <12> <14.4> <17.28> <20.74> <24.88>
+	mathx10
+}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+% widecheck made
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\mathrm{vol}}
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+\newcommand{\lambdavec}{\boldsymbol{\lambda}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+\newcommand{\Lap}{L}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+\newcommand{\Id}{I}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Vset}{\mathcal{V}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Tightness of Upper Bounds on PPR Misclassification Error}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\textbf{Setup}: We observe samples $x_1,\ldots,x_n \sim p$. For a given threshold $\lambda > 0$, we use a local clustering algorithm involving the PPR vector to recover an element $\mc{C}$ of the $\lambda$-upper-level-set of $p$. Letting $\mc{C}_{\sigma} = \mc{C} + B(0,\sigma)$, we obtain the following upper bound on the volume of the symmetric set difference $\Delta(\mc{C}_{\sigma}[X], \wh{C})  = \vol_{n,r}(\mc{C}_{\sigma}[X] \vartriangle \wh{C})$:
+\begin{equation*}
+\Delta(\mc{C}_{\sigma}[X], \wh{C}) \leq \underbrace{60}_{\textrm{PPR on a graph}} \cdot \underbrace{1028 \frac{\Lambda_{\sigma}^4 \rho^2 L^2 (d + 2)^3}{\lambda_{\sigma}^4 r^2} \log^2\biggl(c \frac{L\rho\Lambda_{\sigma}^{2/d}}{\lambda_{\sigma}^{2/d}r}\biggr)}_{\textrm{Upper bound on mixing time}} \cdot \underbrace{\frac{16}{9} \frac{dr\lambda(\lambda_{\sigma} - \theta r^{\gamma}/(\gamma + 1))}{\sigma \lambda_{\sigma}^2}}_{\textrm{Upper bound on normalized cut.}} \cdot (1 + c_\delta)
+\end{equation*} 
+with probability at least $1 - \delta$, for $n$ sufficiently large. The captions refer to the contribution to error of the three modular parts of our proof, which we detail next.
+
+\section{PPR on a graph}
+The following is essentially identical to Lemma 3.4 of~\textcolor{red}{(Zhu 2013)}, except with tighter constants.
+\begin{lemma}
+	\label{lem:zhu}
+	Let $G = (V,E)$ be a undirected, unweighted, connected graph and let $p_v^{(\varepsilon)}$ be an $\varepsilon$-approximation to the PPR vector $p_v := p(v,\alpha;G)$. For $\beta \in (0,1)$,  the sweep cut $S_{\beta,v}$ is
+	\begin{equation*}
+	S_{\beta,v} = \set{u \in V: \frac{p_v^{(\varepsilon)}(u)}{\deg(u;G)} \geq \beta}.
+	\end{equation*} 
+	For some $A \subseteq V$, suppose that 
+	\begin{equation*}
+	\alpha \leq \min\Bigl\{\frac{1}{2000}, \frac{1}{2\tau_{\infty}(G[A])}\Bigr\},~~ \beta \leq \frac{1}{5\vol(A;G)},~~ \varepsilon \leq \frac{1}{25\vol(A;G)}
+	\end{equation*}
+	Then there exists a set $A^g \subset A$ with $\vol(A^g;G) \geq \frac{1}{2}\vol(A^g;G)$ such that for any $v \in A^g$, the sweep cut $S_{\beta,v}$ satisfies
+	\begin{equation*}
+	\vol(A \vartriangle S_{\beta,v};G) \leq 6\frac{\Phi(A;G)}{\alpha \beta}.
+	\end{equation*}
+\end{lemma}
+I don't know how close to tight this is for a neighborhood graph.
+
+\section{Mixing time}
+We wish to upper bound the mixing time of a random walk over the subgraph $\wt{G}_{n,r} = G_{n,r}(\mc{C}_{\sigma}[X])$. Recall that our upper bound on mixing time for a general graph looks like
+\begin{equation*}
+\tau_{\infty}(G) \leq \frac{2}{\Phi^2(G)}\log(\mathrm{something}).
+\end{equation*}
+where $\Phi^2(G)$ is the conductance of $G$; I don't know how close this is to tight. We relate the sample conductance $\Phi(\wt{G}_{n,r})$ to the population conductance $\wt{\Phi}_{\Pbb,r}$ using some bounds on the optimal transport distance between $\mathbb{P}_n$ and $\mathbb{P}$, and in turn relate $\wt{\Phi}_{\Pbb,r}$ to the uniform conductance $\wt{\Phi}_{\nu,r}$ using the upper and lower bounds on density $p$ within $\mc{C}_{\sigma}$. Now I want to investigate of our lower bound on $\wt{\Phi}_{\nu,r}$, which is
+\begin{equation*}
+\wt{\Phi}_{\nu,r} \geq \frac{\sqrt{2\pi}}{36} \ell^2 \frac{r}{\rho L}
+\end{equation*}
+
+\subsection{Tightness of lower bound on }
+Let's an accompanying upper bound on $\wt{\Phi}_{\nu,r}$. Let 
+\begin{equation*}
+\mc{C}_{\sigma} = [-\sigma,\sigma]^{d - 1} \otimes [-\rho/2,\rho/2],
+\end{equation*}
+and consider the partition of $\mc{C}_{\sigma}$ induced by the hyperplane $\{x \in \Rd: x_d = 0\}$, i.e
+\begin{equation*}
+\mc{L} = [-\sigma,\sigma]^{d - 1} \otimes [-\rho/2,0),~~\mc{R} = [-\sigma,\sigma]^{d - 1} \otimes [0,\rho/2].
+\end{equation*}
+Recalling that 
+\begin{equation*}
+\wt{\Phi}_{\nu,r}(\mc{L}) = \frac{\wt{Q}_{\nu,r}(\mc{L},\mc{R})}{\wt{\pi}_{\nu,r}(\mc{L})} = \frac{\int_{\mc{L}} \nu(B(x,r) \cap \mc{R}) \,dx}{\int_{\mc{L}} \nu(B(x,r) \cap \mc{C}_{\sigma}) \,dx} 
+\end{equation*}
+our goal will be to upper bound the numerator and lower bound the denominator of the above expression.
+
+We begin by upper bounding the numerator. For any $x \in \mc{L}$, either $\dist(x,\mc{R}) = -x \leq r$ in which case $B(x,r) \cap \mc{R} \subset \mathrm{cap}_r(r + x)$, or $\dist(x,\mc{R}) = -x > r$ in which case $B(x,r) \cap \mc{R} = \emptyset$. Thus
+\begin{equation}
+\label{eqn:lb_conductance_1}
+\int_{\mc{L}} \nu\bigl(B(x,r) \cap \mc{R}\bigr) \,dx \leq (2\sigma)^{d - 1} \int_{-r}^{0} \nu(\mathrm{cap}_r(r + x)) \,dx = (2\sigma)^{d - 1} \int_{0}^{r} \nu\bigl(\mathrm{cap}_r(r - x)\bigr) \,dx.
+\end{equation}
+Recalling that the volume of a hyperspherical cap is given by $\nu(\mathrm{cap}_r(h)) = \frac{1}{2}\nu_dr^dI_{1 - \alpha}\biggl(\frac{d + 1}{2};\frac{1}{2}\biggr)$ for $\alpha = 1 - \frac{2rh - h^2}{r^2}$, we have that
+\begin{align*}
+\int_{0}^{r} \nu\bigl(\mathrm{cap}_r(r - x)\bigr) \,dx & = \frac{1}{2}\nu_dr^d \int_{0}^{r} I_{1 - x^2/r^2}\Bigl(\frac{d + 1}{2}; \frac{1}{2}\Bigr) \,dx \\
+& = \frac{1}{2}\nu_dr^{d + 1} \int_{0}^{1} I_{1 - z^2}\Bigl(\frac{d + 1}{2}; \frac{1}{2}\Bigr) \,dz \tag{substituting $z = x/r$}\\ 
+& = \frac{1}{2}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \int_{0}^{1} \int_{0}^{1 - z^2} u^{(d - 1)/2} (1 - u)^{-1/2} \,du \,dz \\
+& = \frac{1}{2}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \int_{0}^{1} \int_{0}^{\sqrt{1 - u}} u^{(d - 1)/2} (1 - u)^{-1/2} \,dz \,du \tag{Fubini's Theorem} \\
+& = \frac{1}{2}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \int_{0}^{1} u^{(d - 1)/2} \,du \\
+& = \frac{1}{d + 1}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}},
+\end{align*}
+and plugging back in to~\eqref{eqn:lb_conductance_1}, we obtain
+\begin{equation*}
+\int_{\mc{L}} \nu\bigl(B(x,r) \cap \mc{R}\bigr) \,dx \leq \frac{(2\sigma)^{d-1}}{d + 1}\nu_dr^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma((d + 1)/2)\sqrt{\pi}} \leq \frac{(2\sigma)^{d - 1} \nu_d r^{d + 1}\sqrt{d + 2}}{(d + 1)\sqrt{2\pi}}.
+\end{equation*}
+On the other hand, when $r \ll \sigma$ the denominator is $\int_{\mc{L}}\nu(B(x,r) \cap \mc{C}_{\sigma}) \,dx \approx \frac{1}{2}(2\sigma)^{d - 1} \rho \nu_d r^d$. Therefore,
+\begin{equation*}
+\wt{\Phi}_{\nu,r} \lessapprox \frac{2r(d + 2)^{1/2}}{(d + 1)\rho \sqrt{2\pi}}.
+\end{equation*}
+This matches our lower bound on $\wt{\Phi}_{\nu,r}$ up to a factor of $18/(2\pi\ell^2) \cdot \sqrt{(d + 2)/(d + 1)} < 3/\ell^2.$
+
+\section{Normalized cut}
+our upper bound on normalized cut---ignoring the terms that depend on the density---is 
+\begin{equation*}
+\wt{\Phi}_{\nu,r}(\mc{C}_{\sigma}) \lessapprox \frac{16dr}{9\sigma}.
+\end{equation*}
+\section{Lower bound on normalized cut}
+Our goal is to examine the tightness of our upper bound on normalized cut (Theorem 10 of our JMLR submission), by giving a comparable lower bound. Recall that the (uniform, population level) normalized cut of a set $\mc{C}_{\sigma}$ is given by
+\begin{equation*}
+\Phi_{\nu,r}(\mc{C}_{\sigma}) := \frac{\int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx}{\int_{\mc{C}_{\sigma}} \nu(B(x,r)) \,dx}.
+\end{equation*}
+As informed by the isoperimetric ratio, the worst-case for a functional like normalized cut should be when $\mc{C}_{\sigma}$ by a $d$-dimensional ball. Letting $\mc{C}_{\sigma} = B(0,\sigma)$, we have that
+\begin{equation*}
+\frac{\int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx}{\int_{\mc{C}_{\sigma}} \nu(B(x,r)) \,dx} = \frac{1}{\nu_d^2 r^d \sigma^d} \int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx.
+\end{equation*}
+If $\|x\| < \sigma - r$, then $B(x,r) \setminus \mc{C}_{\sigma} = \emptyset$. Otherwise $\sigma - r \leq \|x\| \leq \sigma$, and if $r \ll \sigma$ then $B(x,r) \setminus \mc{C}_{\sigma} \approx \mathrm{cap}_{r}(\|x\| - (\sigma - r))$. Converting to polar coordinates, we have:
+\begin{align*}
+\int_{\mc{C}_{\sigma}} \nu(B(x,r) \setminus \mc{C}_{\sigma}) \,dx & \approx s_d \int_{\sigma - r}^{\sigma} \nu(\mathrm{cap}_{r}(x - (\sigma - r))) t^{d - 1} \,dt \\
+& \geq s_d (\sigma - r)^{d - 1} \int_{\sigma - r}^{\sigma} \nu(\mathrm{cap}_{r}(t - (\sigma - r)))  \,dt \\
+& = s_d (\sigma - r)^{d - 1} \int_{0}^{r} \nu(\mathrm{cap}_{r}(z)  \,dz.
+\end{align*}
+As calculated below~\eqref{eqn:lb_conductance_1}, $\int_{0}^{r} \nu(\mathrm{cap}_{r}(z)  \,dz = \frac{1}{d + 1} \nu_d r^{d + 1} \frac{\Gamma(d/2 + 1)}{\Gamma(d/2 + 1/2)\sqrt{\pi}} \approx \frac{1}{d + 1} \nu_d r^{d + 1} \frac{\sqrt{d + 2}}{\sqrt{2\pi}}$ and hence
+\begin{equation*}
+\Phi_{\nu,r}(\mc{C}_{\sigma}) \approx s_d (\sigma - r)^{d - 1}\frac{1}{d + 1} \nu_d r^{d + 1} \frac{\sqrt{d + 2}}{\sqrt{2\pi}} \frac{1}{\nu_d^2 r^d \sigma^d} \approx \frac{ \sqrt{d + 2}}{(d + 1)\sqrt{2\pi}} \cdot \frac{dr}{\sigma}.
+\end{equation*}
+By contrast, our upper bound is $\approx dr/\sigma$, revealing a gap of roughly $\frac{ \sqrt{d + 2}}{(d + 1)\sqrt{2\pi}}$. 
+
+
+\end{document}

@@ -1,0 +1,530 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{tikz}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wb}{0}{mathx}{"73}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\Xsetistiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Xsetotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Xsetiam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\Xsetagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\Nbb}{\mathbb{N}}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+\newcommand{\betap}{\beta^{(p)}}
+\newcommand{\betaq}{\beta^{(q)}}
+\newcommand{\vardeltapq}{\varDelta^{(p,q)}}
+
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Xsetgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\Xsetagger}}
+\newcommand{\Lap}{{\bf L}}
+\newcommand{\NLap}{{\bf N}}
+\newcommand{\PLap}{{\bf P}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+\newcommand{\Leb}{L}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\mb}[1]{\mathbb{#1}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+\newcommand{\Ibb}{\mathbb{I}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\Xsetive}{\mathrm{div}}
+\newcommand{\Xsetif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\Dotp}[2]{\Bigl\langle #1, #2 \Bigr\rangle}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\Xsetx}{\,dx}
+\newcommand{\Xsety}{\,dy}
+\newcommand{\Xsetr}{\,dr}
+\newcommand{\Xsetxpr}{\,dx'}
+\newcommand{\Xsetypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\LS}{\mathrm{LS}}
+\newcommand{\OS}{\mathrm{OS}}
+\newcommand{\PLS}{\mathrm{PLS}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Note on: Cluster tree consistency of spectral clustering.}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\textbf{Motivation:} Try to obtain ``cluster tree consistency''---as defined below--- in more realistic scenarios than those obtained in our previous work.
+
+Suppose we observe samples $X_1,\ldots,X_n \sim P$, where
+\begin{equation*}
+P  := \frac{1}{2}P_{(1)} + \frac{1}{2}P_{(2)};
+\end{equation*}
+here $P_{(1)}$ and $P_{(2)}$ should be thought of as mixture components which are \emph{indivisible} and \emph{separate}. This will be made formal later on, but at the bare minimum we will insist that for some $p^{\star} > 0$, the upper level set $\{x:p(x) \geq p^{\star}\}$ can be divided into exactly two disjoint connected components $\mb{C}_{(1)}$ and $\mb{C}_{(2)}$, given respectively by
+\begin{equation*}
+\mb{C}_{(1)} = \Bigl\{x:p(x) \geq p^{\star}\Bigr\} \cap \Bigl\{x: p_1(x) > p_2(x)\Bigr\}
+\end{equation*}
+and conversely
+\begin{equation*}
+\mb{C}_{(2)} = \Bigl\{x:p(x) \geq p^{\star}\Bigr\} \cap \Bigl\{x: p_2(x) \geq p_1(x)\Bigr\}.
+\end{equation*}
+
+\paragraph{Spectral clustering.}
+In (this version of) spectral clustering, we partition the domain of $P$ into two sets, based on an eigenvector of an appropriately defined operator. Let $\Delta_P$ be a weighted differential operator associated with $P$, for instance the \emph{normalized weighted Laplace-Beltrami} operator
+\begin{equation}
+\label{eqn:normalized_laplace}
+\Delta_Pf := -\frac{1}{p} \mathrm{div}(p \nabla f);
+\end{equation}
+here $p$ is the density of $P$ with respect to the full-dimensional Lebesgue measure. Define $v_2$ according to:
+\begin{equation*}
+v_2 := \argmin_{\langle 1,v \rangle_{P} = 0} \frac{\langle \Delta_P v, v \rangle_{P}}{\langle v,v \rangle_{P}}
+\end{equation*}
+i.e the 1st non-trivial eigenvector of $\Delta_P$. (Note that $v_2$ is determined only up to its sign, and so we assign a sign arbitrarily.) 
+
+\paragraph{Consistency of spectral clustering.}
+We are interested in the following question:
+\begin{quote}
+	Under what conditions on $P_{(1)}$ and $P_{(2)}$ does there exist a sweep cut $S_{\beta} = \{x: v(x) \geq \beta \}$ such that $S_{\beta}$ is \emph{consistent} with the density clustering $\{\mb{C}_{(1)}, \mb{C}_{(2)}\}$?
+\end{quote} 
+There are various notions of consistent recover of density clusters, but in this case I will be interested in \emph{cluster tree consistency}: that is, the existence of a sweep cut for which 
+\begin{equation}
+\label{eqn:cluster_tree_consistency}
+\mb{C}_{(1)} \subset S_{\beta} ~~\textrm{and}~~ S_{\beta} \cap \mb{C}_{(2)} = \emptyset.
+\end{equation}
+
+
+\paragraph{Proof Strategy.}
+Proving results in this vein requires uniform control of the values of $v(x)$ for all $x \in U_{P}(p^{\star})$. To obtain such control, we will adopt the following strategy:
+\begin{enumerate}
+	\item Letting
+	\begin{equation}
+	\label{eqn:square_root_likelihood}
+	q_k = \sqrt{\frac{p_k}{2p}},~~\textrm{for $k = 1,2$}
+	\end{equation}
+	establish conditions under which $e :\propto q_1 - q_2$ can be $\beta$-thresholded with the resulting estimate $S_{\beta}$ satisfying~\eqref{eqn:cluster_tree_consistency},
+	\item Show that $\|v_2 - e\|_{P}$ is small.
+	\item Upgrade from a bound on $\|v_2 - e\|_{\Leb^2(P)}$ to a (weaker) bound on $\|v_2 - e\|_{\Leb^{\infty}(U_P(p^{\star}))}$ by the Sobolev Embedding Theorem.
+\end{enumerate}
+
+\paragraph{Result.}
+The following four quantities are used to assess the condition of $P$ for clustering.
+\begin{itemize}
+	\item The \emph{overlapping} parameter $\mc{S}$, given by
+	\begin{equation*}
+	\mc{S} := 4 \langle q_1^2, q_2^2 \rangle_P = \int_{\mc{M}} \frac{p_1 p_2}{p} \,dx.
+	\end{equation*}
+	\item The \emph{coupling} parameter $\mc{C} := \max_{k} \mc{C}_k$, where
+	\begin{equation*}
+	\mc{C}_k := \int_{\mc{M}} \biggl| \frac{\nabla p_k}{p_k} - \frac{\nabla p}{p} \biggr|^2 p_k \,dx
+	\end{equation*}
+	\item The \emph{indivisibility} parameter $\Theta := \min_{k} \Theta_k$, where
+	\begin{equation*}
+	\Theta_k := \inf_{u \perp 1} \frac{\langle \Delta_{p_{k}}u,u \rangle_{P_{(k)}}}{\langle u,u \rangle_{P_{(k)}}}
+	\end{equation*}
+	is essentially the smallest non-trivial eigenvalue of $\Delta_{P_{(k)}}$. 
+	\item The \emph{saliency} parameter $\sigma_{\star} = \min_{k} \sigma_k$, where
+	\begin{equation*}
+	\sigma_k = \sup\biggl\{\sigma: p_k(x) \geq (1 + \sigma)^2 p(x)~~\textrm{for all $x \in \mb{C}_{(k)}$} \biggr\}
+	\end{equation*}
+\end{itemize}
+The first three quantities are directly lifted from \textcolor{red}{(Garcia Trillos 2019)}. The last parameter is new, and can be interpreted as a type of cluster saliency condition.\footnote{Cluster saliency conditions are standard in the density clustering literature, in order to give finite sample results. Note, however, that it is certainly possible to have salient density clusters $\mb{C}_{(1)}$ and $\mb{C}_{(2)}$, in the usual sense of saliency, for which $\sigma_{\star} = 0$. This essentially has to do with identifiability issues, but it renders the saliency condition as I've currently written it a tad unnatural; discuss with Siva.}
+
+The following result shows that if the parameters $\mc{S}, \mc{C}$ are sufficiently small, and the parameters $\Theta$ and $\sigma_{\star}$ are sufficiently large, then $v_2$ is uniformly large for all $x \in \mathbb{C}_{(1)}$ and uniformly small for all $x \in \mathbb{C}_{(2)}$. 
+\begin{theorem}
+	\label{thm:uniform_bound}
+	Fix $p^{\star} > 0$. There exists an $a \in \{-1,+1\}$ such that the following statements hold.
+	\begin{itemize}
+		\item For every $x \in \mb{C}_{(1)}$,
+		\begin{equation*}
+		av_2(x) \geq \frac{\sigma_{\star}}{\sqrt{2(1 - \mc{S}^{1/2})}} - \frac{1}{p^{\star}}\Bigl(\frac{1}{\mathrm{Leb}(\mb{C}_{(1)})} + 2\mc{C}^{1/2}  \Bigr) \Bigl(\frac{\mc{S}^{1/4} + 2^{1/4}[\kappa(P)]^{1/4}}{(1 - \mc{S}^{1/2})^{1/4}}\Bigr) - \frac{2\mc{C}^{1/2}}{p^{\star}\sqrt{1 - \mc{S}^{1/2}}},
+		\end{equation*}
+		\item Conversely, for every $x \in \mb{C}_{(2)}$,
+		\begin{equation*}
+		av_2(x) \leq -\frac{\sigma_{\star}}{\sqrt{2(1 - \mc{S}^{1/2})}} + \frac{1}{p^{\star}}\Bigl(\frac{1}{\mathrm{Leb}(\mb{C}_{(2)})} + 2\mc{C}^{1/2}  \Bigr) \Bigl(\frac{\mc{S}^{1/4} + 2^{1/4}[\kappa(P)]^{1/4}}{\sqrt{1 - \mc{S}^{1/2}}}\Bigr) + \frac{2\mc{C}^{1/2}}{p^{\star}\sqrt{1 - \mc{S}^{1/2}}}.
+		\end{equation*}
+	\end{itemize}
+\end{theorem}
+
+\section{Examples}
+
+As a sanity check, we start with the fully-separated mixture model case. 
+
+\subsection{Fully separated mixture}
+\textcolor{red}{(TODO)}
+
+\subsection{Gaussian mixture model}
+In the Gaussian mixture model, we let
+\begin{equation*}
+P_{(1)} = N(0,1),~~P_{(2)}= N(\gamma,1).
+\end{equation*}
+It will be convenient in what follows to reparameterize. Define $z_{\star}$ to satisfy the identity
+\begin{equation*}
+\frac{1}{\sqrt{2\pi}} \exp(-z_{\star}^2/2) = p_{\star}.
+\end{equation*}
+Our question is: given a $z_{\star}$, for what values of $\gamma > 2z_{\star}$ does (an appropriately chosen sweep cut of) $v_2$ recover the density cluster $\mb{C}_{(1)}$?
+
+\paragraph{Bounds on parameters.}
+We would like to upper bound $\mc{S}, \mc{C}$, and lower bound $\Theta$ and $\sigma_{\star}$. 
+\begin{itemize}
+	\item \textbf{Separation.} To upper bound $\mc{S}$, we divide the real line into $(-\infty,\gamma/2)$ (where $p_1(x) > p_2(x)$) and $(\gamma/2,\infty)$ (where $p_1(x) \leq p_2(x)$) and deduce that
+	\begin{align*}
+	\mc{S} & = 2 \int \frac{p_1(x)p_2(x)}{p_1(x) + p_2(x)} \,dx \\
+	& = 2 \Bigl( \int_{-\infty}^{\gamma/2} \frac{p_1(x)p_2(x)}{p_1(x) + p_2(x)} \,dx + \int_{\gamma/2}^{\infty} \frac{p_1(x)p_2(x)}{p_1(x) + p_2(x)} \,dx  \Bigr) \\
+	& \leq 2 \Bigl( \int_{-\infty}^{\gamma/2} p_2(x) \,dx + \int_{\gamma/2}^{\infty} p_1(x) \,dx  \Bigr) = 4\Phi(-\gamma/2)
+	\end{align*}
+	where $\Phi$ is the standard Normal CDF. Thus by Mill's inequality,
+	\begin{equation*}
+	\mc{S} \leq 4\sqrt{\frac{2}{\pi}} \frac{\exp(-\gamma^2/8)}{\gamma^2}
+	\end{equation*}
+	\item \textbf{Coupling.} It is derived in \textcolor{red}{(Garcia Trillos 19)} that $\mc{C} \leq \frac{\gamma^2}{8}\mc{S}$, from which we deduce
+	\begin{equation*}
+	\mc{C} \leq \sqrt{\frac{1}{2\pi}}\exp(-\gamma^2/8).
+	\end{equation*}
+	\item \textbf{Indivisibility.} Clearly $\Theta_1 = \Theta_2$, and to lower bound $\Theta$ it therefore suffices to lower bound $\Theta_1$. From Cheeger's inequality, we know that
+	\begin{equation*}
+	\Theta_1 \geq \frac{1}{4}h(\Reals,P_{(1)})
+	\end{equation*}
+	where for a distribution $Q$ with density $q$, 
+	\begin{equation*}
+	h(\Reals,Q) := \min_{A \subset \Reals} \frac{\int_{\partial A} q(x) \,dS(x)}{\min \{\int_A q(x)\,dx, \int_{A^c} q(x)\} \,dx}.
+	\end{equation*}
+	For $Q = P_{(1)}$, the minimum is achieved by $A = (0,\infty)$, and so we have
+	\begin{equation*}
+	h(\Reals,P_{(1)}) \geq \sqrt{\frac{2}{\pi}}  \Longrightarrow \Theta \geq \sqrt{\frac{1}{8\pi}}.
+	\end{equation*}
+	\item \textbf{Salience.} Similarly $\sigma_{1} = \sigma_2$, and we will concentrate on lower bounding $\sigma_1$. Observe that
+	\begin{equation*}
+	\frac{p_2(x)}{p_1(x)} \leq 1 - 4\sigma \Longrightarrow p_1(x) \geq (1 + \sigma)^2 p(x).
+	\end{equation*}
+	Since $p_2(x)/p_1(x)$ is monotonically decreasing in $x$, letting $x_{\star} = \sup \mb{C}_1$ we have that
+	\begin{equation*}
+	\sigma_1 \geq \frac{1}{4}\Bigl(1 - \frac{p_1(x_{\star})}{p_2(x_{\star})}\Bigr).
+	\end{equation*}
+	We can further simplify this by noting that, by the definition of $\mb{C}_{(1)}$, $p_1(x_{\star}) \geq p(x_\star)$, and therefore
+	\begin{equation*}
+	x_{\star} \leq \sup \{x:p_1(x) \geq p_{\star}\} = z_{\star}
+	\end{equation*}
+	and hence
+	\begin{align*}
+	\sigma_1 & \geq \frac{1}{4}\Bigl(1 - \frac{p_1(z_{\star})}{p_2(z_{\star})}\Bigr) \\
+	& = \frac{1}{4}\Bigl(1 - \exp(\gamma z_{\star} - \gamma^2/2)\Bigr).
+	\end{align*}
+\end{itemize}
+Now, under the assumptions that $z_{\star}^2 \geq 2\log(4)$ and $\gamma^2 \geq 8\log\bigl(32/\pi^{1/2}\bigr)$ some crude calculations---which are briefly alluded to in Section~\ref{sec:some_calculations}---along with Theorem~\ref{thm:uniform_bound} give that for all $x \in \mb{C}_{(1)}$:
+\begin{align*}
+av_2(x) & \geq \sigma_{\star} - \frac{80 \pi^{1/4} \mc{C}^{1/2}}{p^{\star}} \\
+& \geq \frac{1}{4} - \frac{1}{4}\exp(\gamma z^{\star} - \gamma^2/2) - 2^{3/4} \cdot 80\pi\exp(z_{\star}^2/2 - \gamma^2/2),
+\end{align*}
+and some standard arithmetic implies that if
+\begin{equation*}
+\gamma \geq \max\biggl\{z_{\star} + \sqrt{z_{\star}^2 + 2\log(2)}, \sqrt{z_{\star}^2 + 2\log(8 2^{3/4} 80 \pi)}  \biggr\}
+\end{equation*}
+then $av_2(x) > 0$,  Under the same conditions on $\gamma$, $av_2(x) < 0$ for all $x \in \mb{C}_{(2)}$, and so the sweep cut $S_0 = \{av_2(x) > 0\}$ consistently recovers the density clustering $\{\mb{C}_1, \mb{C}_2\}$.
+
+\section{Supporting Theory}
+
+\subsection{(1). Conditions under which $e$ can be $\beta$-thresholded.}
+A direct calculation establishes that
+\begin{equation*}
+e(x) \geq \frac{\sigma_{\star}}{\sqrt{2}\|q_1 - q_2\|_P}~~\textrm{for all $x \in \mathbb{C}_{(1)}$}
+\end{equation*} 
+and conversely
+\begin{equation*}
+e(x) \leq -\frac{\sigma_{\star}}{\sqrt{2}\|q_1 - q_2\|_P}~~\textrm{for all $x \in \mathbb{C}_{(2)}$}.
+\end{equation*} 
+
+\subsection{(2). Establish bounds in $\Leb^2(P)$ norm}
+\textcolor{red}{(Garcia Trillos et al 2019)} establish that $q_1$ and $q_2$ are close to the span of $v_1$ and $v_2$, 
+\begin{equation}
+\label{eqn:garciatrillos19_1}
+\|q_k - \Pi_2(q_k)\|_{P}^2 \leq w_k \kappa(P),~~\kappa(P) := \biggl(\sqrt{\frac{\Theta(1 - 2\mc{S})}{\mc{C}}} - \sqrt{\frac{2\mc{S}}{1 - \mc{S}}}\biggr)^{-2},
+\end{equation}
+for $k = 1$ and $k = 2$. ($\kappa(P)$ is a condition number, quantifying the clusterability of $P$.)
+
+Of course $v_1 = 1$, which is approximately orthogonal to $q_1 - q_2$. Therefore, letting
+\begin{equation*}
+e := \frac{q_1 - q_2}{\|q_1 - q_2\|_P}
+\end{equation*} 
+it holds that $e$ is close to $v_2$ in $\Leb^2(P)$ norm.
+\begin{proposition}
+	It holds that
+	\begin{equation}
+	\label{eqn:l2_error}
+	\|e - v_2\|_P^2 \leq (\|q_1 - q_2\|_P)^{-1}\Biggl(\mc{S}^{1/2} + \sqrt{2}\bigl[\kappa(P)\bigr]^{1/2} \Biggr)
+	\end{equation}
+\end{proposition}
+\begin{proof}
+	Throughout we shall assume that $\dotp{e}{v_2}_P > 0$---otherwise, we may simply deal with $-v_2$ throughout the proof.
+	
+	We begin by squaring the error on the left hand side of~\eqref{eqn:l2_error}, 
+	\begin{align}
+	\|e - v_2\|_P^2 = 2(1 - \dotp{e}{v_2}_P).
+	\end{align}
+	Since $\{v_k\}$ is an orthonormal basis of $L^2(P)$, Parseval's identity implies
+	\begin{equation*}
+	1 = \|e\|_P^2 = \dotp{e}{v_1}_P^2 + \dotp{e}{v_2}_P^2 + \|e - \Pi_2(e)\|_P^2 \Longrightarrow \dotp{e}{v_2}_P = 1 - \sqrt{\dotp{v_1}{e}_P^2 + \|e - \Pi_2(e)\|^2}
+	\end{equation*}
+	and therefore
+	\begin{equation*}
+	\|e - v_2\|_P^2 = 2\biggl(\sqrt{\dotp{v_1}{e}_P^2 + \|e - \Pi_2(e)\|_P^2}\biggr)\leq 2\biggl(|\dotp{v_1}{e}_P| + \|e - \Pi_2(e)\|_P\biggr)
+	\end{equation*}
+	We now show that $q_1 - q_2$ is approximately mean zero. By the triangle inequality,
+	\begin{equation*}
+	\bigl|\langle q_1 - q_2,1 \rangle_P\bigr| \leq \bigl| \langle q_1 - q_1^2,1\rangle_{P} \bigr| + \bigl| \langle q_1^2 - q_2^2,1\rangle_{P} \bigr| + \bigl| \langle q_2^2 - q_2,1\rangle_{P} \bigr|
+	\end{equation*}
+	The first and third terms can be controlled as follows:
+	\begin{align*}
+	\bigl| \langle q_k - q_k^2,1\rangle_{P} \bigr| & = \int_{\mc{M}} \bigl(q_k(x) - q_k^2(x)\bigr) p(x) \,dx \\
+	& = \int_{\mc{M}} \bigl(\sqrt{w_kp_k(x)p(x)} - w_kp_k(x)\bigr) \,dx \\
+	& = w_k \int_{\mc{M}} \bigl(\sqrt{p_k^2(x) + p_1(x)p_2(x)} - p_k(x)\bigr)  \,dx \\
+	& \leq w_k \int_{\mc{M}} \sqrt{p_1(x)p_2(x)}\,dx \\
+	& = w_k \int_{\mc{M}} \sqrt{\frac{p_1(x)p_2(x)}{p(x)}} \sqrt{p(x)} \,dx \\
+	& \leq w_k \mc{S}^{1/2},
+	\end{align*}
+	where the last upper bound follows by Cauchy-Schwarz inequality. The middle term is $\langle q_1^2 - q_2^2,1\rangle_{P} = \int p_1 - p_2 = 0$. Therefore
+	\begin{equation*}
+	\bigl|\langle q_1 - q_2,1 \rangle_P\bigr| \leq (w_1 + w_2)\mc{S}^{1/2} = \mc{S}^{1/2}.
+	\end{equation*}
+	On the other hand, by~\eqref{eqn:garciatrillos19_1}, 
+	\begin{equation*}
+	\|e - \Pi_2(e)\|_P \leq \frac{1}{\|q_1 - q_2\|_P}\biggl(\|q_1 - \Pi_2(q_1)\|_P + \|q_1 - \Pi_2(q_1)\|_P\biggr) \leq \frac{1}{\|q_1 - q_2\|_P}\bigl(\sqrt{w_1} + \sqrt{w_2}\bigr)\kappa(P)^{1/2}
+	\end{equation*}
+	completing the proof of the Proposition.
+\end{proof}
+
+As we will see momentarily, it will also be important to establish upper bounds on $\langle \Delta_P(e - v_2), (e - v_2) \rangle_P$.
+\begin{lemma}
+	It holds that
+	\begin{equation}
+	\label{eqn:dirichlet_energy_perturbation_1}
+	\bigl\langle \Delta_P(e - v_2), (e - v_2) \bigr\rangle_P \leq \frac{3\mc{C}}{\|q_1 - q_2\|_P^2} + 2\mc{C}\|e - v_2\|_P^2.
+	\end{equation}
+\end{lemma}
+\begin{proof}
+	Expanding the inner product gives
+	\begin{align*}
+	\bigl\langle \Delta_P(e - v_2), (e - v_2) \bigr\rangle_P & = \bigl\langle \Delta_Pe, e \bigr\rangle_P + \bigl\langle \Delta_Pv_2, v_2 \bigr\rangle_P - 2\bigl\langle \Delta_Pv_2, e \bigr\rangle_P \\
+	& = \bigl\langle \Delta_Pe, e \bigr\rangle_P + \lambda_2 - 2\lambda_2 \bigl\langle v_2, e \bigr\rangle_P \\
+	& = \bigl\langle \Delta_Pe, e \bigr\rangle_P - \lambda_2 + 2\lambda_2 \|e - v_2\|_P^2
+ 	\end{align*}
+ 	whence the problem reduces to upper bounding $\bigl\langle \Delta_Pe, e \bigr\rangle_P$ and $\lambda_2$. 
+ 	
+ 	For the first, we expand the inner product once again:
+ 	\begin{align*}
+	\bigl\langle \Delta_Pe, e \bigr\rangle_P & = \frac{1}{\|q_1 - q_2\|_P^2}\biggl(\bigl\langle \Delta_Pq_1, q_1 \bigr\rangle_P + \bigl\langle \Delta_Pq_2, q_2 \bigr\rangle_P - 2 \bigl\langle \Delta_Pq_1, q_2 \bigr\rangle_P\biggr) \\
+	& = \frac{1}{\|q_1 - q_2\|_P^2}\biggl(w_1\mc{C}_1 + w_2\mc{C}_2 - 2\int_{\mc{M}} q_1'(x) q_2'(x) p(x) \,dx\biggr) \\
+	& \leq \frac{1}{\|q_1 - q_2\|_P^2} \biggl((w_1 + w_2)\mc{C} + 2\Bigl(\int_{\mc{M}} \bigl(q_1'(x)\bigr)^2 p(x)\,dx\Bigr)^{1/2}\Bigl(\int_{\mc{M}} \bigl(q_2'(x)\bigr)^2 p(x)\,dx\Bigr)^{1/2}\biggr) \\
+	& \leq \frac{3\mc{C}}{\|q_1 - q_2\|_P^2}.
+ 	\end{align*}
+\end{proof}
+For the second, we characterize the eigenvalue $\lambda_2$ using the max-min theorem:
+\begin{equation*}
+\lambda_2 = \inf_{U: \dim(U) = 2} \sup_{u \in U} \frac{\dotp{\Delta_Pu}{u}_P}{\dotp{u}{u}_P} \leq \sup_{u \in \mathrm{span}\{q_1,q_2\}} \frac{\dotp{\Delta_Pu}{u}_P}{\dotp{u}{u}_P}
+\end{equation*}
+Writing $u \in \mathrm{span}\{q_1,q_2\}$ as $u = \alpha q_1 + \beta q_2$, we have 
+\begin{equation*}
+\dotp{\Delta_Pu}{u}_P = \alpha^2\dotp{\Delta_Pq_1}{q_1}_P + \beta^2\dotp{\Delta_Pq_2}{q_2}_P + 2\alpha\beta\dotp{\Delta_Pq_1}{q_2}_{P} \leq (\alpha + \beta)^2 \mc{C}
+\end{equation*}
+whereas $\|u\|_P^2 \geq \alpha^2 + \beta^2$, leaving us with 
+\begin{equation*}
+\lambda_2 \leq \frac{(\alpha + \beta)^2\mc{C}}{\alpha^2 + \beta^2} \leq 2\mc{C}.
+\end{equation*}
+
+
+\subsection{(3). Upgrade to $\Leb^{\infty}$ norm}
+As mentioned, we would like to upgrade from $\Leb^2$ to $\Leb^{\infty}$ convergence, trading off the more permissive norm by insisting on more regularity in our solution. We have the following result when $d = 1$, reminiscent of a Sobolev embedding theorem.
+\begin{proposition}
+	\label{prop:}
+	Assume $d = 1$. Let $\mb{C}$ be a connected component of $\{x:p(x) \geq p_{\star}\}$. Then, for any $g \in C_c^1(\Reals)$, we have that
+	\begin{equation*}
+	\|g\|_{\Leb^{\infty}(\mb{C})} \leq \frac{1}{p^{\star}}\Bigl(\frac{1}{\mathrm{Leb}(\mb{C})} \|g\|_{\Leb^2(P)} + \bigl(\langle \Delta_Pg , g \rangle\bigr)^{1/2}\Bigr)
+	\end{equation*}
+\end{proposition}
+\begin{proof}
+	By the fundamental theorem of calculus, for any $x,y \in \mc{C}$, we have
+	\begin{equation*}
+	g(x) - g(y) = \int_{y}^{x} g'(t) \,dt
+	\end{equation*}
+	and as a result
+	\begin{equation*}
+	\bigl|g(x)\bigr| - \bigl|g(y)\bigr| \leq \bigl|g(x) - g(y)\bigr| \leq \int_{y}^{x} \bigl|g'(t)\bigr| \,dt \leq \int_{\mb{C}} \bigl|g'(t)\bigr| \,dt.
+	\end{equation*}
+	Now, take $x$ such that $\bigl|g(x)\bigr| = \|g\|_{\Leb^{\infty}(\mb{C})}$. We have that for any $y \in \mb{C}$,
+	\begin{equation*}
+	\|g\|_{\Leb^{\infty}(\mb{C})} \leq \bigl|g(y)\bigr| + \int_{\mb{C}} \bigl|g'(t)\bigr| \,dt,
+	\end{equation*}
+	and integrating both sides with respect to $p$ gives
+	\begin{equation*}
+	P(\mb{C})\|g\|_{\Leb^{\infty}(\mb{C})} \leq \|g\|_{\Leb^1(P)} + P(\mb{C}) \|g'\|_{\Leb^1(\mb{C})}
+	\end{equation*}
+	Finally, noting that for any $f \in \Leb^1(\mb{C})$ we have $p^{\star} \|f\|_{\Leb^1(\mb{C})} \leq \|f\|_{\Leb^1(P)}$, we have
+	\begin{align*}
+	\|g\|_{\Leb^{\infty}(\mb{C})} & \leq \Bigl(\frac{1}{P(\mb{C})} \|g\|_{\Leb^1(P)} + \|g'\|_{\Leb^1(\mb{C})}\Bigr) \\
+	& \leq \frac{1}{p^{\star}}\Bigl(\frac{1}{\mathrm{Leb}(\mb{C})} \|g\|_{\Leb^1(P)} + \|g'\|_{\Leb^1(P)}\Bigr) \\
+	& \leq \frac{1}{p^{\star}}\Bigl(\frac{1}{\mathrm{Leb}(\mb{C})} \|g\|_{\Leb^2(P)} + \|g'\|_{\Leb^2(P)}\Bigr)
+	\end{align*}
+	A direct computation shows that $\langle\Delta_{P}g,g \rangle_{P} = \|g'\|_{\Leb^2(P)}$ for any $g$ compactly supported in $\Reals$, yielding the claim.
+\end{proof}
+
+\section{Some calculations in the Gaussian case}
+\label{sec:some_calculations}
+Here I state as facts what can be derived via some (ugly, tedious, and crude) calculations. I decline to include the calculations, because they are crude. In all cases, the notation and parameters are for the mixture-of-two-Gaussians case.
+\begin{itemize}
+	\item Noting that $p(x) \geq \frac{1}{2}p_1(x)$ for all $x \in \mb{C}_{(1)}$, some arithmetic implies that
+	\begin{equation*}
+	[-y_{\star},y_{\star}] \subseteq \mc{C}_{(1)}~~\textrm{for $y_{\star} := \sqrt{z_{\star}^2 - \log(4)}$.}
+	\end{equation*}
+	assuming $z_{\star}^2 > \log(4)$. 
+	\item If $z_{\star}^2 \geq 2\log(4)$, then
+	\begin{equation}
+	\label{eqn:crude1}
+	2\sqrt{z_{\star}^2 - \log(4)} \geq z_{\star} \geq 1.
+	\end{equation}
+	\item If $\gamma/2 > z_{\star}^2 \geq 2\log(4)$, then 
+	\begin{equation}
+	\label{eqn:crude2}
+	1 - 2\mc{S} \geq 1/2.
+	\end{equation}
+	\item If
+	\begin{equation*}
+	8\log\biggl(\frac{32}{\pi^{1/2}}\biggr) \leq \gamma^2
+	\end{equation*}
+	then 
+	\begin{equation}
+	\label{eqn:crude3}
+	\sqrt{\frac{\Theta(1 - 2\mc{S})}{\mc{C}}} \geq 2\sqrt{\frac{2\mc{S}}{1 - \mc{S}}}.
+	\end{equation}
+	\item Under~\eqref{eqn:crude1} - \eqref{eqn:crude3}, from Theorem~\ref{thm:uniform_bound} it holds that
+	\begin{equation*}
+	av_2(x) \geq \sigma_{\star} - \frac{80 \pi^{1/4} \mc{C}^{1/2}}{p^{\star}}.
+	\end{equation*}
+\end{itemize}
+	
+\end{document}

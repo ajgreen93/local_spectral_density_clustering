@@ -1,0 +1,291 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\makeatletter
+\newcommand{\leqnomode}{\tagsleft@true}
+\newcommand{\reqnomode}{\tagsleft@false}
+\makeatother
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Var}[1]{\mathrm{Var}\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dotp}[2]{\langle #1 , #2 \rangle}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\convweak}{\overset{w}{\rightharpoonup}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\Bin}{\mathrm{Bin}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\Bal}{\textrm{Bal}}
+\newcommand{\Cut}{\textrm{Cut}}
+\newcommand{\Ind}{\textrm{Ind}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\Naturals}{\mathbb{N}}
+\newcommand{\dist}{\mathrm{dist}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+
+\newcommand{\Linv}{L^{\dagger}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\h}{\textbf{h}}
+% \newcommand{\l}{\ell}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\y}{\textbf{y}}
+\newcommand{\bl}{\bm{\ell}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\Lx}{\mathcal{L}_X}
+\newcommand{\Ly}{\mathcal{L}_Y}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+%%% Matrix related notation
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Bbf}{\mathbf{B}}
+
+%%% Vector related notation
+\newcommand{\lbf}{\bm{\ell}}
+\newcommand{\fbf}{\mathbf{f}}
+
+%%% Set related notation
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Dset}{\mathcal{D}}
+\newcommand{\Aset}{\mathcal{A}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\Sset}{\mathcal{S}}
+
+\newcommand{\Csig}{\Cset_{\sigma}}
+
+%%% Distribution related notation
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Qbb}{\mathbb{Q}}
+% \newcommand{\Pr}{\mathrm{Pr}}}
+
+%%% Functionals
+\newcommand{\1}{\mathbf{1}}
+
+%%% Functions over graphs
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\vol}{\mathrm{vol}}
+
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+\newtheorem{definition}{Definition}[section]
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+	
+\title{Notes on ``A nonlocal anisotropic model for phase transitions (Alberti 97)''}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+Let $\Csig = \Cset + B(0,\sigma)$ for some $\Cset \subset \Reals^d$. Define the nonlocal functional $F_{r}(v, \Csig)$ to be
+\begin{equation*}
+F_r(v, \Csig) := \frac{1}{4r} \iint_{\Csig} \frac{\1(\norm{x - y} \leq r)}{r^d} (v(x) - v(y))^2 dx dy + \frac{1}{r} \int_{\Csig} W(v(x)) dx
+\end{equation*}
+where $W:\Reals \to \Reals$ is a continuous function which vanishes at $\pm 1$ only and has at least \textcolor{red}{linear growth at infinity}.
+
+\begin{theorem}[Theorem 3.1]
+	Let $r_n \to 0$, $v_{n}: \Csig \to [-1,1]$ be such that $F_{r_n}(v_n, \Csig)$ is bounded. Then the sequence $\seq{v_n}$ is precompact in $L^1(\Csig)$. 
+\end{theorem}
+\begin{proof}
+	Throughout, let  $J_r(\norm{x - y}) := \frac{\1(\norm{x - y} \leq r)}{r^d}$. 
+	\item
+	
+	\textbf{Step 1:} At first, we will assume each $v_n$ takes values in $\pm1$ only. 
+	
+	Extend each function $v_n$ to $1$ in $\Reals^d \setminus \Csig$, and observe that our hypothesis implies (\textcolor{red}{omitting the proof})
+	\begin{equation}
+	\label{eqn: nonlocal_functional_bound}
+	\iint_{\Reals^d \times \Reals^d} J_r(\norm{x - y}) \abs{v_n(x) - v_n(y)} dy dx = \mathcal{O}(r)
+	\end{equation} 
+	Moreover, it is an easily verifiable fact that for every non-negative $g \in L^1(\Reals^d)$,
+	\begin{equation*}
+	\iint_{\Reals^d \times \Reals^d} (g \ast g)(x - y) \abs{u(x) - u(y)} dy dx \leq 2 \norm{g}_1 \iint_{\Reals^d \times \Reals^d} g(x - y) \abs{u(x) - u(y)} dx dy
+	\end{equation*}
+	and in combination with \eqref{eqn: nonlocal_functional_bound} this implies
+	\begin{equation}
+	\label{eqn: nonlocal_functional_bound_1}
+	\iint_{\Reals^d \times \Reals^d} (J_r \ast J_r)(x - y) \abs{u(x) - u(y)} dy dx = \mathcal{O}(r)
+	\end{equation}
+	
+	Since $J \ast J$ is a nonnegative continuous function, we may find a nonnegative smooth function $\varphi$ with compact support such that
+	\begin{equation}
+	\label{eqn: varphi}
+	\varphi \leq J_r \ast J_r,~ \abs{\nabla \varphi} \leq J \ast J.
+	\end{equation}
+	Letting $c = \int_{\Reals^d} \varphi(y) dy$, for $y \in \Reals^d$ define
+	\begin{equation*}
+	\varphi_r(y) := \frac{1}{cr^d} \varphi\left(\frac{y}{r}\right),~ w_n(y) := \varphi_{r_n} \ast v_n(y)
+	\end{equation*}
+	We claim that $\seq{w_n}$ is asymptotically equivalent to $\seq{v_n}$ in $L^1(\Reals^d)$ and that the gradients $\nabla{w_n}$ are uniformly bounded in $L^1(\Reals^d)$. Suppose this were true; then by Theorem \ref{thm: poincare}
+	\begin{equation*}
+	\norm{w_n}_{L^1(\Csig)} \leq \norm{w_n}_{L^{p^{\star}}(\Csig)} \leq \norm{w_n}_{L^{p*}(\Reals^d)} \leq C \norm{\nabla w_n}_{L^1(\Reals^d)} < \infty
+	\end{equation*}
+	and so $w_n \in W_{1,1}(\Csig)$. By the Rellich-Kondrachov Compactness Theorem (Theorem \ref{thm: arzela_ascoli}), $\seq{w_n}$ is precompact in $L^1(\Csig)$.
+	
+	It remains to prove the claim. We have
+	\begin{align*}
+	\int_{\Reals^d} \abs{w_n(x) - v_n(x)} dx & = \int_{\Reals^d} \abs{ \int_{\Reals^d} \varphi_{r_n}(v_n(y) - v_n(x)) dy} dx \\
+	& \leq \iint_{\Reals^d \times \Reals^d} \abs{\varphi_{r_n}(\norm{x - y})} \abs{v_n(y) - v_n(x)} dy dx \\
+	& \leq \frac{1}{c} \iint_{\Reals^d \times \Reals^d} (J \ast J)(\norm{x - y}) \abs{v_n(y) - v_n(x)} dy dx = \mathcal{O}(r).
+	\end{align*}
+	where the last equality follows from \eqref{eqn: nonlocal_functional_bound_1}. 
+	
+	Moreover, 
+	\begin{align*}
+	\int_{\Reals^d} \abs{\nabla w_n} dx & = \int_{\Reals^d} \abs{\int_{\Reals^d} \nabla \varphi_{r_n}(x - y) u_n(y) dy} dx \\
+	& \overset{(i)}{=} \int_{\Reals^d} \abs{\int_{\Reals^d} \nabla \varphi_{r_n}(x - y) (u_n(y) - u_n(x)) dy} dx \\
+	& \leq \iint_{\Reals^d \times \Reals^d} \abs{\nabla \varphi_{r_n}(x - y)} (u_n(y) - u_n(x)) dy dx \\
+	& \overset{(ii)}{\leq} \frac{1}{cr}  \iint_{\Reals^d \times \Reals^d} (J_r \ast J_r)(x-y) (u_n(y) - u_n(x)) dy dx \\
+	& \overset{(iii)}{=} \mathcal{O}(1),
+	\end{align*}
+	where $(i)$ follows from $\int_{\Reals^d} \nabla \varphi_{r_n}(x - y) dy = 0$, in the light of the fact that $\varphi$ has compact support; $(ii)$ follows from \eqref{eqn: varphi}; and $(iii)$ from \eqref{eqn: nonlocal_functional_bound_1}.
+\end{proof}
+
+\section{Additional Information}
+
+For a function $J$, we write $J_r(x) := \frac{1}{r^d} J\left(\frac{x}{r}\right)$. 
+
+The mollification of a function $f:\Reals^d \to \Reals$ by a mollifier $J_{r}$ is written $f_r: \Reals^d \to \Reals$, and is given by
+\begin{equation*}
+f_r(x) := J_r \ast f = \int_{\Reals^d} J_r(x - y) f(y) dy.
+\end{equation*}
+
+\begin{theorem}[Arzela-Ascoli]
+	\label{thm: arzela_ascoli}
+	Suppose $\seq{f_n}$ is a sequence of real-valued functions defined on $\Reals^d$ such that for all $k \in \Naturals$, $x \in \Reals^d$,
+	\begin{equation*}
+	\abs{f_n(x)} \leq M
+	\end{equation*}
+	for some constant $M$, and that moreover the functions $f_n$ are \emph{uniformly equicontinuous}, meaning that for each $\epsilon > 0$ there exists $\delta > 0$ such that 
+	\begin{equation*}
+	\abs{x - y} < \delta~ \Longrightarrow~ \abs{f_n(x) - f(n)}. \tag{for all $x,y \in \Reals^d$}
+	\end{equation*}
+	
+	Then, there exists a subsequence $(f_{n_k})_{k \in \Naturals}$ and a continuous function $f$ such that
+	\begin{equation*}
+	f_{n_k} \to f~~ \textrm{uniformly on compact subsets of}~ \Reals^d
+	\end{equation*}
+\end{theorem}
+
+\begin{definition}
+	Let $X$ and $Y$ be Banach spaces, $X \subset Y$. We say that $X$ is \emph{compactly embedded} in $Y$, written
+	\begin{equation*}
+	X \subset \subset Y
+	\end{equation*}
+	if 
+	\begin{enumerate}[(i)]
+		\item $\norm{u}_Y \leq C \norm{u}_X$ for some constant $C$, and
+		\item each bounded sequence in $X$ is precompact in $Y$. 
+	\end{enumerate}
+\end{definition}
+
+Recall that the Sobolev conjugate is $p^*= \frac{pn}{n - p}$.
+
+\begin{theorem}[Rellich-Kondrachov Compactness Theorem]
+	\label{thm: compact_embedding}
+	Assume $U$ is a bounded open subset of $\Reals^d$ and $\partial U$ is $C^1$. Suppose $1 \leq p < d$. Then
+	\begin{equation*}
+	W^{1,p}(U) \subset \subset L^q(U)
+	\end{equation*}
+	for $1 \leq q < p^{\star}$. In particular, since $p^{*} > p$, we have
+	\begin{equation*}
+	W^{1,p}(U) \subset \subset L^p(U)
+	\end{equation*}
+	for all $1 \leq p$.
+\end{theorem}
+
+\begin{theorem}[Gagliardo-Nirenberg-Sobolev]
+	\label{thm: poincare}
+	Assume $1 \leq p < d$. There exists constant $C$, depending only on $p$ and $d$, such that
+	\begin{equation*}
+	\norm{u}_{L^{p^*}(\Reals^d)} \leq C \norm{D u}_{L^{p}(\Reals)}
+	\end{equation*}
+	for all $u \in C_c^1(\Reals^d)$. 
+\end{theorem}
+\end{document}

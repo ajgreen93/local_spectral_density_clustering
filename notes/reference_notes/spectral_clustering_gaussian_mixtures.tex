@@ -1,0 +1,192 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Vector spaces
+\newcommand{\Zbb}{\mathbb{Z}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Spectral clustering for the Gaussian Mixture Model (GMM)}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{General setup.}
+
+\section{The geometry of spectral clustering (Schiebinger, Yu, Wainwright15)}
+
+(Although this paper is focused on nonparametric mixture model clustering -- latent label identification -- rather than clustering under the (parametric) GMM, Example 2 lays out how the geometric functionals which govern the rates of label identification are affected by mean distance in the GMM.)
+
+We begin by reviewing necessary background. We observe data $X_1, \ldots, X_n$ from a given mixture distribution $\overline{\Pbb} = \sum_{m = 1}^{k} w_m \Pbb_m$. Form the weighted complete graph $G$ by applying kernel function $k(x,y)$ to pairs of data, and let $L$ be the corresponding normalized Laplacian matrix. Let $q_m(x) = \sqrt{k(x,\cdot) \ast p_{\ell}}$ be the \emph{square root kernelized density}, and let $k_m(x,y) = k(x,y)/(q_m(x) q_m(y))$. Consider the integral operator $\mathbb{L}_m$, given by
+\begin{equation*}
+\mathbb{L}_{m}f(x) = \int k_m(x,y) f(y) \,dP_m(y).
+\end{equation*}
+The first eigenvector of $\mathbb{L}_m$ is $q_m$. The aforementioned geometric functionals in effect allow us to i) bound the perturbation between $\sum_{m = 1}^{k} w_m \mathbb{L}_m$ and $\overline{\mathbb{L}}$, given by
+\begin{equation*}
+\overline{\mathbb{L}} f(x) = \int \overline{k}(x,y) f(y) \,d\overline{\Pbb}(y) 
+\end{equation*}
+and ii) show that the $k$ largest eigenvalues of $\sum_{m = 1}^{k} w_m \mathbb{L}_m$ do in fact correspond to the $k$ square root kernelized densities.
+
+Now, we may define the aforementioned functionals. These are the \emph{coupling parameter} $\mathbb{C}(\overline{\Pbb})$, given by
+\begin{equation*}
+\mathbb{C}(\overline{\Pbb}) = \max_{m = 1,\ldots,k} \norm{k_m - w_m\overline{k}}_{\Pbb_m \otimes \Pbb_m},
+\end{equation*}
+the \emph{similarity parameter} $\mathbb{S}_{\textrm{max}}(\overline{\Pbb})$, given by
+\begin{equation*}
+\mathbb{S}(\Pbb_{\ell}, \Pbb_{m}) = \frac{\int_{\Xset} \int_{\Xset} k(x,y) \,d\Pbb_{\ell}(y) \,d\Pbb_{m}(x)}{\int_{\Xset} \int_{\Xset} k(x,y) \,d\overline{\Pbb}(y) \,d\Pbb_{m}(x)}, \quad \mathbb{S}_{\textrm{max}}(\overline{\Pbb}) = \max_{\ell \neq m}~ \mathbb{S}(\Pbb_{\ell}, \Pbb_{m}),
+\end{equation*}
+and the \emph{indivisibility parameter} $\Gamma_{\textrm{min}}(\overline{\Pbb})$, given by
+\begin{equation*}
+\Gamma(\Pbb) = \inf_{S \subset \Xset }\frac{\int_{S} \int_{S^c} k(x,y) \,d\Pbb_m(y) \,d\Pbb(x)}{p(S)p(S^c)}, \quad \Gamma_{\textrm{min}}(\overline{\Pbb}) = \min_{m = 1,\ldots,k} \Gamma_{\min}(\Pbb_{\ell})
+\end{equation*}
+where $p(S) = \int_{S} \int_{\mathcal{X}} k(x,y) \,d\Pbb(y) \,d\Pbb(x)$.
+
+The first two geometric parameters govern the perturbation of $\sum_{m = 1}^{k} w_m \mathbb{L}_m - \overline{\mathbb{L}}.$ In particular, the coupling parameter is needed to upper bound the perturbation due to the change in normalization, $\norm{\sum_{m = 1}^{k}w_m\mathbb{L}_{m,k_m} - \sum_{m = 1}^{k}w_m\mathbb{L}_{m,\overline{k}}}_{\textrm{op}}$, and the similarity parameter is needed to bound the perturbation due to overlap in distributions, $\sum_{m = 1}^{k}w_m\mathbb{L}_{m,\overline{k}} - \overline{\mathbb{L}}$. All three geometric parameters govern the $\lambda_k - \lambda_{k+1}$ eigenvalue gap. 
+
+\subsection{Calculations in the Gaussian Mixture Model.}
+Consider the 2-mixture Gaussian $\overline{\mathbb{N}} = \frac{1}{2}\mathbb{N}(0,1) + \frac{1}{2}\mathbb{N}(\mu,1)$, with kernel function $k_{\nu}(x,y) = (2\pi\nu^2)^{-1/2} \exp\{-\abs{x - y}^2/2\nu^2 \}$. We begin by computing the similarity parameter $\mathbb{S}_{\max}(\overline{\mathbb{N}})$.
+\begin{align*}
+\mathbb{S}_{\max}(\overline{\mathbb{N}}) = \frac{2\exp\{-\mu^2/(2\nu^2 + 4)\}}{1 + \exp\{-\mu^2/(2\nu^2 + 4)\}} \leq 2\exp\{-\mu^2/(2\nu^2 + 4)\}.
+\end{align*}
+
+\end{document}

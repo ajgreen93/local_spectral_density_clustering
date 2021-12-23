@@ -1,0 +1,186 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+\usepackage{mathtools}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\dxpr}{\,dx'}
+\newcommand{\dypr}{\,dy'}
+\newcommand{\wt}[1]{\widetilde{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+	
+We thank all reviewers for their comments and feedback. We first respond to a common concern among the reviewers, before making individual responses below.
+
+A common critique from reviewers is that the set of assumptions we impose on a given density cluster $\mathcal{C}$ are not sufficiently motivated. Our motivation is as follows: on the one hand, a commonly analyzed paradigm in nonparametric clustering is density clustering, and on the other hand many common nonparametric clustering algorithms are spectral in nature. Oftentimes, spectral clustering algorithms are intuitively thought of as identifying groups of points in connected high-density regions. However, in past theoretical studies of spectral clustering algorithms (such as Shi et al. and Schiebinger et al.), while the requirement that a cluster have high density is often implicit in the formally stated assumptions, a formal assumption of this nature is neither explicitly stated, nor is it sufficient to satisfy the required assumptions in these works. 
+We start from the same basic premise that a good candidate set $\mathcal{C}$ for recovery by a spectral clustering algorithm should have high density. In our case, however, we restrict $\mathcal{C}$ to have uniformly lower bounded density by requiring it to be an upper-level set of the density function. Our goal is then to detail what \textit{other} properties a cluster should have, in addition to being a high-density set, in order for it to be a good candidate for a spectral algorithm (in our case, \textrm{PPR}).
+
+\textbf{Response to Reviewer 1.}
+
+[``Challenges to the proof...''] We agree that more discussion of proof techniques would be useful for the interested reader. The main two technical contributions of the work are Theorems 3 and 4, upper bounds on normalized cut and mixing time over a neighborhood graph. The main challenge in upper bounding the expected normalized cut is to upper bound the probability mass assigned to $\set{x: 0 \leq \mathrm{dist}(x,\mathcal{C}) \leq r}$, as all edges which cross the cut $\mathrm{cut}(\mathcal{C}_{\sigma}[X]; G_{n,r})$ must have (exactly) one endpoint in this set. Then, passing from an upper bound on expected normalized cut to a finite-sample bound is relatively straightforward. Upper bounding mixing time of a random walk over $\mathcal{C}_{\sigma}[X]$ is less straightforward, as it requires a \textit{uniform} lower bound on the normalized cut of subsets of $\mathcal{C}_{\sigma}[X]$. We invoke population-level results to lower bound the conductance (minimum normalized cut) of subsets of $\mathcal{C}_{\sigma}$, then rely on optimal transportation theory to relate this bound to a bound on the conductance of $\mathcal{C}_{\sigma}[X]$.
+
+[``What type of distributional properties needed...''] We agree adding common examples would help clarify the significance of our contribution. The common nonparametric mixture model most suited to our assumptions is the mixture of uniforms. To be specific, for connected and geometrically compact but otherwise arbitrary subsets $U_1, \ldots, U_p$,  of domain $\mathcal{X}$, we would consider the density function $f(x) \propto \sum_{i = 1}^{p} \pi_i \mathbf{1}(x \in U_i) + \pi_0 \mathbf{1}(x \in \mathcal{X})$. 
+
+[``standard multi-modal densities...''] We do not believe our theory is tight in the case of gaussian mixtures. This is a consequence of the generality of our setup, where the only regularity on the density within $\mathcal{C}$ is imposed by the minimum/maximum density parameters $\lambda_{\sigma}$ and $\Lambda_{\sigma}$. More explicit assumptions about the density -- such as smoothness or unimodality -- within $\mathcal{C}$ would be needed to strengthen our theory in the GMM setup. 
+
+\textbf{Response to Reviewer 2.}
+
+[``weakness in the experiments section...''] We will add more extensive experiments for a camera-ready version.
+
+[``natural set of geometric conditions...''] See above.
+
+[``restructuring and rewriting...''] We thank the reviewer for the suggestion to reorganize, including the suggestion to define well-conditioned density clusters earlier.
+
+\textbf{Response to Reviewer 3. }
+
+[``exact aim of this paper...''] See above. In particular, however, we note that our definition of density-based upper level sets and recovery of their $\sigma$-expansions is standard in the density clustering literature, (e.g. it matches that of Chaudhuri and Dasgupta.) We apologize for any confusion.
+
+[``samples from an unknown distribution...''] Included in our supplement is a detailed description of our experimental setup. We would include more experimental details in our main text for a camera-ready version.
+
+[``more than two clusters...''] Yes, the method (and theory) holds for any number of clusters, which is one of the appeals of considering a local clustering approach.
+
+[``PPR on a graph network is not new...''] We agree with the reviewer's points re: novelty of PPR on graphs and recovery of two moons. We feel in fact that the extensive study of PPR on graphs is helpful in the study of statistical properties of PPR, as it reduces our analysis task to showing that the required graph-theoretic properties are satisfied by an appropriate neighborhood graph over point cloud data. Our two moons example was designed to show how, even in a canonical example for spectral algorithms, geometric constraints beyond merely high-density region are required for the successful recovery of one of the moons.
+
+
+	
+
+\end{document}

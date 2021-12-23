@@ -1,0 +1,403 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbb{I}}
+
+\newcommand{\Linv}{L^{\dagger}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Vector spaces
+\newcommand{\Zbb}{\mathbb{Z}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\mathcal{D}}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Nonparametric clustering}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+The articles summarized in this document are about one of two types of nonparametric clustering: either latent membership recovery in the nonparametric mixture model, or density clustering.
+
+\section{Optimal construction of $k$-nearest neighbor graphs for identifying noisy clusters(Maier09).}
+
+\section{Clustering Based on Pairwise Distance When the Data is of Mixed Dimensions(Arias-Castro09).}
+
+We begin by specifying the idealized generative model under which we observe data $x_1, \ldots, x_N \subset [0,1]^D$. For a positive integer $d \leq D$, and a constant $\kappa \geq 1$, let $\mathcal{S}_{d}(\kappa)$ be the class of measurable, connected sets (surfaces) $S \subset [0,1]^D$ such that
+\begin{equation*}
+\forall x \in S: \kappa^{-1}\epsilon^d \leq \vol_d(B(x,\epsilon) \cap \mathcal{S}) \leq \kappa \epsilon^d, \quad \textrm{for all $\epsilon \in [0,\diam(S)]$}
+\end{equation*}
+(Note that this contains the image $f([0,1]^d)$ of locally bi-Lipschitz functions $f: [0,1]^d \to [0,1]^D$ satisfying:
+\begin{equation*}
+M^{-1} \norm{b - a} \leq \norm{f(b) - f(a)} \leq M \norm{b - a}, \quad \textrm{for all $a,b \in [0,1]^d,$}
+\end{equation*}
+for $M$ small enough. 
+
+For $S \subset \mathcal{X}$ and $\tau > 0$, define
+\begin{equation*}
+B(S,\tau) = \set{x \in [0,1]^D: \min_{y \in S} \norm{x - y} \leq \tau}.
+\end{equation*}
+Given cluster $S_1, \ldots, S_{K} \in \mathcal{S}(\kappa)$, we generate clusters $\mathcal{X}_1, \ldots, \mathcal{X}_K$ by sampling $N_k$ points in $B(S_k, \tau)$ according to distribution $\Psi_k$, with density $\psi_k$ with respect to the uniform distribution over $B(S_k,\tau)$. We require that $\kappa^{-1} \leq \psi_k \leq \kappa$, so that the cluster is somewhat uniformly sampled. Letting $N = N_k$, we therefore observe points $\set{x_1, \ldots, x_N} = \cup_{k = 1}^{K} \mathcal{X}_k$. 
+
+Assume that the underlying surfaces are well-separated:
+\begin{equation*}
+\mathrm{dist}(S_k,S_{\ell}) \geq \delta
+\end{equation*}
+so that the actual clusters are separated by a distance of at least $\delta - 2\tau$. Our task is as follows: given data $\set{x_1, \ldots, x_N}$, recover the clusters $\mathcal{X}_1, \ldots, \mathcal{X}_K$. 
+
+\section{Data Spectroscopic Clustering(Shi09)}
+
+Let $K(x,y)$ be a positive semi-definite kernel function over $\Reals^d$. Given a distribution $P$, define the convolution operator $\mathcal{K}_{P}:L^2(P) \to L^2(P)$ to be
+\begin{equation*}
+\mathcal{K}_Pf(x) = \int_{\Reals^d} K(x,y) f(y) \,dP(y).
+\end{equation*}
+
+Assume that 
+\begin{equation*}
+\iint K^2(x,y) \,dP(y) \,dP(x) < \infty
+\end{equation*}
+so that $\mathcal{K}_P$ is a trace class operator, and is therefore compact and has a discrete spectrum, which we denote by $\lambda_0 \geq \lambda_1 \geq \cdots \geq 0$. Let $\phi_k$ be the eigenfunction associated with eigenvalue $\lambda_k$, i.e. $\lambda_k \phi_k = \mathcal{K}_P \phi_k$ and $\norm{\phi_k}_{L^2(P)} = 1$. 
+
+The first pair of theorems detail basic properties of the eigenfunctions of $\mathcal{K}_P$. 
+
+\begin{theorem}[Tail decay property of eigenfunctions]
+	\label{thm:shi_1}
+	An eigenfunction $\phi$ with eigenvalue $\lambda > 0$ of $\mathcal{K}_P$ satisfies
+	\begin{equation*}
+	\abs{\phi(x)} \leq \frac{1}{\lambda} \sqrt{\int K^2(x,y) \,dP(y) }.
+	\end{equation*}
+\end{theorem}
+
+
+\begin{theorem}
+	\label{thm:shi_2}
+	Let $K(x,y)$ have full support on $\Rd$. The top eigenfunction $\phi_0(x)$ of the convolution operator $\mathcal{K}_{P}$:
+	\begin{enumerate}
+		\item is the only eigenfunction with no sign change on $\Rd$;
+		\item has multiplicity one;
+		\item is nonzero everywhere on $\Rd$.
+	\end{enumerate}
+\end{theorem}
+\begin{proof}
+	We will prove the theorem through the following steps:
+	\begin{enumerate}
+		\item We review basic facts of integration.
+		\item We show that $\phi_0$ must have constant sign $P$-a.e.
+		\item We show that $\phi_0$ must be have no sign change, and must be supported, everywhere on $\Rd$.
+		\item We show that $\phi_0$ has multiplicity one.
+	\end{enumerate}
+
+	\textbf{1. Basic integration facts.}
+	
+	Let $\mu$ be a measure over $(A,\Sigma)$, and let $R \in \Sigma$ satisfy $\mu(R) > 0$. Then, if $f,g$ are measurable functions from $A$ to $\Reals$, 
+	\begin{equation*}
+	f > g \quad \textrm{implies} \int_R f \,d\mu > \int_R g \,d\mu.
+	\end{equation*}
+	
+	\textbf{2. Sign change on the support of $P$}
+	
+	Let $R$ denote the support of $P$. Let $R^+ = \set{x \in \Rd: \phi(x) > 0}$ and let $R^- = \set{x \in \Rd: \phi(x) < 0}$. We will show that either $P(R^+) = 0$ or $P(R^-) = 0$. 
+	
+	Assume not. Then, let $\bar{\phi_0} = \abs{\phi_0}$, and let $g(x,y) = K(x,y) \phi_0(x) \phi_0(y)$ and likewise $\overline{g}(x,y) = K(x,y) \overline{\phi}_0(x) \overline{\phi}_0(y)$. Then,
+	\begin{equation*}
+	\iint \ol{g}(x,y) \,dP(y) \,dP(x) = \iint_{R^+ \times R^+} g(x,y) \,dP(y) \,dP(x) + \iint_{R^- \times R^-} g(x,y) \,dP(y) \,dP(x) + 2 \iint_{R^+ \times R^-} \ol{g}(x,y) \,dP(y) \,dP(x).
+	\end{equation*}
+	However, $\overline{g}(x,y) > 0 > g(x,y)$ for all $(x,y) \in R^+ \times R^-$. Therefore, by 1. $\iint \ol{g}(x,y) \,dP(y) \,dP(x) > \iint {g}(x,y) \,dP(y) \,dP(x)$ unless either $P(R^+)$ or $P(R^-) = 0$. 
+	
+	\textbf{3. Sign change over $\Reals^d$.}
+	Assume without loss of generality that $\phi(y) \geq 0$, $P$-a.e. Next, observe that $\lambda_0 > 0$ (try $\phi = \1(x \in R)$ as a test function)
+	\begin{equation*}
+	\lambda_0 \phi_0(x) = \int K(x,y) \phi_0(y) \,dP(y) = \int_{R} K(x,y) \phi_0(y) \,dP(y).
+	\end{equation*}
+	It immediately follows that $\phi_0(x) \geq 0$ for all $x \in \Rd$. Moreover, if $\phi_0(x) = 0$, $K(x,y) \phi_0(y) = 0$ everywhere except a set $S$ such that $P(S) = 0$. Since $K(x,y) > 0$ for all $x,y$, this means $\phi_0(y) = 0$, everywhere except a set $S$ such that $P(S) = 0$. However, that implies $\lambda_0 = 0$, which is a contradiction. Therefore, for all $x \in \Rd$, $\phi_0(x) > 0$. 
+	
+	\textbf{4. Multiplicity one.}
+	If $\lambda_0$ has multiplicity more than one, then there exist $\phi_0$ and $\wt{\phi}_0$, which are both positive everywhere on $\Rd$. But then
+	\begin{equation*}
+	\iint \phi_0(x) \wt{\phi}_0(y) \,dP(x) \,dP(y) > 0
+	\end{equation*}
+	which contradicts orthogonality of eigenfunctions.
+\end{proof}
+
+Next, we perform some perturbation analysis.
+
+\begin{theorem}[Top eigenvalue of mixture distribution.]
+	\label{thm:shi_3}
+	Let $P = \pi_1 P_1 + \pi_2 P_2$ be a mixture distribution on $\Rd$ with $\pi_1 + \pi_2 = 1$. Denote the top eigenvalue of $\mathcal{K}_P$, $\mathcal{K}_{P_1}$ and $\mathcal{K}_{P_2}$ as $\lambda_0$, $\lambda_{0,1}$ and $\lambda_{0,2}$, respectively. Then $\lambda_0$ satisfies
+	\begin{equation*}
+	\max\{\pi_1 \lambda_{0,1}, \pi_2 \lambda_{0,2}\} \leq \lambda_0 \leq \max\{\pi_1 \lambda_{0,1}, \pi_2 \lambda_{0,2}\} + r
+	\end{equation*}
+	where
+	\begin{equation*}
+	r = \left[\pi_1 \pi_2 \iint K^2(x,y) \,dP_1(y) \,dP_2(x)\right]^{1/2}
+	\end{equation*}
+\end{theorem}
+\begin{proof}
+	Assume Letting $g(x,y) = K(x,y) f(y)$, we have that for any $f \in L^2(P)$ with $\norm{f}_{L^2(P)} = 1$,
+	\begin{align}
+	\dotp{\mathcal{K}_Pf}{f} & = \int \left(\pi_1 \int g(x,y) \,dP_1(x) + \pi_2 \int g(x,y)\,dP_2(x)\right) f(y) \,dP(y) \nonumber \\
+	& = \pi_1^2 \iint g(x,y) f(y) \,dP_1(x) \,dP_1(y) +  \pi_2^2 \iint g(x,y) f(y) \,dP_2(x) \,dP_2(y) + 2 \pi_1 \pi_2 \iint g(x,y) f(y) \,dP_2(x) \,dP_1(y)  \label{eqn:shi_1}
+	\end{align}
+	Using the Cauchy-Schwarz inequality and the identity $2\sqrt{ab} \leq a + b$ when $a,b > 0$, we upper bound the final term as follows:
+	\begin{align*}
+	2 \pi_1 \pi_2 \iint g(x,y) f(y) \,dP_2(x) \,dP_1(y) & \leq 2 \pi_1 \pi_2  \left(\iint K^2(x,y) \,dP_2(x) \,dP_1(y)\right)^{1/2} \times \left(\iint f^2(x) f^2(y)  \,dP_2(x) \,dP_1(y)\right)^{1/2} \\
+	& \leq \left(\pi_1 \pi_2 \iint K^2(x,y) \,dP_2(x) \,dP_1(y)\right)^{1/2} \times \left(\pi_1 \int f^2(x) \,dP_1(x) + \pi_2 \int f^2(x)\,dP_2(x)\right) \\
+	& = r.
+	\end{align*}
+	It is not hard to bound the first two terms of \eqref{eqn:shi_1},
+	\begin{equation*}
+	\pi_1^2 \iint g(x,y) f(y) \,dP_1(x) \,dP_1(y) +  \pi_2^2 \iint g(x,y) f(y) \,dP_2(x) \,dP_2(y) \leq \pi_1^2 \lambda_{0,1} + \pi_2^2 \lambda_{0,2} \leq \max\{\pi_1 \lambda_{0,1}, \pi_2 \lambda_{0,2}\}
+	\end{equation*}
+	which proves the desired upper bound on $\dotp{\mathcal{K_P}f}{f}$ for all unit norm $f$, and therefore on $\lambda_0$. The lower bound is trivial.
+\end{proof}
+
+\begin{lemma}
+	Consider an operator $\mathcal{K}_P$ with the discrete spectrum $\lambda_0 \geq \lambda_1 \geq \cdots$. 
+	\begin{enumerate}
+		\item If 
+		\begin{equation*}
+		\norm{\mathcal{K}_P - \lambda f}_{L^2(P)} \leq \epsilon
+		\end{equation*}
+		for some $\lambda,\epsilon> 0$ and $f \in L^2(P), \norm{f}_{L^2(P)} = 1$, then $\mathcal{K}_P$ has an eigenvalue $\lambda_k$ such that $\abs{\lambda_k - \lambda} \leq \epsilon$. 
+		\item If we further assume that $s = \min_i: \abs{\lambda_i - \lambda_k} = s > \epsilon$, then $\mathcal{K}_P$ has an eigenfunction $f_k$ corresponding to $\lambda_k$ such that $\norm{f - f_k}_{L^2(P)} \leq \frac{\epsilon}{s - \epsilon}$. 
+	\end{enumerate}
+\end{lemma}
+\begin{proof}
+	\item[]
+	\textbf{Proof of 1.} Assume $\min_{j}\abs{\lambda_j - \lambda} > 0$, otherwise the statement clearly holds. Then by Cauchy-Schwarz
+	\begin{align*}
+	1 = \norm{(\mathcal{K}_P - \lambda I) (\mathcal{K}_P - \lambda I)^{-1} f}_{L^2(P)} \leq \epsilon \norm{(\mathcal{K}_P - \lambda I)^{-1} f}_{L^2(P)}  \leq \frac{\epsilon}{\min_{j}\abs{\lambda_j - \lambda}}.
+	\end{align*}
+	
+	\textbf{Proof of 2.} Let $\lambda_k$ achieve the minimum $\min_{j}\abs{\lambda_j - \lambda}$, and let $g_1,\ldots,g_m$ be an orthonormal basis of the subspace $E_{\lambda_k}$. Note that the projection of $f$ onto $E_{\lambda_k}$,
+	\begin{equation*}
+	f_k = \dotp{f}{g_1}g_1 + \ldots + \dotp{f}{g_m}g_m,
+	\end{equation*}
+	is an eigenfunction of $\mathcal{K}_P$ with eigenvalue $\lambda_k$. We will show that $f_k$ is close to $f$ in $L_2(P)$ norm. We have
+	\begin{align*}
+	(\mathcal{K}_P - \lambda I) f & = (\mathcal{K}_P - \lambda I) f_k + (\mathcal{K}_P - \lambda I) (f - f_k) \\
+	& = (\lambda_k - \lambda) f_k + (\mathcal{K}_P - \lambda I) (f - f_k).
+	\end{align*}
+	We now take norm on each side of the preceding equation. By assumption, $\norm{(\mathcal{K}_P - \lambda I) f} \leq \epsilon$. Moreover, since $f - f_k \in E_{\lambda_k}^{\perp}$, we have
+	\begin{equation*}
+	\norm{(\lambda_k - \lambda) f_k + (\mathcal{K}_P - \lambda I) (f - f_k)} = \abs{\lambda_k - \lambda} \norm{f_k} + \norm{(\mathcal{K}_P - \lambda I) (f - f_k)}.
+	\end{equation*}
+	Finally, since $f - f_k \in E_{\lambda_k^{\perp}}$, we have that $\norm{(\mathcal{K}_P - \lambda_k I) (f - f_k)} \geq \min_{j \neq k} \abs{\lambda_j - \lambda_k} \norm{f - f_k} = s \norm{f - f_k}$. Putting the pieces together, we obtain
+	\begin{align*}
+	\epsilon & \geq \abs{\lambda_k - \lambda} \norm{f_k} + \norm{(\mathcal{K}_P - \lambda I) (f - f_k)} \\
+	& \geq \norm{(\mathcal{K}_P - \lambda_k I) (f - f_k)} - \abs{\lambda - \lambda_k} \norm{f - f_k} \\
+	& \geq (s - \epsilon) \norm{f - f_k}
+	\end{align*}
+	and the proof is complete.
+\end{proof}
+
+See Remark A.2 of \cite{diaconis08} for an example that \textbf{2.} is tight.
+
+\section{Generalized Density Clustering(Ale + Larry10)}
+
+Suppose we observe data $X_1,\ldots,X_N$ sampled from distribution $P$ with density $p$ on $\Reals^d$. (NOTE: a major point of this paper is that one does not need to assume the existence of a finite density $p$, i.e $P$ may be singular with respect to $d$-dimensional Lebesgue measure. For the purposes of this note, we will ignore this case.) For a given $\lambda > 0$, let $L(\lambda) = \set{x \in \Rd: p(x) \geq \lambda}$ be the $\lambda$-upper level set of $p$, and let $C_1(\lambda),\ldots,C_{k}(\lambda)$ be the $\lambda$ density clusters, i.e. disjoint, connected components such that 
+\begin{equation*}
+L(\lambda) = \bigcup_{j = 1}^{k} C_j(\lambda).
+\end{equation*}
+
+Given finite samples, it is only possible to accurately estimate a biased version of $p$. Let $K_h: \Rd \to \Reals$ be a kernel and let the smoothed density $p_h$ be given by
+\begin{equation*}
+p_h(x) = \int_{\Rd} K_h(x - y) \,dP(y).
+\end{equation*}
+We will write the density clusters of $p_h$ as $C_1^{h}(\lambda), \ldots, C_k^{h}(\lambda)$. To estimate $p_h$, we introduce the kernel density estimator
+\begin{equation*}
+\widehat{p}_h(x) = \frac{1}{n} \sum_{i = 1}^{n} \frac{1}{c_d h^d} K\left(\frac{x - X_i}{h}\right).
+\end{equation*}
+
+Under limited conditions -- i.e. much weaker conditions needed than for nonparametric density estimation -- it is possible to estimate the density clusters $C_j(\lambda)$. 
+
+\begin{enumerate}[label=(C\arabic*)]
+	\item 
+	\label{cond:low_noise}There exist positive constants $\gamma, C_1$ and $\overline{\varepsilon}$ such that
+	\begin{equation*}
+	\mathbb{P}\left(\abs{p(X) - \lambda} < \epsilon\right)\leq C_1 \varepsilon^{\gamma},~~ \forall \varepsilon \in [0,\overline{\epsilon}).
+	\end{equation*}
+	
+	\item 
+	\label{cond:level_set_inclusion}There exist a positive constant $\overline{h}$ and permutation $\sigma$ of $\set{1,\ldots,k}$ such that $\forall h \in (0,\overline{h})$ an all $\lambda' \in (\lambda - \overline{\varepsilon}, \lambda + \overline{\varepsilon})$, 
+	\begin{equation*}
+	L_h(\lambda') = \bigcup_{j = 1}^{k} C_j^h(\lambda')
+	\end{equation*}
+	where
+	\begin{enumerate}[(a)]
+		\item $C_i^h(\lambda') \cap C_j^h(\lambda') = \emptyset$ for all $1 \leq i \leq j \leq k$; 
+		\item $C_j(\lambda') \subseteq C_{\sigma(j)}^h(\lambda')$ for all $1 \leq j \leq k$. 
+	\end{enumerate}
+
+	\item 
+	\label{cond:fringe_bias}There exists a positive constant $C_2$ such that for all $h \in (0,\overline{h})$ and $\lambda' \in (\lambda - \overline{\epsilon},\lambda]$,
+	\begin{equation*}
+	L(\lambda') = \bigcup_{j = 1}^{k} C_j(\lambda')
+	\end{equation*}
+	where
+	\begin{equation*}
+	\mu(\partial C_j(\lambda') \oplus B(0,j)) \leq C_2 h.
+	\end{equation*}
+\end{enumerate}
+
+The level set risk is defined to be $R^L(p,\widehat{p}_h) = \mathbb{E}(\rho(p,\widehat{p}_h,P))$, where
+\begin{equation*}
+\rho(r,q,P) = \int_{ \{x: r(x) \geq \lambda\} \vartriangle \{x: q(x) \geq \lambda\}} \,dP(x).
+\end{equation*}
+
+\begin{theorem}[Theorem 10]
+	Suppose that \ref{cond:low_noise},\ref{cond:level_set_inclusion}, and \ref{cond:fringe_bias} are satisfied. Then there exists a constant $C_L$ such that for any $h \in (0,\overline{h})$ and $\varepsilon \in (0,\overline{\varepsilon})$,
+	\begin{equation*}
+	R^L(p,\widehat{p}_h) \leq C_L(\varepsilon^{\gamma} + h + e^{-C_K n h^d \epsilon^2}).
+	\end{equation*}
+	In particular, setting
+	\begin{equation*}
+	h_n = \left(\frac{\log n}{n}\right)^{\gamma/(2 \xi + d \gamma)} ~~\textrm{and}~~ \varepsilon_n = \sqrt{\frac{\log n}{C_K n h_n^d}}
+	\end{equation*}
+	we obtain
+	\begin{equation*}
+	R^L(p, \widehat{p}_{h_n}) = O\left(\max\set{\left(\frac{\log n}{n}\right)^{\gamma \xi/2 \xi + d \gamma}, \frac{1}{n}}\right).
+	\end{equation*}
+\end{theorem}
+
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{../local_spectral_bibliography}
+
+\end{document}

@@ -1,0 +1,272 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fullpage}
+
+\usepackage{natbib}
+\renewcommand{\bibname}{REFERENCES}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+
+\newcommand{\eqdist}{\ensuremath{\stackrel{d}{=}}}
+\newcommand{\Graph}{\mathcal{G}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\Identity}{\mathbb{I}}
+\newcommand{\distiid}{\overset{\text{i.i.d}}{\sim}}
+\newcommand{\convprob}{\overset{p}{\to}}
+\newcommand{\convdist}{\overset{w}{\to}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Risk}[2][P]{\mathcal{R}_{#1}\left[ #2 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\iset}{\mathbf{i}}
+\newcommand{\jset}{\mathbf{j}}
+\newcommand{\myexp}[1]{\exp \{ #1 \}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\ext}[1]{\widetilde{#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\set{#1}_{n \in \N}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\diam}{\mathrm{diam}}
+
+\newcommand{\emC}{C_n}
+\newcommand{\emCpr}{C'_n}
+\newcommand{\emCthick}{C^{\sigma}_n}
+\newcommand{\emCprthick}{C'^{\sigma}_n}
+\newcommand{\emS}{S^{\sigma}_n}
+\newcommand{\estC}{\widehat{C}_n}
+\newcommand{\hC}{\hat{C^{\sigma}_n}}
+\newcommand{\vol}{\text{vol}}
+\newcommand{\spansp}{\mathrm{span}~}
+\newcommand{\1}{\mathbf{1}}
+
+\newcommand{\Linv}{L^{\dagger}}
+
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\emF}{\mathbb{F}_n}
+\newcommand{\emG}{\mathbb{G}_n}
+\newcommand{\emP}{\mathbb{P}_n}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Rd}{\Reals^d}
+
+%%% Data
+\newcommand{\Xbf}{X}
+
+%%% Vectors
+\newcommand{\thetast}{\theta^{\star}}
+
+%%% Matrices
+\newcommand{\X}{X} % no bold
+\newcommand{\Y}{Y} % no bold
+\newcommand{\Z}{Z} % no bold
+\newcommand{\Lgrid}{L_{\grid}}
+\newcommand{\Dgrid}{D_{\grid}}
+\newcommand{\Linvgrid}{L_{\grid}^{\dagger}}
+
+%%% Sets and classes
+\newcommand{\Xset}{\mathcal{X}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\Csig}{\Cset_{\sigma}}
+\newcommand{\Hclass}{\mathcal{H}}
+\newcommand{\Pclass}{\mathcal{P}}
+
+%%% Distributions and related quantities
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Qbb}{\mathbb{Q}}
+
+%%% Vector spaces
+\newcommand{\Zbb}{\mathbb{Z}}
+
+%%% Operators
+\newcommand{\Tadj}{T^{\star}}
+\newcommand{\dive}{\mathrm{div}}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand{\gradient}{\nabla}
+\newcommand{\Hessian}{\mathcal{D}^2}
+
+%%% Misc
+\newcommand{\grid}{\mathrm{grid}}
+\newcommand{\critr}{R_n}
+\newcommand{\dx}{\,dx}
+\newcommand{\dy}{\,dy}
+\newcommand{\dr}{\,dr}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\spl}{\textrm{sp}}
+\newcommand{\dist}{\textrm{dist}}
+
+%%% Order of magnitude
+\newcommand{\soom}{\sim}
+
+% \newcommand{\span}{\textrm{span}}
+
+\newtheoremstyle{alden}
+{6pt} % Space above
+{6pt} % Space below
+{} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{alden} 
+
+
+\newtheoremstyle{aldenthm}
+{6pt} % Space above
+{6pt} % Space below
+{\itshape} % Body font
+{} % Indent amount
+{\bfseries} % Theorem head font
+{.} % Punctuation after theorem head
+{.5em} % Space after theorem head
+{} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{aldenthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+
+\begin{document}
+\title{Notes for 9/20/19 - 9/27/19}
+\author{Alden Green}
+\date{\today}
+\maketitle
+
+\section{Consistency of spectral clustering in the $\epsilon$-outlier model.}
+
+Let $X = x_1,\ldots,x_n \in \Rd$ be sampled independently from the nonparametric mixture distribution
+\begin{equation*}
+P = \sum_{m = 1}^{M} \pi_k \Psi_k + \epsilon \Psi_0,
+\end{equation*}
+where $0 < \epsilon < 1$ is the fraction of ``outliers'', and $\pi_1,\cdots,\pi_M$ are mixture weights such that $\pi_1 + \cdots + \pi_M = 1 - \epsilon$. $\Psi_1, \ldots, \Psi_k$ will each be uniform distributions over sets $\mathcal{C}_1, \ldots, \mathcal{C}_m \subset \Rd$, and $\Psi_0$ will be the outlier distribution, a uniform distribution on $[-1,1]^d$. 
+
+We wish to examine the consistency properties of kernel-based spectral clustering algorithms in the $\epsilon$-outlier model. Since there are many variants of kernel-based spectral clustering algorithms, we will begin by formalizing the specific method we analyze. To keep things simple, suppose $M = 2$. Our algorithm requires two inputs from the user: a kernel function $K(x,y)$ and a threshold $t$. 
+
+\begin{algorithm}
+	\caption{Kernel-based spectral clustering.}
+	\label{alg: ppr}	
+	{\bfseries Input:} data $X =\{x_1,\ldots,x_n\}$, kernel function $K(x,y)$, threshold $t \in \Reals$. \\     
+	{\bfseries Output:} cluster $\widehat{C} \subseteq [n]$.
+	\begin{algorithmic}[1]
+		\STATE Form the $n \times n$ symmetric kernel matrix $A$ with entries = $A_{ij} = (K(x_i),K(x_j))$, and the normalized (Laplacian) $L = I - D^{-1/2}AD^{-1/2}$. 
+		\STATE Compute the second eigenvector of $L$, $v_2 = (v_{2,1},\ldots,v_{2,n})$. 
+		\STATE Output $\widehat{C} = \set{i: v_{2,i} > t}$. 
+	\end{algorithmic}
+\end{algorithm}
+
+Let $C_m = \set{i: x_i \in \mathcal{C}_m}$ be the empirical analogue to the population $\mathcal{C}_m$. We say the estimator $\widehat{C}$ is a consistent cluster estimator of the mixture model $P$ if
+\begin{equation*}
+\lim_{n \to \infty} \left\{\min_{m = 1,\ldots,M} \frac{1}{n} \abs{\widehat{C} \cap C_m} \right\} = 0
+\end{equation*}
+with probability one.
+
+\paragraph{Summary of analysis.}
+
+It has been shown that the spectra of the Laplacian $L$ asymptotically converges to that of a population-level integral operator, which we now define. Consider the distribution-dependent convolution operator $\mathcal{K}_P: L^2(P) \to L^2(P)$, given by
+\begin{equation*}
+\mathcal{K}_Pf(x) = \int K(x,y) f(y) \,dP(y),
+\end{equation*}
+with associated degree functional $d(x) = \int K(x,y) \,dP(y)$ for $x \in \Rd$. The population-level version of the normalized Laplacian $L$ is given by
+\begin{equation}
+\label{eqn:normalized_Laplacian_operator}
+\overline{L}_Pf(x) = f(x) - \int \overline{K}(x,y) f(y) \,dP(y) =: f(x) - \overline{K}_Pf(x)
+\end{equation}
+where $\overline{K}(x,y)$ is the normalized kernel function defined as
+\begin{equation*}
+\overline{K}(x,y) = 
+\begin{cases}
+\frac{K(x,y)}{\sqrt{d(x)}\sqrt{d(y)}}, & \textrm{if $d(x), d(y) > 0$} \\
+0, & \textrm{otherwise.}
+\end{cases}
+\end{equation*}
+
+The operators $\overline{L}_P$ and $\overline{K}_P$ share all the same eigenfunctions, and if $\lambda_k$ is an eigenvalue of $\overline{K}_P$ then $\mu_k = 1 - \lambda_k$ is an eigenvalue of $\overline{L}_P$. We therefore analyze the properties of the leading eigenvalues of $\overline{K}_P$, which we denote $\lambda_1 \geq \lambda_2 \geq \cdots$.\footnote{In order to ensure that $\overline{K}_P$ is compact and therefore has a discrete spectrum, we assume throughout that $\iint \overline{K}^2(x,y) \,dP(x) \,dP(y) < \infty$, so that $\overline{K}_P$ is a trace-class operator.}
+
+\subsection{Consistency of spectral clustering under the noise-free model.}
+
+In the noise-free model, $\epsilon = 0$ and our mixture model reduces to $P = \pi_1 \Psi_1 + \pi_2 \Psi_2$ and $\pi_1 + \pi_2 = 1$, $\pi_1, \pi_2 > 0$.
+
+\subsubsection{Spectral analysis of the $p$-weighted Laplacian in the noise-free model.}
+
+Let $\mathcal{S}$ be the support of $P$. For $u \in H^1(\mathcal{S})$, the weighted, normalized Laplacian operator $\overline{L}_{P}$ is given by
+\begin{equation*}
+L_Pu = -\frac{1}{p^{3/2}} \dive(p^2 \gradient(\frac{u}{p^{1/2}}))
+\end{equation*}
+(where we associate functions which are equal $P$-a.e.) We say $\lambda \in \Reals$ is an eigenfunction of $L_p$ if there exists $u \in H^1(\mathcal{S}), u \neq 0$ such that
+\begin{equation}
+\label{eqn:weighted_Laplacian_spectra}
+\int_{\mathcal{S}} \gradient u \cdot \gradient v p^2(x) \,dx = \lambda \int_{\mathcal{S}} u v p(x) \,dx, \quad \textrm{for all $v \in H^1(\mathcal{S})$.}
+\end{equation}
+If $u \in H^1(D)$ satisfies \eqref{eqn:weighted_Laplacian_spectra}, then we say $u$ is an eigenvector of $L_P$. 
+
+Our first result concerns the null space of $L_P$. 
+\begin{lemma}
+	Suppose $\mathcal{C}_1$ and $\mathcal{C}_2$ are open, bounded, and connected domains with Lipschitz boundaries. Write $p_1$ and $p_2$ for the uniform densities over $\mathcal{C}_1$ and $\mathcal{C}_2$, and let $\lambda_0$ be the smallest eigenvalue of $L_P$. Then,
+	\begin{itemize}
+		\item $\lambda_0 = 0$.
+		\item If additionally $\dist(\mathcal{C}_1, \mathcal{C}_2) > 0$, then $u_1 \propto \sqrt{p_1}$ and $u_2 \propto \sqrt{p_2}$ are both eigenvectors of $L_P$, with eigenvalue $\lambda_0$. 
+		\item If $v \in H^1(\mathcal{S})$ is an eigenvector of $L_p$ and  $v \neq u_1, v \neq u_2$, then $v$ has eigenvalue greater than $0$.
+	\end{itemize}
+\end{lemma}
+
+\subsubsection{Convergence of $\overline{L}_P$.}
+
+
+We will require some (very mild) conditions on the internal and external connectivity of $\Cset_1$ and $\Cset_2$ to ensure the consistency of spectral clustering under this model. We assume the clusters $\Cset_m$ are each connected sets, and have interiors of positive probability, i.e. for $\Cset_m^{\sigma} = \set{x \in \Cset_m: \dist(x,\partial \Cset_m)}$, we assume $P(\Cset_m^{\sigma}) > 0$. Further, we assume that the separation between $\mathcal{C}_1$ and $\mathcal{C}_2$ is positive, meaning $s = \dist(\mathcal{C}_1,\mathcal{C}_2) > 0$. 
+
+Suppose $K(x,y) = k(\norm{x - y})$ for a kernel function supported on $[0,r)$. The following lemma details some useful properties of the leading eigenfunctions of the associated operator $\overline{K}_P$, when $r$ is chosen to be suitably small. 
+
+\begin{lemma}
+	Assume $r < s$, and further that the conductance 
+	\begin{equation*}
+	\Psi(\Sset) = 
+	\end{equation*}
+\end{lemma}
+
+\subsection{Perturbation analysis.}
+
+In order to demonstrate that 
+
+\subsubsection{Cheeger's inequality.}
+
+\subsection{Asymptotic analysis.}
+
+
+\section{To add.}
+
+\begin{itemize}
+	\item Explain why this distribution is interesting.
+	\item Detail the various possible generalizations (non-compact kernel function,non-uniform distributions,)
+	\item Flesh out the summary of analysis section.
+	\item Replace assumption on normalized cut by assumption that the clusters are $\sigma$-expanded sets. 
+	\item Define $H^1(\mathcal{S})$.
+	\item Background on the spectra of $L_P$ (i.e. how do we know it is countable?)
+\end{itemize}
+
+\end{document}
